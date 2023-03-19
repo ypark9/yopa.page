@@ -8,7 +8,7 @@
 
 # How.wtf
 
-[how.wtf][website-url] is a micro-blog that provides how-to articles about development languages and the cloud. (YOPA)
+[how.wtf][website-url] is a micro-blog that provides how-to articles about development languages and the cloud. ()
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [website-shield]: https://img.shields.io/website?style=for-the-badge&url=https%3A%2F%2Fhow.wtf
