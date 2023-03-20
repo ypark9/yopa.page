@@ -12,8 +12,8 @@ provider aws {
 
 module "website" {
   source = "../../modules/website"
-  bucket_name = "dev.how.wtf"
-  domain_names = ["dev.how.wtf"]
+  bucket_name = "dev.yopa.page"
+  domain_names = ["dev.yopa.page"]
 }
 
 output "cloudfront_distribution_id" {
