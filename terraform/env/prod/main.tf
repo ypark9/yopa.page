@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "yopa.terraform.how.wtf"
+    bucket = "terraform.yopa.page"
     key = "env/prod/terraform.tfstate"
     region = "us-east-1"
   }
@@ -12,8 +12,8 @@ provider aws {
 
 module "website" {
   source = "../../modules/website"
-  bucket_name = "how.wtf"
-  domain_names = ["how.wtf", "www.how.wtf"]
+  bucket_name = "yopa.page"
+  domain_names = ["yopa.page", "www.yopa.page"]
 }
 
 output "cloudfront_distribution_id" {

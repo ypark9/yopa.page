@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "yopa.terraform.how.wtf"
+    bucket = "terraform.yopa.page"
     key = "env/dev/terraform.tfstate"
     region = "us-east-1"
   }
