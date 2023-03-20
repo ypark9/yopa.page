@@ -1,7 +1,7 @@
-baseurl: "https://how.wtf/"
+baseurl: "https://yopa.page/"
 relativeURLs: true
 languageCode: en-us
-title: how.wtf
+title: yopa.page
 theme: "hugo-tania"
 paginate: 8
 googleAnalytics: G-0W6GZ3EH9R
@@ -12,19 +12,19 @@ params:
   images:
   - images/8yRnin.png
   enableFootnotes: true
-  siteName: how.wtf
+  siteName: yopa.page
   siteDesc: A blog providing how-to articles about development languages and the cloud.
   author: Thomas Taylor
   maxCategoryToShow: 10
   socialOptions:
-    email: thomas@how.wtf
-    github: https://github.com/thomasnotfound/how.wtf
+    email: yoonsoo@duck.com
+    github: https://github.com/ypark9/yopa.page
     twitter: https://twitter.com/thomasnotvalid
   comments:
     enabled: true
     provider: giscus
     giscus:
-      repo: thomasnotfound/how.wtf
+      repo: ypark9/yopa.page
       id: MDEwOlJlcG9zaXRvcnkzNTg5NzAyOTY=
       category:
         name: Blog Posts
@@ -45,7 +45,7 @@ menu:
   - name: Articles
     url: "/articles.html"
   - name: GitHub
-    url: "https://github.com/thomasnotfound/how.wtf"
+    url: "https://github.com/ypark9/yopa.page"
   - name: RSS
     url: "/index.xml"
 
