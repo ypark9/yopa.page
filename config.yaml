@@ -18,8 +18,8 @@ params:
   maxCategoryToShow: 10
   socialOptions:
     email: yoonsoo@duck.com
-    github: https://github.com/ypark9/yopa.page
-    twitter: https://twitter.com/thomasnotvalid
+    github: https://github.com/ypark9/how.wtf
+    twitter: https://twitter.com/
   comments:
     enabled: true
     provider: giscus
@@ -45,7 +45,7 @@ menu:
     - name: Articles
       url: "/articles.html"
     - name: GitHub
-      url: "https://github.com/ypark9/yopa.page"
+      url: "https://github.com/ypark9/how.wtf"
     - name: RSS
       url: "/index.xml"
 
