@@ -10,7 +10,7 @@ uglyurls: true
 params:
   titleLogo: images/08WeMC.png
   images:
-  - images/8yRnin.png
+    - images/8yRnin.png
   enableFootnotes: true
   siteName: yopa.page
   siteDesc: A blog providing how-to articles about development languages and the cloud.
@@ -30,24 +30,24 @@ params:
         name: Blog Posts
         id: DIC_kwDOFWVzuM4B-NTf
 
-permalinks:
-  post: :title
+# permalinks:
+#   post: :title
 
 menu:
   header:
-  - name: About
-    url: "/about.html"
-  - name: Articles
-    url: "/articles.html"
+    - name: About
+      url: "/about.html"
+    - name: Articles
+      url: "/articles.html"
   footer:
-  - name: About
-    url: "/about.html"
-  - name: Articles
-    url: "/articles.html"
-  - name: GitHub
-    url: "https://github.com/ypark9/yopa.page"
-  - name: RSS
-    url: "/index.xml"
+    - name: About
+      url: "/about.html"
+    - name: Articles
+      url: "/articles.html"
+    - name: GitHub
+      url: "https://github.com/ypark9/yopa.page"
+    - name: RSS
+      url: "/index.xml"
 
 markup:
   highlight:
