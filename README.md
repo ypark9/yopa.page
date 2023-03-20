@@ -8,7 +8,7 @@
 
 # yopa.page
 
-[yopa.page][website-url] is ... hm... fun?. (re.)
+[yopa.page][website-url] is ... hm... fun?. (rere.)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
