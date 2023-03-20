@@ -8,7 +8,7 @@
 
 # yopa.page
 
-[yopa.page][website-url] is ... hm... fun?. ()
+[yopa.page][website-url] is ... hm... fun?. (lol)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [website-shield]: https://img.shields.io/website?style=for-the-badge&url=https%3A%2F%2Fyopa.page
