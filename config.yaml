@@ -14,7 +14,7 @@ params:
   enableFootnotes: true
   siteName: yopa.page
   siteDesc: A blog providing how-to articles about development languages and the cloud.
-  author: Thomas Taylor
+  author: Yoonsoo Park
   maxCategoryToShow: 10
   socialOptions:
     email: yoonsoo@duck.com
