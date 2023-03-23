@@ -4,7 +4,6 @@ languageCode: en-us
 title: yopa.page
 theme: "hugo-tania"
 paginate: 8
-googleAnalytics: G-0W6GZ3EH9R
 uglyurls: true
 
 params:
@@ -20,15 +19,6 @@ params:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/how.wtf
     twitter: https://twitter.com/
-  comments:
-    enabled: true
-    provider: giscus
-    giscus:
-      repo: ypark9/yopa.page
-      id: MDEwOlJlcG9zaXRvcnkzNTg5NzAyOTY=
-      category:
-        name: Blog Posts
-        id: DIC_kwDOFWVzuM4B-NTf
 
 # permalinks:
 #   post: :title
