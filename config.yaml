@@ -1,7 +1,7 @@
 baseurl: "https://yopa.page/"
 relativeURLs: true
 languageCode: en-us
-title: yopa.page
+title: thats.nono
 theme: "hugo-tania"
 paginate: 8
 googleAnalytics: ${{ secrets.GOOGLE_ANALYTICS_ID }}
@@ -12,8 +12,8 @@ params:
   images:
     - images/8yRnin.png
   enableFootnotes: true
-  siteName: yopa.page
-  siteDesc: A blog providing how-to articles about development languages and the cloud.
+  siteName: thats.nono
+  siteDesc: A blog that's gonna put your software engineering skills to the test.
   author: Yoonsoo Park
   maxCategoryToShow: 10
   socialOptions:
