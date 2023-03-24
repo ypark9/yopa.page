@@ -1,13 +1,11 @@
 ---
 title: About
 type: page
-date: 2021-12-18T15:30:00-04:00
+date: 2023-04-23T15:30:00-04:00
 ---
 
 ![yopa.page Logo](images/hZL49G.png)
 
 # What is yopa.page?
 
-well let me think about what it is about. hehe
-
-The name is inspired from those moments where you may have debugged an issue for hours to no prevail - the **"HOW? WTF?!"** moments. 
+I built **yopa.page** after facing enough developer trauma to scream **"that's a no-no!"** But I'm not invincible, so feel free to _challenge_ the site and teach me **something new**!
