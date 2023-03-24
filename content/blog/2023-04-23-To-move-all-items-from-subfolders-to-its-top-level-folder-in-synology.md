@@ -1,6 +1,6 @@
 ---
 title: To move all items from a subfolder to its parent (top-level) folder in Synology with script
-date: 2021-04-21T01:25:00-04:00
+date: 2023-04-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "Stop moving them manually. Let the script take care of it for you!"
 categories:
