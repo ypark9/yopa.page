@@ -1,18 +1,19 @@
 ---
 title: To move all items from a subfolder to its parent (top-level) folder in Synology with script
-date: 2023-04-23T01:25:00-04:00
+date: 2023-03-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "Stop moving them manually. Let the script take care of it for you!"
 categories:
-- Programming
-- Synology
+  - Programming
+  - Synology
 tags:
-- Synology
+  - Synology
 ---
 
 If you have a Synology NAS device and need to move all the files and folders within a sub-directory to the top directory, it can be done quickly with a simple script.
 
 # Creating a New Bash Script File
+
 ```console
 #!/bin/bash
 
@@ -27,4 +28,3 @@ find "$rootdir" -type f | while read filename; do
   mv "$filename" "$rootdir"
 done
 ```
-
