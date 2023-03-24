@@ -1,1 +1,1 @@
-A blog providing how-to articles about development languages and the cloud.
+my personal blog on everything software development. Join me as I share my experiences, challenge your knowledge, and provide useful insights to help you become a better developer.
