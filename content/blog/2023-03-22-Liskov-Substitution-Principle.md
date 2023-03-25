@@ -8,6 +8,7 @@ categories:
   - OOP
 tags:
   - OOP
+  - Principle
 ---
 
 Well hello there, my dear friend! It's time we talk about the **Liskov Substitution Principle** (LSP). Now, you better grab your favorite beverage(should be **beer**) and sit tight because this principle is no _*joke*_!

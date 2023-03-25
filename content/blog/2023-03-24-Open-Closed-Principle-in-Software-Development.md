@@ -8,6 +8,7 @@ categories:
   - OOP
 tags:
   - OOP
+  - Principle
 ---
 
 The _Open/Closed Principle_ is an important principle used in software development. It falls under the **SOLID** principles of Object-Oriented Programming (OOP). The OCP states that a software module should be open for extension but closed for modification. This means that you should be able to extend a module’s behavior without changing its source code.
