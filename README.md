@@ -8,16 +8,16 @@
 
 # yopa.page
 
-[yopa.page][website-url] is ... hm... fun?. (rere.)
+[yopa.page][website-url] 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
-[website-shield]: https://img.shields.io/website?style=for-the-badge&url=https%3A%2F%2Fyopa.page
-[website-url]: https://yopa.page
-[security-headers-shield]: https://img.shields.io/security-headers?style=for-the-badge&url=https%3A%2F%2Fyopa.page
-[security-headers-url]: https://securityheaders.com/?q=yopa.page&followRedirects=on
+[website-shield]: https://img.shields.io/website?style=for-the-badge&url=https://www.yopa.page
+[website-url]: https://www.yopa.page
+[security-headers-shield]: https://img.shields.io/security-headers?style=for-the-badge&url=https://www.yopa.page
+[security-headers-url]: https://securityheaders.com/?q=www.yopa.page&followRedirects=on
 [kofi-shield]: https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white
-[kofi-url]: https://ko-fi.com/M4M37J0TV
+[kofi-url]: https://ko-fi.com/yoonsoopark
 [terraform-shield]: https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white
 [aws-shield]: https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white
 [banner]: static/images/hZL49G.png
