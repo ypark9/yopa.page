@@ -28,3 +28,5 @@ find "$rootdir" -type f | while read filename; do
   mv "$filename" "$rootdir"
 done
 ```
+
+P.S. Are you still moving files around like they're pieces on a chessboard? Come on, **time is precious!** Let's automate this thing and save some brainpower for the tough coding challenges. 😉 Cheers. 🍺
