@@ -20,3 +20,4 @@ terraform.rc
 /public
 /resources
 .hugo_build.lock
+content/blog/
