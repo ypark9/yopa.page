@@ -1,1 +1,1 @@
-my personal blog on everything software development. Join me as I share my experiences, challenge your knowledge, and provide useful insights to help you become a better developer.
+Ahoy there matey! Ye found yer way to me blog, where I be helpin' ye navigate through the treacherous sea of buzzwords. I'll be sharin' me own personal experience and trauma, so ye can avoid goin' down with the ship. And let me tell ye, there be times when things went south and I was screamin' "that's a no-no!" in me brain. That be why I named this here blog "thats.nono"
