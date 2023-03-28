@@ -6,6 +6,6 @@ date: 2023-03-23T15:30:00-04:00
 
 ![yopa.page Logo](images/hZL49G.png)
 
-# What is thats.nono?
+# What is "thats.no.no"?
 
-I built **thats.nono** after facing enough developer trauma to scream **"that's a no-no!"** But I'm not invincible, so feel free to _challenge_ the site and teach me **something new**!
+Are you tired of going to meetings and feeling like you're in a different dimension because you don't understand the jargon being thrown around? Fear not, my dear developer! This blog is here to help you navigate through the sea of buzzwords and come out on top. With my blog, you'll be using those fancy terms to impress your colleagues in no time. Just get started - your future self will thank you later. You are welcome in advance. cheers.

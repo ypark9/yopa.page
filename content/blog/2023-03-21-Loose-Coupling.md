@@ -14,8 +14,7 @@ tags:
 > Once the infrastructure is in place, 
 > it can be used by anyone and adapted to changing needs and unforeseen requirements 
 > without requiring large changes to the application code base and infrastructure.”
-
-> Excerpt From: Steven van Deursen. “Dependency Injection.” Apple Books. 
+> Excerpt From: Steven van Deursen. “Dependency Injection.”
 
 Loose coupling. Sounds fancy, right? But what exactly is this loose coupling?
 To put it simply, **loose coupling** is a way to design the relationship between different parts of your code so that they can operate independently of each other. Think of it like a `one-night stand` for your code. They can get together and do their thing, but they don't need to rely on each other in the long run.
