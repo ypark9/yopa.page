@@ -2,21 +2,22 @@
 title: Open/Closed Principle in Software Development
 date: 2023-03-24T01:25:00-04:00
 author: Yoonsoo Park
-description: "do you know about Open/Closed Principle in Software Development?"
+description: "Do you know about Open/Closed Principle in Software Development?"
 categories:
   - Programming
   - OOP
 tags:
-  - OOP
   - Principle
 ---
 
 The _Open/Closed Principle_ is an important principle used in software development. It falls under the **SOLID** principles of Object-Oriented Programming (OOP). The OCP states that a software module should be open for extension but closed for modification. This means that you should be able to extend a module’s behavior without changing its source code.
 
-# Why Is the Open/Closed Principle Important?
+## Why Is the Open/Closed Principle Important?
+
 Listen up peeps! The Open/Closed Principle is like a magic wand that makes your codebase rock-steady and finger snap highly maintainable. It's all about modularizing and reusing your code without breaking things open (you know how Frankenstein ended lol). And guess what? You'll get some pretty sweet perks for following the OCP, like code reuse (duh!), simpler maintenance (#winning), extensibility without headaches (no Advil needed), and fewer bugs to squash (phew). So, let's put on our wizard caps and make our codebase pure awesomeness!
 
 ## Example 1: Payment Gateway
+
 Suppose you have a good old-fashioned vending machine that uses coins to dispense delicious candy bars. It only accepts pennies and nickels as payment, but over time, it needs some fancy upgrades like credit card readers, cash printers, or even Venmo support (if such a magical machine exists). If the OCP is implemented, there should be no need to modify the existing codebase of the vending machine in order to add the new payment feature.
 
 ```typescript

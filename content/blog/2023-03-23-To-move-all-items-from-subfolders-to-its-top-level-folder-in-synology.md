@@ -7,12 +7,12 @@ categories:
   - Programming
   - Synology
 tags:
-  - Synology
+  - Script
 ---
 
 If you have a Synology NAS device and need to move all the files and folders within a sub-directory to the top directory, it can be done quickly with a simple script.
 
-# Creating a New Bash Script File
+## Creating a New Bash Script File
 
 ```console
 #!/bin/bash
