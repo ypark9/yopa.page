@@ -18,7 +18,7 @@ params:
   maxCategoryToShow: 10
   socialOptions:
     email: yoonsoo@duck.com
-    github: https://github.com/ypark9/how.wtf
+    github: https://github.com/ypark9/yopa.page
     twitter: https://twitter.com/
 
 # permalinks:
@@ -36,7 +36,7 @@ menu:
     - name: Articles
       url: "/articles.html"
     - name: GitHub
-      url: "https://github.com/ypark9/how.wtf"
+      url: "https://github.com/ypark9/yopa.page"
     - name: RSS
       url: "/index.xml"
 
