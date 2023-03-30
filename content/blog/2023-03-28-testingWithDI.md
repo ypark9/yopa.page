@@ -29,7 +29,7 @@ For example, let's say you have a class that relies on a database connection. By
 
 ## Best Practices - Because Nobody deserves Sloppy Code
 
-### K.I.S.S. (Keep In Simple S*****)
+### K.I.S.S. (Keep It Simple S*****)
 One of the best practices for using DI is to keep the configuration simple. It's like trying to build a Lego tower without getting frustrated and throwing it away in anger because you don't understand the instructions.
 
 Another practice is to inject only the dependencies needed by the class. It's like ordering food off the menu instead of eating everything on the table, including the centerpiece.
