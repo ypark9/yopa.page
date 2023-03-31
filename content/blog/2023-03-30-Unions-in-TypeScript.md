@@ -1,6 +1,6 @@
 ---
 title: Unions in TypeScript
-date: 2023-03-31T01:25:00-04:00
+date: 2023-03-30T01:25:00-04:00
 author: Yoonsoo Park
 description: "Unions in TypeScript are like a group of friends who hang out together but each one of them has their own unique personality."
 categories:
