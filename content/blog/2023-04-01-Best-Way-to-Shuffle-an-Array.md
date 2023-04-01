@@ -1,6 +1,6 @@
 ---
 title: Best Way to Shuffle an Array?
-date: 2023-03-30T01:25:00-04:00
+date: 2023-04-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "Each element gets a turn to swap places with another random element until everyone has found a new seat."
 categories:
