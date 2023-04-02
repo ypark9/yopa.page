@@ -2,7 +2,7 @@
 title: Cool Trick to Write Better TypeScript Code 1
 date: 2023-03-31T01:25:00-04:00
 author: Yoonsoo Park
-description: "Taxonomy is the buzzword that makes software engineers feel like they have their code organized."
+description: "Write Better TypeScript Code 1"
 categories:
   - Programming
   - TypeScript
