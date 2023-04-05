@@ -1,5 +1,5 @@
 ---
-title: Cool Trick to Write Better TypeScript Code 2
+title: Master TypeScript with Conditional Types - Tips for Cleaner, More Efficient Code
 date: 2023-04-02T01:25:00-04:00
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 2"
@@ -23,7 +23,7 @@ type Response<T> = {
 };
 ```
 
-You want to create a utility type that extracts the `data` type if it exists, or returns `never` if it doesn't. 
+You want to create a utility type that extracts the `data` type if it exists, or returns `never` if it doesn't.
 You can use a conditional type to achieve this:
 
 ```typescript

@@ -1,5 +1,5 @@
 ---
-title: Best Way to Shuffle an Array?
+title: Top Techniques for Efficient Array Shuffling
 date: 2023-04-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "Each element gets a turn to swap places with another random element until everyone has found a new seat."
@@ -59,14 +59,13 @@ In this example, we have defined a function called shuffleArray that takes an ar
 
 We first create a copy of the input array using the spread operator (...) and assign it to the variable shuffledArray. This ensures that the original array remains unchanged.
 
-Next, we iterate over the elements of the shuffledArray in reverse order using a for loop. For each iteration, we generate a random index j between 0 and the current index i using the formula Math.floor(Math.random() * (i + 1)).
+Next, we iterate over the elements of the shuffledArray in reverse order using a for loop. For each iteration, we generate a random index j between 0 and the current index i using the formula Math.floor(Math.random() \* (i + 1)).
 
 We then swap the element at index i with the element at index j using destructuring assignment, which avoids the need for a temporary variable. By the end of the loop, all the elements of the shuffledArray will have been swapped around randomly, resulting in a shuffled array.
 
 Finally, we return the shuffledArray from the function, and log it to the console to verify that it has been shuffled properly.
 
 </details>
-
 
 ## Get Shufflin'!
 

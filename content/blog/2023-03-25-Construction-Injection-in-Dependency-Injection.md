@@ -1,5 +1,5 @@
 ---
-title: Construction Injection in Dependency Injection – No Hard Hats Required!
+title: Understanding Constructor Injection in Dependency Injection - A Comprehensive Guide
 date: 2023-03-25T01:25:00-04:00
 author: Yoonsoo Park
 description: "Do you know about Construction Injection in Dependency Injection?"

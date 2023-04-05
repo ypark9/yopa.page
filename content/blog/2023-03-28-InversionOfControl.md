@@ -1,5 +1,5 @@
 ---
-title: What is Inversion of Control (IoC)?
+title:Understanding Inversion of Control (IoC) in Software Development - Definition and Benefits
 date: 2023-03-28T01:25:00-04:00
 author: Yoonsoo Park
 description: "It's all about turning things upside down and making your code work for you instead of the other way around."

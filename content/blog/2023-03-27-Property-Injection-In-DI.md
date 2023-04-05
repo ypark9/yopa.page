@@ -1,5 +1,5 @@
 ---
-title: Property Injection in DI
+title: Injecting Properties Using Dependency Injection
 date: 2023-03-27T01:25:00-04:00
 author: Yoonsoo Park
 description: "do you know about Property Injection in DI?"

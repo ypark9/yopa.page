@@ -1,5 +1,5 @@
 ---
-title: Testing with Dependency Injection
+title: Efficient Dependency Injection for Testable Code
 date: 2023-03-29T01:25:00-04:00
 author: Yoonsoo Park
 description: "Dependency Injection – Testing Made Easy and Fun!"

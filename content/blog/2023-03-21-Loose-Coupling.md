@@ -1,5 +1,5 @@
 ---
-title: A Funny and Light-Hearted Look at Loose Coupling.
+title: Exploring Loose Coupling
 date: 2023-03-27T01:25:00-04:00
 author: Yoonsoo Park
 description: "When it comes to coding, there are certain principles that should be followed. One of them is loose coupling."

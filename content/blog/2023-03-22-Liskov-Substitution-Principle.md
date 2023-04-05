@@ -1,5 +1,5 @@
 ---
-title: The Liskov Substitution Principle (LSP) in OOP
+title: Understanding and Applying the Liskov Substitution Principle in Object-Oriented Programming
 date: 2023-03-22T01:25:00-04:00
 author: Yoonsoo Park
 description: "If you're not sure what Liskov Substitution Principle (LSP) means, your object-oriented programming skills are in for a world of hurt!"

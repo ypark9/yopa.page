@@ -1,5 +1,5 @@
 ---
-title: Cool Trick to Write Better TypeScript Code - Discriminated unions
+title: Master TypeScript with Discriminated Unions - Enhance Your Coding Skills
 date: 2023-04-03T01:25:00-04:00
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 3"

@@ -1,5 +1,5 @@
 ---
-title: Open/Closed Principle in Software Development
+title: Mastering the Open/Closed Principle for Enhanced Software Development
 date: 2023-03-24T01:25:00-04:00
 author: Yoonsoo Park
 description: "Do you know about Open/Closed Principle in Software Development?"
