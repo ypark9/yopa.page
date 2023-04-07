@@ -1,5 +1,5 @@
 ---
-title: Master TypeScript with Advanced Tricks - Partial and Required
+title: Master TypeScript with Advanced Tricks - Partial
 date: 2023-04-05T01:25:00-04:00
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 4"
@@ -7,7 +7,7 @@ categories:
   - Programming
   - TypeScript
 tags:
-  - Partial and Required
+  - Partial
 ---
 
 ## Partial Utility Type
