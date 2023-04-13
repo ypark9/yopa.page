@@ -39,4 +39,4 @@ In this example, we use `console.time()` to start a timer called **sortArray** a
 
 By using `console.time()` and `console.timeEnd()` in this way, we can quickly identify which parts of our code are taking the longest to execute and focus our optimization efforts on those areas.
 
-Cheer! 🍺
+Cheers! 🍺
