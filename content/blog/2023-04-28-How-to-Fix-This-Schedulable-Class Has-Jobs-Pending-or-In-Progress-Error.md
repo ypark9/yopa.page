@@ -33,5 +33,4 @@ Here are the steps you can follow:
 
 By enabling this option, you are allowing the deployment of components, even when corresponding Apex jobs are pending or in progress. This means that you can push your code to a Scratch Org without encountering the "This schedulable class has jobs pending or in progress" error message.
 
-
 Cheers! 🍺
