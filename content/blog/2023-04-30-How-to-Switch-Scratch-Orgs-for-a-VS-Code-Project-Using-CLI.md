@@ -2,7 +2,7 @@
 title: How to Switch Scratch Orgs for a VS Code Project Using CLI
 date: 2023-04-30T01:25:00-04:00
 author: Yoonsoo Park
-description: "Switch Scratch Orgs for a VS Code Project Using CLI"
+description: "How to Switch Scratch Orgs for a VS Code Project Using CLI"
 categories:
   - Programming
   - SalesForce
