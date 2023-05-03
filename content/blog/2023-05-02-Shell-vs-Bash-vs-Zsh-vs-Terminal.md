@@ -10,6 +10,7 @@ tags:
   - Shell
 ---
 
+
 Are you confused by the terms "shell," "Bash," "Zsh," and "terminal"? Don't worry, you're not alone! These terms are often used interchangeably, leading to much confusion among developers. In this article, we'll take a humorous look at these terms and try to clear up some of the confusion.
 
 ## What is a Shell?
