@@ -1,10 +1,9 @@
 ---
-title: How to Get Access Token with SFDX CLI
+title: Get Access Token from Salesforce
 date: 2023-05-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "Get Access Token with SFDX CLI"
 categories:
-  - Programming
   - Salesforce
 tags:
   - sfdx
