@@ -1,5 +1,5 @@
 ---
-title: How to Resolve a Conflict with Other Devs at Work
+title: Resolve a Conflict with Other Devs at Work
 date: 2023-04-26T01:25:00-04:00
 author: Yoonsoo Park
 description: ""
