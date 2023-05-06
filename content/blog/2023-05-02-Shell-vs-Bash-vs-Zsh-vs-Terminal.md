@@ -4,7 +4,6 @@ date: 2023-05-02T01:25:00-04:00
 author: Yoonsoo Park
 description: "Shell vs Bash vs Zsh vs Terminal"
 categories:
-  - Programming
   - Command Line Interface
 tags:
   - Shell

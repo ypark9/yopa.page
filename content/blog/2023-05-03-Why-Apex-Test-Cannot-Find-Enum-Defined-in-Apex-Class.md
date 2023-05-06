@@ -4,7 +4,6 @@ date: 2023-05-03T01:25:00-04:00
 author: Yoonsoo Park
 description: "The reason why Apex Test Cannot Find Enum Defined in Apex Class"
 categories:
-  - Programming
   - Salesforce
 tags:
   - Test

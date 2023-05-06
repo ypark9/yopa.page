@@ -4,7 +4,6 @@ date: 2023-05-04T01:25:00-04:00
 author: Yoonsoo Park
 description: "A Record with Self-Referencing in Salesforce"
 categories:
-  - Programming
   - Salesforce
 tags:
   - Self-Referencing
