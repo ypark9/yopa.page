@@ -41,4 +41,4 @@ const apiKey = process.env.API_KEY;
 
 Note that you need to call `dotenv.config()` to load the variables from the `.env` file into `process.env`. You can call this function at the beginning of your application or whenever you need to load new variables.
 
-Happy Frisay, cheers! 🍺
+Happy Friday, cheers! 🍺
