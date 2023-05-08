@@ -1,6 +1,6 @@
 ---
 title: Running Apex CLS File on CLI
-date: 2023-05-06T01:25:00-04:00
+date: 2023-05-07T01:25:00-04:00
 author: Yoonsoo Park
 description: "Running Apex CLS File on CLI"
 categories:
