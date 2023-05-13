@@ -12,7 +12,7 @@ tags:
 `Spead Operator` provides an elegant syntax for copying or combining elements from existing arrays or objects into new ones.
 
 ## Array Manipulation
-## Copying an Array
+### Copying an Array
 One of the most common use cases of the spread operator is to create a shallow copy of an array. Let's consider an example:
 
 ```ts
@@ -22,7 +22,7 @@ const copiedArray = [...originalArray];
 
 In this code snippet, the spread operator `...` is used to spread the elements of the `originalArray` into a new array `copiedArray`. This ensures that modifying the `copiedArray` does not affect the `originalArray`, as they are separate instances.
 
-## Concatenating Arrays
+### Concatenating Arrays
 The spread operator can also be used to concatenate arrays effortlessly. Suppose we have two `arrays`, `array1` and array2, and we want to combine them into a new array `combinedArray`. We can achieve this using the spread operator:
 
 ```ts
@@ -33,7 +33,7 @@ const combinedArray = [...array1, ...array2];
 
 The resulting `combinedArray` will contain all the elements from `array1` followed by all the elements from `array2`. This approach is much cleaner and more readable than using traditional methods like `Array.concat()`.
 
-## Adding or Removing Elements
+### Adding or Removing Elements
 Using the spread operator, we can easily add or remove elements from an array. Consider the following example:
 
 ```ts
@@ -44,7 +44,7 @@ const newArray = [...originalArray, 4, 5];
 In this case, the spread operator is used to spread the elements of the `originalArray` and append additional elements `4` and `5` to create a new array `newArray`. Similarly, you can remove elements by excluding them using the spread operator.
 
 ## Object Manipulation
-## Copying an Object
+### Copying an Object
 Just like with arrays, the spread operator can be used to create a shallow copy of an object. Let's see an example:
 
 ```ts
@@ -54,7 +54,7 @@ const copiedObject = { ...originalObject };
 
 In this case, the spread operator is used to spread the properties of the `originalObject` into a new object `copiedObject`. This ensures that modifying the `copiedObject` does not affect the `originalObject`.
 
-## Merging Objects
+### Merging Objects
 The spread operator can also be used to merge multiple objects into a new object. Suppose we have two objects, `object1` and `object2`, and we want to merge them into a new object `mergedObject`. We can achieve this using the spread operator:
 
 ```ts
@@ -65,7 +65,7 @@ const mergedObject = { ...object1, ...object2 };
 
 The resulting `mergedObject` will contain all the properties from `object1` and `object2`. If there are overlapping properties, the value from `object2` will overwrite the value from `object1`.
 
-## Modifying Object Properties
+### Modifying Object Properties
 The spread operator can also be used to modify specific properties of an object while keeping the rest intact. Consider the following example:
 
 ```ts
@@ -77,7 +77,7 @@ In the example above, the spread operator is used to spread the properties of th
 
 By using the spread operator in this way, you can easily modify specific properties of an object without mutating the original object itself. It provides a clean and concise syntax for object manipulation.
 
-## Rest Parameters
+### Rest Parameters
 In addition to array and object manipulation, the spread operator can also be used with function parameters to handle variable-length arguments. This is often referred to as "rest parameters" in TypeScript.
 
 ```ts
