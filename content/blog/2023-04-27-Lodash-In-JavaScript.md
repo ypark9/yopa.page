@@ -4,7 +4,6 @@ date: 2023-04-27T01:25:00-04:00
 author: Yoonsoo Park
 description: "Lodash is a powerful utility library"
 categories:
-  - Programming
   - JavaScript
 tags:
   - Lodash

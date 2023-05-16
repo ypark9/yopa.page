@@ -4,7 +4,6 @@ date: 2023-04-25T01:25:00-04:00
 author: Yoonsoo Park
 description: "How to check SObject Exists in a Salesforce Scratch Org"
 categories:
-  - Programming
   - Salesforce
 tags:
   - SObject

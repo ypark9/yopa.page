@@ -4,8 +4,7 @@ date: 2023-04-28T01:25:00-04:00
 author: Yoonsoo Park
 description: "How to Fix This Schedulable Class Has Jobs Pending or In Progress Error"
 categories:
-  - Programming
-  - salesforce
+  - Salesforce
 tags:
   - Push code error
 ---
@@ -13,6 +12,7 @@ tags:
 When working with Salesforce, you may encounter an error message that says "This schedulable class has jobs pending or in progress" when trying to push code to a Scratch Org. This error message can be frustrating and may cause delays in your development process.
 
 ## The Solution
+
 To prevent the "This schedulable class has jobs pending or in progress" error message from occurring, you need to navigate to your Deployment Settings and enable the "Allow deployments of components when corresponding Apex jobs are pending or in progress" option.
 
 Here are the steps you can follow:

@@ -4,7 +4,6 @@ date: 2023-04-24T01:25:00-04:00
 author: Yoonsoo Park
 description: "NO MORE ../../../../../../../../hate/my/life"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Imports

@@ -4,7 +4,6 @@ date: 2023-04-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "You know there are imposters in your team, but you don't know who they are."
 categories:
-  - Programming
   - Imposter
 tags:
   - Imposter vs Imposter Syndrome
