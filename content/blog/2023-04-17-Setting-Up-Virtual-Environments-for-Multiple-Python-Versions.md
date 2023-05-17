@@ -4,7 +4,6 @@ date: 2023-04-17T01:25:00-04:00
 author: Yoonsoo Park
 description: "Setting Up Virtual Environments for Multiple Python Versions"
 categories:
-  - Programming
   - Python
 tags:
   - Multiple Python Versions

@@ -4,7 +4,6 @@ date: 2023-04-13T01:25:00-04:00
 author: Yoonsoo Park
 description: "Manage Node.js Versions"
 categories:
-  - Programming
   - Node.js
 tags:
   - Version Manager

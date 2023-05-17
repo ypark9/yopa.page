@@ -4,7 +4,6 @@ date: 2023-04-21T01:25:00-04:00
 author: Yoonsoo Park
 description: "sfdx force:source:push vs sfdx force:source:deploy"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Promise

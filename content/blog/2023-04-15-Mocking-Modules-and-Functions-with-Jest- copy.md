@@ -4,7 +4,6 @@ date: 2023-04-15T01:25:00-04:00
 author: Yoonsoo Park
 description: "Mocking Modules and Functions"
 categories:
-  - Programming
   - Jest
 tags:
   - Mock modules and functions

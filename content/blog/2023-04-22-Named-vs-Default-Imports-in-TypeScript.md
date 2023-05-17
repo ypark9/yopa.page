@@ -4,7 +4,6 @@ date: 2023-04-22T01:25:00-04:00
 author: Yoonsoo Park
 description: "Named vs. Default Imports in TypeScript"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Named vs. Default Imports

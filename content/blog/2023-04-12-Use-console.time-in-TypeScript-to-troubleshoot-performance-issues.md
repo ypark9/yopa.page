@@ -4,7 +4,6 @@ date: 2023-04-12T01:25:00-04:00
 author: Yoonsoo Park
 description: "Use console.time in TypeScript"
 categories:
-  - Programming
   - TypeScript
 tags:
   - console.time

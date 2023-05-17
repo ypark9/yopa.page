@@ -4,8 +4,7 @@ date: 2023-04-18T01:25:00-04:00
 author: Yoonsoo Park
 description: "The Immature Abstraction Problem"
 categories:
-  - Programming
-  - Object-Oriented Programming
+  - OOP
 tags:
   - Abstraction
 ---

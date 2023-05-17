@@ -4,7 +4,6 @@ date: 2023-04-14T01:25:00-04:00
 author: Yoonsoo Park
 description: "Jest Mock Functionality"
 categories:
-  - Programming
   - Jest
 tags:
   - Mock

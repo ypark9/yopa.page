@@ -4,7 +4,6 @@ date: 2023-04-11T01:25:00-04:00
 author: Yoonsoo Park
 description: "TypeScript's Pick and Omit"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Pick and Omit

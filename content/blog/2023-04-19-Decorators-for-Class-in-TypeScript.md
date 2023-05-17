@@ -4,7 +4,6 @@ date: 2023-04-19T01:25:00-04:00
 author: Yoonsoo Park
 description: "Decorators for Class in TypeScript"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Decorators

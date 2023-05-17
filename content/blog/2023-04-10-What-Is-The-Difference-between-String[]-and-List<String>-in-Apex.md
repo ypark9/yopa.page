@@ -4,7 +4,6 @@ date: 2023-04-10T01:25:00-04:00
 author: Yoonsoo Park
 description: "Let's find out the real difference between String[] and List<String> in Apex"
 categories:
-  - Programming
   - Apex
 tags:
   - List vs Array 

@@ -4,7 +4,6 @@ date: 2023-04-16T01:25:00-04:00
 author: Yoonsoo Park
 description: "Iterator vs Iterable in TypeScript"
 categories:
-  - Programming
   - TypeScript
 tags:
   - Iterator vs Iterable
