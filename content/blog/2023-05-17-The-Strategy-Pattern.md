@@ -4,7 +4,7 @@ date: 2023-05-17T01:25:00-04:00
 author: Yoonsoo Park
 description: "The Strategy Pattern - design pattern"
 categories:
-  - Design Pattern
+  - Design_Pattern
 tags:
   - The Strategy Pattern
 ---
