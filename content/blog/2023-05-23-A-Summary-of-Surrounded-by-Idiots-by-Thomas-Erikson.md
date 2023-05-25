@@ -11,7 +11,7 @@ tags:
 
 Alright, listen up aspiring code nerds! (in a good way ;) If you want to rock the software engineering realm, there's a crucial superpower you gotta wield: communication skills! Even if you couldn't care less about the crazy lives of your fellow humanoids, you simply can't dodge the inevitable communication or chit-chat. So, brace yourselves, folks! Embrace the unavoidable art of conversation like a true champ, or prepare to be stuck in an eternal bug-fixing abyss.
 
-# Understanding and Applying the Four Main Communication Styles: Red, Yellow, Green, and Blue
+## Understanding and Applying the Four Main Communication Styles: Red, Yellow, Green, and Blue
 
 In the international bestseller "Surrounded by Idiots," Thomas Erikson provides a unique perspective on understanding and dealing with different communication styles. Grounded in the DISC behavioral assessment tool, Erikson assigns colors to these styles: Red, Yellow, Green, and Blue. This system allows for a more effective approach to interpersonal communication.
 
