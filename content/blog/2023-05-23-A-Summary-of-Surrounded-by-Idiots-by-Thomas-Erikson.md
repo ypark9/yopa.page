@@ -4,7 +4,7 @@ date: 2023-05-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "the four primary communication styles outlined by Thomas Erikson in his book, Surrounded by Idiots."
 categories:
-  - Communication Skills
+  - Book summary
 tags:
   - Surrounded by Idiots
 ---
