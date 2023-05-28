@@ -1,6 +1,6 @@
 ---
 title: AWS SSO with TypeScript
-date: 2023-05-24T01:25:00-04:00
+date: 2023-05-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "AWS SSO"
 categories:

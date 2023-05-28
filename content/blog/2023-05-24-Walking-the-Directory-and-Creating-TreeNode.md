@@ -1,6 +1,6 @@
 ---
 title: Walking the Directory and Creating a TreeNode
-date: 2023-05-22T01:25:00-04:00
+date: 2023-05-24T01:25:00-04:00
 author: Yoonsoo Park
 description: "Walking the Directory and Creating a TreeNode in Node.js"
 categories:

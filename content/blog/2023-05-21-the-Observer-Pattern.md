@@ -1,6 +1,6 @@
 ---
 title: The Observer Pattern
-date: 2023-05-19T01:25:00-04:00
+date: 2023-05-21T01:25:00-04:00
 author: Yoonsoo Park
 description: "The Observer Pattern - design pattern"
 categories:
