@@ -9,8 +9,6 @@ tags:
   - intern
 ---
 
-![intern](https://unsplash.com/photos/wLvyqqwXXpQ)
-
 As a seasoned professional, it is important to understand the significance of guiding interns effectively within your team. Internships provide valuable learning opportunities, and by offering guidance, you can help shape their professional growth. In this article, we will explore some insightful advice inspired by famous books that can serve as a guiding light in mentoring interns.
 
 ## 1. **"The Alchemist" by Paulo Coelho: Unleash their Potential**
