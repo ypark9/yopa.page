@@ -9,7 +9,7 @@ tags:
   - intern
 ---
 
-![intern](https://images.unsplash.com/photo-1546434954-9c4c27e1f6de)
+![intern](https://unsplash.com/photos/wLvyqqwXXpQ)
 
 As a seasoned professional, it is important to understand the significance of guiding interns effectively within your team. Internships provide valuable learning opportunities, and by offering guidance, you can help shape their professional growth. In this article, we will explore some insightful advice inspired by famous books that can serve as a guiding light in mentoring interns.
 
