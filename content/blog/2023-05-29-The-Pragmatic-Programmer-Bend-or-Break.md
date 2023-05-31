@@ -1,6 +1,6 @@
 ---
 title: The Pragmatic Programmer; Bend or Break
-date: 2023-05-28T01:25:00-04:00
+date: 2023-05-29T01:25:00-04:00
 author: Yoonsoo Park
 description: "Pragmatic Programming section 5"
 categories:
