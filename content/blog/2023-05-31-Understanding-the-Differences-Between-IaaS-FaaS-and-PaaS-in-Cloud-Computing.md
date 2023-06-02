@@ -37,9 +37,4 @@ Understanding the differences between these models is crucial for selecting the 
 
 Remember, when choosing a cloud provider, consider factors such as pricing, scalability, availability, and integration options to ensure the best fit for your specific needs.
 
-*[IaaS]: Infrastructure as a Service
-*[FaaS]: Function as a Service
-*[PaaS]: Platform as a Service
-*[AWS]: Amazon Web Services
-
 Cheers! 🍺
