@@ -14,7 +14,7 @@ Access tokens are unique strings of characters that authenticate a user's identi
 ## Steps to Get Access Token
 1. Authorize an org: To use SFDX CLI to get an access token, you first need to authorize an org. Use the following command to authorize an org:
 
-```shell
+```bash
 sfdx force:auth:web:login -a <org_alias>
 ```
 
@@ -22,7 +22,7 @@ This command will open a web browser window, where you will be prompted to log i
 
 2. Get Access Token: To get an access token for the authorized org, use the following command:
 
-```sh
+```bash
 sfdx force:org:display -u <org_alias> --verbose | grep "Access Token" | awk '{print $NF}'
 ```
 

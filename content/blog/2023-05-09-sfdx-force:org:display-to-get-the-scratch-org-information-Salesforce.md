@@ -21,7 +21,7 @@ Before proceeding, make sure that you have the following:
 ## Retrieving Scratch Org Information
 To retrieve information about a Scratch Org, open a terminal or command prompt and navigate to the root directory of your Salesforce DX project. Then, run the following command:
 
-```sh
+```bash
 sfdx force:org:display --json
 ```
 This will output a JSON object containing information about the Scratch Org and the output looks something like this:

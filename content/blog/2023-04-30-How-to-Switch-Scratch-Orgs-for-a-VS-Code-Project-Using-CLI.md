@@ -10,14 +10,14 @@ tags:
 ---
 
 1. Authorize your new Scratch Org with the CLI by running the following command:
-```sh
+```bash
 sfdx force:auth:web:login -r https://test.salesforce.com -a <alias>
 ```
 
 Replace <alias> with the alias for your new Scratch Org. This will create an OAuth authorization for your new Scratch Org and set it as the default org for the CLI.
 
 2. Update your project's configuration file to use the new Scratch Org by running the following command:
-```sh
+```bash
 sfdx force:config:set defaultusername=<alias>
 ```
 
