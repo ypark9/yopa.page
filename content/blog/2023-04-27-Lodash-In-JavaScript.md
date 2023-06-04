@@ -21,7 +21,7 @@ import _ from "lodash";
 
 One of the main benefits of Lodash is that it can help you write cleaner, more concise code. Let's take a look at a quick example.
 
-```js
+```javascript
 // Without Lodash
 const numbers = [1, 2, 3, 4, 5];
 let sum = 0;
@@ -43,7 +43,7 @@ But that's just the tip of the iceberg when it comes to Lodash. Here are some ot
 
 map creates a new array with the results of calling a provided function on every element in the original array.
 
-```js
+```javascript
 const numbers = [1, 2, 3, 4, 5];
 const doubledNumbers = _.map(numbers, (num) => num * 2);
 console.log(doubledNumbers); // Output: [2, 4, 6, 8, 10]
@@ -57,7 +57,7 @@ console.log(nameLengths); // Output: [5, 3, 7]
 
 filter creates a new array with all elements that pass the test implemented by the provided function.
 
-```js
+```javascript
 const numbers = [1, 2, 3, 4, 5];
 const evenNumbers = _.filter(numbers, (num) => num % 2 === 0);
 console.log(evenNumbers); // Output: [2, 4]
@@ -71,7 +71,7 @@ console.log(longNames); // Output: ["Charlie"]
 
 find returns the first element in an array that satisfies a provided testing function.
 
-```js
+```javascript
 const numbers = [1, 2, 3, 4, 5];
 const firstEvenNumber = _.find(numbers, (num) => num % 2 === 0);
 console.log(firstEvenNumber); // Output: 2
@@ -85,7 +85,7 @@ console.log(longName); // Output: "Charlie"
 
 orderBy sorts an array by one or more properties.
 
-```js
+```javascript
 const users = [
   { name: "Alice", age: 30 },
   { name: "Bob", age: 25 },

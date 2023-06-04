@@ -33,7 +33,7 @@ import { someModule } from "@customAlias/module";
 To use Path Mapping in TypeScript, you need to add a "paths" property in your `tsconfig.json` file.
 Here's an example:
 
-```ts
+```typescript
 {
   "compilerOptions": {
     "baseUrl": "./src",
@@ -49,7 +49,7 @@ In this example, we've added two Path Mapping aliases: "@customAlias" and "@anot
 
 Once you've set up your Path Mapping aliases, you can use them in your import statements like this:
 
-```ts
+```typescript
 import { someModule } from "@customAlias/module";
 import { anotherModule } from "@anotherAlias/module";
 ```
