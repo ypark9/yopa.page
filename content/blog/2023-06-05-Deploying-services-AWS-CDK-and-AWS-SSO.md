@@ -1,6 +1,6 @@
 ---
 title: Deploying Services with AWS CDK and AWS SSO
-date: 2032-06-05T01:25:00-04:00
+date: 2023-06-05T01:25:00-04:00
 author: Yoonsoo Park
 description: "AWS CDK and AWS SSO"
 categories:
