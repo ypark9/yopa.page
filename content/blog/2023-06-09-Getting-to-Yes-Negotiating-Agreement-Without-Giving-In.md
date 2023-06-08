@@ -2,7 +2,7 @@
 title: Getting to Yes - Negotiating Agreement Without Giving In by Roger Fisher
 date: 2023-06-09T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Getting to Yes - Negotiating Agreement Without Giving In"
 categories:
   - Book Summary
 tags:
