@@ -29,7 +29,6 @@ Although I was unable to find explicit real-world examples of these principles i
 
 These principles can serve as a guide for software engineers and project managers, helping to transform negotiations from battles into collaborative problem-solving sessions, fostering better relationships, and leading to more efficient and satisfactory outcomes. 
 
-
 > "Never argue with stupid people. They will drag you down to their level and then beat you with experience." - Mark Twain
 
 
