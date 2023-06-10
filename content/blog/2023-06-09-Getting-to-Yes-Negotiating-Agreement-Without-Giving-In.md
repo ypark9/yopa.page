@@ -11,7 +11,7 @@ tags:
 
 ## A Key Resource for Persuasive Negotiation in Software Engineering
 
-"Getting to Yes: Negotiating Agreement Without Giving In" by Roger Fisher, William Ury, and Bruce Patton is a seminal text that offers a roadmap for negotiating mutually beneficial agreements in any situation【11†source】【12†source】. Its principles are particularly beneficial when trying to persuade others in the software engineering world, especially in discussions around project scope, resources, and timelines.
+"Getting to Yes: Negotiating Agreement Without Giving In" by Roger Fisher, William Ury, and Bruce Patton is a seminal text that offers a roadmap for negotiating mutually beneficial agreements in any situation. Its principles are particularly beneficial when trying to persuade others in the software engineering world, especially in discussions around project scope, resources, and timelines.
 
 ### Four Principles of Effective Negotiation
 
