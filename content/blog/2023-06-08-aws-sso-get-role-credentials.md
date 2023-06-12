@@ -20,7 +20,7 @@ The `get-role-credentials` operation provides short-term credentials for an IAM 
 Here is the command syntax:
 
 ```bash
-aws sso get-role-credentials --profile my-sso-profile --role-name SSOReadOnly --account-id 123456789012
+aws sso get-role-credentials --role-name your_role_name --account-id your_account_id --access-token your_access_token
 ```
 
 This will return something similar to:
