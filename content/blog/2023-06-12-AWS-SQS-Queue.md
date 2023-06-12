@@ -32,7 +32,8 @@ SQS leverages AWS's robust security measures. It supports encryption to keep you
 With SQS, you pay only for what you use. There's no upfront cost, and you don't have to maintain any messaging software or hardware.
 
 <details>
-  <summary>Some key features and aspects of SQS</summary>
+  <summary>**Some key features and aspects of SQS**</summary>
+
   1. **Types of Queues**: SQS offers two types of message queues. Standard queues offer maximum throughput, best-effort ordering, and at-least-once delivery. On the other hand, FIFO (First-In-First-Out) queues are designed to ensure that the order of messages is strictly preserved and a message is delivered once and remains available until a consumer processes and deletes it.
 
   2. **Message Retention**: SQS retains messages for a certain period until a consumer deletes them. The message retention period can be from 1 minute to 14 days. The default retention period is 4 days.
