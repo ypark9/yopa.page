@@ -110,8 +110,57 @@ This will send a SigV4 signed request to your API Gateway. Remember to replace t
 
 Please note that this is a basic example and you may need to adjust it according to your needs. For example, if you are sending a POST request, you would need to include the body in the request and sign it as well.
 
----
+<details>
+<summary>POST example</summary>
 
-I hope this article helps you understand how to invoke an AWS API Gateway using SigV4 in TypeScript. Happy coding!
+Here's how you can modify the previous example to send a POST request with a body:
+
+```typescript
+import * as AWS from 'aws-sdk';
+import * as aws4 from 'aws4';
+import * as https from 'https';
+
+AWS.config.update({
+  region: 'us-east-1', // replace with your desired region
+  accessKeyId: 'YOUR_ACCESS_KEY', // replace with your access key
+  secretAccessKey: 'YOUR_SECRET_KEY' // replace with your secret key
+});
+
+let body = {
+  key1: 'value1',
+  key2: 'value2'
+};
+
+let request: aws4.Request = {
+  host: 'API_ID.execute-api.REGION.amazonaws.com', // replace with your API Gateway URL
+  method: 'POST', // replace with your HTTP method
+  path: '/Prod/path', // replace with your API path
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(body)
+};
+
+request = aws4.sign(request);
+
+const req = https.request(request, (res) => {
+  let responseBody = '';
+  res.on('data', (chunk) => responseBody += chunk);
+  res.on('end', () => console.log(responseBody));
+});
+
+req.on('error', (e) => console.error(e));
+
+req.write(request.body);
+req.end();
+```
+
+In this example, we're sending a JSON object as the body of the request. We stringify the object and include it in the `body` property of the request object. We then sign the request with `aws4.sign(request)`. 
+
+When sending the request, we use `req.write(request.body)` to include the body in the request. 
+
+Remember to replace the placeholders with your actual values. The `body` object should be replaced with the actual data you want to send in your POST request.
+
+</details>
 
 Cheers! 🍺
