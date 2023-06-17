@@ -71,8 +71,8 @@ const roleCredentials = {
 
 ## Wrapping Up
 
-This script exemplifies how AWS SSO credentials can be utilized to invoke an API Gateway. The procedure involves sourcing the SSO credentials from the AWS config file and SSO cache, and subsequently employing these credentials to acquire the necessary role credentials. This method ensures the safeguarding of access management. 
+This script exemplifies how AWS SSO credentials can be utilized to invoke an AWS services. The procedure involves sourcing the SSO credentials from the AWS config file and SSO cache, and subsequently employing these credentials to acquire the necessary role credentials. This method ensures the safeguarding of access management. 
 
-As always, remember to store your sensitive data securely and avoid exposing them publicly.
+As always, ALWAYS, remember to store your sensitive data securely and avoid exposing them publicly.
 
 Cheers! 🍺
