@@ -1,15 +1,15 @@
 ---
-title: AWS API Gateway - Path Parameters
+title: Best Practices for Defining Paths for RESTful APIs
 date: 2023-06-17T01:25:00-04:00
 author: Yoonsoo Park
 description: "Defining Path Parameters"
 categories:
-  - AWS
+  - REST API
 tags:
-  - AWS API Gateway
+  - Paths
 ---
 
-## Best Practices for Defining Paths in AWS API Gateway
+## Best Practices for Defining Paths for RESTful APIs
 
 When creating RESTful APIs, it's important to adhere to the best practices for defining paths. Below are a few guidelines:
 
@@ -50,6 +50,6 @@ Note that we have a version number in the paths, we're using plural and meaningf
 
 ---
 
-In conclusion, AWS API Gateway provides an intuitive and powerful toolset for creating robust APIs. Adhering to these best practices when defining paths will help to create APIs that are not only powerful and scalable, but also user-friendly and easy to maintain. Consistency, intuitive resource names, correct use of path and query parameters, and proper versioning are all essential for a well-structured API.
+Adhering to these best practices when defining paths will help to create APIs that are not only powerful and scalable, but also user-friendly and easy to maintain. Consistency, intuitive resource names, correct use of path and query parameters, and proper versioning are all essential for a well-structured API.
 
 Cheers! 🍺
