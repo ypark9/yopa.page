@@ -1,55 +1,99 @@
 ---
-title: Checking Object Type in TypeScript
-date: 2023-07-05T01:25:00-04:00
+title: Mastering Git Stash: A Guide to Saving and Restoring Your Code Changes
+date: 2023-07-31T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Learn how to effectively use git stash to save and restore your code changes, enabling smoother workflows."
 categories:
-  - TypeScript
+    - Software Development
+    - Git
 tags:
-  - Object
+    - Git
+    - Version Control
+    - Workflow
 ---
 
-When working with TypeScript, it's often necessary to determine the type of a variable. In particular, you might need to check whether a variable is of object type. Fortunately, TypeScript provides a straightforward way to perform this type check.
+## Introduction
 
-## The `typeof` Operator
+`git stash` is one of those Git commands that can be an absolute lifesaver when you're in the middle of a coding session. Imagine you're working on a new feature and suddenly need to switch context—perhaps to a different branch to work on a hotfix. You don't want to commit half-baked code, but you need to save your changes somewhere. Enter `git stash`.
 
-In TypeScript, you can use the `typeof` operator to check the type of a variable. To determine if a variable is of object type, combine `typeof` with the `object` keyword.
+In this article, we'll explore various ways to use `git stash` to your advantage, helping you to save, manage, and restore your code changes effectively.
 
-Here's an example:
+## Basic Stashing
 
-```typescript
-const variable: any = {}; // Your variable
+### Saving Changes
 
-if (typeof variable === 'object' && variable !== null) {
-  console.log('The variable is an object.');
-} else {
-  console.log('The variable is not an object.');
-}
+The basic form of the `git stash` command is straightforward. Simply run:
+
+```bash
+git stash
 ```
 
-In this code snippet, the `typeof variable === 'object'` condition checks whether the type of `variable` is an object. Additionally, `variable !== null` ensures that `null` is not considered an object.
+This command takes your modified tracked files and stages them along with any new files you've indicated with `git add`, and stashes them away for later use.
 
-## Specifying a Specific Object Type
+### Listing Stashes
 
-If you're looking to check for a specific object type, you can replace the `any` type in the variable declaration with the desired type.
+You can view all your stashes using:
 
-Here's an example:
-
-```typescript
-const variable: SomeObjectType = {}; // Your variable of type SomeObjectType
-
-if (typeof variable === 'object' && variable !== null) {
-  console.log('The variable is an object of type SomeObjectType.');
-} else {
-  console.log('The variable is not an object of type SomeObjectType.');
-}
+```bash
+git stash list
 ```
 
-Replace `SomeObjectType` with the actual type you're expecting for your variable.
+This command will show you a list of all the stashes that you've created, making it easier to manage them.
+
+## Advanced Stashing Techniques
+
+### Applying the Latest Stash
+
+You can apply the changes from the most recent stash using:
+
+```bash
+git stash apply
+```
+
+This command will keep the stash, allowing you to apply the same changes to multiple branches.
+
+### Popping the Latest Stash
+
+Alternatively, you can use:
+
+```bash
+git stash pop
+```
+
+This will apply the stashed changes and remove them from your stash list.
+
+### Dropping a Stash
+
+If you want to discard a stash, you can use:
+
+```bash
+git stash drop stash@{0}
+```
+
+This command will remove the specified stash from your stash list.
+
+### Applying a Specific Stash
+
+If you've created multiple stashes, you can specify which stash to apply:
+
+```bash
+git stash apply stash@{1}
+```
+
+Or, if you wish to apply and remove it from the stash list:
+
+```bash
+git stash pop stash@{1}
+```
+
+## Handling Conflicts
+
+Just like with merges or rebases, conflicts can occur when you apply or pop a stash. You'll have to resolve these conflicts manually before you can continue your work.
 
 ## Conclusion
 
-Checking the object type in TypeScript is essential when you want to ensure the correctness of your code. By using the `typeof` operator in combination with the `object` keyword, you can easily determine whether a variable is an object. If you're looking for a specific object type, replace the `any` type with the desired type in the variable declaration.
+The `git stash` command is a powerful tool for managing changes in your Git repository. It enables you to switch between different tasks seamlessly, without losing your progress on any of them. Whether you're a Git novice or a seasoned user, understanding how to effectively use `git stash` can significantly streamline your development workflow.
 
+So the next time you find yourself needing to switch tasks but don't want to lose your changes, remember: just stash it!
 
 Cheers! 🍺
