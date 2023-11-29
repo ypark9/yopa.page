@@ -71,8 +71,4 @@ ssh -i /path/to/ec2-demo.pem ec2-user@3.8x.6x.1xx
 
 Replace `/path/to/` with the actual path to your `.pem` file.
 
-## Conclusion
-
-Handling file permissions is a critical aspect of maintaining security while working with SSH and cloud services like AWS EC2. By following these simple steps, you can ensure secure and trouble-free connections to your remote servers. Remember, while the process might seem cumbersome, it's a vital practice for protecting sensitive data and infrastructure.
-
 Cheers! 🍺
