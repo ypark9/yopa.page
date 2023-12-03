@@ -84,7 +84,7 @@ DDD, coupled with Domain Storytelling, is not just a method; it's a mindset shif
 #### Further Exploration
 To delve deeper, check out "Domain Storytelling: A Collaborative, Visual, and Agile Way to Build Domain-Driven Software" and visit [domainstorytelling.org](https://domainstorytelling.org/).
 
-Now we know what DDD is about. Let's talk what is Do's and Dont's in DDD. [Do's and Don'ts](https://www.yopa.page/)
+Now we know what DDD is about. Let's talk what is Do's and Dont's in DDD. [Do's and Don'ts](https://www.yopa.page/blog/2023-11-30-mastering-domain-driven-design-best-practices-and-pitfalls.html)
 
 Here's to transforming complex software projects into collaborative and user-focused adventures! 
 cheers! 🍺
