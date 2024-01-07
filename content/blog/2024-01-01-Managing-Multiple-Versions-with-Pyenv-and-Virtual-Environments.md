@@ -1,8 +1,8 @@
 ---
-title: Setting Up Virtual Environments for Multiple Python Versions
-date: 2024-01-02
+title: Managing Multiple Versions with Pyenv and Virtual Environments
+date: 2024-01-01
 author: Yoonsoo Park
-description: "Learn how to manage multiple Python versions on macOS using Homebrew and pyenv, and how to set up and utilize virtual environments for each version."
+description: "Dive into the essentials of Python development by learning how to manage multiple Python versions with Pyenv and create isolated project environments using virtual environments."
 categories:
   - Python
 tags:
@@ -12,7 +12,7 @@ tags:
   - Virtual Environments
 ---
 
-## Setting Up Virtual Environments for Multiple Python Versions
+## Managing Multiple Versions with Pyenv and Virtual Environments
 
 When working on multiple projects with different Python versions, it's crucial to avoid conflicts and ensure that each project uses the correct version and dependencies. This is where virtual environments come in. They are isolated Python environments that let you manage packages and dependencies specific to a project without affecting the global Python installation.
 
