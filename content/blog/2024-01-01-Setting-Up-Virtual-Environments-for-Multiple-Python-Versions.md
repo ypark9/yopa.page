@@ -1,6 +1,6 @@
 ---
 title: Setting Up Virtual Environments for Multiple Python Versions
-date: 2023-04-17T01:25:00-04:00
+date: 2024-01-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "Learn how to manage multiple Python versions on macOS using Homebrew and pyenv, and how to set up and utilize virtual environments for each version."
 categories:
