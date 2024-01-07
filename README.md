@@ -1,5 +1,4 @@
 [![Website][website-shield]][website-url]
-[![Security headers][security-headers-shield]][security-headers-url]
 [![Ko-Fi][kofi-shield]][kofi-url]
 ![Terraform][terraform-shield]
 ![AWS][aws-shield]
