@@ -12,7 +12,7 @@ tags:
   - Virtual Environments
 ---
 
-![python](/images/2024-01-01.png)
+![python](images/2024-01-01.png)
 
 ## Managing Multiple Versions with Pyenv and Virtual Environments
 
