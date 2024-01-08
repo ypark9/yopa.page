@@ -41,11 +41,12 @@ jobs:
         with:
           extended: true
       # Convert to WebP
-      - name: Convert images to WebP
+      - name: Convert PNG and JPG images to WebP
         run: |
-          for image in static/images/*.{png,jpg}; do
+          shopt -s nullglob extglob
+          for image in static/images/*.@(png|jpg); do
             webp_image="${image%.*}.webp"
-            if [ ! -f "$webp_image" ]; then
+            if [[ ! -f "$webp_image" || "$image" -nt "$webp_image" ]]; then
               cwebp -q 75 "$image" -o "$webp_image"
             fi
           done
