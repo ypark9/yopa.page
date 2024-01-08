@@ -20,6 +20,17 @@ optimize: exif webp
 exif:
 	exiftool -all= public/images* -overwrite_original
 
+# compress:
+# 	for i in public/images/*; do \
+# 		mogrify -resize '$(MAX_WIDTH)>' "$$i" ; \
+# 		if [[ "$$i" == *png ]]; then \
+# 			optipng -f4 -clobber -strip all -o $(PNG_LEVEL) -quiet "$$i" ; \
+# 		fi ; \
+# 		if [[ "$$i" == *jp ]]; then \
+# 			jpegoptim --strip-all --size=$(MAX_JPG_SIZE) -quiet "$$i" ; \
+# 		fi ; \
+# 	done
+
 webp:
 	@for image in static/images/*.png static/images/*.jpg; do \
 		if [ -f "$$image" ]; then \
