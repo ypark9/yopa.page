@@ -15,6 +15,7 @@ locals {
     ico = "image/vnd.microsoft.icon"
     jpeg = "image/jpeg"
     jpg = "image/jpeg"
+    webp = "image/webp"
     js = "text/javascript"
     json = "application/json"
     png = "image/png"

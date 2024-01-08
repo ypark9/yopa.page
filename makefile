@@ -6,7 +6,7 @@ PNG_LEVEL    = 4
 SHELL        := /bin/bash
 TERRAFORM    = terraform -chdir="./terraform/env/$(ENV)"
 
-REQUIRED_BINS := hugo terraform aws exiftool jpegoptim optipng mogrify
+REQUIRED_BINS := hugo terraform aws exiftool jpegoptim optipng mogrify cwebp
 $(foreach bin,$(REQUIRED_BINS),\
     $(if $(shell command -v $(bin) 2> /dev/null),,$(error Please install `$(bin)`)))
 
@@ -15,7 +15,7 @@ all: build optimize deploy invalidate
 build:
 	$(HUGO) --gc --minify
 
-optimize: exif compress
+optimize: exif compress webp
 
 exif:
 	exiftool -all= public/images* -overwrite_original
@@ -28,6 +28,14 @@ compress:
 		fi ; \
 		if [[ "$$i" == *jp ]]; then \
 			jpegoptim --strip-all --size=$(MAX_JPG_SIZE) -quiet "$$i" ; \
+		fi ; \
+	done
+
+webp:
+	for image in public/images/*.{png,jpg}; do \
+		webp_image="$${image%.*}.webp" ; \
+		if [[ ! -f "$$webp_image" || "$$image" -nt "$$webp_image" ]]; then \
+			cwebp -q 75 "$$image" -o "$$webp_image" ; \
 		fi ; \
 	done
 
