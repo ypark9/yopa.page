@@ -50,16 +50,6 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_object" "website_files" {
-  for_each      = fileset(local.upload_directory, "**/*.*")
-  bucket        = aws_s3_bucket.bucket.bucket
-  key           = replace(each.value, local.upload_directory, "")
-  source        = "${local.upload_directory}${each.value}"
-  etag          = filemd5("${local.upload_directory}${each.value}")
-  content_type  = lookup(local.mime_types, split(".", each.value)[length(split(".", each.value)) - 1])
-  cache_control = "max-age=604800"
-}
-
 data "aws_iam_policy_document" "document" {
   statement {
     actions = ["s3:GetObject"]
