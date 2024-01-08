@@ -37,16 +37,9 @@ jobs:
             graphicsmagick-imagemagick-compat \
             webp
       # Set up Hugo with fast render
-      # - uses: peaceiris/actions-hugo@v2
-      #   with:
-      #     extended: true
-      #     args: --fastRender
-      # Replace the Hugo setup action with a manual Hugo invocation
-      - name: Set up and run Hugo
-        run: |
-          curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | grep browser_download_url | grep Linux-64bit.deb | cut -d '"' -f 4 | wget -qi -
-          sudo dpkg -i hugo*_Linux-64bit.deb
-          hugo --fastRender
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          extended: true
       # Convert to WebP
       - name: Convert images to WebP
         run: |
