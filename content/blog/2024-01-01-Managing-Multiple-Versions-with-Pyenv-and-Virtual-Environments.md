@@ -12,7 +12,7 @@ tags:
   - Virtual Environments
 ---
 
-![python](images/2024-01-01.png)
+![oni working on python](images/oni-python.png)
 
 ## Managing Multiple Versions with Pyenv and Virtual Environments
 
