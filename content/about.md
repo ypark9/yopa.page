@@ -4,7 +4,7 @@ type: page
 date: 2023-03-23T15:30:00-04:00
 ---
 
-![yopa.page Logo](images/hZL49G.png)
+![yopa.page Logo](images/angry-oni.png)
 
 # What is "thats.no.no"?
 
