@@ -20,17 +20,24 @@ optimize: exif webp
 exif:
 	exiftool -all= public/images* -overwrite_original
 
-webp:
-	for image in static/images/*.png; do \
-		webp_image="$${image%.*}.webp"; \
-		if [[ ! -f "$$webp_image" || "$$image" -nt "$$webp_image" ]]; then \
-			cwebp -q 75 "$$image" -o "$$webp_image"; \
-		fi; \
+compress:
+	for i in public/images/*; do \
+		mogrify -resize '$(MAX_WIDTH)>' "$$i" ; \
+		if [[ "$$i" == *png ]]; then \
+			optipng -f4 -clobber -strip all -o $(PNG_LEVEL) -quiet "$$i" ; \
+		fi ; \
+		if [[ "$$i" == *jp ]]; then \
+			jpegoptim --strip-all --size=$(MAX_JPG_SIZE) -quiet "$$i" ; \
+		fi ; \
 	done
-	for image in static/images/*.jpg; do \
-		webp_image="$${image%.*}.webp"; \
-		if [[ ! -f "$$webp_image" || "$$image" -nt "$$webp_image" ]]; then \
-			cwebp -q 75 "$$image" -o "$$webp_image"; \
+
+webp:
+	@for image in static/images/*.png static/images/*.jpg; do \
+		if [ -f "$$image" ]; then \
+			webp_image="$${image%.*}.webp"; \
+			if [[ ! -f "$$webp_image" || "$$image" -nt "$$webp_image" ]]; then \
+				cwebp -q 75 "$$image" -o "$$webp_image"; \
+			fi; \
 		fi; \
 	done
 
