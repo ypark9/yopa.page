@@ -50,15 +50,8 @@ jobs:
         with:
           extended: true
           args: --fastRender
-      # Deploy global infrastructure
+      # Deploy website
       - name: Deploy global infrastructure
-        # if: steps.check_changes.outputs.has_changes == 'true'
         run: ENV=global make deploy
-      # Deploy website infrastructure with Terraform
-      - name: Deploy website infrastructure
-        # if: steps.check_changes.outputs.has_changes == 'true'
-        run: ENV=prod make deploy
-      # Sync website files to S3
-      - name: Sync website files to S3
-        # if: steps.check_changes.outputs.has_changes == 'true'
-        run: aws s3 sync ./public s3://yopa.page --delete
+      - name: Deploy website
+        run: ENV=prod make all
