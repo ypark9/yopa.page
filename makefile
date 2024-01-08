@@ -32,11 +32,12 @@ compress:
 	done
 
 webp:
-	for image in public/images/*.{png,jpg}; do \
-		webp_image="$${image%.*}.webp" ; \
-		if [[ ! -f "$$webp_image" || "$$image" -nt "$$webp_image" ]]; then \
-			cwebp -q 75 "$$image" -o "$$webp_image" ; \
-		fi ; \
+	shopt -s nullglob extglob
+	for image in static/images/*.@(png|jpg); do
+		webp_image="${image%.*}.webp"
+		if [[ ! -f "$webp_image" || "$image" -nt "$webp_image" ]]; then
+			cwebp -q 75 "$image" -o "$webp_image"
+		fi
 	done
 
 serve:
