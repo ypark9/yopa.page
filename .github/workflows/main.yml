@@ -9,10 +9,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # Shallow clone with only the last 1 commit
       - uses: actions/checkout@v2
         with:
           submodules: true
           token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 1
+      # - uses: actions/checkout@v2
+      #   with:
+      #     submodules: true
+      #     token: ${{ secrets.GH_TOKEN }}
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
@@ -21,11 +27,17 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      # Set up Hugo with fast render
-      - uses: peaceiris/actions-hugo@v2
+      # Cache dependencies
+      - name: Cache dependencies
+        uses: actions/cache@v2
         with:
-          extended: true
-          args: --fastRender
+          path: |
+            /var/cache/apt
+            /var/lib/apt
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/main.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+      # Install dependencies
       - name: Install dependencies
         run: |
           sudo apt-get update -y && sudo apt install -y \
@@ -33,6 +45,12 @@ jobs:
             jpegoptim \
             optipng \
             graphicsmagick-imagemagick-compat
+      # Set up Hugo with fast render
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          extended: true
+          args: --fastRender
+      # Deploy website
       - name: Deploy global infrastructure
         run: ENV=global make deploy
       - name: Deploy website
