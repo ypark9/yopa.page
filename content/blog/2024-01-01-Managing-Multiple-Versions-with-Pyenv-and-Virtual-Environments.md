@@ -12,6 +12,8 @@ tags:
   - Virtual Environments
 ---
 
+![python](/images/2024-01-01.png)
+
 ## Managing Multiple Versions with Pyenv and Virtual Environments
 
 When working on multiple projects with different Python versions, it's crucial to avoid conflicts and ensure that each project uses the correct version and dependencies. This is where virtual environments come in. They are isolated Python environments that let you manage packages and dependencies specific to a project without affecting the global Python installation.
