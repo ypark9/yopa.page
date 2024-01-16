@@ -72,4 +72,6 @@ The book dives deep into the concept of self-betrayal, an act of going against o
 
 **Example:** Regular open forums in an organization allow for the free expression of concerns, fostering a culture of trust and continuous improvement.
 
+[Leadership & Self-Deception: Getting Out of the Box](https://amzn.to/3Hk0RXh)
+
 Cheers! 🍺
