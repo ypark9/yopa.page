@@ -1,18 +1,18 @@
 ---
-title: Run Java Applications on macOS without Global JRE Installation: A Guide
+title: Run Java Applications on macOS without Global JRE Installation
 date: 2024-01-17
 author: Yoonsoo Park
 description: "Explore ways to run Java applications on macOS without the need for global JRE installation, focusing on Docker, portable JRE, and bundled JRE methods."
 categories:
-    - Java
-    - macOS
-    - Software Development
+  - Java
+  - macOS
+  - Software Development
 tags:
-    - Java
-    - macOS
-    - Docker
-    - JRE
-    - JDK
+  - Java
+  - macOS
+  - Docker
+  - JRE
+  - JDK
 ---
 
 ![oni-docker](images/oni-docker.webp)
