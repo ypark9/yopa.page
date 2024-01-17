@@ -12,7 +12,7 @@ tags:
   - Virtual Environments
 ---
 
-![oni working on python](images/oni-python.webp)
+![oni working on python](images/oni-python-1.webp)
 
 ## Managing Multiple Versions with Pyenv and Virtual Environments
 
