@@ -12,7 +12,7 @@ tags:
   - Leadership Skills
 ---
 
-![oni working on python](images/GettingOutoftheBox.webp)
+![oni-box](images/oni-box.webp)
 
 ## Introduction
 
