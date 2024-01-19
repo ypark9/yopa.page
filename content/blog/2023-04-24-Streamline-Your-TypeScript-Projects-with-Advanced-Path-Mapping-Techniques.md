@@ -1,5 +1,5 @@
 ---
-title: S3xy Imports in TypeScript
+title: Streamline Your TypeScript Projects with Advanced Path Mapping Techniques
 date: 2023-04-24T01:25:00-04:00
 author: Yoonsoo Park
 description: "NO MORE ../../../../../../../../hate/my/life"
