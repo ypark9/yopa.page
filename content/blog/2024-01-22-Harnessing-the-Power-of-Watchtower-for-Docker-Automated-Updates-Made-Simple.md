@@ -1,18 +1,18 @@
 ---
-title: Harnessing the Power of Watchtower for Docker: Automated Updates Made Simple
+title: Harnessing the Power of Watchtower for Docker -- Automated Updates Made Simple
 date: 2024-01-22
 author: Yoonsoo Park
 description: "Explore the benefits of using Watchtower for your Docker containers, understand its advantages, and learn how to utilize cron scheduling for automated updates."
 categories:
-    - Docker
-    - Containerization
-    - DevOps
+  - Docker
+  - Containerization
+  - DevOps
 tags:
-    - Watchtower
-    - Docker
-    - Automation
-    - Cron
-    - Container Management
+  - Watchtower
+  - Docker
+  - Automation
+  - Cron
+  - Container Management
 ---
 
 ![oni-docker](images/oni-docker-1.webp)
