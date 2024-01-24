@@ -102,7 +102,7 @@ menu:
   main:
     - identifier: posts
       name: Posts
-      url: /Posts.html
+      url: /posts.html
       weight: 5
     - identifier: categories
       name: Categories
