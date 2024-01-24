@@ -8,6 +8,8 @@ categories:
   - Principle
 tags:
   - Principle
+ShowToc: true
+TocOpen: true
 ---
 
 > “The advantage of loose coupling is the same in software design as it is in the physical socket and plug model:
