@@ -23,7 +23,6 @@ locals {
     woff = "font/woff"
     woff2 = "font/woff2"
     xml = "text/xml"
-    txt = "text/txt"
   }
   upload_directory = "${path.root}/../../../public/"
   index_page = "index.html"

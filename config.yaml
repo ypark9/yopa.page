@@ -1,132 +1,57 @@
-baseURL: "https://www.yopa.page/"
-title: thats.no.no
-paginate: 5
-theme: PaperMod
-
-# Ensure pretty URLs
-uglyURLs: true
-
-enableRobotsTXT: true
-buildDrafts: false
-buildFuture: false
-buildExpired: false
-
-outputs:
-  home:
-    - HTML
-    - RSS
-    - JSON # necessary for search
-
-minify:
-  disableXML: true
-  minifyOutput: true
+baseurl: "https://www.yopa.page/"
+relativeURLs: true
+languageCode: en-us
+title: thats.nono
+theme: "hugo-tania"
+paginate: 8
+googleAnalytics: G-EQ4B3K8VCL
+uglyurls: true
 
 params:
-  env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: thats.no.no
-  description: "A blog that's gonna put your software engineering skills to the test."
-  keywords: [Blog, programming, AI, software, engineering]
+  titleLogo: images/08WeMC.png
+  images:
+    - images/8yRnin.png
+  enableFootnotes: true
+  siteName: thats.nono
+  siteDesc: A blog that's gonna put your software engineering skills to the test.
   author: Yoonsoo Park
-  # author: ["Me", "You"] # multiple authors
-  images: ["images/8yRnin.png"]
-  DateFormat: "January 2, 2006"
-  defaultTheme: auto # dark, light
-  disableThemeToggle: false
+  maxCategoryToShow: 10
+  socialOptions:
+    email: yoonsoo@duck.com
+    github: https://github.com/ypark9/yopa.page
+    twitter: https://twitter.com/
+    
+# permalinks:
+#   post: :title
 
-  ShowReadingTime: true
-  ShowShareButtons: false
-  ShowPostNavLinks: true
-  ShowBreadCrumbs: true
-  ShowCodeCopyButtons: true
-  ShowWordCount: false
-  ShowRssButtonInSectionTermList: true
-  UseHugoToc: true
-  disableSpecial1stPost: false
-  disableScrollToTop: false
-  comments: false
-  hidemeta: false
-  hideSummary: false
-  showtoc: false
-  tocopen: false
-
-  assets:
-    # disableHLJS: true # to disable highlight.js
-    # disableFingerprinting: true
-    favicon: "<link / abs url>"
-    favicon16x16: "<link / abs url>"
-    favicon32x32: "<link / abs url>"
-    apple_touch_icon: "<link / abs url>"
-    safari_pinned_tab: "<link / abs url>"
-
-  label:
-    text: "thats.no.no"
-    icon: /apple-touch-icon.png
-    iconHeight: 35
-
-  # home-info mode
-  homeInfoParams:
-    Title: "Greetings! \U0001F44B"
-    Content: Welcome to my blog, your guiding beacon through the stormy waters of tech jargon. Here, I share my personal adventures and misadventures, offering wisdom to help you steer clear of the pitfalls. There have been moments when I found myself in rough seas, mentally shouting "that's a no-no!" Thus, the name of this blog was born "thats.nono." Join me as we navigate these choppy waters together.
-
-  socialIcons:
-    - name: x
-      url: "https://x.com/"
-    - name: github
-      url: "https://github.com/ypark9"
-    - name: KoFi
-      title: Buy me a Ko-Fi :)
-      url: "https://ko-fi.com/yoonsoopark"
-
-  cover:
-    hidden: true # hide everywhere but not in structured data
-    hiddenInList: true # hide on list pages and home
-    hiddenInSingle: true # hide on single page
-
-  editPost:
-    URL: "https://github.com/yopa.page/blob/main/content"
-    Text: "Suggest Changes" # edit text
-    appendFilePath: true # to append file path to Edit link
-
-  # for search
-  # https://fusejs.io/api/options.html
-  fuseOpts:
-    isCaseSensitive: false
-    shouldSort: true
-    location: 0
-    distance: 1000
-    threshold: 0.4
-    minMatchCharLength: 0
-    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
-    keys: ["title", "permalink", "summary", "content"]
 menu:
-  main:
-    - identifier: posts
-      name: Posts
-      url: /posts.html
-      weight: 5
-    - identifier: categories
-      name: Categories
-      url: /categories.html
-      weight: 10
-    - identifier: tags
-      name: Tags
-      url: /tags.html
-      weight: 20
-    - name: Search
-      url: search.html
-      weight: 30
+  header:
+    - name: About
+      url: "/about.html"
+    - name: Articles
+      url: "/articles.html"
+  footer:
+    - name: About
+      url: "/about.html"
+    - name: Articles
+      url: "/articles.html"
+    - name: GitHub
+      url: "https://github.com/ypark9/yopa.page"
+    - name: RSS
+      url: "/index.xml"
 
-# Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
-pygmentsUseClasses: true
 markup:
   highlight:
     noClasses: false
-    # anchorLineNos: true
-    # codeFences: true
-    # guessSyntax: true
-    # lineNos: true
-    # style: monokai
+    lineNos: true
+  goldmark:
+    renderer:
+      unsafe: true
 
-services:
-  googleAnalytics:
-    ID: G-EQ4B3K8VCL
+sitemap:
+  changefreq: daily
+  filename: sitemap.xml
+  priority: 0.5
+
+outputs:
+  home: ["HTML", "RSS", "JSON"]
