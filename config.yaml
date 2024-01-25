@@ -20,7 +20,8 @@ params:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/yopa.page
     twitter: https://twitter.com/
-    
+  UseHugoToc: true
+
 # permalinks:
 #   post: :title
 
