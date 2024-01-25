@@ -5,10 +5,9 @@ author: Yoonsoo Park
 description: "It's all about turning things upside down and making your code work for you instead of the other way around."
 categories:
   - Programming
-  - Architecture
+  - Design Pattern
 tags:
   - Inversion of Control (IoC)
-  - Design Pattern
 ---
 
 ## Inversion of Control (IoC)

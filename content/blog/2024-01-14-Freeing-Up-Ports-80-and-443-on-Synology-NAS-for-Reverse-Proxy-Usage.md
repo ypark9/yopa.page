@@ -4,9 +4,8 @@ date: 2024-01-14
 author: Yoonsoo Park
 description: "Learn how to reconfigure Nginx on Synology NAS to free up ports 80 and 443 for reverse proxy usage with a simple Bash script."
 categories:
-  - Technology
-  - Networking
   - Tutorials
+  - Synology
 tags:
   - Synology NAS
   - Nginx

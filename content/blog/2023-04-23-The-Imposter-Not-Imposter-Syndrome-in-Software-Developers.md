@@ -4,9 +4,9 @@ date: 2023-04-23T01:25:00-04:00
 author: Yoonsoo Park
 description: "You know there are imposters in your team, but you don't know who they are."
 categories:
-  - Imposter
+  - Personal Growth
 tags:
-  - Imposter vs Imposter Syndrome
+  - Imposter Syndrome
 ---
 
 While imposter syndrome is a legitimate issue that affects many people, there is another type of imposter in the software development world that doesn't get talked about enough: the actual imposter.

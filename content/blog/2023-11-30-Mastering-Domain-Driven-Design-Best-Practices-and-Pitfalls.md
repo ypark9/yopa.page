@@ -4,7 +4,7 @@ date: 2023-11-30T01:25:00-04:00
 author: Yoonsoo Park
 description: "Learn the do's and don'ts of Domain-Driven Design to enhance your software development projects."
 categories:
-  - Software Development
+  - Design Pattern
 tags:
   - Domain-Driven Design
   - Best Practices

@@ -5,8 +5,10 @@ author: Yoonsoo Park
 description: ""
 categories:
   - GitHub
+  - git
 tags:
-  - Git
+  - git
+  - GitHub
 ---
 
 ## Introduction
@@ -45,6 +47,5 @@ To sum it all up:
 ## Conclusion
 
 In essence, Git and GitHub complement each other: Git as a powerful tool for version control and GitHub as a platform to collaborate and manage Git repositories. While they are often used together, they perform different roles, each significant in its own right.
-
 
 Cheers! 🍺

@@ -5,7 +5,6 @@ author: Yoonsoo Park
 description: "When it comes to coding, there are certain principles that should be followed. One of them is loose coupling."
 categories:
   - Programming
-  - Principle
 tags:
   - Principle
 ---

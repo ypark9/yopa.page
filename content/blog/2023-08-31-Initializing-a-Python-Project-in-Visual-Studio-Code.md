@@ -5,13 +5,13 @@ date: 2023-08-31T01:25:00-04:00
 author: Yoonsoo Park
 description: "This article guides you through the process of initializing a Python project in Visual Studio Code, installing dependencies, and setting up a GitHub repository."
 categories:
-    - Programming
-    - Python
-    - Visual Studio Code
+  - Programming
+  - Python
 tags:
-    - Python
-    - VS Code
-    - GitHub
+  - Python
+  - VS Code
+  - GitHub
+  - Visual Studio Code
 ---
 
 # Initializing a Python Project in Visual Studio Code
@@ -26,22 +26,22 @@ Open Visual Studio Code and create a new folder for your Python project using th
 
 1. Open the terminal in VS Code by navigating to `View` > `Terminal` or pressing `Ctrl+~`.
 2. Run the following command to create a virtual environment. Replace `myenv` with your desired name.
-    ```bash
-    python -m venv myenv
-    ```
+   ```bash
+   python -m venv myenv
+   ```
 
 ## Step 3: Activate the Virtual Environment
 
 Activate your virtual environment by running:
 
--   On Windows:
-    ```bash
-    .\myenv\Scripts\Activate
-    ```
--   On macOS and Linux:
-    ```bash
-    source myenv/bin/activate
-    ```
+- On Windows:
+  ```bash
+  .\myenv\Scripts\Activate
+  ```
+- On macOS and Linux:
+  ```bash
+  source myenv/bin/activate
+  ```
 
 ## Step 4: Install Required Packages
 

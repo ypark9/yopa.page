@@ -4,8 +4,7 @@ date: 2024-01-24
 author: Yoonsoo Park
 description: "Dive into the nuances of reverting changes in Git, comparing the automated 'git revert' with the manual checkout and commit approach. Learn the best practices for maintaining a clean, understandable project history."
 categories:
-  - Version Control
-  - Git Tips
+  - Git
 tags:
   - Git
   - Revert

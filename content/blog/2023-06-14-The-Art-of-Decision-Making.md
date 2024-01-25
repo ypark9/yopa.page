@@ -4,12 +4,12 @@ date: 2023-06-14T01:25:00-04:00
 author: Yoonsoo Park
 description: "The Art of Decision-Making"
 categories:
-  - Software Development
+  - Personal Growth
 tags:
   - Decision-Making
 ---
 
-*Don't just be an engineer, be an imposter! Wait, what? That's right, folks. In the world of software development, it seems like many engineers have taken on the role of the indecisive imposter, desperately seeking approval for even the tiniest of decisions. But hey, who needs efficiency and progress when we can waste company resources and time, am I right?*
+_Don't just be an engineer, be an imposter! Wait, what? That's right, folks. In the world of software development, it seems like many engineers have taken on the role of the indecisive imposter, desperately seeking approval for even the tiniest of decisions. But hey, who needs efficiency and progress when we can waste company resources and time, am I right?_
 
 ## Analysis Paralysis: The Rabbit Hole of Never-Ending Decisions
 
@@ -45,6 +45,6 @@ Remember, the imposter syndrome might be a good plot twist for a game, but in th
 
 ---
 
-*Disclaimer: This article is intended for entertainment purposes. (or is it?)*
+_Disclaimer: This article is intended for entertainment purposes. (or is it?)_
 
 Cheers! 🍺

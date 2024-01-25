@@ -4,7 +4,7 @@ date: 2023-05-30T01:25:00-04:00
 author: Yoonsoo Park
 description: "Guiding Interns in Your Team"
 categories:
-  - Mentor
+  - Personal Growth
 tags:
   - intern
 ---
@@ -35,6 +35,6 @@ Sun Tzu's ancient treatise on warfare provides valuable insights on leadership a
 
 Guiding interns effectively requires patience, empathy, and an understanding of their unique needs and aspirations. By incorporating lessons from famous books into your mentoring approach, you can inspire and empower interns to reach their full potential. Remember, as a mentor, your guidance can have a profound impact on shaping their future careers. Embrace this opportunity to make a positive difference and create a legacy that extends far beyond their time as interns.
 
-*Note: The book references mentioned in this article serve as metaphors and sources of inspiration for guiding interns, and their concepts should be adapted and applied in a manner appropriate to the professional context.*
+_Note: The book references mentioned in this article serve as metaphors and sources of inspiration for guiding interns, and their concepts should be adapted and applied in a manner appropriate to the professional context._
 
 Cheers! 🍺

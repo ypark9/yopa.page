@@ -4,10 +4,10 @@ date: 2023-03-25T01:25:00-04:00
 author: Yoonsoo Park
 description: "Do you know about Construction Injection in Dependency Injection?"
 categories:
-  - Programming
-  - Dependency Injection
+  - Design Pattern
 tags:
   - Construction Injection
+  - Dependency Injection
 ---
 
 # Construction Injection in Dependency Injection – No Hard Hats Required!

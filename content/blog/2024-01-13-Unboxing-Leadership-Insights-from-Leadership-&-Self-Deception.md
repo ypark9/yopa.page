@@ -4,7 +4,7 @@ date: 2024-01-13
 author: Yoonsoo Park
 description: "Analyzing 'Leadership & Self-Deception' by The Arbinger Institute, this blog delves into its profound teachings on leadership, self-perception, and their impact on personal and professional relationships."
 categories:
-  - Leadership Development
+  - Book summary
   - Personal Growth
 tags:
   - Self-Deception

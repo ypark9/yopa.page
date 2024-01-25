@@ -4,12 +4,12 @@ date: 2023-06-20T01:25:00-04:00
 author: Yoonsoo Park
 description: ""
 categories:
-  - GitHub
+  - git
 tags:
   - Pull-Requests
 ---
 
-When collaborating on a shared repository, it's typical to review pull requests (PRs) made by other contributors. While it's possible to view these PRs through the GitHub web interface, there's an often-overlooked alternative that provides a more thorough review process - reviewing them directly from your local machine via the command line. 
+When collaborating on a shared repository, it's typical to review pull requests (PRs) made by other contributors. While it's possible to view these PRs through the GitHub web interface, there's an often-overlooked alternative that provides a more thorough review process - reviewing them directly from your local machine via the command line.
 
 ## The Advantages of Local Review
 

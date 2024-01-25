@@ -4,10 +4,10 @@ date: 2023-03-29T01:25:00-04:00
 author: Yoonsoo Park
 description: "Dependency Injection – Testing Made Easy and Fun!"
 categories:
-  - Programming
-  - Dependency Injection
+  - Design Pattern
 tags:
   - Testing
+  - Dependency Injection
 ---
 
 Testing is an essential part of software development, but it can be a real pain in the butt. (you know it..)

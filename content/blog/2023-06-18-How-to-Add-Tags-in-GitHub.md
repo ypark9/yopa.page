@@ -4,6 +4,7 @@ date: 2023-06-18T01:25:00-04:00
 author: Yoonsoo Park
 description: "How to Add Tags in GitHub"
 categories:
+  - git
   - GitHub
 tags:
   - Tags
@@ -14,30 +15,37 @@ Tags in GitHub are a great way to mark specific points in your project's history
 ## Adding Tags Using Git Command
 
 1. **Step 1: Clone the Repository**: Begin by cloning the repository to your local machine using the following command:
+
 ```
 git clone <repository-url>
 ```
 
 2. **Step 2: Navigate to the Repository**: Move into the repository's directory using the `cd` command:
+
 ```
 cd <repository-directory>
 ```
 
 3. **Step 3: Check Out the Desired Commit**: Use the `git log` command to view the commit history. Find the commit you want to tag and note its commit hash. Then, check out the commit using the following command:
+
 ```
 git checkout <commit-hash>
 ```
 
 4. **Step 4: Create the Tag**: Now, create the tag using the `git tag` command. You can choose either an annotated or lightweight tag. For an annotated tag, use the following command:
+
 ```
 git tag -a <tag-name> -m "<tag-message>"
 ```
+
 For a lightweight tag, use:
+
 ```
 git tag <tag-name>
 ```
 
 5. **Step 5: Push the Tag to GitHub**: Finally, push the tag to the remote repository on GitHub with the `git push` command:
+
 ```
 git push origin <tag-name>
 ```
@@ -58,7 +66,7 @@ NOICE! You have successfully added a tag to your GitHub repository. Whether you 
 
 Remember, tags are useful for organizing and tracking different versions of your project. They can also be used to trigger specific actions, such as deployment or CI/CD pipelines. Utilize tags wisely to enhance collaboration and streamline your development workflow.
 
-*Note: If you're using a different Git platform or hosting service, the steps may vary slightly. However, the general concept of adding tags remains the same.*
+_Note: If you're using a different Git platform or hosting service, the steps may vary slightly. However, the general concept of adding tags remains the same._
 
-My first article from my first house! ;) 
+My first article from my first house! ;)
 Cheers! 🍺

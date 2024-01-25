@@ -4,7 +4,7 @@ date: 2023-06-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "Tier vs Layer"
 categories:
-  - Software Development
+  - Programming
 tags:
   - Architecture
 ---

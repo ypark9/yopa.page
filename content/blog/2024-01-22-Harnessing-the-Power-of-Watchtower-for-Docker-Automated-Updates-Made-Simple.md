@@ -5,7 +5,6 @@ author: Yoonsoo Park
 description: "Explore the benefits of using Watchtower for your Docker containers, understand its advantages, and learn how to utilize cron scheduling for automated updates."
 categories:
   - Docker
-  - Containerization
   - DevOps
 tags:
   - Watchtower

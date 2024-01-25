@@ -6,17 +6,18 @@ description: "The reason why Apex Test Cannot Find Enum Defined in Apex Class"
 categories:
   - Salesforce
 tags:
-  - Test
+  - Testing
   - enum
 ---
 
- there is a common issue that developers face when working with enums in Apex. Sometimes, when you try to reference an enum defined in an Apex class from your test class, you may get an error that the enum is not found. This can be a frustrating issue to deal with, especially if you are new to Apex development.
+there is a common issue that developers face when working with enums in Apex. Sometimes, when you try to reference an enum defined in an Apex class from your test class, you may get an error that the enum is not found. This can be a frustrating issue to deal with, especially if you are new to Apex development.
 
 The reason for this issue is that when you create an instance of the Apex class with exactly the same name as the class name, but with a different case, Apex does not recognize it as a class. Instead, it sees it as an instance of the class. This means that when you try to reference the enum from your test class, Apex cannot find it because it is not defined on the instance.
 
 To avoid this issue, it is important to always create your instance name differently than the class name. This will ensure that Apex recognizes it as a separate instance and not as the class itself. For example, if your class is named "MyClass", you could create an instance named "myInstance" or "myClassInstance".
 
 Let's take a look at an example to illustrate this issue:
+
 ```java
 public class MyClass {
     public enum MyEnum {

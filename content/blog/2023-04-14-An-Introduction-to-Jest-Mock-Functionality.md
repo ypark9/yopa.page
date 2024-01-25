@@ -4,9 +4,11 @@ date: 2023-04-14T01:25:00-04:00
 author: Yoonsoo Park
 description: "Jest Mock Functionality"
 categories:
-  - Jest
+  - Testing
+  - Programming
 tags:
   - Mock
+  - jest
 ---
 
 At times, when writing unit tests for your application, you may find it challenging to isolate the test subjects from their dependencies. `Mocking` is a technique that can help you overcome this challenge. By replacing dependencies with objects that you can control and inspect, you can isolate the test subjects and test them in isolation.

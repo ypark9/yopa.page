@@ -4,12 +4,12 @@ date: 2023-12-01T01:25:00-04:00
 author: Yoonsoo Park
 description: "a systematic approach to troubleshoot to Uninstall Salesforce CLI from a Specific Node.js Version on macOS"
 categories:
-    - Software Development
+  - Salesforce
 tags:
-    - Nodejs
-    - SalesforceCLI
-    - npm
-    - DevelopmentEnvironment
+  - Nodejs
+  - sfdx
+  - npm
+  - DevelopmentEnvironment
 ---
 
 **Introduction:**
@@ -55,4 +55,3 @@ Salesforce CLI (`sfdx-cli`) is a powerful command-line interface that simplifies
 
 Happy Friday.
 Cheers! 🍺
-

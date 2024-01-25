@@ -4,12 +4,11 @@ date: 2023-08-18T01:25:00-04:00
 author: Yoonsoo Park
 description: "A step-by-step guide on passing command-line arguments to a TypeScript script using npm run."
 categories:
-    - TypeScript Development
+  - TypeScript
 tags:
-    - TypeScript
-    - npm
-    - CLI
-    - Development
+  - npm
+  - CLI
+  - Development
 ---
 
 ## Introduction
@@ -28,38 +27,38 @@ To run your TypeScript script using the `npm run` command, you can define a scri
 
 1. **Handling Arguments in TypeScript**:
 
-    In your TypeScript script, Node.js provides a global object called `process.argv` which is an array containing the command-line arguments passed when the process was launched. The first two values are the node executable and your script's path, so you'll usually want to access the arguments starting from index 2:
+   In your TypeScript script, Node.js provides a global object called `process.argv` which is an array containing the command-line arguments passed when the process was launched. The first two values are the node executable and your script's path, so you'll usually want to access the arguments starting from index 2:
 
-    ```typescript
-    const args = process.argv.slice(2);
-    ```
+   ```typescript
+   const args = process.argv.slice(2);
+   ```
 
-    For our use case, we want to retrieve the `arg` argument:
+   For our use case, we want to retrieve the `arg` argument:
 
-    ```typescript
-    const profileArg = args.find((arg) => arg.startsWith("--arg="));
-    const profileName = profileArg ? profileArg.split("=")[1] : "default";
-    ```
+   ```typescript
+   const profileArg = args.find((arg) => arg.startsWith("--arg="));
+   const profileName = profileArg ? profileArg.split("=")[1] : "default";
+   ```
 
 2. **Updating the NPM Script**:
 
-    Your `package.json` file remains unchanged. It can look like this:
+   Your `package.json` file remains unchanged. It can look like this:
 
-    ```json
-    "scripts": {
-      "start": "ts-node your-script-file.ts"
-    }
-    ```
+   ```json
+   "scripts": {
+     "start": "ts-node your-script-file.ts"
+   }
+   ```
 
 3. **Executing the Script with Arguments**:
 
-    When running your script, use the following format to pass in the `arg` argument:
+   When running your script, use the following format to pass in the `arg` argument:
 
-    ```
-    npm run start -- --arg=myProfile
-    ```
+   ```
+   npm run start -- --arg=myProfile
+   ```
 
-    The `--` after `npm run start` indicates that the subsequent arguments should be passed directly to the invoked script.
+   The `--` after `npm run start` indicates that the subsequent arguments should be passed directly to the invoked script.
 
 ## Advanced: Using Argument Parsers
 

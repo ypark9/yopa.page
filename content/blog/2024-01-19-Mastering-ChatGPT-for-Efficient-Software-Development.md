@@ -4,7 +4,7 @@ date: 2024-01-19
 author: Yoonsoo Park
 description: "Unlock the full potential of ChatGPT in your software development process. Learn how to effectively integrate AI at every stage, from project management and architectural design to coding."
 categories:
-  - AI in Software Development
+  - AI
 tags:
   - ChatGPT
   - Software Engineering

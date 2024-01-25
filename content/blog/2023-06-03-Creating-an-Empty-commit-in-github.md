@@ -4,13 +4,12 @@ date: 2023-06-03T01:25:00-04:00
 author: Yoonsoo Park
 description: "An Empty Commit in GitHub"
 categories:
-  - Version Control
+  - git
 tags:
   - Empty Commit
 ---
 
-When working with Git and GitHub, commits serve as important milestones that capture meaningful changes in your codebase. However, there may be situations where you need to create an empty commit without any actual code changes. (what if you need to trigger a **Semantic Release** by commiting.) Although GitHub's user interface doesn't provide a direct option to create an empty commit, you can achieve this through Git commands. 
-
+When working with Git and GitHub, commits serve as important milestones that capture meaningful changes in your codebase. However, there may be situations where you need to create an empty commit without any actual code changes. (what if you need to trigger a **Semantic Release** by commiting.) Although GitHub's user interface doesn't provide a direct option to create an empty commit, you can achieve this through Git commands.
 
 ## Creating an Empty Commit
 

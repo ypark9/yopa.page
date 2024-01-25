@@ -5,7 +5,6 @@ author: Yoonsoo Park
 description: "Explore the nuanced yet powerful techniques of managing environment variables in shell scripts using .env files along with the set -a and set +a commands for a cleaner, more secure, and highly maintainable scripting environment."
 categories:
   - Programming
-  - Shell Scripting
 tags:
   - Environment Variables
   - Shell Scripting

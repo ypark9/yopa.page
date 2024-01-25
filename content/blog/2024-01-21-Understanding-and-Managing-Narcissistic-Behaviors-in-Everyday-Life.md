@@ -4,8 +4,7 @@ date: 2024-01-21
 author: Yoonsoo Park
 description: "Exploring the intricacies of narcissistic behaviors and providing strategies for effectively dealing with narcissists in personal and professional settings."
 categories:
-  - Psychology
-  - Self-Help
+  - Book summary
 tags:
   - Narcissism
   - Personal Development

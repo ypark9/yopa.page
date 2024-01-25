@@ -4,9 +4,10 @@ date: 2023-06-04T01:25:00-04:00
 author: Yoonsoo Park
 description: "Story or Die"
 categories:
-  - Communication
+  - Book summary
 tags:
   - Persuasion
+  - communication Skills
 ---
 
 In the book ["Story or Die: How to Use Brain Science to Engage, Persuade, and Change Minds in Business and in Life"](https://amzn.to/3S3WapF), the author delves into the fascinating connection between brain science, storytelling, and effective communication. Drawing insights from neuroscience, the book explores why storytelling is a powerful tool to engage, persuade, and ultimately change minds.

@@ -4,10 +4,10 @@ date: 2023-03-26T01:25:00-04:00
 author: Yoonsoo Park
 description: "do you know about Method Injection in Dependency Injection?"
 categories:
-  - Programming
-  - Dependency Injection
+  - Design Pattern
 tags:
   - Method Injection
+  - Dependency Injection
 ---
 
 ## Method Injection in DI: How to Shoot Yourself in the Foot!

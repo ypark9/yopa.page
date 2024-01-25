@@ -6,8 +6,8 @@ description: "Running Apex CLS File on CLI"
 categories:
   - Salesforce
 tags:
-  - Apex cls
-  - CLI
+  - Apex
+  - sfdx
 ---
 
 In this article, we will explore how to run an Apex CLS file on the Command Line Interface (CLI) using a TypeScript code snippet. This code snippet will allow you to execute Apex classes in a specified folder, and return the results to the CLI.
@@ -15,8 +15,8 @@ In this article, we will explore how to run an Apex CLS file on the Command Line
 Create a new TypeScript file named `apexExecution.ts` in your preferred code editor. Copy and paste the following code snippet into the file:
 
 ```ts
-import { exec } from 'child_process';
-import * as fs from 'fs';
+import { exec } from "child_process";
+import * as fs from "fs";
 
 export class ApexExecution {
   async execute(configApexClassPath: string[]): Promise<string> {
@@ -24,7 +24,7 @@ export class ApexExecution {
       ? configApexClassPath
       : [configApexClassPath];
     const results = [];
-    console.log('\n📞 Executing apex classes...\n');
+    console.log("\n📞 Executing apex classes...\n");
     for (const apexClassPath of classListPath) {
       //check files under recordDefinitionsPath
       const classes = fs.readdirSync(apexClassPath);
@@ -34,7 +34,9 @@ export class ApexExecution {
       }
       for (const apexClass of classes) {
         console.log(`📞 Executing apex class ${apexClass}`);
-        const command = `sfdx force:apex:execute -f ${apexClassPath + apexClass}`;
+        const command = `sfdx force:apex:execute -f ${
+          apexClassPath + apexClass
+        }`;
         const result = await new Promise((resolve, reject) => {
           exec(command, (err, stdout, stderr) => {
             if (err) {
@@ -51,12 +53,13 @@ export class ApexExecution {
         results.push(result);
       }
     }
-    return results.join('\n');
+    return results.join("\n");
   }
 }
 ```
 
 ## Understanding the Code
+
 The code snippet above defines a TypeScript class named `ApexExecution`. This class has a single method named `execute`, which accepts an array of strings as its parameter. This array represents the paths to the Apex classes that you want to execute.
 
 The `execute` method uses the `fs` module to read the contents of each folder specified in the `configApexClassPath` parameter. It then loops through each Apex class in the folder and executes it using the Salesforce CLI's `force:apex:execute` command.

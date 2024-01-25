@@ -4,8 +4,7 @@ date: 2024-01-15
 author: Yoonsoo Park
 description: "Exploring the insights from 'Writing for Busy Readers' by Todd Rogers and Jessica Lasky-Fink, this blog delves into the principles of effective writing, crucial for communication in today's information-saturated world."
 categories:
-  - Writing Skills
-  - Effective Communication
+  - Book summary
 tags:
   - Effective Writing
   - Communication Skills

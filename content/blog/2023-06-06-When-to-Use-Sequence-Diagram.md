@@ -4,7 +4,7 @@ date: 2023-06-06T01:25:00-04:00
 author: Yoonsoo Park
 description: "When to Use a Sequence Diagra"
 categories:
-  - Software Engineering
+  - Programming
 tags:
   - Sequence Diagram
 ---
@@ -38,23 +38,23 @@ When a customer places an order in an online shopping system, several objects in
 ```markdown
 Title: Online Shopping Order Sequence
 
-  Customer  ShoppingCart  Payment   Order
-     |          |           |        |
-     |----1. Add Item to Cart---->   |
-     |          |           |        |
-     |<---2. Confirm Item Added--    |
-     |          |           |        |
-     |---3. Checkout ---->   |       |
-     |          |<---4. Calculate Total
-     |          |           |        |
-     |----5. Pay ---->               |
-     |          |           |<---6. Process Payment
-     |          |           |        |
-     |<---7. Confirm Payment         |
-     |          |           |        |
-     |----8. Place Order ---->       |
-     |          |           |<---9. Process Order
-     |<--10. Order Confirmation--    |
+Customer ShoppingCart Payment Order
+| | | |
+|----1. Add Item to Cart----> |
+| | | |
+|<---2. Confirm Item Added-- |
+| | | |
+|---3. Checkout ----> | |
+| |<---4. Calculate Total
+| | | |
+|----5. Pay ----> |
+| | |<---6. Process Payment
+| | | |
+|<---7. Confirm Payment |
+| | | |
+|----8. Place Order ----> |
+| | |<---9. Process Order
+|<--10. Order Confirmation-- |
 ```
 
 In this sequence diagram:
@@ -71,7 +71,6 @@ In this sequence diagram:
 
 Sequence diagrams are an integral part of UML, representing
 
- how objects interact in a specific scenario of a use case. They help in simplifying complex interactions, realizing use cases, and understanding the sequence of processes in a system. So, whether you're designing a new system or debugging an existing one, consider using a sequence diagram to visualize and understand the interactions better.
-
+how objects interact in a specific scenario of a use case. They help in simplifying complex interactions, realizing use cases, and understanding the sequence of processes in a system. So, whether you're designing a new system or debugging an existing one, consider using a sequence diagram to visualize and understand the interactions better.
 
 Cheers! 🍺

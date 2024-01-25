@@ -6,7 +6,6 @@ description: "Explore ways to run Java applications on macOS without the need fo
 categories:
   - Java
   - macOS
-  - Software Development
 tags:
   - Java
   - macOS

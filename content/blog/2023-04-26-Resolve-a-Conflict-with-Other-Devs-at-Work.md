@@ -4,7 +4,7 @@ date: 2023-04-26T01:25:00-04:00
 author: Yoonsoo Park
 description: ""
 categories:
-  - Ethics
+  - Personal Growth
 tags:
   - conflicts
 ---

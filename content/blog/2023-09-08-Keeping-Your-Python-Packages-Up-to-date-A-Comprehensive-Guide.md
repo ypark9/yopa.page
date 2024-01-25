@@ -4,14 +4,13 @@ date: 2023-09-08T01:25:00-04:00
 author: Yoonsoo Park
 description: "In this article, we explore various methods to keep your Python packages up-to-date, from manual updates to automated dependency management services."
 categories:
-    - Python
-    - Development
-    - Dependency Management
+  - Python
+  - Programming
 tags:
-    - Python
-    - pip
-    - Package Management
-    - Dependency Management
+  - Python
+  - pip
+  - Package Management
+  - Dependency Management
 ---
 
 # Keeping Your Python Packages Up-to-date: A Comprehensive Guide

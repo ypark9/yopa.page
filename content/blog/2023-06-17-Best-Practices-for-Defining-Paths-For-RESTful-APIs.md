@@ -4,9 +4,10 @@ date: 2023-06-17T01:25:00-04:00
 author: Yoonsoo Park
 description: "Defining Path Parameters"
 categories:
-  - REST API
+  - programming
 tags:
   - Paths
+  - REST API
 ---
 
 ## Best Practices for Defining Paths for RESTful APIs
@@ -23,7 +24,7 @@ When creating RESTful APIs, it's important to adhere to the best practices for d
 
 5. **Consistency:** Above all, be consistent in your naming and structuring conventions. Consistency helps to maintain clarity for all developers who are using your API.
 
-7. **Use Meaningful Resource Names**
+6. **Use Meaningful Resource Names**
 
 Ensure that resource names are intuitive and meaningful. They should clearly indicate what kind of data is being represented by the API. For example, `/employees` is a more intuitive resource name than `/people` when you're dealing with an API for a human resources application.
 

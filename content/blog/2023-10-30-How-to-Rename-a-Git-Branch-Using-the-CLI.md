@@ -4,14 +4,13 @@ date: 2023-10-30T01:25:00-04:00
 author: Yoonsoo Park
 description: "This blog post walks you through the process of renaming a local and remote Git branch using the command-line interface."
 categories:
-    - Git
-    - Development
-    - Command Line
+  - Git
+  - Development
 tags:
-    - git
-    - branch
-    - cli
-    - rename
+  - git
+  - branch
+  - cli
+  - rename
 ---
 
 ## Introduction
