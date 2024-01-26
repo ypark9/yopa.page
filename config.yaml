@@ -6,7 +6,7 @@ theme: PaperMod
 # Ensure pretty URLs
 uglyURLs: true
 
-googleAnalytics: G-Q1ZFC1JHE6
+googleAnalytics: G-EQ4B3K8VCL
 
 enableRobotsTXT: true
 buildDrafts: false
