@@ -4,7 +4,6 @@ date: 2023-07-31T01:25:00-04:00
 author: Yoonsoo Park
 description: "Learn how to effectively use git stash to save and restore your code changes, enabling smoother workflows."
 categories:
-    - Software Development
     - Git
 tags:
     - Git
