@@ -1,14 +1,14 @@
 ---
-title: Mastering Git Diff: A Comprehensive Guide with Advanced Examples
+title: Mastering Git Diff - A Comprehensive Guide with Advanced Examples
 date: 2024-01-27
 author: Yoonsoo Park
 description: "Dive deeper into the advanced functionalities of 'git diff' with detailed examples."
 categories:
-    - git
+  - git
 tags:
-    - Git
-    - Programming
-    - Software Development
+  - Git
+  - Programming
+  - Software Development
 ---
 
 ![oni-github](/images/oni-github-1.webp)
