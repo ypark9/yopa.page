@@ -11,7 +11,7 @@ tags:
   - Software Development
 ---
 
-![oni-github](/images/oni-github-1.webp)
+![oni-github](images/oni-github-1.webp)
 
 In the realm of version control with Git, understanding the `git diff` command is crucial for developers. This post not only explores the basics but also dives into advanced uses of `git diff`, complete with detailed examples and code blocks for a comprehensive understanding.
 
