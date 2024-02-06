@@ -19,9 +19,6 @@ Salesforce's evolution has always been characterized by its adaptability and for
 
 The two generations of Salesforce packaging, 1st Generation Packaging (1GP) and 2nd Generation Packaging (2GP), represent different approaches and capabilities in the Salesforce ecosystem. Understanding their key differences is crucial for developers and organizations to choose the right packaging strategy.
 
-<details>
-<summary>Detail</summary>
-
 ### 1st Generation Packaging (1GP)
 
 1. **Packaging Model**: 1GP is based on the original Salesforce packaging model, primarily used for creating managed and unmanaged packages.
@@ -42,8 +39,6 @@ The two generations of Salesforce packaging, 1st Generation Packaging (1GP) and 
 6. **Improved Dependency Management**: Better handling of dependencies and package upgrades, simplifying the management of complex applications.
 7. **Continuous Integration and Delivery**: Better suited for CI/CD practices, integrating seamlessly with modern development pipelines.
 8. **Scratch Orgs and Isolation**: Allows for development and testing in isolated, ephemeral scratch orgs, promoting cleaner development practices.
-
-</details>
 
 ## Source-Driven Development
 
