@@ -14,7 +14,7 @@ tags:
   - TypeScript
 ---
 
-![Listr Task List Example](images/oni-speaker.webp))
+![Listr Task List Example](images/oni-speaker.webp)
 
 **Introduction**
 
@@ -132,6 +132,6 @@ tasks.add([
 
 **Wrapping it up 👏**
 
-Listr is an invaluable tool for anyone working with Node.js, TypeScript, and CLI environments, striving for an enhanced user experience. Its flexibility, error handling, and customization options make it suitable for a wide range of applications. For a deeper dive into Listr's capabilities, visit the ![official documentation](https://github.com/SamVerschueren/listr) and start exploring how it can revolutionize your terminal tasks.
+Listr is an invaluable tool for anyone working with Node.js, TypeScript, and CLI environments, striving for an enhanced user experience. Its flexibility, error handling, and customization options make it suitable for a wide range of applications. For a deeper dive into Listr's capabilities, visit the ["official documentation"](https://github.com/SamVerschueren/listr) and start exploring how it can revolutionize your terminal tasks.
 
 Cheers! 🍺
