@@ -92,4 +92,5 @@ These distinctions highlight the strategic considerations in choosing the approp
 
 ## Wrapping it up 👏
 
-The introduction of `sf project convert source` alongside `sf project convert mdapi` signifies Salesforce's ongoing commitment to refining the developer experience. These commands are not merely about format conversion; they represent a strategic approach to structured, efficient, and collaborative Salesforce development. Understanding and utilizing these commands allows developers to adeptly navigate the Salesforce development environment, ensuring project adaptability and future-readiness.
+The introduction of `sf project convert source` alongside `sf project convert mdapi` signifies Salesforce's ongoing commitment to refining the developer experience. These commands are not merely about format conversion; they represent a strategic approach to structured, efficient, and collaborative Salesforce development. I am still not sure why they pick the command name in the current way. This is for the another time I guess.
+Cheer! 🍺
