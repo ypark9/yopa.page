@@ -13,8 +13,6 @@ tags:
   - Node.js Libraries
 ---
 
-![Testing Dependencies in Node.js](/path/to/image.jpg)
-
 Dependency management is a critical factor in the development of Node.js projects, significantly influencing the reliability and maintainability of applications. For teams that maintain their own libraries in conjunction with main projects, the task of debugging and testing these dependencies can pose unique challenges. This article explores a situation where a Node.js library, referred to as `@yopa/the-library`, requires comprehensive testing within a primary project to validate its functionality.
 
 ### The Challenge: Debugging Internal Libraries
