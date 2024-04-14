@@ -1,6 +1,6 @@
 ---
 title: Managing Multiple Versions with Pyenv, venv, and Pipenv
-date: 2024-01-01
+date: 2024-03-11
 author: Yoonsoo Park
 description: "Learn to manage multiple Python versions with Pyenv and create isolated project environments using both venv and Pipenv, understanding their distinct roles in Python development."
 categories:
