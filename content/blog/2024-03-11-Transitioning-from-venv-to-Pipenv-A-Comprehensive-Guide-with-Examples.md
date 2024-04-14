@@ -115,7 +115,7 @@ Pipenv combines dependency management with virtual environment management, simpl
 - **venv** is suitable for simple projects or when minimal dependency management is needed beyond Python's standard library.
 - **Pipenv** offers a higher-level tool that automatically manages a virtual environment for your projects and adds support for dependency management, ideal for more complex project setups.
 
-### Real life Scenario
+## Extra: Real life Scenario
 
 Imagine an associate developer, YOPA, who has recently joined a Python project team. The project uses Python virtual environments to manage dependencies, but YOPA is not sure which system is in use. After checking with a teammate, YOPA learns that the project uses Python's built-in `venv` but wants to transition to using `Pipenv` for enhanced dependency management and workflow.
 
