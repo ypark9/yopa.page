@@ -39,4 +39,32 @@ source env/bin/activate
 
 Once you have activated a virtual environment, you can install packages and dependencies specific to your project using pip. Any packages you install will only be available within the virtual environment.
 
+## Deactivating Virtual Environments
+
+When you finish working in the virtual environment and want to return to the system's default settings, use:
+
+```bash
+deactivate
+```
+
+This command will revert all changes made to the environment by activation.
+
+## Managing Dependencies with requirements.txt
+
+To manage dependencies within a virtual environment:
+
+- Creating a requirements.txt: Save all current dependencies to a file:
+
+```bash
+pip freeze > requirements.txt
+```
+
+- Installing from requirements.txt:
+
+```bash
+pip install -r requirements.txt
+```
+
+This ensures that you can replicate your environment exactly on another machine or in another environment.
+
 Cheers! 🍺
