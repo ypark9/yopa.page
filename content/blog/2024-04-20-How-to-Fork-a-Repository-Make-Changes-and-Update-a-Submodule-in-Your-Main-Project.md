@@ -58,7 +58,7 @@ If your fork is used as a submodule in another project, update your main project
 
 ### Removing and Re-Adding a Submodule to Use a Fork in Your Main Project
 
-Sometimes you might find it necessary to replace a submodule in your project with a fork that you have customized. This section will guide you through removing the existing submodule and adding your fork as the new submodule.
+Sometimes you might find it necessary to replace a submodule in your project with a fork that you have customized. This section will guide you through removing the existing submodule and adding your fork as the new submodule. In this example, we will assume that you have forked the [hugo-tania](https://github.com/WingLim/hugo-tania) theme and want to use it in your project. (the blog you are reading is using this theme).
 
 #### **Step 1: Navigate to Your Main Project**
 
