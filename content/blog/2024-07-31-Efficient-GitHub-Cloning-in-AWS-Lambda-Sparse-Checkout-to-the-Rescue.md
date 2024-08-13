@@ -1,6 +1,6 @@
 ---
 title: Efficient GitHub Cloning in AWS Lambda - Sparse Checkout to the Rescue
-date: 2024-08-12
+date: 2024-07-31
 author: Yoonsoo Park
 description: "Learn how to efficiently clone large GitHub repositories in AWS Lambda functions using sparse checkout. Discover a solution that reduces data transfer and storage requirements while allowing you to work with specific tags."
 categories:
