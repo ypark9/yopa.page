@@ -1,6 +1,6 @@
 ---
 title: Mastering Generative AI for Efficient Software Development
-date: 2024-01-19
+date: 2024-08-12
 author: Yoonsoo Park
 description: "Unlock the full potential of generative AI in your software development process. Learn how to effectively integrate AI at every stage, from project management and architectural design to coding, using role-based prompting."
 categories:
