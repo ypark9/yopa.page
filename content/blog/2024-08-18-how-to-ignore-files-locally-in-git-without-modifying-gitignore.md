@@ -2,16 +2,17 @@
 title: How to Ignore Files Locally in Git Without Modifying .gitignore
 date: 2024-08-18
 author: Yoonsoo Park
-description: Learn how to extend your .gitignore file for local use without affecting the shared repository
+description: Learn how to use .git/info/exclude to ignore files locally in Git without affecting the shared .gitignore file
 categories:
   - Git
   - Version Control
 tags:
   - gitignore
   - local development
+  - git exclude
 ---
 
-> Learn how to extend your .gitignore file for local use without affecting the shared repository
+> Learn how to use .git/info/exclude to ignore files locally in Git without affecting the shared .gitignore file
 
 [Git Documentation](https://git-scm.com/docs)
 
