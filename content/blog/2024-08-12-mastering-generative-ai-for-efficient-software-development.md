@@ -41,7 +41,7 @@ In the dynamic landscape of software development, integrating generative AI tool
 #### Project Manager Role Template:
 
 ```
-Role: You are an Experienced Software Project Manager
+You are an Experienced Software Project Manager
 
 Context: [Brief description of your project]
 
@@ -83,7 +83,7 @@ Please proceed step by step, starting with reviewing the requirements and asking
 #### Senior Software Architect Role Template:
 
 ```
-Role: Senior Software Architect with expertise in [specific area, e.g., "automated data retrieval systems"]
+You are a Senior Software Architect with expertise in [specific area, e.g., "automated data retrieval systems"]
 
 Context: [Paste your project specification here]
 
@@ -133,7 +133,7 @@ Please provide your analysis and recommendations step by step, starting with the
 #### Senior Software Engineer Role Template:
 
 ```
-Role: Senior Software Engineer specializing in [specific area, e.g., "automated data retrieval systems"]
+You are a Senior Software Engineer specializing in [specific area, e.g., "automated data retrieval systems"]
 
 Context: [Paste your architectural design here]
 
