@@ -17,7 +17,7 @@ tags:
 
 [AWS Amplify Documentation](https://docs.aws.amazon.com/amplify/)
 
-Have you ever spent days debugging an authentication issue that seemed impossible to solve? Recently, I encountered a perplexing problem with AWS Amplify authentication in a React Native application built with Expo. While the signup process worked flawlessly, the signin functionality kept throwing a frustratingly vague error: "Unknown: An unknown error has occurred." Let me walk you through the journey of discovering and fixing this issue.
+Have you ever spent days debugging an authentication issue that seemed impossible to solve? I faced a mysterious problem with AWS Amplify authentication in a React Native application built with Expo. While the signup process worked flawlessly, the signin functionality kept throwing a vague error: "Unknown: An unknown error has occurred." This article will guide you through the process of identifying and resolving this issue.
 
 ## Understanding the Initial Setup
 
@@ -39,7 +39,7 @@ export const configureAmplify = () => {
 };
 ```
 
-This configuration looks correct at first glance - we have our user pool ID, client ID, and verification method properly set up. However, the devil, as they say, is in the details.
+This configuration looks correct at first (we have our user pool ID, client ID, and verification method correctly set up). The saying goes, "The devil is in the details," highlighting that the small details can often introduce a significant impact.
 
 ## Unraveling the Mystery
 
@@ -72,7 +72,7 @@ class AuthService {
 }
 ```
 
-After extensive investigation and documentation review, the root cause emerged: the authentication flow type wasn't specified. This crucial missing piece was causing Amplify to struggle with determining the correct authentication method to use.
+I could identify the root cause after a long struggle with Googling and reading documentation. The problem was the type of authentication flow was not specified. This leads to a battle to implement the correct authentication method.
 
 ## The Simple Yet Powerful Solution
 
@@ -88,7 +88,7 @@ const { isSignedIn, nextStep } = await signIn({
 });
 ```
 
-This simple addition tells Amplify exactly which authentication flow to use, resolving the cryptic error message.
+The addition points Amplify exactly which authentication flow to use which resolved the vaguous error.
 
 ## Managing Authentication State
 
@@ -132,26 +132,6 @@ To ensure your authentication implementation works correctly:
 3. Implement email verification if required
 4. Test signin with the specified authFlowType
 5. Verify the authentication state persists across app reloads
-
-## Lessons Learned
-
-This experience highlights several important points about working with AWS Amplify:
-
-1. Configuration details matter immensely - even small omissions can cause significant issues
-2. Generic error messages often point to configuration problems rather than runtime errors
-3. Understanding the available authentication flows is crucial for proper implementation
-4. Proper error handling and logging are essential for debugging authentication issues
-
-## Moving Forward
-
-When implementing AWS Amplify authentication in your React Native applications, remember to:
-
-- Always specify the authentication flow type explicitly
-- Implement comprehensive error handling
-- Set up proper logging for debugging
-- Use the authentication context to manage state across your application
-
-What seemed like a complex problem ultimately had a simple solution. This experience serves as a reminder that in software development, attention to detail and thorough documentation review can save hours of debugging time.
 
 > why this does not work... why this works...
 

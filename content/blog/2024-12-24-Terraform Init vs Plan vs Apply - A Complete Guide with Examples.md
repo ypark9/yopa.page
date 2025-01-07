@@ -137,7 +137,7 @@ terraform apply production.tfplan
 
 ## When to Use Targeted Apply
 
-Sometimes, you need to manage specific resources rather than your entire infrastructure. This is where `terraform apply -target` comes in handy. However, use it cautiously as it can lead to state inconsistencies if not used properly.
+You might face a situation where you need to manage specific resources rather than your entire infrastructure. This is where `terraform apply -target` comes in handy. However, use it cautiously as it can lead to state inconsistencies if not used properly.
 
 ```bash
 terraform apply -target="aws_instance.web_server"
@@ -172,7 +172,5 @@ Good use cases for targeted apply:
 - State drift: Always run `terraform plan` before making changes to catch any manual modifications
 - Provider versions: Specify versions to ensure consistency across team members
 - Resource dependencies: Use `depends_on` when implicit dependencies aren't enough
-
-Remember, Terraform is declarative - you describe the desired state, and Terraform figures out how to achieve it. Understanding when to use each command helps you maintain your infrastructure effectively and safely.
 
 Cheers! 🍺
