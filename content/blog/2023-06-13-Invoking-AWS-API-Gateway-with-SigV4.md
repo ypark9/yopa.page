@@ -9,8 +9,7 @@ tags:
   - SigV4
 ---
 
-
-In this article, we will walk through the process of invoking an AWS API Gateway using Signature Version 4 (SigV4) for authentication in TypeScript. 
+In this article, we will walk through the process of invoking an AWS API Gateway using Signature Version 4 (SigV4) for authentication in TypeScript.
 
 ## Prerequisites
 
@@ -27,14 +26,14 @@ npm install aws-sdk aws4 @types/aws4
 ## Step 2: Import the Libraries and Configure AWS
 
 ```typescript
-import * as AWS from 'aws-sdk';
-import * as aws4 from 'aws4';
-import * as https from 'https';
+import * as AWS from "aws-sdk";
+import * as aws4 from "aws4";
+import * as https from "https";
 
 AWS.config.update({
-  region: 'us-west-2', // replace with your desired region
-  accessKeyId: 'YOUR_ACCESS_KEY', // replace with your access key
-  secretAccessKey: 'YOUR_SECRET_KEY' // replace with your secret key
+  region: "us-west-2", // replace with your desired region
+  accessKeyId: "YOUR_ACCESS_KEY", // replace with your access key
+  secretAccessKey: "YOUR_SECRET_KEY", // replace with your secret key
 });
 ```
 
@@ -42,12 +41,12 @@ AWS.config.update({
 
 ```typescript
 let request: aws4.Request = {
-  host: 'API_ID.execute-api.REGION.amazonaws.com', // replace with your API Gateway URL
-  method: 'GET', // replace with your HTTP method
-  path: '/Prod/path', // replace with your API path
+  host: "API_ID.execute-api.REGION.amazonaws.com", // replace with your API Gateway URL
+  method: "GET", // replace with your HTTP method
+  path: "/Prod/path", // replace with your API path
   headers: {
-    'Content-Type': 'application/json'
-  }
+    "Content-Type": "application/json",
+  },
 };
 
 request = aws4.sign(request);
@@ -56,40 +55,40 @@ request = aws4.sign(request);
 <details>
 <summary>WHAT is **API path** ? </summary>
 
-  The `path` in the request object refers to the specific endpoint in your API Gateway that you want to invoke. This is usually mapped to a specific function in your backend service. If you're using AWS Lambda as your backend service, each path in your API Gateway would typically be mapped to a specific Lambda function.
+The `path` in the request object refers to the specific endpoint in your API Gateway that you want to invoke. This is usually mapped to a specific function in your backend service. If you're using AWS Lambda as your backend service, each path in your API Gateway would be mapped to a specific Lambda function.
 
-  For example, let's say you have an API for managing users, and you have the following Lambda functions:
+For example, let's say you have an API for managing users, and you have the following Lambda functions:
 
-  - `CreateUserFunction`: Creates a new user.
-  - `GetUserFunction`: Gets the details of a user.
-  - `UpdateUserFunction`: Updates a user's details.
-  - `DeleteUserFunction`: Deletes a user.
+- `CreateUserFunction`: Creates a new user.
+- `GetUserFunction`: Gets the details of a user.
+- `UpdateUserFunction`: Updates details of a user.
+- `DeleteUserFunction`: Deletes a user.
 
-  You might set up your API Gateway with the following paths:
+You can set up your API Gateway with the following paths:
 
-  - `POST /users`: Invokes `CreateUserFunction`.
-  - `GET /users/{userId}`: Invokes `GetUserFunction`.
-  - `PUT /users/{userId}`: Invokes `UpdateUserFunction`.
-  - `DELETE /users/{userId}`: Invokes `DeleteUserFunction`.
+- `POST /users`: Invokes `CreateUserFunction`.
+- `GET /users/{userId}`: Invokes `GetUserFunction`.
+- `PUT /users/{userId}`: Invokes `UpdateUserFunction`.
+- `DELETE /users/{userId}`: Invokes `DeleteUserFunction`.
 
-  In this case, if you wanted to get the details of a user with the ID `123`, you would set the `path` in your request object to `/users/123`, and the `method` to `GET`.
+If you wanted to get the details of a user with the ID `123`, you would set the `path` in your request object to `/users/123` and put the `method` to `GET`.
 
-  So, in the context of the code example, `/Prod/path` is a placeholder for the path you want to invoke in your API Gateway. You would replace this with the actual path for your API. For example, if you're invoking the `GetUserFunction` in the example above, you might set the `path` to `/users/123`.
+So, in the code example, `/Prod/path` is a placeholder for the path you want to invoke in your API Gateway. You would replace this with the actual path for your API. (e.g. if you're invoking the `GetUserFunction` in the example above, you might set the `path` to `/users/123`).
 
-  Here's how you might modify the request object for this example:
+Here's how you can modify the request object for this example:
 
-  ```typescript
-  let request: aws4.Request = {
-    host: 'API_ID.execute-api.REGION.amazonaws.com', // replace with your API Gateway URL
-    method: 'GET', // replace with your HTTP method
-    path: '/users/123', // replace with your API path
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-  ```
+```typescript
+let request: aws4.Request = {
+  host: "API_ID.execute-api.REGION.amazonaws.com", // replace with your API Gateway URL
+  method: "GET", // replace with your HTTP method
+  path: "/users/123", // replace with your API path
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+```
 
-  Remember to replace `API_ID`, `REGION`, and the path with your actual values.
+Do not forget to replace `API_ID`, `REGION`, and the path with your actual values!
 
 </details>
 
@@ -97,18 +96,18 @@ request = aws4.sign(request);
 
 ```typescript
 const req = https.request(request, (res) => {
-  let body = '';
-  res.on('data', (chunk) => body += chunk);
-  res.on('end', () => console.log(body));
+  let body = "";
+  res.on("data", (chunk) => (body += chunk));
+  res.on("end", () => console.log(body));
 });
 
-req.on('error', (e) => console.error(e));
+req.on("error", (e) => console.error(e));
 req.end();
 ```
 
-This will send a SigV4 signed request to your API Gateway. Remember to replace the placeholders with your actual values.
+This will send a `SigV4` signed request to your API Gateway. The placeholders should be replaced with your actual values!
 
-Please note that this is a basic example and you may need to adjust it according to your needs. For example, if you are sending a POST request, you would need to include the body in the request and sign it as well.
+Please note that this is a basic example and you may need to adjust it accordingly based on your case. (e.g. if you are sending a `POST` request, you need to include the body in the request and sign it as well.)
 
 <details>
 <summary>POST example</summary>
@@ -116,50 +115,48 @@ Please note that this is a basic example and you may need to adjust it according
 Here's how you can modify the previous example to send a POST request with a body:
 
 ```typescript
-import * as AWS from 'aws-sdk';
-import * as aws4 from 'aws4';
-import * as https from 'https';
+import * as AWS from "aws-sdk";
+import * as aws4 from "aws4";
+import * as https from "https";
 
 AWS.config.update({
-  region: 'us-east-1', // replace with your desired region
-  accessKeyId: 'YOUR_ACCESS_KEY', // replace with your access key
-  secretAccessKey: 'YOUR_SECRET_KEY' // replace with your secret key
+  region: "us-east-1", // replace with your desired region
+  accessKeyId: "YOUR_ACCESS_KEY", // replace with your access key
+  secretAccessKey: "YOUR_SECRET_KEY", // replace with your secret key
 });
 
 let body = {
-  key1: 'value1',
-  key2: 'value2'
+  key1: "value1",
+  key2: "value2",
 };
 
 let request: aws4.Request = {
-  host: 'API_ID.execute-api.REGION.amazonaws.com', // replace with your API Gateway URL
-  method: 'POST', // replace with your HTTP method
-  path: '/Prod/path', // replace with your API path
+  host: "API_ID.execute-api.REGION.amazonaws.com", // replace with your API Gateway URL
+  method: "POST", // replace with your HTTP method
+  path: "/Prod/path", // replace with your API path
   headers: {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   },
-  body: JSON.stringify(body)
+  body: JSON.stringify(body),
 };
 
 request = aws4.sign(request);
 
 const req = https.request(request, (res) => {
-  let responseBody = '';
-  res.on('data', (chunk) => responseBody += chunk);
-  res.on('end', () => console.log(responseBody));
+  let responseBody = "";
+  res.on("data", (chunk) => (responseBody += chunk));
+  res.on("end", () => console.log(responseBody));
 });
 
-req.on('error', (e) => console.error(e));
+req.on("error", (e) => console.error(e));
 
 req.write(request.body);
 req.end();
 ```
 
-In this example, we're sending a JSON object as the body of the request. We stringify the object and include it in the `body` property of the request object. We then sign the request with `aws4.sign(request)`. 
+In this example, we're sending a JSON object as the body of the request. We stringify the object and include it in the `body` part of the request object, and then we sign the request with `aws4.sign(request)`.
 
-When sending the request, we use `req.write(request.body)` to include the body in the request. 
-
-Remember to replace the placeholders with your actual values. The `body` object should be replaced with the actual data you want to send in your POST request.
+When sending the request, we use `req.write(request.body)` to include the body in the request. (The `body` object should be replaced with the actual data you want to send in your `POST` request)
 
 </details>
 
