@@ -3,7 +3,8 @@ relativeURLs: true
 languageCode: en-us
 title: thats.nono
 theme: "hugo-tania"
-paginate: 8
+pagination:
+  pagerSize: 8
 googleAnalytics: G-EQ4B3K8VCL
 uglyurls: true
 
