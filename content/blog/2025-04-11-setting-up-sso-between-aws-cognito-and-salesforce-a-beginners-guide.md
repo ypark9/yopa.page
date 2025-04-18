@@ -71,6 +71,8 @@ When you connect external providers like Google to your User Pool, you're creati
 2. Ensure your external IdP (Google) is already configured
 3. Note your **User Pool ID** (format: `region_alphanumeric` e.g. `us-east-1_1234567890`)
 4. Locate and save your **User Pool Domain** (format: `https://your-domain.auth.region.amazoncognito.com` e.g. `https://my-domain.auth.us-east-1.amazoncognito.com`)
+   - where to find it: your User Pool > Branding > Domain
+   - ![user pool domain](images/domain-info.png)
 
 #### App Client Configuration
 
@@ -83,6 +85,10 @@ When you connect external providers like Google to your User Pool, you're creati
    - `profile`
 5. Save your **App Client ID**
 6. Note the full **OAuth Endpoints** from the App Integration > App client settings page
+   - e.g.
+   - **Authorization Endpoint**: `https://my-domain.auth.us-east-1.amazoncognito.com/oauth2/authorize`
+   - **Token Endpoint**: `https://my-domain.auth.us-east-1.amazoncognito.com/oauth2/token`
+   - **User Info Endpoint**: `https://my-domain.auth.us-east-1.amazoncognito.com/oauth2/userInfo`
 
 ### 2. Configuring Salesforce
 
@@ -100,7 +106,10 @@ When you connect external providers like Google to your User Pool, you're creati
    - **User Info Endpoint URL**: The OAuth userinfo endpoint from Cognito (e.g. `https://my-domain.auth.us-east-1.amazoncognito.com/oauth2/userInfo`)
    - **Default Scopes**: `openid email profile`
    - **Custom Error URL**: Your error handling page
-   - **Registration Handler**: Your custom Apex class (if needed)
+   - **Registration Handler**: Your custom Apex class (required for Salesforce to register/find users)
+     - Salesforce automatically creates a default one for you if you toggle the switch on.
+       - You can customize it to your needs!
+     - Make sure you have this Apex class by going to Setup > Apex Classes and search for e.g. `CognitoRegistrationHandler`.
    - **Execute Registration As**: A designated Salesforce user
 
 5. Save the configuration
