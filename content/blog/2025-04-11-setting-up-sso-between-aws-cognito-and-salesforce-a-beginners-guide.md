@@ -159,8 +159,8 @@ Cheers! 🍺
 
 ## References
 
-[How to Build SSO Solution on Top of Amazon Cognito](https://www.sphereinc.com/blogs/how-to-build-sso-solution-on-top-of-amazon-cognito/)
-[Cognito User Pools OIDC Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-oidc-flow.html)
-[Login with Salesforce using AWS Cognito OpenID Connect](https://stackoverflow.com/questions/51782571/login-with-salesforce-using-aws-cognito-openid-connect)
-[What is the difference between relayState and redirect_uri?](https://salesforce.stackexchange.com/questions/317978/what-is-the-difference-between-relaystate-and-redirect-uri)
-[login with external idp](https://www.miniorange.com/iam/login-with-external-idp/configure-aws-cognito-sso)
+- [How to Build SSO Solution on Top of Amazon Cognito](https://www.sphereinc.com/blogs/how-to-build-sso-solution-on-top-of-amazon-cognito/)
+- [Cognito User Pools OIDC Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-oidc-flow.html)
+- [Login with Salesforce using AWS Cognito OpenID Connect](https://stackoverflow.com/questions/51782571/login-with-salesforce-using-aws-cognito-openid-connect)
+- [What is the difference between relayState and redirect_uri?](https://salesforce.stackexchange.com/questions/317978/what-is-the-difference-between-relaystate-and-redirect-uri)
+- [login with external idp](https://www.miniorange.com/iam/login-with-external-idp/configure-aws-cognito-sso)
