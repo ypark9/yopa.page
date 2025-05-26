@@ -15,7 +15,7 @@ tags:
 
 > Discover the critical distinctions between AI agents and agentic AI systems, their architectural differences, real-world applications, and why understanding these concepts is essential for making smart AI investment decisions in 2025.
 
-[IBM's Guide to Agentic AI vs Generative AI](https://www.ibm.com/think/topics/agentic-ai-vs-generative-ai)
+[IBM's Guide to Agentic AI vs Generative AI](https://www.ibm.com/think/topics/agentic-ai-vs-generative-ai) |
 [AI Agents vs. Agentic AI: A Conceptual Taxonomy, Applications and Challenges](https://arxiv.org/html/2505.10468v1)
 
 The artificial intelligence landscape is chaged every day or even every hour, and two terms that frequently showing in discussions about the future of AI are "AI agents" and "agentic AI." While they might sound similar and are often used interchangeably, they are different approaches to building intelligent systems, really. Understanding these differences isn't just academic—it's critical for making correct decisions about AI investments and implementations in 2025.
