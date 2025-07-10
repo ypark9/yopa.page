@@ -1,0 +1,39 @@
+{{- $src := .Destination | safeURL -}} {{- $alt := .Text -}} {{- $title :=
+.Title -}} {{- $original := "" -}} {{- if strings.HasPrefix $src "http" -}} {{-
+$original = resources.GetRemote $src -}} {{- else -}} {{- $original =
+resources.Get $src -}} {{- end -}} {{- if $original -}} {{- $webp :=
+$original.Process "webp" -}}
+<img
+  src="{{ $webp.RelPermalink }}"
+  alt="{{ $alt }}"
+  width="{{ $webp.Width }}"
+  height="{{ $webp.Height }}"
+  {{
+  with
+  $title
+  }}title="{{ . }}"
+  {{
+  end
+  }}
+/>
+{{- else -}}
+<img
+  src="{{ $src | relURL }}"
+  alt="Image not found: {{ $alt }}"
+  {{
+  with
+  $title
+  }}title="{{ . }}"
+  {{
+  end
+  }}
+  style="
+    background: #f0f0f0;
+    color: #666;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    display: block;
+  "
+/>
+{{- end -}}
