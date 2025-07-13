@@ -33,7 +33,9 @@ jobs:
           sudo apt-get update -y && sudo apt install -y \
             libimage-exiftool-perl \
             jpegoptim \
-            optipng
+            optipng \
+            imagemagick \
+            webp
       # Set up Hugo with fast render
       - uses: peaceiris/actions-hugo@v2
         with:
