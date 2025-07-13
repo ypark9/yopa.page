@@ -6,7 +6,8 @@ PNG_LEVEL    = 4
 SHELL        := /bin/bash
 TERRAFORM    = terraform -chdir="./terraform/env/$(ENV)"
 # Determine the current live path from Terraform output, default to "blue"
-CURRENT_LIVE_PATH := $(shell $(TERRAFORM) output -raw live_path 2>/dev/null || echo "blue")
+# Only get live_path for environments that have it (not global)
+CURRENT_LIVE_PATH := $(shell if [ "$(ENV)" != "global" ]; then $(TERRAFORM) output -raw live_path 2>/dev/null || echo "blue"; else echo "blue"; fi)
 NEXT_DEPLOY_PATH   = $(if $(filter blue,$(CURRENT_LIVE_PATH)),green,blue)
 
 REQUIRED_BINS := hugo terraform aws exiftool jpegoptim optipng mogrify cwebp
@@ -44,18 +45,34 @@ validate:
 	$(TERRAFORM) validate
 
 plan:
-	$(TERRAFORM) plan -var="live_path=$(CURRENT_LIVE_PATH)"
+	@if [ "$(ENV)" = "global" ]; then \
+		$(TERRAFORM) plan; \
+	else \
+		$(TERRAFORM) plan -var="live_path=$(CURRENT_LIVE_PATH)"; \
+	fi
 
 apply:
-	$(TERRAFORM) apply -auto-approve -var="live_path=$(CURRENT_LIVE_PATH)"
+	@if [ "$(ENV)" = "global" ]; then \
+		$(TERRAFORM) apply -auto-approve; \
+	else \
+		$(TERRAFORM) apply -auto-approve -var="live_path=$(CURRENT_LIVE_PATH)"; \
+	fi
 
 deploy: build optimize
 	@echo ">>> Deploying to standby path: $(NEXT_DEPLOY_PATH)"
-	aws s3 sync --delete public/ s3://$(shell $(TERRAFORM) output -raw bucket_name)/$(NEXT_DEPLOY_PATH)/
+	@if [ "$(ENV)" = "global" ]; then \
+		echo ">>> Skipping deployment for global environment"; \
+	else \
+		aws s3 sync --delete public/ s3://$(shell $(TERRAFORM) output -raw bucket_name)/$(NEXT_DEPLOY_PATH)/; \
+	fi
 
 promote:
 	@echo ">>> Promoting standby path '$(NEXT_DEPLOY_PATH)' to live"
-	$(TERRAFORM) apply -auto-approve -var="live_path=$(NEXT_DEPLOY_PATH)"
+	@if [ "$(ENV)" = "global" ]; then \
+		echo ">>> Skipping promotion for global environment"; \
+	else \
+		$(TERRAFORM) apply -auto-approve -var="live_path=$(NEXT_DEPLOY_PATH)"; \
+	fi
 
 release: promote invalidate
 
@@ -64,9 +81,13 @@ destroy:
 
 invalidate:
 	@echo ">>> Invalidating CloudFront cache"
-	distribution_id=$$($(TERRAFORM) output -raw cloudfront_distribution_id); \
-	aws cloudfront create-invalidation \
-		--distribution-id $$distribution_id \
-		--paths "/*" \
-		--query "Invalidation.Id" \
-		--output text
+	@if [ "$(ENV)" = "global" ]; then \
+		echo ">>> Skipping cache invalidation for global environment"; \
+	else \
+		distribution_id=$$($(TERRAFORM) output -raw cloudfront_distribution_id); \
+		aws cloudfront create-invalidation \
+			--distribution-id $$distribution_id \
+			--paths "/*" \
+			--query "Invalidation.Id" \
+			--output text; \
+	fi
