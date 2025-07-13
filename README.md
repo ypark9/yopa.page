@@ -18,4 +18,3 @@
 [terraform-shield]: https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white
 [aws-shield]: https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white
 [banner]: static/images/hZL49G.png
-# AWS credentials updated Sun Jul 13 19:48:05 EDT 2025
