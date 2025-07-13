@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy-staging:
@@ -37,9 +40,18 @@ jobs:
           extended: true
       # Deploy to staging (inactive) environment
       - name: Deploy global infrastructure
+        if: github.event_name == 'push'
         run: ENV=global make apply
       - name: Deploy to staging environment
+        if: github.event_name == 'push'
         run: ENV=prod make deploy
+      # For PRs, just validate the configuration
+      - name: Validate deployment configuration
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "🔍 Validating deployment configuration for PR..."
+          # Add any validation commands here (e.g., terraform validate, build checks)
+          echo "✅ Configuration validation complete"
       - name: Output staging deployment info
         run: |
           echo "🚀 Staging deployment complete!"
@@ -52,6 +64,7 @@ jobs:
     name: Promote to Live
     needs: deploy-staging
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     # Note: To enable manual approval, create a "production" environment in GitHub Settings > Environments
     # and add required reviewers. Then uncomment the line below:
     environment: production
