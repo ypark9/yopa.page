@@ -40,6 +40,11 @@ jobs:
       - uses: peaceiris/actions-hugo@v2
         with:
           extended: true
+      # Initialize Terraform environments
+      - name: Initialize Terraform (global)
+        run: ENV=global make init
+      - name: Initialize Terraform (prod)
+        run: ENV=prod make init
       # Deploy to staging (inactive) environment
       - name: Deploy global infrastructure
         if: github.event_name == 'push'
@@ -52,7 +57,8 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           echo "🔍 Validating deployment configuration for PR..."
-          # Add any validation commands here (e.g., terraform validate, build checks)
+          ENV=global make validate
+          ENV=prod make validate
           echo "✅ Configuration validation complete"
       - name: Output staging deployment info
         run: |
@@ -84,6 +90,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      # Initialize Terraform
+      - name: Initialize Terraform (prod)
+        run: ENV=prod make init
       # Promote staging to live
       - name: Promote to live environment
         run: ENV=prod make release
