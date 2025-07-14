@@ -90,6 +90,19 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y && sudo apt install -y \
+            libimage-exiftool-perl \
+            jpegoptim \
+            optipng \
+            imagemagick \
+            webp
+      # Set up Hugo
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          extended: true
       # Initialize Terraform
       - name: Initialize Terraform (prod)
         run: ENV=prod make init
