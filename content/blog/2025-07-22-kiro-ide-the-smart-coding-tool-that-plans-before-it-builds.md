@@ -1,5 +1,5 @@
 ---
-title: Kiro IDE: The Smart Coding Tool That Plans Before It Builds
+title: Kiro IDE - The Smart Coding Tool That Plans Before It Builds
 date: 2025-07-22
 author: Yoonsoo Park
 description: "Kiro IDE is Amazon's new AI coding assistant. It helps you plan your project before writing any code, instead of just generating code quickly. This makes it different from other AI coding tools."
