@@ -3,9 +3,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="theme-color" content="dark" />
+  {{ if eq .Kind "taxonomy" }}
+  <title>{{ .Title }} | {{ len .Pages }} posts | {{ .Site.Title }}</title>
+  {{ else }}
   <title>{{with.Title}}{{.}} | {{end}}{{.Site.Title}}</title>
-
-  {{ template "_internal/html_head_canonical.html" . }} {{ template
+  {{ end }} {{ template "_internal/html_head_canonical.html" . }} {{ template
   "_internal/google_analytics.html" . }}
 
   <meta property="og:site_name" content="{{.Site.Params.siteName}}" />
@@ -39,8 +41,24 @@
   <meta name="twitter:image" content="{{ index . 0 | absURL }}" />
   {{ else -}}
   <meta name="twitter:card" content="summary" />
-  {{- end -}} {{- end -}} {{- end }}
-
+  {{- end -}} {{- end -}} {{- end }} {{ if eq .Kind "taxonomy" }}
+  <meta
+    name="description"
+    content="Browse {{ len .Pages }} posts tagged with '{{ .Title }}' on {{ .Site.Params.siteName }}. Topics include programming, web development, and software engineering insights."
+  />
+  <meta
+    name="twitter:description"
+    content="Browse {{ len .Pages }} posts tagged with '{{ .Title }}' on {{ .Site.Params.siteName }}."
+  />
+  <meta
+    itemprop="description"
+    content="Browse {{ len .Pages }} posts tagged with '{{ .Title }}' on {{ .Site.Params.siteName }}."
+  />
+  <meta
+    property="og:description"
+    content="Browse {{ len .Pages }} posts tagged with '{{ .Title }}' on {{ .Site.Params.siteName }}. Topics include programming, web development, and software engineering insights."
+  />
+  {{ else }}
   <meta
     name="description"
     content="{{ if .Description }}{{.Description}}{{ else }}{{.Site.Params.siteDesc}}{{end}}"
@@ -57,10 +75,9 @@
     property="og:description"
     content="{{ if .Description }} {{.Description}} {{ else }}{{.Site.Params.siteDesc}}{{ end }}"
   />
-
-  {{ partial "post-meta.html" . }} <link rel="shortcut icon" type="image/x-icon"
-  href="{{ "favicon.ico" | relURL }}" /> {{ $style := resources.Get
-  "sass/main.scss" | toCSS | minify | fingerprint }}
+  {{ end }} {{ partial "post-meta.html" . }} <link rel="shortcut icon"
+  type="image/x-icon" href="{{ "favicon.ico" | relURL }}" /> {{ $style :=
+  resources.Get "sass/main.scss" | toCSS | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
   {{ partial "head/custom.html" . }}
   <script

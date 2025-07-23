@@ -8,7 +8,7 @@ categories:
 tags:
   - Jest
   - TypeScript
-  - JaveScript
+  - JavaScript
 ---
 
 ![Jest and Oni](images/oni-jest.webp)

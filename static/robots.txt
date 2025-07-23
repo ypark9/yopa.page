@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Allow sitemap
+Sitemap: https://www.yopa.page/sitemap.xml
+
+# Block search crawlers from accessing tag pages with very few posts
+# This helps prevent soft 404 issues
+User-agent: Googlebot
+Crawl-delay: 1 

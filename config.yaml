@@ -8,7 +8,14 @@ pagination:
 googleAnalytics: G-EQ4B3K8VCL
 uglyurls: true
 
+# Configure taxonomies explicitly
+taxonomies:
+  tag: tags
+  category: categories
+
+# Define main sections for content filtering
 params:
+  mainSections: ["blog"]
   titleLogo: images/08WeMC.png
   images:
     - images/8yRnin.png
