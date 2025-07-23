@@ -7,8 +7,11 @@
   <title>{{ .Title }} | {{ len .Pages }} posts | {{ .Site.Title }}</title>
   {{ else }}
   <title>{{with.Title}}{{.}} | {{end}}{{.Site.Title}}</title>
-  {{ end }} {{ template "_internal/html_head_canonical.html" . }} {{ template
-  "_internal/google_analytics.html" . }}
+  {{ end }}
+
+  <link rel="canonical" href="{{ .Permalink }}" />
+
+  {{ template "_internal/google_analytics.html" . }}
 
   <meta property="og:site_name" content="{{.Site.Params.siteName}}" />
   <meta
