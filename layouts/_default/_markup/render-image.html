@@ -1,13 +1,26 @@
 {{- $src := .Destination | safeURL -}} {{- $alt := .Text -}} {{- $title :=
-.Title -}} {{- $original := "" -}} {{- if strings.HasPrefix $src "http" -}} {{-
-$original = resources.GetRemote $src -}} {{- else -}} {{- $original =
-resources.Get $src -}} {{- end -}} {{- if $original -}} {{- $webp :=
-$original.Process "webp" -}}
+.Title -}} {{- $isAWSIcon := strings.Contains $src "aws/" -}} {{- $original :=
+"" -}} {{- if strings.HasPrefix $src "http" -}} {{- $original =
+resources.GetRemote $src -}} {{- else -}} {{- $original = resources.Get $src -}}
+{{- end -}} {{- if $original -}} {{- $webp := $original.Process "webp" -}}
 <img
   src="{{ $webp.RelPermalink }}"
   alt="{{ $alt }}"
+  {{
+  if
+  $isAWSIcon
+  }}
+  width="24"
+  height="24"
+  style="display: inline; vertical-align: middle; margin-right: 8px"
+  {{
+  else
+  }}
   width="{{ $webp.Width }}"
   height="{{ $webp.Height }}"
+  {{
+  end
+  }}
   {{
   with
   $title
@@ -21,11 +34,14 @@ $original.Process "webp" -}}
   src="{{ $src | relURL }}"
   alt="Image not found: {{ $alt }}"
   {{
-  with
-  $title
-  }}title="{{ . }}"
+  if
+  $isAWSIcon
+  }}
+  width="24"
+  height="24"
+  style="display: inline; vertical-align: middle; margin-right: 8px"
   {{
-  end
+  else
   }}
   style="
     background: #f0f0f0;
@@ -35,5 +51,15 @@ $original.Process "webp" -}}
     border: 1px solid #ddd;
     display: block;
   "
+  {{
+  end
+  }}
+  {{
+  with
+  $title
+  }}title="{{ . }}"
+  {{
+  end
+  }}
 />
 {{- end -}}

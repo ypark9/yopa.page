@@ -27,7 +27,7 @@ In 2024-2025, these services have made significant enhancements in my opinion. F
 
 ## The Five AWS Vector Database Powerhouses
 
-## <img src="images/aws/OpenSearchService.png" width="24" height="24" alt="OpenSearch"> Amazon OpenSearch Service: The Scale Champion
+## ![OpenSearch](images/aws/OpenSearchService.png) Amazon OpenSearch Service: The Scale Champion
 
 [AWS OpenSearch Service](https://aws.amazon.com/opensearch-service/)
 [Vector database capabilities blog](https://aws.amazon.com/blogs/big-data/amazon-opensearch-services-vector-database-capabilities-explained/)
@@ -49,7 +49,7 @@ Amazon OpenSearch Service stands as the most robust option for high-scale vector
 
 The service excels when you need maximum flexibility and can invest in the operational complexity. Recent disk-based vector search capabilities reduce memory requirements by up to 66% while maintaining query performance through intelligent rescoring.
 
-## <img src="images/aws/RDS.png" width="24" height="24" alt="RDS PostgreSQL"> Amazon RDS PostgreSQL with pgvector: The Integration Master
+## ![RDS PostgreSQL](images/aws/RDS.png) Amazon RDS PostgreSQL with pgvector: The Integration Master
 
 [AWS RDS PostgreSQL](https://aws.amazon.com/rds/postgresql/) | [pgvector 0.8.0 announcement](https://aws.amazon.com/about-aws/whats-new/2024/11/amazon-rds-for-postgresql-pgvector-080/) | [pgvector 0.7.0 announcement](https://aws.amazon.com/about-aws/whats-new/2024/05/amazon-rds-postgresql-pgvector-0-7-0/) | [RAG workflows guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/retrieval-augmented-generation-options/rag-custom-retrievers.html)
 
@@ -64,7 +64,7 @@ For organizations with existing PostgreSQL infrastructure, RDS with pgvector off
 
 This option shines when you need to combine vector search with complex relational queries and maintain ACID compliance across your entire dataset.
 
-## <img src="images/aws/Neptune.png" width="24" height="24" alt="Neptune Analytics"> Amazon Neptune Analytics: The Relationship Expert
+## ![Neptune Analytics](images/aws/Neptune.png) Amazon Neptune Analytics: The Relationship Expert
 
 [AWS Neptune](https://aws.amazon.com/neptune/) | [AWS Neptune Analytics Documentation](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/what-is-neptune-analytics.html) | [Vector indexing guide](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/vector-index.html) | [GraphRAG blog post](https://aws.amazon.com/blogs/machine-learning/improving-retrieval-augmented-generation-accuracy-with-graphrag/)
 
@@ -79,7 +79,7 @@ Neptune Analytics introduces a unique approach by combining vector similarity wi
 
 Choose Neptune Analytics when your data has rich relationships and you need to understand connections between entities, not just similarity.
 
-## <img src="images/aws/Bottlerocket.png" width="24" height="24" alt="Bedrock Knowledge Bases"> Amazon Bedrock Knowledge Bases: The Rapid Deployment Solution
+## ![Bedrock Knowledge Bases](images/aws/Bottlerocket.png) Amazon Bedrock Knowledge Bases: The Rapid Deployment Solution
 
 [AWS Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/) | [AWS Bedrock Knowledge Bases Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) | [AWS Bedrock Knowledge Bases How it works guide](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-how-it-works.html) | [AWS Bedrock Knowledge Bases Launch announcement](https://aws.amazon.com/blogs/aws/knowledge-bases-now-delivers-fully-managed-rag-experience-in-amazon-bedrock/)
 
@@ -95,7 +95,7 @@ Amazon Bedrock Knowledge Bases now supports custom connectors and ingestion of s
 
 This service eliminates months of development time while providing enterprise-grade features that most custom implementations lack.
 
-## <img src="images/aws/Kendra.png" width="24" height="24" alt="Kendra"> Amazon Kendra: The Enterprise Search Specialist
+## ![Kendra](images/aws/Kendra.png) Amazon Kendra: The Enterprise Search Specialist
 
 [AWS Kendra](https://aws.amazon.com/kendra/) | [AWS Kendra Features Overview](https://aws.amazon.com/kendra/features/) | [AWS Kendra Index Types Documentation](https://docs.aws.amazon.com/kendra/latest/dg/hiw-index-types.html) | [AWS Kendra GenAI Index announcement](https://aws.amazon.com/blogs/machine-learning/introducing-amazon-kendra-genai-index-enhanced-semantic-search-and-retrieval-capabilities/)
 
