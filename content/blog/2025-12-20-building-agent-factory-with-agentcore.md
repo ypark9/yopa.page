@@ -18,7 +18,7 @@ In the rapidly evolving world of Generative AI, manually deploying agents one by
 
 ![hot](images/hot.gif)
 
-Today, we will dicdissect the Agent Factory system I learned at `AWS re:Invent 2025`. AWS engineers built a system that can build agents using AWS AgentCore, and the repo is [https://github.com/mcginnbros/agent-factory](https://github.com/mcginnbros/agent-factory).
+Today, we will dissect the Agent Factory system I learned at `AWS re:Invent 2025`. AWS engineers built a system that can build agents using AWS AgentCore, and the repo is [https://github.com/mcginnbros/agent-factory](https://github.com/mcginnbros/agent-factory).
 
 This platform is designed to bootstrap your personal AWS environment into a fully functional agent ecosystem using AWS AgentCore.
 
