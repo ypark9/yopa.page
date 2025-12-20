@@ -1,0 +1,47 @@
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+
+    const config = {
+        startOnLoad: true,
+        theme: 'base', // use base theme so it adapts to light/dark
+        securityLevel: 'loose',
+    };
+
+    // Helper to process formatting
+    function prepareMermaid() {
+        // Hugo Goldmark renders: <pre><code class="language-mermaid"> ... </code></pre>
+        // Mermaid needs: <div class="mermaid"> ... </div>
+
+        const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
+
+        mermaidBlocks.forEach(block => {
+            const content = block.textContent;
+            const pre = block.parentElement;
+
+            // If wrapped in a div.highlight (standard Hugo chroma), go up one more
+            const wrapper = pre.parentElement.classList.contains('highlight')
+                ? pre.parentElement
+                : pre;
+
+            const div = document.createElement('div');
+            div.className = 'mermaid';
+            div.textContent = content;
+            div.style.textAlign = 'center'; // Center the diagram
+
+            wrapper.replaceWith(div);
+        });
+    }
+
+    // Run immediately
+    prepareMermaid();
+    mermaid.initialize(config);
+
+    // Initialize Medium Zoom for all images in posts
+    import mediumZoom from 'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.esm.js';
+
+    mediumZoom('.article-post img', {
+        margin: 24,
+        background: 'rgba(0, 0, 0, 0.8)',
+        scrollOffset: 0,
+    });
+</script>
