@@ -28,6 +28,8 @@ However, enterprise agents face difficult challenges:
 
 **AWS Bedrock AgentCore** solves this by providing a set of tools that "wraps" your agent code to automatically handle servers, security, and memory.
 
+![AgentCore Architecture](images/AgentCoreArchitecture.png)
+
 ---
 
 ## 2. Agent Runtime (Serverless Hosting)
