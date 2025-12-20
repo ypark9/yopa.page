@@ -21,6 +21,7 @@ terraform.rc
 /resources
 .hugo_build.lock
 .DS_Store
+.env
 
 .cursor
 refs
