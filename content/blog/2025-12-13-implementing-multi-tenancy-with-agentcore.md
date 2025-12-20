@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Implementing Multi-Tenancy with AgentCore
+title: Implementing Multi-Tenancy with AgentCore (AWS re:Invent 2025)
 date: 2025-12-13
 author: Yoonsoo Park
 description: "A security guide for building SaaS applications with AgentCore. Covers Tenant Context, Gateway Interceptors, and IAM Policies."

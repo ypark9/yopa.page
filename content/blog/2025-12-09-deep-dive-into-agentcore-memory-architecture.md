@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Deep Dive into AgentCore Memory Architecture
+title: Deep Dive into AgentCore Memory Architecture (AWS re:Invent 2025)
 date: 2025-12-09
 author: Yoonsoo Park
 description: "A comprehensive technical deep dive into AWS Bedrock AgentCore Memory. Explains Context Orchestration, Memory Hooks, and how to solve AI adoption's 'Party Amnesia' problem."

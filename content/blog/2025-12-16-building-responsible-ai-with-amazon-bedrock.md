@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Building Responsible AI with Amazon Bedrock
+title: Building Responsible AI with Amazon Bedrock (AWS re:Invent 2025)
 date: 2025-12-16
 author: Yoonsoo Park
 description: "How to use Amazon Bedrock Guardrails and Automated Reasoning to enforce strict business policies on your AI agents."

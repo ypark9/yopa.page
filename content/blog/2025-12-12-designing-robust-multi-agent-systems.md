@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Designing Robust Multi-Agent Systems
+title: Designing Robust Multi-Agent Systems (AWS re:Invent 2025)
 date: 2025-12-12
 author: Yoonsoo Park
 description: "A technical guide to architectural patterns for multi-agent systems: Hierarchical, Swarm, DAG, and ReWOO."

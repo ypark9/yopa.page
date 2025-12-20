@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Securing Agentic AI for Financial Institutions
+title: Securing Agentic AI for Financial Institutions (AWS re:Invent 2025)
 date: 2025-12-17
 author: Yoonsoo Park
 description: "A security architecture guide for banking and finance. Covers Zero Trust, AWS SigV4, and PrivateLink for multi-agent systems."

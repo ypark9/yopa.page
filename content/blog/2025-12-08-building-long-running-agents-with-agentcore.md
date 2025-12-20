@@ -1,5 +1,5 @@
 ---
-title: (AWS re:invent 2025) Building Long-Running Agents with AgentCore
+title: Building Long-Running Agents with AgentCore (AWS re:Invent 2025)
 date: 2025-12-08
 author: Yoonsoo Park
 description: "A technical guide to building persistent, long-running AI agents using AWS Bedrock AgentCore. Includes architecture diagrams and configuration steps."
