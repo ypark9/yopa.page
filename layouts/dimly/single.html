@@ -5,345 +5,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .Title }} - Dimly</title>
-    <meta name="description"
-        content="Dimly is an AI-powered newsletter reader that transforms your inbox into a curated discovery engine.">
+    <meta name="description" content="{{ .Params.description }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yopa.page/dimly/">
     <meta property="og:title" content="Dimly - Your Inbox, Illuminated">
-    <meta property="og:description" content="AI-powered newsletter reader. Turn noise into signal.">
+    <meta property="og:description" content="{{ .Params.description }}">
     <meta property="og:image" content="/images/dimly-og.png">
 
+    <!-- Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --bg-color: #050505;
-            --text-color: #f5f5f7;
-            --text-secondary: #86868b;
-            --accent-color: #646cff;
-            --accent-glow: rgba(100, 108, 255, 0.5);
-            --card-bg: #1d1d1f;
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-stack);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: -0.02em;
-            color: var(--text-color);
-            text-decoration: none;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-left: 24px;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: var(--text-color);
-        }
-
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Subtle ambient glow */
-        .glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.2;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            max-width: 800px;
-        }
-
-        .subtitle {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-
-        .cta-button {
-            background: var(--text-color);
-            color: var(--bg-color);
-            padding: 12px 32px;
-            border-radius: 980px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: transform 0.2s, opacity 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .cta-button:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-
-        .features {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 120px 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .feature-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-color);
-        }
-
-        .feature-desc {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        footer {
-            padding: 60px 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .app-icon {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 30px;
-            border-radius: 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .team-section {
-            padding: 100px 20px;
-            background: linear-gradient(to bottom, var(--bg-color), #0a0a0a);
-            text-align: center;
-        }
-
-        .team-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 60px;
-            letter-spacing: -0.02em;
-        }
-
-        .team-grid {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            flex-wrap: wrap;
-        }
-
-        .team-member {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .member-role {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--accent-color);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .member-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .member-handle {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .subtitle {
-                font-size: 1.2rem;
-            }
-
-            .team-grid {
-                gap: 40px;
-            }
+        .glass {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
         }
     </style>
 </head>
 
-<body>
-    <header>
-        <a href="/" class="logo">yopa.page</a> <!-- Link back to main blog -->
-        <nav>
-            <span class="nav-link">Dimly</span>
-        </nav>
+<body class="bg-black text-white min-h-screen">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 border-b border-white/10 glass">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-lg font-bold hover:text-gray-300 transition">yopa.page</a>
+            <div class="text-gray-400">Dimly</div>
+        </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="glow"></div>
-            <img src="/images/dimly-icon.png" alt="Dimly Icon" class="app-icon">
-            <h1>Your Inbox,<br>Illuminated.</h1>
-            <p class="subtitle">Dimly is the AI-powered reader that turns your newsletter chaos into a curated discovery
-                engine.</p>
-            <a href="#" class="cta-button">Coming Soon</a>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <span class="feature-icon">✨</span>
-                <h3 class="feature-title">AI Summaries</h3>
-                <p class="feature-desc">Skip the fluff. Dimly's interpreter agent reads every email and extracts
-                    3-bullet summaries, sentiment, and key topics instantly.</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">🧠</span>
-                <h3 class="feature-title">Daily Curation</h3>
-                <p class="feature-desc">Wake up to a personalized briefing. Our Curator Agent synthesizes your
-                    subscriptions into a single, high-signal digest.</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">⚡️</span>
-                <h3 class="feature-title">Offline First</h3>
-                <p class="feature-desc">Built for speed. Dimly syncs everything to your device so you can read, search,
-                    and discover without a connection.</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">📊</span>
-                <h3 class="feature-title">Smart Scoring</h3>
-                <p class="feature-desc">Focus on what matters. Our algorithm scores newsletters based on your interests
-                    and reading habits.</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">🏷️</span>
-                <h3 class="feature-title">Entity Tracking</h3>
-                <p class="feature-desc">Follow the news that matters. Track people, companies, and organizations across
-                    your entire subscription library.</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">🔥</span>
-                <h3 class="feature-title">Trending Topics</h3>
-                <p class="feature-desc">Stay ahead of the curve. Discover trending topics and emerging patterns inside
-                    your personal newsletter eco-system.</p>
-            </div>
-        </section>
-
-        <section class="team-section">
-            <h2 class="team-title">The Team</h2>
-            <div class="team-grid">
-                <div class="team-member">
-                    <span class="member-role">Software Engineering</span>
-                    <span class="member-name">Yoonsoo Park</span>
-                    <span class="member-handle">(YOPA)</span>
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-8 flex justify-center">
+                {{ if .Params.logo }}
+                <img src="/{{ .Params.logo }}" alt="Dimly Logo" class="w-24 h-24 rounded-2xl shadow-2xl">
+                {{ else }}
+                <div class="w-24 h-24 bg-gray-800 rounded-2xl flex items-center justify-center">
+                    <i data-lucide="zap" class="w-12 h-12 text-white"></i>
                 </div>
-                <div class="team-member">
-                    <span class="member-role">Product Management</span>
-                    <span class="member-name">Lacy Park</span>
-                    <span class="member-handle">(LAPA)</span>
-                </div>
+                {{ end }}
             </div>
-        </section>
-
-        <!-- Markdown Content Injection (Optional) -->
-        <div
-            style="max-width: 800px; margin: 0 auto; color: var(--text-secondary); padding: 40px 20px; line-height: 1.8;">
-            {{ .Content }}
+            <h1 class="text-5xl md:text-7xl mb-6 font-bold tracking-tight">
+                Your Inbox,<br />Illuminated.
+            </h1>
+            <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                {{ .Params.description }}
+            </p>
+            <button
+                class="bg-white text-black hover:bg-gray-200 rounded-full px-8 py-6 text-lg font-semibold transition-all">
+                Coming Soon
+            </button>
         </div>
+    </section>
 
-    </main>
+    <!-- App Screenshots Section -->
+    <section class="py-20 px-6 bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl mb-4 font-bold">App Preview</h2>
+                <p class="text-gray-400 text-lg">See how Dimly transforms your reading experience</p>
+            </div>
 
-    <footer>
-        <p>&copy; {{ now.Format "2006" }} Dimly. Built by <a href="/"
-                style="color: inherit; text-decoration: underline;">yopa.page</a>.</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                {{ range .Params.screenshots }}
+                <div class="group relative">
+                    <div
+                        class="relative overflow-hidden rounded-2xl bg-gray-800 aspect-[9/16] border border-gray-700 group-hover:border-gray-500 transition-all duration-300">
+                        <img src="{{ .image }}" alt="{{ .title }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="text-xl mb-2 font-semibold">{{ .title }}</h3>
+                            <p class="text-gray-400 text-sm">{{ .description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+
+            <!-- Video Placeholder -->
+            <div class="mt-16 max-w-4xl mx-auto">
+                <div
+                    class="relative rounded-3xl overflow-hidden bg-gray-900 border border-gray-700 aspect-video group cursor-pointer hover:border-gray-500 transition-all">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div
+                                class="w-20 h-20 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+                                <i data-lucide="play" class="w-8 h-8 text-white fill-white"></i>
+                            </div>
+                            <p class="text-gray-400">Demo Video (Coming Soon)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl mb-4 font-bold">Features</h2>
+                <p class="text-gray-400 text-lg">AI-Powered Experience</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {{ range .Params.features }}
+                <div
+                    class="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 border border-gray-700 hover:border-gray-500 transition-all duration-300 group">
+                    {{ if .isPremium }}
+                    <div class="absolute top-4 right-4">
+                        <span
+                            class="inline-flex items-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-2.5 py-0.5 text-xs font-medium text-white shadow-lg">
+                            <i data-lucide="sparkles" class="w-3 h-3 mr-1"></i>
+                            AI Premium
+                        </span>
+                    </div>
+                    {{ end }}
+
+                    <div class="text-white mb-4">
+                        <i data-lucide="{{ .icon }}" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl mb-3 font-semibold">{{ .title }}</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        {{ .description }}
+                    </p>
+
+                    {{ if .isPremium }}
+                    <div class="mt-6 pt-6 border-t border-gray-700">
+                        <p class="text-xs text-purple-400 flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i>
+                            Requires AI Subscription
+                        </p>
+                    </div>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Hint -->
+    <section class="py-20 px-6 bg-gradient-to-b from-gray-900 to-black">
+        <div class="max-w-4xl mx-auto text-center">
+            <div
+                class="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+                <span class="text-purple-300 text-sm">AI-Powered Features</span>
+            </div>
+            <h2 class="text-4xl md:text-5xl mb-6 font-bold">Smarter with AI</h2>
+            <p class="text-xl text-gray-400 mb-8">
+                Unlock Summaries, Daily Curation, and Trending Topics with our premium AI tier.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="bg-gray-800 rounded-xl px-6 py-4 border border-gray-700">
+                    <div class="text-2xl mb-1 font-bold">Free</div>
+                    <div class="text-sm text-gray-400">Core Reader</div>
+                </div>
+                <div
+                    class="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl px-6 py-4 border border-purple-500 shadow-lg glow-purple">
+                    <div class="text-2xl mb-1 font-bold">Premium</div>
+                    <div class="text-sm">Everything AI</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-5xl text-center mb-16 font-bold">The Team</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                {{ range .Params.team }}
+                <div class="text-center">
+                    <div class="text-sm text-blue-400 mb-2 uppercase tracking-wider font-semibold">{{ .role }}</div>
+                    <h3 class="text-2xl mb-2 font-bold">{{ .name }}</h3>
+                    <p class="text-gray-400">({{ .handle }})</p>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center text-gray-500 text-sm">
+            <p>&copy; {{ now.Format "2006" }} Dimly. All rights reserved.</p>
+        </div>
     </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
