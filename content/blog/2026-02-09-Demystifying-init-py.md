@@ -12,6 +12,8 @@ tags:
   - Best Practices
 ---
 
+This article is inspired by and based on a YouTube video by [임커밋](https://www.youtube.com/@LimCommit) I highly recommend his channel if you read Korean and want deep, practical insights on coding.
+
 If you’ve ever browsed through open-source Python projects or peeked into a senior developer's repository, you’ve likely seen a file that looks a bit intimidating: `__init__.py`.
 
 At first glance, these files—wrapped in double underscores—can seem mysterious or "arrogant," as if they are guarding complex code secrets. However, they are actually a simple yet powerful tool for organizing your code.
