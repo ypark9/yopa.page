@@ -15,22 +15,18 @@
 {{ if gt (len $pages) 0 }}
 <section>
   <div class="container">
-    <section>
-      <section>
-        <div class="posts">
-          {{ range $pages }}
-          <div class="post">
-            <a href="{{ .RelPermalink }}">
-              <div class="post-row">
-                <time>{{ .Date.Format "Jan 02" }}</time>
-                <h3>{{ .Title }}</h3>
-              </div>
-            </a>
+    <div class="posts">
+      {{ range $pages }}
+      <div class="post">
+        <a href="{{ .RelPermalink }}">
+          <div class="post-row">
+            <time>{{ .Date.Format "Jan 02" }}</time>
+            <h3>{{ .Title }}</h3>
           </div>
-          {{ end }}
-        </div>
-      </section>
-    </section>
+        </a>
+      </div>
+      {{ end }}
+    </div>
   </div>
 </section>
 
