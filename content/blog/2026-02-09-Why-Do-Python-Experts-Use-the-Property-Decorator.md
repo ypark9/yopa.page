@@ -39,11 +39,11 @@ class ShoppingCart:
         self.total += price  # Easy to forget or get wrong in complex logic
 ```
 
-If a developer modifies `items` directly or forgets to update `total`, the data becomes inconsistent.
+If a developer modifies `items` directly or forgets to update `total`, the data becomes inconsistent! 
 
 ### The Function Solution
 
-You could write a method like `get_total()`, but accessing it requires parentheses (e.g., `cart.get_total()`). This works, but it exposes the implementation detail that `total` is calculated, rather than just being a property of the cart.
+You could write a method like `get_total()`, but accessing it requires parentheses (e.g., `cart.get_total()`). This works, but it exposes the implementation detail that `total` is calculated, rather than just being a property of the cart. and we all know less code is better. no code no bug. lol
 
 ### The @property Solution
 
@@ -67,7 +67,7 @@ cart.add_item(50)
 
 print(cart.total)  # 150 (Computed on the fly!)
 ```
-This ensures your data is always consistent—the total can never be out of sync with the items list—without sacrificing clean, attribute-like syntax.
+This ensures your data is always consistent—the total can never be out of sync with the items list—without sacrificing attribute-like syntax.
 
 ## 2. Read-Only Protection
 
@@ -104,8 +104,8 @@ except AttributeError as e:
     print(e)  # can't set attribute
 ```
 
-This behavior allows developers to protect sensitive or critical data (like IDs, timestamps, or derived values) from being accidentally overwritten by external code. It effectively isolates the internal logic from external interference, reducing bugs and making the code more robust.
+This behavior allows developers to protect sensitive or critical data (like IDs, timestamps, or derived values) from being accidentally overwritten by external code. It effectively isolates the internal logic from external interference.
 
 ## Conclusion
 
-While it might seem like a small syntactic sugar, the `@property` decorator is a powerful tool for encapsulation. It allows you to maintain the clean interface of simple attributes while keeping the power and safety of dynamic functions in the background. Using it correctly not only prevents bugs but also makes your code structure appear more professional and polished.
+While it might seem like a small syntactic sugar, the `@property` decorator is a something you need to consider for encapsulation. It allows you to maintain the clean interface of simple attributes while keeping the safety of dynamic functions in the background.
