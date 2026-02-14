@@ -7,7 +7,7 @@
 
 # yopa.page
 
-[yopa.page][website-url] "My treasure? If you want it, I'll let you have it. Look for it; I left all of it at that place."
+[yopa.page][website-url]
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
