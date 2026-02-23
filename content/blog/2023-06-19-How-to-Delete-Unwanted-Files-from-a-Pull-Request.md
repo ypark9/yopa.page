@@ -2,7 +2,7 @@
 title: How to Delete Unwanted Files from a Pull Request 
 date: 2023-06-19T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Learn how to clean up your Pull Requests by removing unwanted files using Git commands."
 categories:
   - Git
 tags:

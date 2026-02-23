@@ -2,7 +2,7 @@
 title: How to Update SFDX CLI from One Version to Another
 date: 2023-06-22T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "A simple guide to updating your Salesforce CLI (SFDX) to the latest version."
 categories:
   - Salesforce
 tags:

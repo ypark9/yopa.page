@@ -14,7 +14,7 @@ REQUIRED_BINS := hugo terraform aws exiftool jpegoptim optipng mogrify cwebp
 $(foreach bin,$(REQUIRED_BINS),\
     $(if $(shell command -v $(bin) 2> /dev/null),,$(error Please install `$(bin)`)))
 
-all: build optimize deploy promote invalidate
+all: validate build optimize deploy promote invalidate
 
 build:
 	$(HUGO) --gc --minify
@@ -41,8 +41,11 @@ serve:
 init:
 	$(TERRAFORM) init
 
-validate:
+validate: validate-content
 	$(TERRAFORM) validate
+
+validate-content:
+	python3 scripts/validate_frontmatter.py
 
 plan:
 	@if [ "$(ENV)" = "global" ]; then \

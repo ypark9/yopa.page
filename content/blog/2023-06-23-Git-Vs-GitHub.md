@@ -2,7 +2,7 @@
 title: Git Vs GitHub
 date: 2023-06-23T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Explaining the fundamental differences between Git (the version control system) and GitHub (the hosting service)."
 categories:
   - GitHub
 tags:

@@ -2,7 +2,7 @@
 title: Retreive GitHub Pull Requests Code
 date: 2023-06-20T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "How to efficiently retrieve and check out code from GitHub Pull Requests locally."
 categories:
   - GitHub
 tags:

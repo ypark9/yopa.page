@@ -2,7 +2,7 @@
 title: Invoking AWS API Gateway with SigV4 Using TypeScript
 date: 2023-06-13T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "A guide on how to invoke AWS API Gateway using Signature Version 4 (SigV4) for secure authentication."
 categories:
   - AWS
 tags:

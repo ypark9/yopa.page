@@ -2,7 +2,7 @@
 title: Resolve a Conflict with Other Devs at Work
 date: 2023-04-26T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "A guide on how to professionally resolve conflicts with other developers at work."
 categories:
   - Ethics
 tags:
