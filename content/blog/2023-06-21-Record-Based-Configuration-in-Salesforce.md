@@ -2,7 +2,7 @@
 title: Record Based Configuration in Salesforce
 date: 2023-06-21T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Understanding the pros and cons of record-based configuration in Salesforce development."
 categories:
   - Salesforce
 tags:

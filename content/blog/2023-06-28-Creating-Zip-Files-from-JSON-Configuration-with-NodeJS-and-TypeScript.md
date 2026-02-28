@@ -2,7 +2,7 @@
 title: Creating Zip Files from JSON Configuration with Node.js and TypeScript
 date: 2023-07-03T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "How to programmatically create ZIP archives from JSON configurations using Node.js and TypeScript."
 categories:
   - TypeScript
 tags:

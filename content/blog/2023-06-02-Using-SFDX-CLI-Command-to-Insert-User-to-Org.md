@@ -2,7 +2,7 @@
 title: Using SFDX CLI Command to Insert User to Org
 date: 2023-06-02T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Learn how to use the SFDX CLI to insert user records into a Salesforce Org efficiently using JSON files and jq."
 categories:
   - Salesforce
 tags:

@@ -2,7 +2,7 @@
 title: Embracing Fish Shell - Why It's A Game Changer for Developers
 date: 2032-06-02T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Why you should consider switching to Fish shell for a more user-friendly terminal experience."
 categories:
   - Fish
 tags:

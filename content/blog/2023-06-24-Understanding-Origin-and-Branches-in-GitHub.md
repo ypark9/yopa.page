@@ -2,7 +2,7 @@
 title: Understanding Origin and Branches in GitHub
 date: 2023-06-24T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "A deep dive into how remote origin and branches work in Git and GitHub."
 categories:
   - GitHub
 tags:

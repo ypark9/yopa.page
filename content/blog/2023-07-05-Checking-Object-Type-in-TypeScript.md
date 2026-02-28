@@ -2,7 +2,7 @@
 title: Checking Object Type in TypeScript
 date: 2023-07-05T01:25:00-04:00
 author: Yoonsoo Park
-description: ""
+description: "Various methods and best practices for checking object types in TypeScript at runtime."
 categories:
   - TypeScript
 tags:
