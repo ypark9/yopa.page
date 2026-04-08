@@ -1,105 +1,325 @@
 ---
-title: "Strands vs LangGraph: Why Restricting Agent Frameworks is an Outdated Strategy"
-date: 2026-02-28T16:15:00-05:00
+title: "AWS Strands vs LangGraph on Bedrock AgentCore: Lessons from Building an Agentic Platform"
+date: 2026-02-28
 author: Yoonsoo Park
-description: "A deep dive into the Strands vs LangGraph debate and why limiting your platform's agentic frameworks based on human readability is a step backward in the age of AI."
+description: "Comparing AWS Strands and LangGraph for agentic workflows on Amazon Bedrock AgentCore through hands-on PoC experience. Covers cold start gotchas, a three-tier tool architecture pattern, async tool limitations, and honest trade-offs from building a multi-tool agent on a financial SaaS platform."
 categories:
-  - AI
-  - Architecture
+  - AWS
+  - AI Architecture
+  - Agentic AI
 tags:
+  - AWS Strands
   - LangGraph
-  - Strands
-  - Platform Engineering
+  - Bedrock AgentCore
 ---
 
-Recently, I was in an architecture meeting where a very common debate came up: should we standardize on simple, linear agent frameworks (like Strands or basic chains)? Or should we use more advanced, stateful tools (like LangGraph)?
+> Comparing AWS Strands and LangGraph through hands-on PoC experience on Amazon Bedrock AgentCore — real cold start numbers, a three-tier tool architecture pattern, and the async tool gap that caught us off guard.
 
-The argument for the simpler route usually sounds like this: _"If we standardize on a basic framework, everyone can write and understand the code easily, even if they aren't AI experts."_
+[AWS Strands Agents SDK](https://github.com/strands-agents/sdk-python) |
+[LangGraph Documentation](https://langchain-ai.github.io/langgraph/) |
+[Amazon Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/)
 
-At first glance, this sounds like practical engineering leadership. It follows the old rule that code should be written for humans to read. But applying this old logic to the new AI-driven environment is a mistake.
+Most framework comparisons stop at "hello world." You read them, nod along, then hit a wall that the blog never mentioned. This post is the opposite of that. I want to share what actually happened when we ran both AWS Strands and LangGraph through PoCs on a financial SaaS platform, picked one, and started building a real multi-tool agent with it. Spoiler: we found a gap that made us rethink our confidence level.
 
-However, arguing that "complex stateful frameworks are always better" is equally short-sighted. As platform engineers, our job isn't to pick a favorite tool; it's to understand the deep trade-offs between governance and autonomy. Let's break down where each philosophy shines and where they fall apart.
+## The Setup: Why We Needed an Agent Framework
 
-### The Case for Strands: Governance and the "Blast Radius"
+Our platform is 100% AWS-native. The primary execution environment is **Amazon Bedrock AgentCore** — think of it as a managed runtime for AI agents with built-in memory, tool routing, and IAM-based auth. We needed to build agentic workflows that could handle 51 backend actions (knowledge base search, document extraction, custom AI actions, etc.) for financial domain customers.
 
-The push for simpler frameworks like Strands isn't just about developers being afraid of new technology. From an operational standpoint, there are massive benefits to standardization and constraint.
+Two candidates made the shortlist:
 
-When a platform team enforces a single, simple framework, they are optimizing for **Governance and Business Continuity**.
+- **LangGraph** (LangChain ecosystem) — explicit state machines, large community, mature docs
+- **AWS Strands** (AWS-native) — autonomous agent loop, `@tool` decorators, minimal boilerplate
 
-1.  **Minimizing the Blast Radius**: Complex, stateful agents (like those built in LangGraph) are powerful precisely because they can loop, retry, and make autonomous decisions. But what happens when an agent gets stuck in a hallucination loop and repeatedly hammers an expensive internal API? Simple, linear DAGs (Directed Acyclic Graphs) restrict this freedom. They are predictable. If something fails, you know exactly where it stopped.
-2.  **The Cost of Tooling Fragmentation**: If Team A uses LangGraph (Python), Team B uses LangChain (JS), and Team C uses Strands, the platform team now has to maintain three different logging standards, deployment pipelines, and security audit trails. Standardizing on one framework drastically reduces operational overhead.
-3.  **Onboarding and Attrition**: Companies don't rely perfectly on "Rockstar" engineers. People leave. When an engineer leaves behind a massive, complex LangGraph architecture, onboarding the next person to understand that intent—even with AI assistance—takes significant time. A simple, standardized codebase is a safety net for employee turnover.
+We PoC'd both, picked Strands, and started building a real agent with 25+ tools on it. The story isn't as simple as "X is better." It's more like "X works great until you hit *this* wall."
 
-### The Case for LangGraph: Managing Real-World Complexity
+## What Killed LangGraph in Our PoC
 
-If Strands excels at governance, why are major enterprises moving heavily toward [LangGraph](https://blog.langchain.dev/langgraph/) for production in 2025 and 2026?
+I want to be clear: LangGraph is a solid framework. The state machine model gives you explicit control over every step — when the LLM gets called, when tools execute, how results route. For complex multi-step workflows, that's powerful. But in our environment, it never got the chance to show that.
 
-Because real-world autonomous agents don't work in straight lines. They work in loops (Observe-Orient-Decide-Act). When an agent hits an error, gets confusing data, or needs to double-check its facts against a vector database, it has to be able to loop back, adjust its context, and try again.
+### The 30-Second Wall
 
-LangGraph treats agents as nodes in a graph that supports _cycles_ and natively maintains persistent state across those loops. This isn't just theory:
+AgentCore Runtimes have a **strict 30-second initialization limit**. That's not configurable. LangGraph relies on `langchain-core`, which pulls in `numpy` and `pydantic-core` — packages that need native C-extensions (`.so` files compiled for Linux ARM64). When you try to `pip install` these during cold start, you reliably blow past the 30-second limit.
 
-- **Uber**: Uber used LangGraph in their Developer Platform to build autonomous coding helpers. By letting LangGraph iteratively write code, read error logs, and rewrite it, Uber saved around **21,000 developer hours**.
-- **LinkedIn**: LinkedIn used LangGraph to build internal tools like an SQL Bot that translates natural language to SQL and checks the output against database schemas in a repetitive validation loop.
-- **Elastic**: Elastic coordinates specialized AI agents for continuous SecOps threat detection, where simple one-shot LLM prompts are far too brittle.
+The workaround exists: use Docker-based Lambda build containers (`public.ecr.aws/sam/build-python3.11`), pre-compile ARM64 wheels, bundle them into your CDK code assets before deployment. It works. But it also means every code change goes through a Docker build step that kills your iteration speed. For a PoC where you're experimenting rapidly, that friction adds up fast. Trust me, we tried to make it work for a while before moving on.
 
-These use cases rely on architectural patterns that simply break when forced into simple linear frameworks:
+We confirmed this wasn't a one-time issue — across our entire PoC period with AgentCore, the 30-second init limit remained the fundamental constraint. **LangGraph remains blocked for our use case** unless AgentCore lifts this limit or LangGraph dramatically reduces its dependency footprint.
 
-1.  **Self-Correcting Agents**: Automatically reading error logs and rewriting code or queries.
-2.  **Iterative RAG**: Retrieving, evaluating, and refining searches before answering.
-3.  **Stateful Multi-Agent Orchestration**: Handing off tasks between specialized "Coder" and "Reviewer" agents over structured state channels.
+### The Ecosystem Advantage is Real Though
 
-If you force these complex requirements into a basic framework, developers don't suddenly stop needing to solve the problem. They just end up building hacky, unmaintainable, recursive workarounds _outside_ the framework.
+I want to acknowledge something: LangGraph has significantly better documentation and community support. It launched earlier, so there are more reference implementations, more Stack Overflow answers, more patterns to copy. When we hit issues with Strands, the answer was often "read the Bedrock docs and figure it out." With LangGraph, someone had usually already solved it. That gap matters during the learning curve. It just didn't outweigh the deployment blocker for us.
 
-### A Real-World Test: Strands vs. LangGraph in AgentCore
+## Strands in Practice: What We Actually Built
 
-To ground this debate, I recently built two agents to compare these approaches directly. Both were written in Python, packaged using `uv`, and deployed to our internal AgentCore framework, where different endpoints trigger various AI actions.
+Here's our agent entry point. The whole thing:
 
-First, I built a Strands-based agent packaged as a Lambda layer. Its architecture essentially became a smart gateway: it took a request, selected an existing AI action, executed it, and returned the answer to the user. Honestly, it was hard to call this truly "agentic." Because of the framework's linear nature, it struggled to let the agent freely use multiple tools, chain their outputs, and autonomously decide on the next steps based on intermediate results. It felt more like conditional routing than autonomous reasoning.
+```python
+# agent.py — 26 lines total
+from strands_agents import Agent, BedrockModel
 
-Next, I built the same concept using LangGraph, packaged to run in a Docker AgentCore runtime. The behavioral difference was night and day. Inside LangGraph, the agent could freely call a tool, fetch data, analyze the result, realize it needed more context, and autonomously call a second tool to supplement its answer before responding. It was true multi-step agentic behavior. However, the trade-off was undeniable: the learning curve for LangGraph was significantly steeper, and managing the state across those loops demanded far more upfront engineering effort.
+model = BedrockModel(
+    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
+    temperature=0.1,
+    streaming=True,
+)
 
-#### The Workaround: Externalizing State to AgentCore
+agent = Agent(model=model, tools=tools, system_prompt=prompt)
+result = agent(user_input)  # Autonomous loop handles everything
+```
 
-Is it possible to make a linear framework like Strands behave more like a true agent? Yes, but you have to stop fighting the framework and shift the responsibility to your runtime.
+That's it. No state machine definition, no node compilation, no conditional edge routing. The agent loop decides when to call tools, when to respond, when to ask for clarification. You hand it tools and a prompt, it figures out the rest.
 
-If you are running Strands inside a persistent environment like an AgentCore runtime (rather than just an isolated Lambda), you can externalize the "Scratchpad" (the agent's working memory) and the "While Loop."
+For comparison, the LangGraph equivalent would need roughly 80-100 lines: state class definition, chatbot node, tools node, conditional edge routing function, graph compilation, and invocation boilerplate.
 
-Instead of forcing Strands to loop internally, you treat it purely as a reasoning engine:
+**Cold starts?** Under 500ms. We use UV bytecode compilation (`UV_COMPILE_BYTECODE=1` in our Dockerfile) which pre-compiles Python files during the Docker build. No numpy, no pydantic-core compilation overhead. CDK deploys directly without Docker pre-compilation tricks.
 
-1. AgentCore maintains a session state (e.g., in DynamoDB or ElastiCache) holding the history of previously called tools and their outputs.
-2. AgentCore calls Strands with this state. Strands simply outputs the _next best action_ (e.g., `{"intent": "call_db_tool"}`).
-3. AgentCore intercepts this, executes the DB tool itself, appends the result to the state, and calls Strands _again_.
+### The Three-Tier Tool Architecture
 
-By elevating the ReAct loop and state management up to the AgentCore orchestrator layer, you bypass the linear limitations of Strands while still adhering to platform mandates for "readable, straightforward code."
+This is the pattern we landed on through our PoC iterations. It wasn't planned upfront — it emerged from hitting real constraints around latency, security, and multi-tenant isolation:
 
-### The Verdict: Constraint vs. Capability
+```
+┌─────────────────────────────────────────────┐
+│        Strands Agent (Claude Sonnet 4)      │
+└──────────────────┬──────────────────────────┘
+                   │
+     ┌─────────────┼─────────────────┐
+     ▼             ▼                 ▼
+┌─────────┐  ┌──────────┐  ┌──────────────┐
+│ Direct  │  │ Gateway  │  │    Tool      │
+│ Tools   │  │ Tools    │  │   Wrappers   │
+│ (15×)   │  │ (10×)    │  │              │
+└─────────┘  └──────────┘  └──────────────┘
+│ @tool      │ MCP proto  │ Auto-inject
+│ decorator  │ Lambda     │ tenant_id
+│ In-process │ backends   │ Hidden from
+│ execution  │ IAM auth   │ LLM context
+└────────────┴────────────┴───────────────
+```
 
-So, which framework makes sense? It comes down to what you are trying to control.
+**Why three tiers?**
 
-**Choose Strands (or similar linear frameworks) when:**
+**Direct Tools** run inside the agent container. They're simple functions decorated with `@tool` — Strands auto-extracts the JSON schema from the function signature and docstring. No manual schema definition needed. We have 15 of these for low-latency, same-tenant operations. Average: ~24 lines per tool including docstring and serialization.
 
-- The primary goal is building deterministic, single-pass utilities (like summarizing text or formatting logs).
-- You are optimizing for quick onboarding and treating the engineering team as highly replaceable components.
-- Strict operational governance and limiting the AI's "blast radius" is more important than autonomous capability.
+Here's what a direct tool looks like (simplified from our actual implementation):
 
-**Choose LangGraph (or stateful orchestrators) when:**
+```python
+@tool
+def search_knowledge_base(query: str, max_results: int = 5) -> str:
+    """Search the knowledge base for relevant documents."""
+    client = boto3.client("bedrock-agent-runtime")
+    response = client.retrieve(
+        knowledgeBaseId=os.environ["KB_ID"],
+        retrievalQuery={"text": query},
+        retrievalConfiguration={
+            "vectorSearchConfiguration": {"numberOfResults": max_results}
+        },
+    )
+    results = [
+        {"text": r["content"]["text"], "score": r["score"]}
+        for r in response["retrievalResults"]
+    ]
+    return json.dumps({"results": results, "count": len(results)})
+```
 
-- The problem requires autonomous decision-making, self-correction, or iterative RAG.
-- You are building true Multi-Agent Systems (MAS) where specialized agents communicate via structured state channels.
-- You trust your engineers (and their AI coding assistants) to manage complexity, and want to optimize for the absolute ceiling of what AI can achieve.
+~16 lines. In LangGraph, the same tool needs a state TypedDict, a node function, graph wiring, and compilation — roughly 40-50 lines. Multiply that by 15 tools and the difference is significant.
 
-### Building for the Next Decade
+**Gateway Tools** go through MCP (Model Context Protocol) to Lambda backends with SigV4 authentication. These handle cross-tenant operations or operations that need their own execution context. We define them in CDK and the MCP client discovers them at runtime.
 
-When a platform team forces people to use a basic framework, they are trying to prevent bad code. But as we enter a world where AI doesn't just run code but writes and explains it, we need to ask a harder question:
+**Tool Wrappers** solve a subtle but important problem: tenant isolation. The LLM should never see or manipulate `tenant_id` directly — that's a security boundary. Wrappers auto-inject the tenant ID into tool calls before they hit the backend, keeping it invisible to the model:
 
-Are we designing our internal platforms for the absolute lowest level of human understanding, or are we designing them to get the most out of AI?
+```python
+# Simplified wrapper pattern
+def wrap_tool_with_tenant(tool_fn, tenant_id):
+    @wraps(tool_fn)
+    def wrapped(**kwargs):
+        kwargs["tenant_id"] = tenant_id  # Injected, never from LLM
+        return tool_fn(**kwargs)
+    return wrapped
+```
 
-A platform team ultimately has to answer the internal question: "Why did you make this decision?" And we all know there is no answer that will satisfy everyone. Still, we should at least point in a direction that actually fits the era we live in. As a senior engineer at my company, I know it would be personally advantageous for me to just lock into one simple framework and build a safe little silo of expertise around it.
+This pattern was born from a real security review, not from upfront design. The LLM was occasionally hallucinating tenant IDs in early testing — yeah, it just made up tenant IDs that looked plausible. In a financial platform, that's a nightmare. Wrappers killed that problem entirely.
 
-Ultimately, the direction of a platform has to be decided by someone. The scary part is that because this is uncharted territory for everyone, the direction is usually set by the loudest voices—the people with high titles who have no guilt in fooling themselves. This is the real challenge of working with people in this era. Everyone uses AI and feels its impact, but no one wants to admit, "I built this entirely with AI." Just saying that implies our jobs might be unnecessary. This fear is especially strong for those who don't have deep, hands-on coding knowledge to begin with.
+## The Bedrock Memory Integration
 
-That is exactly why the framing of "code that all human developers can understand" or "code that we verified" is so precious to them—even if they relied entirely on AI to review it in the background. Whether it makes architectural sense or not, we all have to survive right now. Because we feel the constant need to justify our salaries and our titles, we end up creating strange, ego-driven policies. Policies exactly like: _"We must write code that everyone in the org can understand."_
+One thing that "just worked" was Bedrock Memory. Our configuration:
 
-But while we sit in meeting rooms making these decisions, the outside world is changing incredibly fast. When I wonder if our competitors are also spending their precious time debating philosophical questions like this... it scares me. I fear they are already out there trying things. In whichever direction that might be.
+- **Semantic indexing**: Auto-retrieve relevant context from past conversations
+- **Summarization**: Compress long conversation histories so the context window stays manageable
+- **Retention**: 90 days
+- **Last K turns**: Load the 10 most recent turns on agent initialization
 
-It’s a question every platform team needs to answer before they decide on their "official" AI standard.
+We use a `HookProvider` pattern (more on hooks below) to load memory on session start. The agent gets conversation context without any explicit retrieval code — Bedrock handles the vector search and summarization behind the scenes.
+
+This is one of Strands' strongest selling points compared to LangGraph: the managed infrastructure handles memory, auth, and tool routing. With LangGraph, you'd wire each of these manually.
+
+## The Gotchas Nobody Tells You About
+
+Building a real agent teaches you things that docs don't.
+
+### Container Tool Caching (High Impact)
+
+After deploying a new Gateway Lambda function, the running AgentCore container still has **stale tool definitions**. The MCP client caches tool schemas at container startup. Your only option: wait 60-90 seconds for the container idle timeout to trigger a restart.
+
+This sounds minor. It isn't. When you're iterating on a Gateway tool — deploy, test, see wrong behavior, realize it's stale, wait, test again — you lose 2-3 minutes per cycle. Over a day of active development, that adds up.
+
+### Response Format Quirk
+
+`agent.result.message` returns a dict, not a string:
+
+```python
+# What you might expect
+result.message  # "Here's the extracted text..."
+
+# What you actually get
+result.message  # {"role": "assistant", "content": [{"text": "Here's the extracted text..."}]}
+```
+
+Every caller has to extract `content[*].text` blocks. It's a small thing, but when you're debugging at midnight wondering why your response is empty... you remember this one. Wish the SDK just handled it.
+
+### boto3 Version Lock-in
+
+Strands with AgentCore requires `boto3 >= 1.42.54` for the Data Plane client. If your other services pin an older version, you'll hit dependency conflicts. We manage this with isolated virtual environments per service, but it's friction.
+
+## The Hard Part: The Async Tool Gap
+
+Now for the finding that changed my confidence level from "high" to "medium." This is where Strands' simplicity becomes a real limitation.
+
+### The Problem
+
+Our platform has dozens of backend actions. Roughly half are synchronous. **The other half are asynchronous** — things like Textract document extraction (2-5 minutes for large PDFs), async LLM inference, document intelligence processing. The async ones use a robust infrastructure: job tracking, Step Functions for polling, EventBridge for completion events.
+
+But Strands' autonomous loop completes in a single conversation turn. When a tool returns `{"status": "pending"}`, the agent receives it, tells the user "processing...", and the conversation ends. There's no built-in mechanism to poll, wait, or resume.
+
+Here's what actually happens in practice:
+
+```
+User: "Extract text from this document"
+Agent: calls extract_document("file_id_123")
+  → returns {"status": "pending", "job_id": "abc-def-..."}
+Agent: "Text extraction is in progress. Please check back later."
+[Agent loop ends — no mechanism to retry or wait]
+
+User: "Is it done yet?"
+Agent: calls check_job_status("abc-def-...")
+  → returns {"status": "pending"}
+Agent: "Still processing..."
+
+User: [waits another minute, asks again]
+Agent: calls check_job_status("abc-def-...")
+  → returns {"status": "succeeded", "output": "..."}
+Agent: "Here's the extracted text!"
+```
+
+The user has to manually poll. That's not a great experience.
+
+### Why This Matters More Than It Seems
+
+During the early PoC, this felt like a minor issue — we mostly exposed sync tools first. But looking at our actual backend, roughly half of our actions are asynchronous. Things like document processing via Textract, async LLM inference, batch data operations — these are all long-running jobs that return `pending` and complete later.
+
+Most of these aren't exposed to the Strands agent yet. But as we expand the tool surface toward production, this architectural gap becomes central.
+
+### The Architecture Disconnect
+
+Our backend already has great async infrastructure. The pattern is common in AWS: when a tool kicks off a long-running job (e.g., Textract, async inference), it returns immediately with `{"status": "pending"}` and a job ID. A Step Functions state machine then polls for completion, updates the job status, and stores the result.
+
+```
+Tool invocation
+  │
+  ├─ Sync job? → execute → status: "succeeded" → return
+  │
+  └─ Async job? → validate → status: "pending"
+                       │
+                       ▼
+                 Step Functions
+                 ├─ Poll every N seconds
+                 ├─ Update status: pending → running → succeeded
+                 └─ Store result
+```
+
+The problem is that **Strands doesn't know about any of this**. The agent calls the tool, gets back `{"status": "pending"}`, and moves on. Step Functions completes the job in the background, but the agent is long gone.
+
+```
+┌─────────────────────────────────┐
+│  Strands Agent                  │
+│  call tool()                    │
+│  → {"status": "pending"}        │
+│  → tells user "processing..."   │
+│  → loop ends ← HERE             │
+└────────────────┬────────────────┘
+                 │ (disconnected)
+┌────────────────▼────────────────┐
+│  Backend Async Infrastructure   │
+│  Step Functions polling          │
+│  Job: pending → succeeded        │
+│  (agent is already gone)         │
+└─────────────────────────────────┘
+```
+
+### Where LangGraph Would Shine
+
+This is, honestly, where LangGraph's state machine model is genuinely superior. You can define a polling loop as a conditional edge:
+
+```python
+workflow.add_conditional_edges("poll_status", route_by_status, {
+    "check_again": "poll_status",  # ← loops back
+    "completed": "summarize",
+    "timeout": END,
+})
+```
+
+The state machine maintains `job_id`, `retries`, `status` across iterations. One user request, one final result. No manual polling.
+
+### Our Workaround Strategy
+
+We're not switching frameworks over this. Instead, we're taking a phased approach:
+
+**Right now**: Accept manual polling for the few async tools we've exposed. Not ideal, but the frequency is low enough that users tolerate it.
+
+**Next quarter**: Implement EventBridge + Bedrock Memory integration. When an async job completes, an EventBridge rule triggers a Lambda that writes the result to Bedrock Memory with a tagged key. When the user asks again, the agent checks Memory first — one follow-up instead of repeated polling.
+
+```python
+@tool
+def extract_document_text(file_id: str) -> str:
+    """Start async extraction. Results stored in memory on completion."""
+    job_id = start_textract_async(file_id)
+    # EventBridge: Textract complete → Lambda → save to Memory
+    return json.dumps({
+        "status": "processing",
+        "message": "Extraction started. Ask me again in a minute for results."
+    })
+
+@tool
+def check_extraction_result(job_id: str) -> str:
+    """Check if extraction completed (reads from Memory first)."""
+    result = memory_client.search(tag=f"extraction_{job_id}")
+    if result:
+        return json.dumps({"status": "completed", "text": result["text"]})
+    return json.dumps({"status": check_job_status(job_id)})
+```
+
+**Before production**: If async tool usage looks like it'll exceed 60-70% of traffic, we'll re-evaluate LangGraph. By then, maybe AgentCore lifts the 30-second init limit, or maybe we invest in Docker pre-compilation to make LangGraph deployable. We'll see.
+
+## The Numbers
+
+Here's where the metrics stand so far:
+
+| Metric | Value |
+|--------|-------|
+| Agent setup code | 26 lines (agent.py) + 79 lines (main.py) |
+| Lines per tool (avg) | ~24 lines with `@tool` decorator |
+| Tools implemented | 25 (15 direct + 10 Gateway) |
+| Cold start | < 500ms |
+| Full CDK deploy | ~8-12 min |
+| Container tool refresh | ~60-90 sec after Gateway update |
+| Code reduction vs LangGraph | ~3× for tool definitions |
+
+## So, Which One Should You Pick?
+
+If you're deploying on Bedrock AgentCore with mostly synchronous tools, **Strands is the clear winner**. The developer experience is outstanding — 26 lines for an agent, sub-500ms cold starts, and `@tool` decorator that eliminates boilerplate. The managed infrastructure (memory, auth, tool routing) saves weeks of wiring.
+
+If your workload is async-heavy — lots of long-running jobs, polling, multi-step workflows with state — **LangGraph's state machine model is architecturally better suited**. But you'll need to solve the AgentCore deployment friction first (Docker pre-compilation, dependency bundling).
+
+If you're somewhere in the middle like us — mostly sync today, growing async tomorrow — **start with Strands and plan your async workarounds early**. Don't wait until half your tools are async to discover the gap like we did.
+
+The honest answer is that there's no perfect framework yet for this space. Strands trades control for simplicity. LangGraph trades simplicity for control. Both trade-offs have consequences that only show up after you've been building with them for a while.
+
+If you're building agentic workflows on AWS and have questions about any of this, feel free to reach out. I'm still learning too, and the landscape is changing fast. Hopefully this post saves you some of that discovery time we had to go through the hard way.
