@@ -139,21 +139,29 @@ Go to **OAuth & Permissions → Scopes → Bot Token Scopes** and add:
 | `app_mentions:read` | Respond to @mentions in channels |
 | `channels:read` | List public channels |
 
-### 1.4 Subscribe to Events
+### 1.4 Enable the Messages Tab (DMs)
+
+Go to **App Home** and check **"Allow users to send Slash commands and messages from the messages tab"**. Without this, users cannot DM your bot — the message input won't appear.
+
+### 1.5 Subscribe to Events
 
 Go to **Event Subscriptions** → Toggle ON → Under **Subscribe to bot events**, add:
 
 - `message.im` — Receive DM messages
 - `app_mention` — Respond to @mentions in channels
 
-### 1.5 Install to Workspace
+> **This step is critical.** If you skip it, your bot's Socket Mode connection will succeed (you'll see logs), but no messages will ever arrive. The gateway runs, the container is healthy, yet the bot is deaf.
+
+### 1.6 Install to Workspace
 
 1. Go to **OAuth & Permissions**
 2. Click **"Install to Workspace"**
 3. Authorize the requested permissions
 4. **Save the Bot User OAuth Token** — starts with `xoxb-` (this is your `SLACK_BOT_TOKEN`)
 
-### 1.6 Test the App Exists
+> **Any time you change scopes or event subscriptions**, you must reinstall the app. Slack won't apply changes until you do.
+
+### 1.7 Test the App Exists
 
 Open Slack, go to Apps, find your bot. Send it "hello" — it won't respond yet (no backend), but you should see it in the app list.
 
