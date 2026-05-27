@@ -11,6 +11,14 @@
 
   <link rel="canonical" href="{{ .Permalink }}" />
 
+  {{/* hreflang alternates for translated pages (multilingual SEO) */}}
+  {{ if .IsTranslated }}
+    {{ range .AllTranslations }}
+    <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />
+    {{ end }}
+    <link rel="alternate" hreflang="x-default" href="{{ (index .AllTranslations 0).Permalink }}" />
+  {{ end }}
+
   {{ template "_internal/google_analytics.html" . }}
 
   <meta property="og:site_name" content="{{.Site.Params.siteName}}" />

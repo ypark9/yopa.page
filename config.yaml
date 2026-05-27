@@ -1,12 +1,25 @@
 baseurl: "https://www.yopa.page/"
 relativeURLs: true
 languageCode: en-us
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: false
 title: thats.nono
 theme: "hugo-tania"
 pagination:
   pagerSize: 8
 googleAnalytics: G-EQ4B3K8VCL
 uglyurls: true
+
+languages:
+  en:
+    languageCode: en-us
+    languageName: English
+    weight: 1
+  ko:
+    languageCode: ko-kr
+    languageName: 한국어
+    weight: 2
+    title: thats.nono
 
 # Configure taxonomies explicitly
 taxonomies:
