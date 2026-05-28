@@ -1,12 +1,25 @@
 baseurl: "https://www.yopa.page/"
 relativeURLs: true
-languageCode: en-us
+locale: en-us
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: false
 title: thats.nono
 theme: "hugo-tania"
 pagination:
   pagerSize: 8
 googleAnalytics: G-EQ4B3K8VCL
 uglyurls: true
+
+languages:
+  en:
+    locale: en-us
+    label: English
+    weight: 1
+  ko:
+    locale: ko-kr
+    label: 한국어
+    weight: 2
+    title: thats.nono
 
 # Configure taxonomies explicitly
 taxonomies:
@@ -62,5 +75,12 @@ sitemap:
   filename: sitemap.xml
   priority: 0.5
 
+outputFormats:
+  LLMS:
+    mediaType: "text/plain"
+    baseName: "llms"
+    isPlainText: true
+    notAlternative: true
+
 outputs:
-  home: ["HTML", "RSS", "JSON"]
+  home: ["HTML", "RSS", "JSON", "LLMS"]

@@ -1,0 +1,24 @@
+# {{ .Site.Title }}
+
+> {{ .Site.Params.siteDesc }}
+
+{{ .Site.Params.siteName }} is the personal tech blog of {{ .Site.Params.author }}, focused on software engineering, AWS, AI/LLM tooling, and developer productivity.
+
+Each post is also available as raw Markdown by appending `.md` to the URL is NOT enabled here; the canonical HTML URLs below are the primary source.
+
+## Pages
+- [About]({{ "about.html" | absURL }}): About the author
+- [Articles]({{ "articles.html" | absURL }}): Curated articles index
+{{- with .Site.GetPage "/dimly" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Description | default (.Summary | plainify | truncate 140) }}
+{{- end }}
+
+## Blog Posts
+{{- range first 80 (where .Site.RegularPages "Section" "blog") }}
+- [{{ .Title }}]({{ .Permalink }}){{ with (.Description | default (.Summary | plainify | truncate 140)) }}: {{ . }}{{ end }}
+{{- end }}
+
+## Optional
+- [RSS Feed]({{ "index.xml" | absURL }})
+- [Tags]({{ "tags/" | absURL }})
+- [Categories]({{ "categories/" | absURL }})
