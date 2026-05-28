@@ -19,9 +19,9 @@ tags:
   - RAG Applications
 ---
 
-> A comprehensive guide to choosing and implementing AWS native vector database services for RAG applications, covering OpenSearch, RDS PostgreSQL, Neptune Analytics, Bedrock Knowledge Bases, and Kendra with real-world decision frameworks.
+> A guide to choosing and implementing AWS native vector database services for RAG applications, including OpenSearch, RDS PostgreSQL, Neptune Analytics, Bedrock Knowledge Bases, and Kendra with real-world decision frameworks.
 
-The landscape of Retrieval-Augmented Generation (RAG) applications has evolved dramatically, with vector databases becoming the backbone of modern AI systems. As organizations are motivated to implement RAG solutions, the choice of vector database architecture can make or break the success of your application. AWS offers five native services for vector database functionality, each optimized for different use cases and scale requirements. Let's dive in!
+The Retrieval-Augmented Generation (RAG) applications has evolved dramatically, with vector databases becoming the core of modern AI systems. As organizations are motivated to implement RAG solutions, the choice of vector database architecture can make or break the success of your application. AWS offers five native services for vector database functionality, each optimized for different use cases and scale requirements. Let's dive in! Side note: if you are considering RAG then I suggest you to consider CAG as well. This might be a better fit for your use case.
 
 In 2024-2025, these services have made significant enhancements in my opinion. From OpenSearch's fourfold latency improvements to pgvector 0.8.0's enhanced query planning capabilities, and Bedrock Knowledge Bases' new GraphRAG support, these options are far more powerful and production-ready than ever before.
 
@@ -38,7 +38,7 @@ In 2024-2025, these services have made significant enhancements in my opinion. F
 [Serverless vector search](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-vector-search.html)
 [Choosing k-NN algorithms](https://aws.amazon.com/blogs/big-data/choose-the-k-nn-algorithm-for-your-billion-scale-use-case-with-opensearch/)
 
-Amazon OpenSearch Service stands as the most robust option for high-scale vector deployments. With OpenSearch 2.17 bringing significant improvements including fourfold latency improvements and 25% better performance through parallelization, it's designed for organizations that need to handle billions of vectors with sub-second response times.
+Amazon OpenSearch Service stands as the most strong choice for high-scale vector deployments. With OpenSearch 2.17 bringing significant improvements including fourfold latency improvements and 25% better performance through parallelization, it's designed for organizations that need to handle billions of vectors with sub-second response times.
 
 **Key Capabilities:**
 
@@ -47,13 +47,13 @@ Amazon OpenSearch Service stands as the most robust option for high-scale vector
 - **Advanced Optimization**: Up to 32x compression with binary vectors and 70% cost reduction with disk-optimized ANN
 - **Serverless Option**: Auto-scaling with pay-per-OCU pricing model
 
-The service excels when you need maximum flexibility and can invest in the operational complexity. Recent disk-based vector search capabilities reduce memory requirements by up to 66% while maintaining query performance through intelligent rescoring.
+The service are great when you need more flexibility and willing to embrace the operational complexity. Recent disk-based vector search capabilities reduce memory requirements by up to 66% while maintaining query performance which is impressive.
 
 ## ![RDS PostgreSQL](images/aws/RDS.png) Amazon RDS PostgreSQL with pgvector: The Integration Master
 
 [AWS RDS PostgreSQL](https://aws.amazon.com/rds/postgresql/) | [pgvector 0.8.0 announcement](https://aws.amazon.com/about-aws/whats-new/2024/11/amazon-rds-for-postgresql-pgvector-080/) | [pgvector 0.7.0 announcement](https://aws.amazon.com/about-aws/whats-new/2024/05/amazon-rds-postgresql-pgvector-0-7-0/) | [RAG workflows guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/retrieval-augmented-generation-options/rag-custom-retrievers.html)
 
-For organizations with existing PostgreSQL infrastructure, RDS with pgvector offers the smoothest integration path. The latest pgvector 0.8.0 release includes significant improvements to PostgreSQL's query planner selection when filters are present, delivering better query performance and search result quality.
+For organizations with existing PostgreSQL infra, RDS with pgvector offers the smooth integration path. The latest pgvector 0.8.0 release includes significant improvements to PostgreSQL's query planner selection with the filter, delivering better query performance and search result quality.
 
 **Recent Enhancements:**
 
@@ -62,13 +62,13 @@ For organizations with existing PostgreSQL infrastructure, RDS with pgvector off
 - **Advanced Data Types**: halfvec (50% memory reduction), sparsevec, and binary vector support
 - **Enhanced Filtering**: Iterative index scans help prevent 'overfiltering' and ensure sufficient results
 
-This option shines when you need to combine vector search with complex relational queries and maintain ACID compliance across your entire dataset.
+You will appreciate this option when you need to combine vector search with complicated relational queries and maintain [ACID compliance](https://www.teradata.com/insights/data-platform/understanding-acid-compliance#:~:text=ACID%20compliance%20ensures%20that%20the,case%20of%20a%20system%20failure). across your entire dataset.
 
 ## ![Neptune Analytics](images/aws/Neptune.png) Amazon Neptune Analytics: The Relationship Expert
 
 [AWS Neptune](https://aws.amazon.com/neptune/) | [AWS Neptune Analytics Documentation](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/what-is-neptune-analytics.html) | [Vector indexing guide](https://docs.aws.amazon.com/neptune-analytics/latest/userguide/vector-index.html) | [GraphRAG blog post](https://aws.amazon.com/blogs/machine-learning/improving-retrieval-augmented-generation-accuracy-with-graphrag/)
 
-Neptune Analytics introduces a unique approach by combining vector similarity with graph relationships. With GraphRAG capabilities in preview, it provides more accurate and comprehensive responses by using RAG techniques combined with graphs.
+Neptune Analytics introduces a unique approach by combining vector similarity with graph relationships. With GraphRAG capabilities in preview, it provides accurate and comprehensive responses.
 
 **Unique Features:**
 
@@ -77,13 +77,13 @@ Neptune Analytics introduces a unique approach by combining vector similarity wi
 - **Complex Query Support**: Processes graph + vector queries efficiently
 - **Accuracy Improvements**: Up to 35% better answer quality for interconnected queries
 
-Choose Neptune Analytics when your data has rich relationships and you need to understand connections between entities, not just similarity.
+Neptune Analytics is a great choice when your data has rich relationships and you need to understand connections between entities, not just similarity.
 
 ## ![Bedrock Knowledge Bases](images/aws/Bottlerocket.png) Amazon Bedrock Knowledge Bases: The Rapid Deployment Solution
 
 [AWS Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/) | [AWS Bedrock Knowledge Bases Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) | [AWS Bedrock Knowledge Bases How it works guide](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-how-it-works.html) | [AWS Bedrock Knowledge Bases Launch announcement](https://aws.amazon.com/blogs/aws/knowledge-bases-now-delivers-fully-managed-rag-experience-in-amazon-bedrock/)
 
-Amazon Bedrock Knowledge Bases now supports custom connectors and ingestion of streaming data, allowing developers to add, update, or delete data through direct API calls. This represents the fastest path from concept to production RAG application.
+Amazon Bedrock Knowledge Bases now supports custom connectors and ingestion of streaming data. This allows developers to add, update, or delete data through direct API calls. This represents the fastest path from POC to production ready RAG application.
 
 **2024-2025 Enhancements:**
 
@@ -93,13 +93,13 @@ Amazon Bedrock Knowledge Bases now supports custom connectors and ingestion of s
 - **Enhanced Data Sources**: Web crawler, Confluence, SharePoint, and Salesforce connectors
 - **Built-in Evaluation**: RAG evaluation tools in preview for quality assessment
 
-This service eliminates months of development time while providing enterprise-grade features that most custom implementations lack.
+This service eliminates months of development time while providing enterprise-ready features that most custom implementations are lack of.
 
 ## ![Kendra](images/aws/Kendra.png) Amazon Kendra: The Enterprise Search Specialist
 
 [AWS Kendra](https://aws.amazon.com/kendra/) | [AWS Kendra Features Overview](https://aws.amazon.com/kendra/features/) | [AWS Kendra Index Types Documentation](https://docs.aws.amazon.com/kendra/latest/dg/hiw-index-types.html) | [AWS Kendra GenAI Index announcement](https://aws.amazon.com/blogs/machine-learning/introducing-amazon-kendra-genai-index-enhanced-semantic-search-and-retrieval-capabilities/)
 
-Kendra delivers enterprise-grade semantic search without requiring vector expertise. Its GenAI Index optimizes specifically for RAG workloads with 43 native data connectors and advanced document understanding capabilities.
+Kendra delivers enterprise-grade semantic search without requiring vector expertise. Its GenAI Index optimizes RAG workloads with 43 native data connectors and advanced document interpretation capabilities.
 
 **Enterprise Features:**
 
@@ -108,7 +108,7 @@ Kendra delivers enterprise-grade semantic search without requiring vector expert
 - **Advanced Access Control**: Built-in security and compliance features
 - **Document Intelligence**: Natural understanding of complex document structures
 
-While limited to English, Kendra excels at complex document comprehension and provides the fastest time-to-value for traditional enterprise search scenarios.
+While limited to **English**, Kendra is great at complex document understanding and provides the fastest time-to-value for traditional enterprise search scenarios.
 
 ## Performance and Scale: Making the Right Choice
 

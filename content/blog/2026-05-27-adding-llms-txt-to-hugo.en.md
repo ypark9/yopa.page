@@ -115,7 +115,7 @@ That's it.
 
 ## Honest take
 
-I added `llms.txt` to yopa.page because the cost is one template and zero ongoing maintenance, not because I expect Claude or ChatGPT to start reading it tomorrow. If the standard catches on, my site is ready. If it doesn't, I lost 30 minutes.
+I added `llms.txt` to yopa.page because the cost is one template and zero ongoing maintenance, not because I expect Claude or ChatGPT to start reading it tomorrow. If the standard catches on, my site is ready. If it doesn't, I lost 30 minutes but well? 
 
 That asymmetry — cheap to adopt, free option on future upside — is the whole reason to do this now. Don't rewrite your content strategy around it. Don't tell your boss it'll move SEO numbers. Just ship the file and move on.
 
