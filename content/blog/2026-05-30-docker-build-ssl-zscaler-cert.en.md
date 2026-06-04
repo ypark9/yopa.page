@@ -14,7 +14,7 @@ tags:
   - ssl
 ---
 
-If you work somewhere with Zscaler — or Netskope, Cisco Umbrella, any "secure web gateway" that does TLS interception — you have probably seen this during a `docker build`:
+If you work somewhere with Zscaler or Netskope, Cisco Umbrella, ... any "secure web gateway" that does TLS interception; you have probably seen this during a `docker build`:
 
 ```
 ERROR: Could not install packages due to an OSError:
