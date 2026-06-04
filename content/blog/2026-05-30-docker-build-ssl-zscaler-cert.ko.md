@@ -174,4 +174,4 @@ new PythonFunction(this, 'Fn', {
 
 처음 이 문제 부딪혔는데 내가 쓴 custom image라면 Pattern 1 — Dockerfile 다섯 줄에 build arg 하나. `PythonFunction`/`PythonLayerVersion`(혹은 번들링 이미지를 알아서 골라 쓰는 CDK construct) 쪽이라면, 한 번 마음먹고 커스텀 번들링 이미지 만들어서 ECR에 푸시하고 `devMode` 체크로 분기하기.
 
-Pattern 2 셋업하는 데 들이는 10분이, 다음에 만날 "cert 분명 추가했는데 왜 `pip`이 또 죽지" 세 시간을 살려준다 — 왜냐하면 그 `pip`은 우리 컨테이너가 아니라 CDK가 골라서 띄운 컨테이너 안에서 돌고 있고, 그 컨테이너를 변경하지 않으면 cert를 박을 방법이 없기 때문.
+Pattern 2 셋업하는 데 들이는 10분이, 다음에 만날 "cert 분명 추가했는데 왜 `pip`이 또 죽지"을 피함. 적어도 몇시간은 아낌. 문제의 `pip`은 우리 컨테이너가 아니라 CDK가 골라서 띄운 컨테이너 안에서 돌고 있고, 그 컨테이너를 변경하지 않으면 cert를 넘겨줄 방법이 없기 때문.
