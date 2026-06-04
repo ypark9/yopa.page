@@ -1,6 +1,6 @@
 ---
 title: "개인 AWS 계정 비용 가드레일 — Budget 알림, Auto-Stop, Anomaly Detection 3단 구성"
-date: 2026-05-30T12:35:00-04:00
+date: 2026-03-30T12:35:00-04:00
 author: Yoonsoo Park
 description: "개인 AWS 계정에 사이드 프로젝트 몇 개 굴린다 — EC2 하나, Bedrock 호출 좀, 가끔 실험들. 한 번의 사고가 4자리 숫자 청구서로 변하지 않도록 내가 쓰는 3단 가드레일을, 실제 CloudFormation과 셋업하면서 밟은 gotcha 포함."
 categories:

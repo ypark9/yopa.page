@@ -1,6 +1,6 @@
 ---
 title: "Personal AWS Cost Guardrails: Budget Alerts, Auto-Stop, and Anomaly Detection on a Hobby Account"
-date: 2026-05-30T12:35:00-04:00
+date: 2026-03-30T12:35:00-04:00
 author: Yoonsoo Park
 description: "I run a few side projects on a personal AWS account — an EC2 instance, some Bedrock calls, occasional experiments. Here's the three-layer cost guardrail I use to keep one bad afternoon from turning into a four-figure bill, with the actual CloudFormation and the gotchas I hit setting it up."
 categories:
