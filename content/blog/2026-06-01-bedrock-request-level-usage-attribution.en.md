@@ -1,6 +1,6 @@
 ---
 title: "Per-Request Cost Attribution on Amazon Bedrock — InvokeModel Metadata, Inference Profiles, and What to Use When"
-date: 2026-05-28T02:30:00-04:00
+date: 2026-06-01T02:30:00-04:00
 author: Yoonsoo Park
 description: "Amazon Bedrock now lets you tag every InvokeModel call with arbitrary metadata, joining application inference profiles and IAM-based attribution as a third way to slice cost. Here's how the three compare, when each one wins, and how to wire request-level metadata into your invocation logs without breaking existing dashboards."
 categories:
