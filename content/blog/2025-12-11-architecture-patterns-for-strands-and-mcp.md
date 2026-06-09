@@ -1,7 +1,8 @@
 ---
-title: Architecture Patterns for Strands and MCP (AWS re:Invent 2025)
+title: Architecture Patterns for Strands and MCP
 date: 2025-12-11
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A definitive guide to the Strands framework, Model Context Protocol (MCP), and Agent-to-Agent (A2A) communication."
 categories:
   - Architecture

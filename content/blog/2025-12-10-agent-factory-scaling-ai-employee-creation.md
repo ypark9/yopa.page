@@ -1,7 +1,8 @@
 ---
-title: Agent Factory - Scaling AI Employee Creation (AWS re:Invent 2025)
+title: Agent Factory: Scaling AI Employee Creation
 date: 2025-12-10
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "How to use the AWS Agent Factory and Strands SDK to automate the creation of production-grade AI agents."
 categories:
   - AWS
