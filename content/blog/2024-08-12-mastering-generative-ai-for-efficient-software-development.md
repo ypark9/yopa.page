@@ -16,7 +16,7 @@ tags:
 
 In the dynamic landscape of software development, integrating generative AI tools can revolutionize project workflows. The ability of these AI models to understand context, adapt to roles, and interact in a human-like manner makes them invaluable assets. This article provides a comprehensive guide to embedding generative AI into your software development process, highlighting its role in three key phases: Project Management, Architectural Design, and Software Engineering.
 
-**Key Insight: For optimal results, conduct these phases within a single session with your chosen AI tool, as most cannot retain information across sessions.**
+**Key Insight: Keep each phase focused. Modern AI tools (ChatGPT Projects, Claude Projects, persistent memory) can carry context across sessions, but role-based prompting still works best when you give the model one clear role and one clear goal at a time rather than blending project management, architecture, and coding into a single muddy thread.**
 
 ### Phase 1: Project Management
 

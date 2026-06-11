@@ -1,7 +1,8 @@
 ---
-title: Deep Dive into AgentCore Memory Architecture (AWS re:Invent 2025)
+title: Deep Dive into AgentCore Memory Architecture
 date: 2025-12-09
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A comprehensive technical deep dive into AWS Bedrock AgentCore Memory. Explains Context Orchestration, Memory Hooks, and how to solve AI adoption's 'Party Amnesia' problem."
 categories:
   - AWS
@@ -13,7 +14,7 @@ tags:
   - Context Awareness
 ---
 
-Standard LLM applications suffer from "Party Amnesia." You have a great conversation, close the window, and 5 minutes later the agent asks, "Who are you?"
+Standard LLM applications are stateless: you have a great conversation, close the window, and the next session starts from scratch — the agent has no recollection of who you are.
 
 **AWS AgentCore Memory** solves this by moving context out of the ephemeral session and into a persistent, managed layer. This article details the technical architecture of how that works.
 

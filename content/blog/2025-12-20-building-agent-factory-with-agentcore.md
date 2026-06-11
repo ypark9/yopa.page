@@ -2,6 +2,7 @@
 title: Building an Agent Factory with AWS AgentCore
 date: 2025-12-20
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A deep dive into the architecture and infrastructure of Agent Factory, a system for building and deploying AI agents on AWS."
 categories:
   - AgentCore
@@ -14,9 +15,7 @@ tags:
   - ECR
 ---
 
-In the rapidly evolving world of Generative AI, manually deploying agents one by one is no longer sexy. We need systems that can build systems—an **Agent Factory**.
-
-![hot](images/hot.gif)
+In the rapidly evolving world of Generative AI, deploying agents one by one quickly becomes a bottleneck. We need systems that can build systems—an **Agent Factory**.
 
 Today, we will dissect the Agent Factory system I learned at `AWS re:Invent 2025`. AWS engineers built a system that can build agents using AWS AgentCore, and the repo is [https://github.com/mcginnbros/agent-factory](https://github.com/mcginnbros/agent-factory).
 
@@ -35,7 +34,7 @@ The Builder Agent comprises:
 2.  **AWS AgentCore Runtime**: The serverless compute environment hosting the agent container.
 3.  **Tooling Access**: Permissions to call AWS APIs to create *other* resources.
 
-When you ask the Builder Agent to "Create a weather bot," it doesn't just write code; it provisions real infrastructure. 🤯
+When you ask the Builder Agent to "Create a weather bot," it doesn't just write code; it provisions real infrastructure.
 
 ## 2. Infrastructure Under the Hood
 

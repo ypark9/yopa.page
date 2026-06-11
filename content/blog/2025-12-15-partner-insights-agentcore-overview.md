@@ -1,7 +1,8 @@
 ---
-title: AgentCore Overview (AWS re:Invent 2025)
+title: The AgentCore Ecosystem: Runtime, Identity, Gateway, Memory, and Observability
 date: 2025-12-15
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A comprehensive overview of the AgentCore ecosystem: Runtime, Identity, Gateway, Memory, and Observability."
 categories:
   - AWS
