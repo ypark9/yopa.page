@@ -1,5 +1,5 @@
 ---
-title: The AgentCore Ecosystem: Runtime, Identity, Gateway, Memory, and Observability
+title: "The AgentCore Ecosystem: Runtime, Identity, Gateway, Memory, and Observability"
 date: 2025-12-15
 author: Yoonsoo Park
 series: AWS re:Invent 2025
