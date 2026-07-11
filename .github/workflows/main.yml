@@ -65,6 +65,9 @@ jobs:
     concurrency:
       group: tofu-plan-${{ matrix.environment }}-${{ github.event.pull_request.number || github.run_id }}
       cancel-in-progress: true
+    env:
+      HAS_PLAN_ROLE: ${{ secrets.AWS_PLAN_ROLE_ARN != '' }}
+      HAS_PLAN_KEYS: ${{ secrets.AWS_ACCESS_KEY_ID != '' && secrets.AWS_SECRET_ACCESS_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -73,10 +76,26 @@ jobs:
           tofu_version: ${{ env.TOFU_VERSION }}
           tofu_wrapper: false
 
-      - uses: aws-actions/configure-aws-credentials@v5
+      - name: Configure AWS credentials with read-only OIDC role
+        if: env.HAS_PLAN_ROLE == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure AWS credentials with existing plan keys
+        if: env.HAS_PLAN_ROLE != 'true' && env.HAS_PLAN_KEYS == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Require plan credentials
+        if: env.HAS_PLAN_ROLE != 'true' && env.HAS_PLAN_KEYS != 'true'
+        run: |
+          echo "Configure AWS_PLAN_ROLE_ARN or the existing AWS plan credentials before running real plans." >&2
+          exit 1
 
       - name: Initialize OpenTofu
         run: tofu -chdir="terraform/env/${{ matrix.environment }}" init -lockfile=readonly
