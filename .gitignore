@@ -8,8 +8,11 @@ __pycache__/
 output
 **/.terraform
 *.terraform.lock.hcl
+!terraform/env/**/.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
+*.tfplan
+*.plan.txt
 *.tfvars
 override.tf
 override.tf.json

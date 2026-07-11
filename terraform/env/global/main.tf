@@ -1,19 +1,28 @@
 terraform {
+  required_version = "= 1.12.3"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "= 5.100.0"
+    }
+  }
+
   backend "s3" {
     bucket = "terraform.yopa.page"
-    key = "env/global/terraform.tfstate"
+    key    = "env/global/terraform.tfstate"
     region = "us-east-1"
   }
 }
 
-provider aws {
+provider "aws" {
   region = "us-east-1"
 }
 
 resource "aws_cloudfront_cache_policy" "cache_policy" {
-  name = "caching-optimized"
-  min_ttl = 1
-  max_ttl = 315360000
+  name        = "caching-optimized"
+  min_ttl     = 1
+  max_ttl     = 315360000
   default_ttl = 86400
 
   parameters_in_cache_key_and_forwarded_to_origin {
@@ -30,7 +39,7 @@ resource "aws_cloudfront_cache_policy" "cache_policy" {
     }
 
     enable_accept_encoding_brotli = true
-    enable_accept_encoding_gzip = true
+    enable_accept_encoding_gzip   = true
   }
 }
 
@@ -39,9 +48,9 @@ resource "aws_cloudfront_response_headers_policy" "headers_policy" {
 
   custom_headers_config {
     items {
-      header = "permissions-policy"
+      header   = "permissions-policy"
       override = true
-      value = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+      value    = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
     }
   }
 
@@ -51,24 +60,24 @@ resource "aws_cloudfront_response_headers_policy" "headers_policy" {
     }
 
     frame_options {
-      override = true
+      override     = true
       frame_option = "DENY"
     }
 
     referrer_policy {
-      override = true
+      override        = true
       referrer_policy = "same-origin"
     }
 
     strict_transport_security {
-      override = true
+      override                   = true
       access_control_max_age_sec = 63072000
-      include_subdomains = true
-      preload = true
+      include_subdomains         = true
+      preload                    = true
     }
 
     xss_protection {
-      override = true
+      override   = true
       mode_block = true
       protection = true
     }
