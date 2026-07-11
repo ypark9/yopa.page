@@ -95,14 +95,6 @@ data "aws_cloudfront_cache_policy" "cache_policy" {
   name = "caching-optimized"
 }
 
-data "aws_cloudfront_cache_policy" "cache_disabled" {
-  name = "CachingDisabled"
-}
-
-data "aws_cloudfront_origin_request_policy" "api" {
-  name = "AllViewerExceptHostHeader"
-}
-
 data "aws_cloudfront_response_headers_policy" "headers_policy" {
   name = "security-headers-policy"
 }
@@ -154,14 +146,16 @@ resource "aws_cloudfront_distribution" "distribution" {
   dynamic "ordered_cache_behavior" {
     for_each = var.draw_api_domain_name == "" ? [] : [1]
     content {
-      path_pattern               = "/draw-api/*"
-      allowed_methods            = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-      cached_methods             = ["GET", "HEAD"]
-      compress                   = true
-      target_origin_id           = local.draw_api_origin_id
-      viewer_protocol_policy     = "redirect-to-https"
-      cache_policy_id            = data.aws_cloudfront_cache_policy.cache_disabled.id
-      origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.api.id
+      path_pattern           = "/draw-api/*"
+      allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+      cached_methods         = ["GET", "HEAD"]
+      compress               = true
+      target_origin_id       = local.draw_api_origin_id
+      viewer_protocol_policy = "redirect-to-https"
+      # AWS managed CachingDisabled policy: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policy-caching-disabled
+      cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+      # AWS managed AllViewerExceptHostHeader policy: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html#managed-origin-request-policy-all-viewer-except-host-header
+      origin_request_policy_id   = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.headers_policy.id
     }
   }
