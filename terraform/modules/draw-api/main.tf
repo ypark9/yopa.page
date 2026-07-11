@@ -25,6 +25,12 @@ resource "aws_cognito_user_pool" "users" {
   admin_create_user_config {
     allow_admin_create_user_only = true
   }
+  account_recovery_setting {
+    recovery_mechanism {
+      name     = "verified_email"
+      priority = 1
+    }
+  }
   password_policy {
     minimum_length    = 12
     require_lowercase = true
