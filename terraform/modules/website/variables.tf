@@ -15,12 +15,6 @@ variable "domain_names" {
 }
 
 variable "error_page_path" {
-  type    = string
+  type = string
   default = "/404.html"
-}
-
-variable "draw_api_domain_name" {
-  type        = string
-  description = "API Gateway hostname for /draw-api requests"
-  default     = ""
 }
