@@ -65,7 +65,8 @@ resource "aws_dynamodb_table" "documents" {
     type = "S"
   }
   server_side_encryption {
-    enabled = true
+    enabled     = true
+    kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/aws/dynamodb"
   }
 }
 
