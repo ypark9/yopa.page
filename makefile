@@ -70,6 +70,13 @@ apply:
 		$(TOFU) apply -auto-approve -var="live_path=$(CURRENT_LIVE_PATH)"; \
 	fi
 
+# Safe auto-apply: build a plan, reject it if it is destructive, then apply the
+# exact saved plan. Used by CI so non-destructive changes deploy automatically
+# while destroys/replaces halt and require a manual, approved apply.
+safe-apply: plan-out
+	scripts/check-plan-safety.sh "$(CURDIR)/$(ENV).plan.txt"
+	$(TOFU) apply -auto-approve "$(CURDIR)/$(ENV).tfplan"
+
 deploy: build optimize
 	@echo ">>> Deploying to standby path: $(NEXT_DEPLOY_PATH)"
 	@if [ "$(ENV)" = "global" ]; then \
@@ -87,6 +94,17 @@ promote:
 		$(MAKE) require-live-path ENV=$(ENV); \
 		$(TOFU) apply -auto-approve -var="live_path=$(NEXT_DEPLOY_PATH)"; \
 	fi
+
+# Safe promote: plan the live_path flip to the standby path, reject if
+# destructive, then apply the exact saved plan and invalidate.
+safe-promote:
+	@if [ "$(ENV)" = "global" ]; then echo ">>> Skipping promotion for global environment"; exit 0; fi
+	$(MAKE) require-live-path ENV=$(ENV)
+	@echo ">>> Planning promotion of standby path '$(NEXT_DEPLOY_PATH)' to live"
+	$(TOFU) plan -var="live_path=$(NEXT_DEPLOY_PATH)" -out="$(CURDIR)/$(ENV)-promote.tfplan"
+	$(TOFU) show -no-color "$(CURDIR)/$(ENV)-promote.tfplan" > "$(CURDIR)/$(ENV)-promote.plan.txt"
+	scripts/check-plan-safety.sh "$(CURDIR)/$(ENV)-promote.plan.txt"
+	$(TOFU) apply -auto-approve "$(CURDIR)/$(ENV)-promote.tfplan"
 
 require-live-path:
 	@if [ "$(ENV)" = "global" ]; then exit 0; fi; \
