@@ -1,8 +1,8 @@
 ---
-title: "Bedrock가 이제 OpenAI를 말한다: Compatible API는 Converse 옆 어디에 놓이나"
+title: "Bedrock가 OpenAI를 지원하기 시작했다: 호환 API와 Converse의 차이"
 date: 2026-07-17T11:30:00-04:00
 author: Yoonsoo Park
-description: "Bedrock에 OpenAI/Anthropic 호환 endpoint가 생겼다. API key로 그냥 부른다. InvokeModel, Converse에 이어 모델을 부르는 세 번째 방법이다. 각 층이 실제로 뭘 위한 건지, Converse에 이미 표준화한 팀에겐 무슨 의미인지 정리했다."
+description: "Bedrock에 OpenAI 및 Anthropic 호환 엔드포인트가 추가됐다. InvokeModel과 Converse에 이어 Bedrock에서 모델을 호출하는 세 번째 방법이다. 각 방식의 역할과 Converse를 표준으로 사용해 온 팀에 어떤 의미가 있는지 살펴본다."
 categories:
   - AWS
 tags:
@@ -13,56 +13,61 @@ tags:
   - llm
 ---
 
-AWS가 Bedrock에 새 콘솔 경험이랑 OpenAI/Anthropic 호환 API를 냈다. 한 줄 요약은 "OpenAI SDK를 API key로 Bedrock에 그대로 꽂아라." DX 개선으로는 좋다. 근데 Bedrock 위에서 좀 굴려본 사람이면 물어야 할 건 "이거 멋지네"가 아니라 "내가 이미 쓰는 것 옆 어디에 놓이나"다. 이게 이제 Bedrock에서 모델을 부르는 세 번째 방법이고, 세 층은 서로를 대체하지 않는다. 향하는 방향이 다르다.
+AWS가 새로운 Bedrock 콘솔과 함께 OpenAI 및 Anthropic 호환 API를 공개했다. 핵심은 간단하다. API 키를 사용해 OpenAI SDK로 Bedrock을 호출할 수 있다는 것이다. 개발자 경험이 좋아진 건 분명하지만, 이미 Bedrock을 사용해 온 사람에게 더 중요한 질문은 따로 있다. "기존 방식과 무엇이 다르고, 언제 이 API를 선택해야 할까?"
 
-## 세 개의 층
+이로써 Bedrock에서 모델을 호출하는 방법은 세 가지가 됐다. 하지만 세 방식은 서로를 대체하지 않는다. 각각 해결하려는 문제가 다르다.
+
+## 세 가지 호출 방식
 
 ```
-1. InvokeModel       날것. provider마다 request/response body가 다르다.
-                     모델 바꾸면 payload 다시 쓴다. 통제는 최대, 이식성은 0.
+1. InvokeModel       가장 낮은 수준의 API. 공급자마다 요청과 응답 형식이 다르다.
+                     모델을 바꾸면 페이로드도 다시 작성해야 한다.
+                     제어 범위는 넓지만 공급자 간 이식성은 없다.
 
-2. Converse          AWS가 통일한 추상화. Bedrock 위 모든 모델에 같은
-                     request 모양. tool use, streaming, system prompt 표준화.
-                     코드 안 건드리고 모델 스왑. auth는 SigV4 + AWS SDK.
+2. Converse          AWS가 제공하는 통합 추상화 계층. Bedrock의 여러 모델을
+                     동일한 요청 형식으로 호출한다. 도구 사용, 스트리밍,
+                     시스템 프롬프트 등을 표준화한다. 인증은 SigV4와 AWS SDK를 쓴다.
 
-3. Compatible API    업계 표준 wire format(OpenAI / Anthropic).
-                     OpenAI SDK를 Bedrock endpoint에 겨누고 API key로 인증,
-                     끝. 기존 OSS랑 툴링이 그냥 돈다.
+3. 호환 API          OpenAI 및 Anthropic의 업계 표준 형식을 지원한다.
+                     OpenAI SDK가 Bedrock 엔드포인트를 바라보게 설정하고
+                     API 키로 인증하면 된다. 기존 오픈 소스와 도구를 그대로 활용하기 쉽다.
 ```
 
-1층은 다들 시작한 곳이고 아무도 눌러앉고 싶지 않은 곳이다. 2층은 진지한 Bedrock 팀 대부분이 정착한 곳인데, "모델만 바꾸고 코드는 그대로"가 격주로 Claude vs Llama vs Nova 재는 상황에서 정확히 원하는 거라서 그렇다. 3층이 이번에 새로 나온 거고, "Converse인데 더 쉬운 거"로 오독하기 쉽다. 아니다.
+InvokeModel은 Bedrock 초기에 주로 사용하던 방식이지만, 모델마다 다른 페이로드를 관리해야 한다. Converse는 "모델을 바꿔도 코드는 그대로 유지한다"는 요구에 잘 맞기 때문에 여러 모델을 비교하고 교체하는 팀에 적합하다. 새로 추가된 호환 API는 얼핏 "더 간단한 Converse"처럼 보일 수 있지만, 실제 역할은 다르다.
 
-## Converse와 compatible API는 서로 *다른* 걸 통일한다
+## Converse와 호환 API는 서로 *다른 대상*을 통합한다
 
-이게 핵심이라 정확히 짚고 간다.
+이 글의 핵심은 여기에 있다.
 
-Converse는 **AWS 안쪽**을 통일한다. Bedrock이 호스팅하는 모든 모델에 대해 하나의 API 모양을 주니까, 내 코드는 상대가 Anthropic인지 Meta인지 Amazon인지 신경 안 쓰게 된다. 추상화 경계는 "Bedrock 위의 모델 집합"이다.
+Converse는 **AWS 내부**를 통합한다. Bedrock이 제공하는 여러 모델을 하나의 API 형식으로 호출할 수 있게 해 준다. 따라서 코드는 호출 대상이 Anthropic, Meta, Amazon 중 어디인지 크게 신경 쓰지 않아도 된다. 추상화의 경계는 "Bedrock이 제공하는 모델 집합"이다.
 
-Compatible API는 **AWS 바깥쪽**을 통일한다. 생태계 나머지가 이미 쓰는 wire format을 주니까, OpenAI용으로 짜인 코드나 OpenAI 스키마만 아는 라이브러리가 거의 수정 없이 Bedrock에서 돈다. 추상화 경계는 "업계 기본 request 포맷"이다.
+호환 API는 **AWS 외부 생태계와의 연결**을 단순하게 만든다. 이미 널리 쓰이는 요청 형식을 지원하므로 OpenAI용으로 작성한 코드나 OpenAI 스키마만 지원하는 라이브러리를 거의 수정하지 않고 Bedrock에서 실행할 수 있다. 추상화의 경계는 "업계에서 널리 쓰이는 요청 형식"이다.
 
-하나는 안을 보고 하나는 밖을 본다. 그래서 둘 중 하나가 나머지를 죽이지 않는다. 내 문제가 "새 Bedrock 모델 쓸 때마다 payload 다시 쓴다"면 Converse가 풀고 compatible API는 안 도와준다. 내 문제가 "OpenAI 모양 코드가 잔뜩 있거나 OpenAI만 아는 OSS 툴을 Bedrock에 올리고 싶다"면 compatible API가 풀고 Converse는 안 도와준다.
+하나는 AWS 안쪽을, 다른 하나는 바깥쪽을 향한다. 그래서 어느 한쪽이 다른 쪽을 대체하지 않는다. 새 Bedrock 모델을 시험할 때마다 페이로드를 다시 작성하는 것이 문제라면 Converse가 답이다. 반대로 OpenAI 형식의 기존 코드나 도구를 Bedrock으로 가져오는 것이 문제라면 호환 API가 더 적합하다.
 
-## 진짜 결정은 축 두 개다
+## 선택 기준은 두 가지다
 
-마케팅 걷어내면 딱 두 가지로 고르는 거다.
+마케팅 표현을 걷어내면 선택 기준은 인증과 종속성, 두 가지로 정리할 수 있다.
 
-- **Auth.** SigV4 + IAM(Converse, InvokeModel) 대 API key(compatible). IAM은 세밀하고 role 단위로 scoping되고 rotate 가능하고 org가 통제한다. API key는 이식성 좋고 극단적으로 단순하지만 scoping이랑 rotation은 약하다. 엔터프라이즈 계정에선 이 축 하나로 대개 결판나고, IAM 쪽으로 결판난다.
-- **Lock-in.** AWS-idiomatic(Converse) 대 portable(compatible). Converse는 AWS-native 심화 기능을 사준다. Compatible 층은 코드를 다른 provider로 최소 수정으로 걸어갈 수 있게 사준다.
+- **인증 방식.** Converse와 InvokeModel은 SigV4 및 IAM을 사용하고, 호환 API는 API 키를 사용한다. IAM은 세밀한 권한 설정, 역할 기반 접근 제어, 키 교체, 조직 차원의 통제에 강하다. API 키는 사용하기 쉽고 이식성이 높지만 권한 범위와 키 수명 주기 관리 측면에서는 상대적으로 제한적이다. 엔터프라이즈 환경에서는 이 차이만으로도 IAM 기반 방식을 선택할 이유가 충분한 경우가 많다.
+- **종속성.** Converse는 AWS에 최적화된 방식이고, 호환 API는 이식성에 초점을 둔다. Converse를 사용하면 AWS 네이티브 기능을 깊이 활용할 수 있다. 호환 API를 사용하면 코드를 다른 공급자로 옮길 때 필요한 수정 범위를 줄일 수 있다.
 
-프로토타입이나 멀티벤더 팀은 이식성이랑 단순함에 무게를 싣는 편이라 compatible API가 진짜 매력적이다. 엔터프라이즈 팀은 auth랑 거버넌스에 무게를 싣는 편이라 Converse에 머문다. 같은 플랫폼, 반대 기본값, 그리고 고르는 주체 기준으로 둘 다 맞다.
+프로토타입을 빠르게 만들거나 여러 공급자를 함께 검토하는 팀은 이식성과 단순성을 중요하게 보기 때문에 호환 API가 매력적일 수 있다. 반면 엔터프라이즈 팀은 인증과 거버넌스를 우선하므로 Converse를 유지할 가능성이 크다. 같은 플랫폼 안에서도 팀의 우선순위에 따라 적절한 기본값은 달라진다.
 
-## 팀이 이미 Converse에 표준화했다면
+## 팀이 이미 Converse를 표준으로 사용하고 있다면
 
-짧게 말하면, 옮길 필요 없고 옮기려고 옮기지 마라.
+결론부터 말하면, 굳이 옮길 필요는 없다. 새 API가 나왔다는 이유만으로 기존 코드를 다시 작성할 필요도 없다.
 
-- **만들어둔 거 아무것도 안 사라진다.** Converse의 guardrails 연동, IAM scoping, tool use 스펙은 AWS-native다. Compatible 층이 그중 뭐 하나 deprecate 안 한다. 기존 코드는 하던 그대로 돈다.
-- **얻은 건 더 싼 진입로다.** 진짜 가치는 이미 Converse로 짠 코드를 위한 게 아니다. 안 짠 코드를 위한 거다. OpenAI 모양 스니펫, OpenAI 스키마만 아는 OSS agent framework, 팀원이 OpenAI SDK로 만든 프로토타입, 이런 게 이제 거의 포팅 없이 우리 Bedrock 계정에 착지한다. 유입 마이그레이션 비용이 확 떨어졌고, 신경 쓸 만한 win은 이거다.
-- **이식성 층을 이제 직접 안 만들어도 된다.** 많은 팀이 non-AWS 코드를 Bedrock에 겨누려고, 혹은 한 벤더 스키마에 완전히 묶이지 않으려고 얇은 번역 shim을 손수 짰다. Compatible endpoint가 그 층을 흡수한다. 그 이유로 수제 adapter를 유지하고 있었다면, 삭제 후보다.
+- **기존 기능은 그대로 유지된다.** Converse의 가드레일 연동, IAM 권한 제어, 도구 사용 사양은 AWS 네이티브 기능이다. 호환 API가 이를 폐기하거나 대체하는 것은 아니다. 기존 코드는 이전과 동일하게 동작한다.
+- **새로운 진입 경로가 생겼다.** 호환 API의 진짜 가치는 이미 Converse로 작성한 코드보다 아직 Bedrock에 들어오지 않은 코드에 있다. OpenAI 형식의 예제 코드, 해당 스키마만 지원하는 오픈 소스 에이전트 프레임워크, 팀원이 OpenAI SDK로 만든 프로토타입을 거의 포팅하지 않고 Bedrock 계정으로 가져올 수 있다. 외부 코드를 도입하는 비용이 낮아진 것이다.
+- **이식성 계층을 직접 만들 필요가 줄었다.** 많은 팀이 AWS 외부의 코드를 Bedrock에 연결하거나 특정 공급자의 스키마에 종속되지 않기 위해 얇은 변환 계층을 직접 구현해 왔다. 호환 엔드포인트가 그 역할을 맡을 수 있으므로, 같은 목적으로 자체 어댑터를 유지하고 있다면 이제 제거할 수 있는지 검토해 볼 만하다.
 
-피할 함정은 새로 나온 managed 편의 서피스를 "다시 짜라"는 명령으로 취급하는 거다. 아니다. AWS 보안 경계 안에 살고 native 기능이 필요한 건 여전히 Converse가 맞는 기본값이다. Compatible API는 바깥에서 들어오는 것들을 위한 문이다.
+피해야 할 함정은 새로 나온 편의 기능을 기존 시스템을 다시 작성하라는 신호로 받아들이는 것이다. AWS 보안 경계 안에서 동작하고 네이티브 기능이 필요한 워크로드에는 여전히 Converse가 적절한 기본값이다. 호환 API는 외부 코드와 도구를 Bedrock으로 들여오는 새로운 입구에 가깝다.
 
-## 내가 실제로 할 것
+## 내가 선택한다면
 
-AWS-native에 IAM 거버넌스 팀이면 새 first-party 작업은 Converse에 계속 둔다. Compatible endpoint는 딱 이럴 때 꺼낸다. 바깥 코드를 들여올 때, OpenAI만 아는 OSS 툴을 평가할 때, API key가 SigV4 배선보다 나은 버리는 프로토타입을 세울 때. 그리고 수제 OpenAI-to-Bedrock shim을 유지하고 있었다면, 그 코드 다시 건드리기 전에 compatible API 문서부터 읽어라. AWS가 방금 그 adapter를 짐덩어리로 만들었을 수 있으니까.
+AWS 중심의 환경에서 IAM으로 권한을 관리하는 팀이라면 새로운 자체 서비스도 계속 Converse로 개발할 것이다. 호환 엔드포인트는 외부 코드를 가져오거나, OpenAI 형식만 지원하는 오픈 소스 도구를 평가하거나, SigV4를 구성하는 것보다 API 키가 효율적인 단기 프로토타입을 만들 때 선택할 것이다.
 
-한 플랫폼에 통일 API가 두 개면 모순처럼 들린다. 하나는 안을 보고 하나는 밖을 보기 때문에만 성립한다. 이번엔 그게 기능이다.
+OpenAI와 Bedrock 사이를 연결하는 자체 변환 계층을 유지하고 있다면, 그 코드를 다시 수정하기 전에 호환 API 문서를 먼저 확인할 필요가 있다. AWS가 이미 그 역할을 대신할 수 있기 때문이다.
+
+한 플랫폼에 통합 API가 두 개 있다는 사실은 모순처럼 보일 수 있다. 하지만 하나는 AWS 내부의 모델을 통합하고, 다른 하나는 외부 생태계와의 접점을 통합한다. 두 API는 경쟁 관계가 아니라 서로 다른 문제를 해결하는 보완 관계다.
