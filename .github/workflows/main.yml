@@ -78,14 +78,14 @@ jobs:
 
       - name: Configure AWS credentials with read-only OIDC role
         if: env.HAS_PLAN_ROLE == 'true'
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Configure AWS credentials with existing plan keys
         if: env.HAS_PLAN_ROLE != 'true' && env.HAS_PLAN_KEYS == 'true'
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -124,7 +124,7 @@ jobs:
             -out="$GITHUB_WORKSPACE/prod-green.tfplan"
           tofu -chdir="terraform/env/prod" show -no-color "$GITHUB_WORKSPACE/prod-green.tfplan" > "$GITHUB_WORKSPACE/prod-green.plan.txt"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: tofu-plan-${{ matrix.environment }}
           path: |
@@ -174,14 +174,14 @@ jobs:
 
       - name: Configure AWS credentials with deploy OIDC role
         if: env.HAS_DEPLOY_ROLE == 'true'
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Configure AWS credentials with deploy keys
         if: env.HAS_DEPLOY_ROLE != 'true' && env.HAS_DEPLOY_KEYS == 'true'
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
