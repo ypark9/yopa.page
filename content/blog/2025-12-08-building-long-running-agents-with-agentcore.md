@@ -1,7 +1,8 @@
 ---
-title: Building Long-Running Agents with AgentCore (AWS re:Invent 2025)
+title: Building Long-Running Agents with AgentCore
 date: 2025-12-08
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A technical guide to building persistent, long-running AI agents using AWS Bedrock AgentCore. Includes architecture diagrams and configuration steps."
 categories:
   - AWS
@@ -17,7 +18,7 @@ Most AI demos fail in the real world for two reasons: **Amnesia** and **Timeouts
 
 A standard Lambda function dies after 15 minutes. A standard chat bot forgets context when the session ends. But enterprise workflows—like investigating financial fraud or onboarding a new employee—take days, not minutes.
 
-**AWS Bedrock AgentCore** is the answer. It provides a managed runtime that supports 8-hour sessions and persistent memory. This guide breaks down the architecture and shows you how to build it.
+**AWS Bedrock AgentCore** addresses both: it provides a managed runtime that supports long-running sessions (up to 8 hours) and persistent memory. This guide breaks down the architecture and shows how to build on it.
 
 ## The Architecture: Supervisor and Workers
 
@@ -105,7 +106,7 @@ if __name__ == "__main__":
 
 ## Persistent Memory
 
-The "magic" that allows an agent to wake up after 3 days and remember "Day 0" is **AgentCore Memory**.
+What lets an agent wake up after 3 days and still recall "Day 0" is **AgentCore Memory**.
 
 It automatically separates storage:
 *   **Short Term:** Raw chat logs and events (access restricted to the specific `actorId`).

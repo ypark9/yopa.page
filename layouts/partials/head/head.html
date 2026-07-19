@@ -86,10 +86,10 @@
     property="og:description"
     content="{{ if .Description }} {{.Description}} {{ else }}{{.Site.Params.siteDesc}}{{ end }}"
   />
-  {{ end }} {{ partial "post-meta.html" . }} <link rel="shortcut icon"
-  type="image/x-icon" href="{{ "favicon.ico" | relURL }}" /> {{ $style :=
-  resources.Get "sass/main.scss" | toCSS | minify | fingerprint }}
+  {{ end }} <link rel="shortcut icon"
+  type="image/x-icon" href="{{ "favicon.ico" | relURL }}" /> {{ with resources.Get "sass/main.scss" }} {{ $style := . | toCSS | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
+  {{ end }}
   {{ partial "head/custom.html" . }}
   <script
     async
