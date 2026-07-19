@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: peaceiris/actions-hugo@v2
+      - uses: peaceiris/actions-hugo@v3.2.1
         with:
           extended: true
           hugo-version: "0.155.1"
@@ -158,7 +158,7 @@ jobs:
           tofu_version: ${{ env.TOFU_VERSION }}
           tofu_wrapper: false
 
-      - uses: peaceiris/actions-hugo@v2
+      - uses: peaceiris/actions-hugo@v3.2.1
         with:
           extended: true
           hugo-version: "0.155.1"
