@@ -1,8 +1,8 @@
 ---
-title: "ElastiCache가 durable해졌다 — RAG와 에이전트 오케스트레이션 관점에서"
+title: "ElastiCache의 내구성 지원이 RAG와 에이전트 오케스트레이션에 주는 변화"
 date: 2026-06-03T12:00:00-04:00
 author: Yoonsoo Park
-description: "AWS가 ElastiCache for Valkey에 durability를 추가했다. 마이크로초 read 그대로, 데이터 손실 없음. RAG 시맨틱 캐시, Step Functions 에이전트 state, DLQ retry 버퍼 — 마지막 캐시 작업이 n8n의 Redis였던 사람의 정리 노트."
+description: "AWS가 ElastiCache for Valkey에 내구성 옵션을 추가했다. 마이크로초 단위 읽기 성능을 유지하면서 데이터를 보존할 수 있게 된 변화가 RAG 시맨틱 캐시, Step Functions 에이전트 상태, DLQ 재시도 버퍼의 설계를 어떻게 바꾸는지 살펴본다."
 categories:
   - AWS
   - AI
@@ -16,97 +16,97 @@ tags:
   - caching
 ---
 
-2026년 6월 2일, AWS가 [Amazon ElastiCache durability를 발표했다](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/) (Valkey 9.0부터). 한 줄짜리 release note 같지만, ElastiCache가 무엇을 위한 서비스인지에 대한 정의를 조용히 바꾸는 변화다. 지난주까지 "캐시"는 "빠르지만 날아가도 되는 것"이었다. 이제는 cluster 단위로 write durability를 선택할 수 있고, 그 결과 그동안 무서워서 DynamoDB에 처박아두던 데이터를 ElastiCache에 정식으로 둘 수 있다.
+2026년 6월 2일, AWS가 [Amazon ElastiCache의 내구성 지원을 발표했다](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/). 적용 대상은 Valkey 9.0부터다. 작은 릴리스 항목처럼 보이지만, ElastiCache의 용도를 조용히 바꾸는 변화다. 그동안 캐시는 빠르지만 사라져도 괜찮은 데이터를 두는 곳이었다. 이제는 클러스터별로 여러 가용 영역에 걸친 쓰기 내구성을 선택할 수 있어, 안정성이 걱정돼 DynamoDB에 보관하던 일부 데이터를 ElastiCache에 둘 수 있게 됐다.
 
-이 글은 그 변화가 어디에서 의미 있는지 정리하는 노트다. 나는 AWS AI 인프라가 메인이고 — RAG 파이프라인, Step Functions 기반 에이전트 오케스트레이션, dead-letter retry — 마지막으로 진지하게 캐시를 다룬 게 n8n의 Redis였다. 이 셋의 접점에 캐시 패턴이 있는데, 다음 프로젝트에서 under-use하지 않으려고 한 번 정리한다.
+이 변화는 RAG 파이프라인, Step Functions 기반 에이전트 오케스트레이션, 데드 레터 큐 재시도 처리의 경계에서 특히 의미가 있다. 각 영역에서 캐시를 더 적극적으로 활용할 수 있지만, 모든 데이터를 ElastiCache로 옮겨도 된다는 뜻은 아니다. 어떤 데이터에 동기식 내구성을 적용하고, 어떤 데이터는 비동기식으로 충분하며, 언제 DynamoDB를 유지해야 하는지를 구분해야 한다.
 
 ## 무엇이 바뀌었나
 
-기존 in-memory 속도 위에, 두 가지 새로운 write 모드가 추가됐다:
+기존의 인메모리 성능 위에 두 가지 쓰기 모드가 추가됐다.
 
-| 모드 | Write latency | 손실 가능 구간 | 언제 쓰나 |
+| 모드 | 쓰기 지연 시간 | 데이터 손실 가능 구간 | 적합한 용도 |
 |---|---|---|---|
-| Synchronous | single-digit ms | 0 (≥2 AZ persist 후 ack) | 돈, identity, replay 불가능한 state |
-| Asynchronous | microseconds (추가 비용 없음) | AZ 장애 시 최대 10초 | system of record에서 재구성 가능한 hot path |
-| (기존) non-durable | microseconds | 마지막 snapshot 이후 전부 | 진짜 ephemeral 캐시 |
+| 동기식 | 한 자릿수 밀리초 | 없음. 확인 응답 전에 2개 이상의 가용 영역에 저장 | 금전, 신원, 재실행할 수 없는 상태 |
+| 비동기식 | 마이크로초 수준 | 가용 영역 장애 시 최대 10초 | 원본 시스템에서 재구성할 수 있는 고빈도 경로 |
+| 기존 비내구성 모드 | 마이크로초 수준 | 마지막 스냅샷 이후의 모든 데이터 | 완전히 일시적인 캐시 |
 
-Read는 세 모드 모두 microsecond 그대로. 트랜잭션 로그가 multi-AZ에 있어서 failover, restart, recovery 시 commit된 데이터는 안 사라진다.
+읽기 성능은 세 모드 모두 마이크로초 수준으로 유지된다. 트랜잭션 로그가 여러 가용 영역에 분산돼 있어 장애 조치, 재시작, 복구 과정에서도 커밋된 데이터는 사라지지 않는다.
 
-AWS 공식 문구에서 유스케이스를 — "AI agent long-term memory, AI agent workflow state, knowledge bases for RAG applications" — 이렇게 직접 명시한 게 흔치 않다. 이걸로 뭘 만들기를 기대하는지 대놓고 알려준 셈.
+AWS가 공식 사용 사례로 “AI 에이전트 장기 메모리, AI 에이전트 워크플로 상태, RAG 애플리케이션의 지식 기반”을 직접 언급한 점도 눈여겨볼 만하다. 이번 기능이 어떤 유형의 워크로드를 염두에 둔 것인지 분명하게 보여 준다.
 
-## 패턴 1 — RAG 시맨틱 캐시
+## 패턴 1: RAG 시맨틱 캐시
 
-기본 RAG 흐름은: 사용자 query → embed → vector store search → re-rank → LLM 호출. 비싼 step은 vector search와 LLM 호출 두 개. 둘 다 결정적인 부분이 있어서 캐시 가능.
-
-```
-User query
-  → embed (cheap)
-    → semantic cache lookup by embedding similarity     ← ElastiCache
-       hit  → cached answer 반환 (microseconds)
-       miss → vector store + LLM 호출
-              → {embedding hash : answer} write back    ← ElastiCache
-```
-
-Key 설계 선택지:
-
-- **Exact key**: 정규화된 prompt의 hash. 구현 간단, hit rate 낮음.
-- **Semantic key**: embedding 자체를 저장하고 cosine similarity threshold 위로 approximate-match. Hit rate는 높지만 캐시 안에 vector index가 필요. Valkey/Redis 모듈로 가능하고, 작은 HNSW를 in-memory로 두는 방법도 있음.
-
-여기서 durability가 왜 중요한지: 캐시가 ephemeral이면 cluster restart마다 LLM 비용이 cold start. Async durability면 충분 — cached answer 10초 손실은 correctness 문제 아니고 비용 spike만. Sync는 과함. **기본은 async, 그리고 더 이상 "캐시 vs 진짜 store"를 고를 필요가 없다는 점만 기억.**
-
-밟을 함정: 업스트림 RAG가 한 번 hallucination 답변을 내놓으면 TTL 동안 다른 사용자한테 그대로 서빙됨. content-version key (model name + prompt template version + index version)를 항상 끼워서 deploy 시 manual flush 없이 자동 invalidate 되게 해야 함.
-
-## 패턴 2 — Step Functions 에이전트 워크플로 state
-
-Step Functions는 `Map`, `Parallel`, `Wait`, retry policy, `.waitForTaskToken`까지 잘 준다. 근데 싸게 안 주는 것들:
-
-- 256 KB state payload보다 큰 mid-execution scratchpad
-- Cross-execution memory ("이 에이전트가 한 시간 전에 이 고객을 본 적 있다")
-- DynamoDB round trip 쓰기 아까운 fast lookup
-
-Durability 전 ElastiCache는 속도는 줬지만 재구성 불가능한 데이터 두기엔 무서웠다. Durable Valkey면 패턴이 깔끔해진다:
-
-- **Execution scope state** (Step Functions run 1회 동안 살아있음): key `agent:exec:<exec-arn>:<slot>`, TTL = max execution duration + buffer. Slot 손실이 downstream step을 망가뜨리면 sync write, 아니면 async.
-- **Agent long-term memory** (run 사이에 살아있음): key `agent:user:<user-id>:facts`, TTL 없음 또는 길게. Sync write — 사용자가 persist를 기대하는 메모리.
-- **Tool-call cache** (비싼 tool에 대한 idempotency): key `tool:<tool-name>:<arg-hash>`, 짧은 TTL. Async OK.
-
-Step Functions의 Lambda task가 직접 read/write. 앞에 "memory service" Lambda 따로 둘 필요 없다. ElastiCache가 memory service.
-
-## 패턴 3 — DLQ retry coordinator
-
-매번 under-build하는 영역. SQS dead-letter queue는 실패 잡는 데는 좋은데, 복구 로직이 보통 "Lambda가 DLQ를 drain해서 무지성 reprocess"로 끝난다. 그게 *상관관계 있는* 실패에서 깨진다 — 동일 downstream API 장애로 1000개가 한 번에 DLQ에 들어가면, 다 reprocess, 다 다시 실패, back-off하고 retry, 반복.
-
-Cache-coordinated retry layer가 이걸 푼다:
+일반적인 RAG 요청은 사용자 질의를 임베딩한 뒤 벡터 스토어를 검색하고, 결과를 재순위화한 다음 LLM을 호출한다. 비용이 큰 단계는 벡터 검색과 LLM 호출이며, 두 단계 모두 일정 수준까지는 캐시할 수 있다.
 
 ```
-DLQ message 도착
-  → cache lookup: dlq:<failure-fingerprint>     ← ElastiCache
-     - window 내 count > N  → retry 보류, circuit-open flag set
-     - count ≤ N            → 증가, retry, 성공 시 key 삭제
-  → circuit-open이면: TTL 만료까지 retry skip
+사용자 질의
+  → 임베딩 생성
+    → 임베딩 유사도 기반 시맨틱 캐시 조회       ← ElastiCache
+       적중  → 캐시된 답변 반환
+       실패  → 벡터 스토어 검색 + LLM 호출
+              → {임베딩 해시: 답변}을 캐시에 저장 ← ElastiCache
 ```
 
-Fingerprint는 실패 class를 격리할 수 있는 무엇이든 — downstream service ID + error code 같은 식. Counter와 open-circuit flag를 캐시가 들고 있음. **여기는 sync durability가 진짜 값을 한다**: AZ failover로 counter가 리셋되면 back-pressure가 사라져서 막 살아난 downstream을 다시 때림. 새 sync 모드가 본전 뽑는 자리.
+키 설계에는 두 가지 대표적인 선택지가 있다.
 
-보너스: 같은 캐시가 per-key idempotency token도 들고 있으면, *부분적으로 성공한* retry가 결제 중복이나 record 중복 write를 안 만든다.
+- **정확 일치 키**: 정규화한 프롬프트의 해시를 사용한다. 구현은 간단하지만 적중률은 낮다.
+- **시맨틱 키**: 임베딩을 저장하고 코사인 유사도가 일정 임계값 이상인 항목을 근사 일치로 찾는다. 적중률은 높지만 캐시 안에 벡터 인덱스가 필요하다. Valkey 또는 Redis 모듈을 사용하거나, 작은 HNSW 인덱스를 메모리에 유지하는 방식이 가능하다.
 
-## Sync vs Async vs DynamoDB
+내구성이 필요한 이유는 클러스터 재시작 때마다 캐시가 비어 LLM 호출 비용이 급증하는 상황을 피하기 위해서다. 이 경우에는 비동기식 내구성으로 충분하다. 최대 10초 분량의 캐시된 답변이 사라져도 정확성 문제는 아니며, 일시적인 비용 증가에 그친다. 동기식 내구성은 과도한 선택이다. 기본값은 비동기식으로 두고, 캐시와 영구 저장소 중 하나만 골라야 한다는 전제를 버리는 편이 좋다.
 
-내가 지금 정리하는 휴리스틱:
+주의할 점은 캐시 오염이다. 상위 RAG 파이프라인이 잘못되었거나 오래된 답변을 한 번 반환하면, 그 답변이 TTL 동안 다른 사용자에게도 제공될 수 있다. 모델 이름, 프롬프트 템플릿 버전, 인덱스 버전을 포함한 콘텐츠 버전 키를 사용하면 배포 시 수동으로 캐시를 비우지 않고도 안전하게 무효화할 수 있다.
 
-| 필요한 것 | 선택 |
+## 패턴 2: Step Functions의 에이전트 워크플로 상태
+
+Step Functions는 `Map`, `Parallel`, `Wait`, 재시도 정책, 사람의 개입을 위한 `.waitForTaskToken`을 제공한다. 반면 다음과 같은 기능을 저렴하게 제공하지는 않는다.
+
+- 256KB 상태 페이로드보다 큰 실행 중 스크래치패드
+- 실행을 넘어 유지되는 메모리. 예를 들어 “이 에이전트가 한 시간 전에 이 고객을 처리했다”는 정보
+- DynamoDB 왕복 호출을 쓰기에는 부담스러운 빠른 조회
+
+내구성 지원 이전의 ElastiCache는 속도 문제는 해결했지만, 재구성할 수 없는 데이터를 두기에는 부담스러웠다. 내구성을 갖춘 Valkey에서는 다음과 같은 구성이 가능하다.
+
+- **실행 범위 상태**: Step Functions 실행 한 번 동안만 유지한다. 키는 `agent:exec:<exec-arn>:<slot>`, TTL은 최대 실행 시간에 여유 시간을 더해 설정한다. 상태 손실이 이후 단계를 망가뜨릴 수 있다면 동기식 쓰기를 사용하고, 그렇지 않다면 비동기식으로 충분하다.
+- **에이전트 장기 메모리**: 여러 실행에 걸쳐 유지한다. 키는 `agent:user:<user-id>:facts`이며, TTL을 두지 않거나 길게 설정한다. 사용자가 보존을 기대하는 정보이므로 동기식 쓰기가 적합하다.
+- **도구 호출 캐시**: 비용이 큰 도구 호출의 멱등성을 보장한다. 키는 `tool:<tool-name>:<arg-hash>`이고 TTL은 짧게 둔다. 비동기식으로 처리해도 된다.
+
+Step Functions의 Lambda 작업은 이 데이터를 직접 읽고 쓸 수 있다. 별도의 “메모리 서비스” Lambda를 앞에 둘 필요 없이 ElastiCache가 그 역할을 맡을 수 있다.
+
+## 패턴 3: DLQ 재시도 조정자
+
+SQS 데드 레터 큐는 실패한 메시지를 수집하는 데는 효과적이지만, 복구 로직은 종종 Lambda가 큐를 비우며 무작정 재처리하는 방식에 머문다. 이 방식은 상관관계가 있는 장애에서 문제가 된다. 같은 하위 API의 장애로 메시지 1,000개가 한꺼번에 DLQ에 들어오면 모두 재처리되고, 다시 모두 실패한 뒤 백오프와 재시도가 반복된다.
+
+캐시를 이용한 재시도 조정 계층으로 이를 제어할 수 있다.
+
+```
+DLQ 메시지 도착
+  → 캐시 조회: dlq:<failure-fingerprint>        ← ElastiCache
+     - 시간 창 내 횟수 > N  → 재시도 보류, 회로 차단 플래그 설정
+     - 시간 창 내 횟수 ≤ N  → 횟수 증가, 재시도, 성공 시 키 삭제
+  → 회로가 열려 있으면 TTL이 만료될 때까지 재시도 건너뜀
+```
+
+지문(fingerprint)은 하위 서비스 ID와 오류 코드처럼 실패 유형을 구분할 수 있는 값으로 구성한다. 캐시는 시간 창 내 실패 횟수와 회로 차단 상태를 보관한다. 이 패턴에서는 동기식 내구성이 실질적인 가치를 제공한다. 가용 영역 장애로 카운터가 초기화되면 백프레셔가 사라지고, 복구 중인 하위 시스템에 재시도가 한꺼번에 몰릴 수 있기 때문이다.
+
+같은 캐시에 키별 멱등성 토큰을 보관하면, 부분적으로 성공한 재시도가 결제를 중복 청구하거나 레코드를 중복 기록하는 문제도 막을 수 있다.
+
+## 동기식, 비동기식, DynamoDB 중 무엇을 선택할까
+
+다음 기준으로 구분할 수 있다.
+
+| 필요한 특성 | 선택 |
 |---|---|
-| 재구성 가능, hot path, 비용 중요 | ElastiCache async |
-| Correctness 중요, write rate 낮음, microsecond read 필요 | ElastiCache sync |
-| Audit trail, key lookup 외 query, 가끔만 access | DynamoDB |
-| 큰 blob, write-once-read-many | S3 + ElastiCache에 포인터 |
+| 재구성 가능, 고빈도 경로, 비용 중요 | ElastiCache 비동기식 |
+| 정확성이 중요하고 쓰기 빈도는 낮으며 마이크로초 단위 읽기가 필요 | ElastiCache 동기식 |
+| 감사 추적, 키 조회 외의 쿼리, 낮은 접근 빈도 | DynamoDB |
+| 큰 객체, 한 번 쓰고 여러 번 읽기 | S3와 ElastiCache 포인터 |
 
-DynamoDB가 사라지진 않는다. Attribute로 query하거나 paginate하거나 audit해야 하면 여전히 DynamoDB. ElastiCache durability는 DynamoDB 대체재가 아니라, **DynamoDB를 *부실한 캐시로* 쓰는 걸 멈추게 해주는 변화**다.
+DynamoDB가 사라지는 것은 아니다. 속성으로 조회하거나 페이지네이션해야 하거나 감사 추적이 필요한 데이터에는 여전히 DynamoDB가 적합하다. ElastiCache의 내구성 지원은 DynamoDB의 대체재가 아니라, DynamoDB를 부실한 캐시처럼 사용하지 않아도 되게 하는 변화다.
 
-## 다음에 할 것
+## 다음 단계
 
-- 내부 에이전트의 RAG step 앞에 semantic cache layer 추가. Async write, embedding-hash key, content-version 포함.
-- 한 워크플로의 작은 DynamoDB "agent scratchpad" 테이블을 Valkey cluster로 PoC 교체. 다음 state가 읽는 slot은 sync write.
-- Retry 시끄러운 Step Function 하나에 DLQ coordinator 패턴 spec 잡기. 이건 짓기 전에 짧은 설계 문서부터.
+- 내부 에이전트의 RAG 단계 앞에 시맨틱 캐시 계층을 추가한다. 비동기식 쓰기, 임베딩 해시 키, 콘텐츠 버전을 적용한다.
+- 한 워크플로에서 작은 DynamoDB 에이전트 스크래치패드 테이블을 Valkey 클러스터로 바꾸는 개념 검증을 진행한다. 다음 상태가 읽는 슬롯에는 동기식 쓰기를 사용한다.
+- 재시도량이 많은 Step Functions 워크플로를 대상으로 DLQ 조정자 패턴의 짧은 설계 문서를 먼저 작성한다.
 
-마지막 캐시 작업이 어떤 워크플로 툴의 Redis였다면, 이번 발표는 다시 들여다볼 이유다. "캐시 vs 데이터베이스" 선이 방금 옮겨졌다.
+마지막으로 캐시를 다룬 경험이 워크플로 도구의 Redis에 머물러 있다면, 이번 발표는 다시 살펴볼 이유가 된다. 캐시와 데이터베이스를 나누던 경계가 한 단계 이동했다.
