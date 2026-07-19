@@ -1,7 +1,8 @@
 ---
-title: Designing Robust Multi-Agent Systems (AWS re:Invent 2025)
+title: Designing Robust Multi-Agent Systems
 date: 2025-12-12
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "A technical guide to architectural patterns for multi-agent systems: Hierarchical, Swarm, DAG, and ReWOO."
 categories:
   - AI Agents
@@ -19,7 +20,7 @@ This guide details the four canonical architectures for multi-agent systems and 
 
 ## 1. Hierarchical (The "Boss and Workers")
 
-This is the standard for complex business workflows. A Supervisor delelgates tasks to specialized workers.
+This is the standard for complex business workflows. A Supervisor delegates tasks to specialized workers.
 
 **Best For:** Context Hiding. The Supervisor never sees the raw "junk" data (like HTML scraping) from the worker, keeping its memory clean.
 

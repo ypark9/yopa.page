@@ -13,7 +13,7 @@ tags:
   - Keyboard Shortcuts
 ---
 
-GitHub Copilot has become an indispensable tool for many developers, offering AI-powered code suggestions that streamline the coding process. I believe it is the most advantaced AI code assitant at this point. However, constantly navigating through menus to access Copilot can disrupt your workflow. This tutorial will guide you through setting up a keyboard shortcut in Visual Studio Code (VS Code) to quickly open the GitHub Copilot chat panel.
+GitHub Copilot has become an indispensable tool for many developers, offering AI-powered code suggestions that streamline the coding process. However, constantly navigating through menus to access Copilot can disrupt your workflow. This tutorial will guide you through setting up a keyboard shortcut in Visual Studio Code (VS Code) to quickly open the GitHub Copilot chat panel.
 
 ### Step-by-Step Guide to Setting Up Your Shortcut
 

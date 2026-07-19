@@ -1,116 +1,214 @@
 name: yopa.page CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  TOFU_VERSION: "1.12.3"
+  AWS_REGION: us-east-1
 
 jobs:
-  deploy-staging:
-    name: Deploy to Staging
+  static-checks:
+    name: static-checks
     runs-on: ubuntu-latest
     steps:
-      # Shallow clone with only the last 1 commit
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-          token: ${{ secrets.GH_TOKEN }}
-          fetch-depth: 1
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -y && sudo apt install -y \
-            libimage-exiftool-perl \
-            jpegoptim \
-            optipng \
-            imagemagick \
-            webp
-      # Set up Hugo with fast render
-      - uses: peaceiris/actions-hugo@v2
-        with:
-          extended: true
-      # Initialize Terraform environments
-      - name: Initialize Terraform (global)
-        run: ENV=global make init
-      - name: Initialize Terraform (prod)
-        run: ENV=prod make init
-      # Deploy to staging (inactive) environment
-      - name: Deploy global infrastructure
-        if: github.event_name == 'push'
-        run: ENV=global make apply
-      - name: Deploy to staging environment
-        if: github.event_name == 'push'
-        run: ENV=prod make deploy
-      # For PRs, just validate the configuration
-      - name: Validate deployment configuration
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "🔍 Validating deployment configuration for PR..."
-          ENV=global make validate
-          ENV=prod make validate
-          echo "✅ Configuration validation complete"
-      - name: Output staging deployment info
-        run: |
-          echo "🚀 Staging deployment complete!"
-          echo "The new version has been deployed to the inactive environment."
-          echo "You can now test the changes before promoting to live."
-          echo ""
-          echo "To promote manually: make ENV=prod release"
+      - uses: actions/checkout@v4
 
-  promote-to-live:
-    name: Promote to Live
-    needs: deploy-staging
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          extended: true
+          hugo-version: "0.155.1"
+
+      - uses: opentofu/setup-opentofu@v2
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - name: Validate frontmatter
+        run: python3 scripts/validate_frontmatter.py
+
+      - name: Build Hugo site
+        run: hugo --gc --minify
+
+      - name: Verify static draw artifact
+        run: |
+          test -s public/draw/index.html
+          find public/draw/assets -type f -print -quit | grep -q .
+
+      - name: Check OpenTofu formatting
+        run: tofu fmt -check -recursive terraform
+
+      - name: Validate locked OpenTofu configurations
+        run: |
+          for env in global prod; do
+            tofu -chdir="terraform/env/$env" init -backend=false -lockfile=readonly
+            tofu -chdir="terraform/env/$env" validate
+          done
+
+  plan:
+    name: plan (${{ matrix.environment }})
+    needs: static-checks
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    # Note: To enable manual approval, create a "production" environment in GitHub Settings > Environments
-    # and add required reviewers. Then uncomment the line below:
-    environment: production
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [global, prod]
+    concurrency:
+      group: tofu-plan-${{ matrix.environment }}-${{ github.event.pull_request.number || github.run_id }}
+      cancel-in-progress: true
+    env:
+      HAS_PLAN_ROLE: ${{ secrets.AWS_PLAN_ROLE_ARN != '' }}
+      HAS_PLAN_KEYS: ${{ secrets.AWS_ACCESS_KEY_ID != '' && secrets.AWS_SECRET_ACCESS_KEY != '' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - uses: opentofu/setup-opentofu@v2
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - name: Configure AWS credentials with read-only OIDC role
+        if: env.HAS_PLAN_ROLE == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure AWS credentials with existing plan keys
+        if: env.HAS_PLAN_ROLE != 'true' && env.HAS_PLAN_KEYS == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Require plan credentials
+        if: env.HAS_PLAN_ROLE != 'true' && env.HAS_PLAN_KEYS != 'true'
+        run: |
+          echo "Configure AWS_PLAN_ROLE_ARN or the existing AWS plan credentials before running real plans." >&2
+          exit 1
+
+      - name: Initialize OpenTofu
+        run: tofu -chdir="terraform/env/${{ matrix.environment }}" init -lockfile=readonly
+
+      - name: Create global plan
+        if: matrix.environment == 'global'
+        run: |
+          tofu -chdir="terraform/env/global" plan -no-color -out="$GITHUB_WORKSPACE/global.tfplan"
+          tofu -chdir="terraform/env/global" show -no-color "$GITHUB_WORKSPACE/global.tfplan" > "$GITHUB_WORKSPACE/global.plan.txt"
+
+      - name: Create production plans
+        if: matrix.environment == 'prod'
+        run: |
+          current_live_path="$(tofu -chdir="terraform/env/prod" output -raw live_path)"
+          case "$current_live_path" in blue|green) ;; *) echo "Invalid state live_path: $current_live_path" >&2; exit 1 ;; esac
+
+          tofu -chdir="terraform/env/prod" plan \
+            -no-color \
+            -var="live_path=$current_live_path" \
+            -out="$GITHUB_WORKSPACE/prod-current.tfplan"
+          tofu -chdir="terraform/env/prod" show -no-color "$GITHUB_WORKSPACE/prod-current.tfplan" > "$GITHUB_WORKSPACE/prod-current.plan.txt"
+
+          tofu -chdir="terraform/env/prod" plan \
+            -no-color \
+            -var="live_path=green" \
+            -out="$GITHUB_WORKSPACE/prod-green.tfplan"
+          tofu -chdir="terraform/env/prod" show -no-color "$GITHUB_WORKSPACE/prod-green.tfplan" > "$GITHUB_WORKSPACE/prod-green.plan.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tofu-plan-${{ matrix.environment }}
+          path: |
+            ${{ matrix.environment }}*.tfplan
+            ${{ matrix.environment }}*.plan.txt
+          retention-days: 30
+
+      - name: Reject unapproved destructive actions
+        run: scripts/check-plan-safety.sh ${{ matrix.environment }}*.plan.txt
+
+  deploy:
+    name: deploy (auto, non-destructive only)
+    needs: static-checks
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
+    env:
+      HAS_DEPLOY_ROLE: ${{ secrets.AWS_DEPLOY_ROLE_ARN != '' }}
+      HAS_DEPLOY_KEYS: ${{ secrets.AWS_ACCESS_KEY_ID != '' && secrets.AWS_SECRET_ACCESS_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
         with:
           submodules: true
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 1
-      - uses: hashicorp/setup-terraform@v2
+
+      - uses: opentofu/setup-opentofu@v2
         with:
-          terraform_wrapper: false
-      - uses: aws-actions/configure-aws-credentials@v2
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - uses: peaceiris/actions-hugo@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      # Install dependencies
-      - name: Install dependencies
+          extended: true
+          hugo-version: "0.155.1"
+
+      - name: Install image optimization tools
         run: |
-          sudo apt-get update -y && sudo apt install -y \
+          sudo apt-get update -y && sudo apt-get install -y \
             libimage-exiftool-perl \
             jpegoptim \
             optipng \
             imagemagick \
             webp
-      # Set up Hugo
-      - uses: peaceiris/actions-hugo@v2
+
+      - name: Configure AWS credentials with deploy OIDC role
+        if: env.HAS_DEPLOY_ROLE == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          extended: true
-      # Initialize Terraform
-      - name: Initialize Terraform (prod)
-        run: ENV=prod make init
-      # Promote staging to live
-      - name: Promote to live environment
-        run: ENV=prod make release
-      - name: Output promotion success
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure AWS credentials with deploy keys
+        if: env.HAS_DEPLOY_ROLE != 'true' && env.HAS_DEPLOY_KEYS == 'true'
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Require deploy credentials
+        if: env.HAS_DEPLOY_ROLE != 'true' && env.HAS_DEPLOY_KEYS != 'true'
         run: |
-          echo "✅ Promotion to live complete!"
-          echo "The new version is now serving live traffic."
-          echo "CloudFront cache has been invalidated."
+          echo "Configure AWS_DEPLOY_ROLE_ARN or the AWS deploy keys before auto-deploy." >&2
+          exit 1
+
+      - name: Initialize OpenTofu
+        run: |
+          tofu -chdir="terraform/env/global" init -lockfile=readonly
+          tofu -chdir="terraform/env/prod" init -lockfile=readonly
+
+      # Apply global infra only if the plan is non-destructive (safe-apply gate).
+      - name: Apply global infrastructure (non-destructive only)
+        run: make ENV=global safe-apply
+
+      # Build the site and sync it to the standby path (does not touch live traffic).
+      - name: Build and deploy content to standby path
+        run: make ENV=prod deploy
+
+      # Promote standby to live only if the live_path flip plan is non-destructive.
+      - name: Promote to live (non-destructive only)
+        run: make ENV=prod safe-promote
+
+      - name: Invalidate CloudFront cache
+        run: make ENV=prod invalidate

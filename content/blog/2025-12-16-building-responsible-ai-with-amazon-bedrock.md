@@ -1,7 +1,8 @@
 ---
-title: Building Responsible AI with Amazon Bedrock (AWS re:Invent 2025)
+title: Building Responsible AI with Amazon Bedrock
 date: 2025-12-16
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "How to use Amazon Bedrock Guardrails and Automated Reasoning to enforce strict business policies on your AI agents."
 categories:
   - Responsible AI
@@ -23,7 +24,7 @@ This system combines two types of AI:
 1.  **Neural (The Translator):** Reads your policy ("Refunds < 30 days only") and converts it to math.
 2.  **Symbolic (The Judge):** Uses a logic solver to mathematically prove if the model's answer violates the rule.
 
-This gives you **100% precision** on policy enforcement, unlike the statistical guess of an LLM.
+For the rules it can encode, this gives you **deterministic, verifiable** policy enforcement, rather than the statistical guess of an LLM.
 
 ## Implementation: The `apply_guardrail` API
 
