@@ -1,8 +1,8 @@
 ---
-title: "OpenSearch Serverless NextGen: scale-to-zero가 RAG 비용을 진짜 바꾸나 (그리고 안 바꾸는 것)"
+title: "OpenSearch Serverless NextGen: Scale-to-Zero가 RAG 비용을 바꾸는 범위와 바꾸지 않는 것"
 date: 2026-06-09T02:30:00-04:00
 author: Yoonsoo Park
-description: "AWS가 OpenSearch Serverless를 agentic AI용으로 새로 만들었다. scale-to-zero, 20배 burst 스케일링, 최대 60% 비용 절감. RAG vector store 입장에서 이게 실제로 뭘 바꾸는지, 발표가 안 알려주는 CloudFormation 마이그레이션 함정, 그리고 vector store 비용 얘기가 왜 RAG 엔진 교체의 근거가 못 되는지 정리한다."
+description: "AWS가 OpenSearch Serverless를 에이전틱 AI 워크로드에 맞춰 새롭게 설계했다. Scale-to-zero, 최대 20배 버스트 확장, 최대 60% 비용 절감이 RAG 벡터 스토어에 실제로 어떤 변화를 주는지, CloudFormation 마이그레이션의 함정과 RAG 엔진 선택에 미치는 영향을 정리한다."
 categories:
   - AWS
 tags:
@@ -13,57 +13,57 @@ tags:
   - serverless
 ---
 
-AWS가 Amazon OpenSearch Serverless를 agentic AI 워크로드에 맞게 [밑바닥부터 다시 만들었다](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/). 헤드라인 숫자는 진짜고 볼 만하다: idle 컬렉션의 compute를 **0**까지 내리고(scale-to-zero), 필요하면 수 초 내 **20배**로 burst, 그리고 이전 capacity 모델 대비 최대 **60% 비용 절감**을 주장한다.
+AWS가 에이전틱 AI 워크로드를 위해 [Amazon OpenSearch Serverless를 새롭게 설계했다](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/). 발표에서 가장 눈에 띄는 수치는 분명하다. 유휴 컬렉션의 컴퓨팅 용량을 **0**까지 낮출 수 있고, 필요할 때는 수 초 안에 **20배**까지 확장할 수 있으며, 이전 용량 모델과 비교해 최대 **60%의 비용 절감**을 기대할 수 있다.
 
-RAG 스택을 돌린다면 — 특히 managed knowledge base 뒤에서 OpenSearch Serverless가 vector store로 깔려 있는 구조라면 — 이건 바로 네 cost center에 떨어진다. 근데 내가 직접 마이그레이션을 스파이크해보니, 흥미로운 건 절감액이 아니었다. **발표가 약속하는 것과 마이그레이션이 실제로 물리는 비용 사이의 간극**이었다. 이 발표가 하나로 뭉뚱그리기 쉬운 두 개의 결정을 분리해보자.
+특히 OpenSearch Serverless를 관리형 지식 기반의 벡터 스토어로 사용하는 RAG 환경이라면 이는 직접적인 비용 이슈다. 하지만 실제 마이그레이션을 검토해 보니 핵심은 절감액 자체가 아니었다. 발표가 약속하는 변화와 마이그레이션에 실제로 드는 비용 사이에는 간극이 있다. 이 발표가 하나로 묶어 보이기 쉬운 두 가지 결정을 분리해서 살펴보자.
 
-## 발표가 실제로 말하는 것
+## 발표가 실제로 바꾸는 것
 
-마케팅 걷어내면 NextGen은 새 retrieval 기능이 아니라 **과금·탄력성** 변화다:
+마케팅 표현을 걷어내면 NextGen은 새로운 검색 기능이 아니라 **비용 구조와 탄력성**의 변화다.
 
-- **Scale-to-zero.** 기존 모델은 컬렉션당 OCU(OpenSearch Compute Unit) 최소치를 상시 띄워뒀다 — 트래픽이 0이어도 그 floor만큼 과금됐다. NextGen은 idle일 때 indexing/search compute를 0까지 내린다. idle compute가 아니라 storage만 낸다.
-- **즉시 20배 burst.** 트래픽이 돌아오면 수 분이 아니라 수 초 안에 capacity가 다시 올라온다.
-- **최대 60% 저렴** — spiky하거나 duty cycle 낮은 워크로드 기준. 사실상 모든 내부용/dev·QA RAG 환경이 여기 해당한다.
+- **Scale-to-zero.** 기존 모델에서는 컬렉션마다 일정 수의 OCU(OpenSearch Compute Unit)를 최소 용량으로 유지해야 했다. 트래픽이 없어도 그 최소 용량에 대한 비용은 계속 발생했다. NextGen에서는 유휴 상태의 인덱싱 및 검색 컴퓨팅 용량을 0까지 낮출 수 있다. 유휴 컴퓨팅 비용 대신 스토리지 비용만 부담한다.
+- **즉시 20배 확장.** 트래픽이 돌아오면 수 분이 아니라 수 초 안에 용량을 다시 늘릴 수 있다.
+- **최대 60% 비용 절감.** 트래픽이 간헐적이거나 가동률이 낮은 워크로드에 특히 유리하다. 내부 도구나 개발·QA용 RAG 환경이 대표적이다.
 
-아닌 것: 더 나은 retriever도, 새 ranking 모델도, 새 connector도, RAG가 *돌려주는 결과의 품질*을 바꾸는 무엇도 아니다. 이건 vector 레이어의 청구서 최적화다. 이 프레이밍 꼭 붙들어라 — 글 후반에서 중요해진다.
+반대로 이것은 더 나은 검색기나 새로운 순위 모델, 새로운 커넥터가 아니다. RAG가 반환하는 결과의 품질을 직접 바꾸는 기능도 아니다. 벡터 계층의 비용을 최적화하는 변화일 뿐이다. 이 구분은 글의 후반부에서 중요해진다.
 
-## 발표가 건너뛴 마이그레이션 함정
+## 발표에서 빠진 마이그레이션 함정
 
-실제 CloudFormation 변경을 스파이크하면서 찾은 것. NextGen은 기존 컬렉션에 켜는 플래그가 아니다. CloudFormation에서 "NextGen"을 표현하는 방법은 컬렉션을 새로운 **`AWS::OpenSearchServerless::CollectionGroup`** 리소스에 붙이는 거다 — 이 group이 `CapacityLimits`를 들고 있고, 거기서 indexing/search의 min OCU를 `0`으로 두면 그게 scale-to-zero 노브다. 거기에 max 상한도 같이 둔다.
+CloudFormation 변경을 직접 검토하면서 확인한 사실이 있다. NextGen은 기존 컬렉션에서 켜는 플래그가 아니다. CloudFormation에서는 컬렉션을 새 **`AWS::OpenSearchServerless::CollectionGroup`** 리소스에 연결하는 방식으로 NextGen을 사용한다. 이 그룹의 `CapacityLimits`에서 인덱싱과 검색의 최소 OCU를 `0`으로 설정하면 Scale-to-zero를 활성화할 수 있고, 최대 용량도 함께 지정할 수 있다.
 
-함정: 컬렉션을 group에 연결하는 그 property가 **`Update requires: Replace`**다.
+문제는 컬렉션과 그룹을 연결하는 속성의 업데이트 정책이 **`Update requires: Replace`**라는 점이다.
 
-CFN 문서의 이 한 줄이 이야기 전체를 바꾼다. *기존* 컬렉션을 group에 붙이는 건 in-place 재구성이 아니라 — CloudFormation이 컬렉션을 **지우고 다시 만든다**. 즉:
+CloudFormation 문서의 이 한 줄이 마이그레이션의 성격을 바꾼다. 기존 컬렉션을 그룹에 연결하는 작업은 제자리에서 설정을 바꾸는 것이 아니다. CloudFormation이 컬렉션을 **삭제한 뒤 다시 생성**한다. 그 결과는 다음과 같다.
 
-- vector index가 날아가고 다시 빌드해야 한다.
-- managed knowledge base(예: Bedrock Knowledge Bases)가 그 컬렉션을 consume한다면, 새 컬렉션에 corpus 전체를 **재인덱싱**한다.
+- 벡터 인덱스를 새로 구축해야 한다.
+- Bedrock Knowledge Bases처럼 해당 컬렉션을 사용하는 관리형 지식 기반이 있다면, 새 컬렉션에 전체 코퍼스를 다시 수집하고 인덱싱해야 한다.
 
-그래서 이건 "config 한 줄"이 아니다. "새 컬렉션 + 풀 재인덱싱"이다. 소스 문서가 다른 데 사는 내부 knowledge base라면 데이터 유실 리스크는 없다 — 하지만 진짜 재인덱싱 작업이 있고, 그게 네가 돌리는 region 수만큼 곱해진다. 예산 잡아둬라. 발표는 안 알려준다.
+즉, 이것은 "설정 한 줄 변경"이 아니라 "새 컬렉션 생성과 전체 재인덱싱"이다. 원본 문서가 별도의 위치에 보관된 내부 지식 기반이라면 데이터 유실 위험은 크지 않다. 그렇더라도 실제 재수집과 재인덱싱 작업은 필요하며, 운영 리전 수만큼 반복된다. 그 비용과 시간을 계획에 넣어야 한다. 발표문은 이 부분을 말해 주지 않는다.
 
-## 실제로 밟은 함정들
+## 실제로 확인한 주의점
 
-- **`aws-cdk-lib`에 이미 L1이 있다.** `CfnCollectionGroup`이랑 `collectionGroupName` property 쓰려면 CDK 업그레이드가 필요할 줄 알았다. 아니었다 — 최신은 아니어도 적당히 최근인 `aws-cdk-lib`가 이미 둘 다 노출한다. 버전 올리기 전에 설치된 버전부터 확인해라. 이미 거기 있을 수 있다.
-- **`generation` 필드는 없다.** `generation: NEXTGEN` 같은 토글 찾으러 다녔는데, 없다. collection-group 연결의 존재 자체가 NextGen 표현이다. 플래그 찾느라 시간 버리지 마라.
-- **`cdk synth` 통과 ≠ 검증.** min 0 / max N짜리 `CollectionGroup`에 컬렉션이 연결된 valid CloudFormation을 깔끔하게 synth했다. 그건 템플릿이 컴파일된다는 증명이다. downstream consumer가 런타임에 새 컬렉션을 받아주느냐에 대해선 아무것도 증명 못 한다. (아래 계속)
-- **Type-available ≠ deploy-validated.** 내가 신경 쓰는 주요 region 전부에서 `CollectionGroup` 리소스 타입이 available함을 확인했다. region 가용성이라는 blocker는 그걸로 사라진다 — 근데 "API가 그 타입을 안다"와 "실제로 배포해서 knowledge base가 거기 인덱싱했다"는 다른 게이트다. 첫 번째 통과했다고 두 번째를 건너뛰지 마라.
-- **Scale-to-zero는 cold start와 맞바꾼다.** idle compute 0은 dev/QA에선 공짜 돈이다, 아무도 안 기다리니까. 고객용 path에선 idle 이후 첫 쿼리가 warm-up을 문다. 그게 받아들일 만한지는 비용 얘기가 아니라 latency 얘기다 — 그래서 나라면 이 변경을 non-prod에 먼저 게이팅하고, prod 건드리기 전에 cold-start 거동부터 증명하겠다.
+- **`aws-cdk-lib`에는 이미 L1 리소스가 있을 수 있다.** `CfnCollectionGroup`과 `collectionGroupName` 속성을 사용하려면 CDK를 올려야 한다고 생각하기 쉽다. 하지만 최신 버전이 아니더라도 비교적 최근의 `aws-cdk-lib`에는 이미 두 항목이 포함돼 있을 수 있다. 업그레이드하기 전에 현재 설치된 버전을 먼저 확인하는 편이 낫다.
+- **`generation` 필드는 없다.** `generation: NEXTGEN`처럼 세대를 지정하는 토글을 찾게 되지만, 그런 필드는 존재하지 않는다. 컬렉션 그룹 연결 자체가 NextGen을 표현하는 방식이다.
+- **`cdk synth` 성공은 검증이 아니다.** 최소 OCU 0, 최대 OCU N으로 설정한 `CollectionGroup`과 연결된 컬렉션을 포함해 CloudFormation 템플릿을 생성할 수 있다. 이는 템플릿이 컴파일된다는 뜻일 뿐, 하위 시스템이 새 컬렉션을 런타임에 받아들이는지를 증명하지는 않는다.
+- **리소스 타입의 존재와 실제 배포 성공은 다르다.** 주요 리전에서 `CollectionGroup` 리소스 타입을 사용할 수 있는지 확인하면 리전 지원 여부라는 장애물은 제거된다. 그러나 API가 그 타입을 인식하는 것과 실제 배포 후 지식 기반이 해당 컬렉션에 인덱싱하는 것은 별개의 검증 단계다. 전자가 통과했다고 후자를 건너뛰면 안 된다.
+- **Scale-to-zero는 콜드 스타트와 맞바꾼다.** 유휴 컴퓨팅 비용이 0이 되는 것은 개발·QA 환경에서는 분명한 이점이다. 다만 사용자 요청을 처리하는 경로에서는 유휴 상태 뒤 첫 쿼리가 워밍업 시간을 부담한다. 이는 비용이 아니라 지연 시간의 문제다. 그래서 먼저 비프로덕션 환경에 적용해 콜드 스타트 동작을 확인한 뒤 운영 환경을 검토하는 편이 안전하다.
 
-## 이 발표가 대신 내려주지 않는 결정
+## 이 발표가 대신 결정해 주지 않는 것
 
-여기가 팀들이 걸어 들어가는 함정이다. vector store 비용 발표가 도착하면, 그게 **RAG 엔진을 갈아치우라는 신호**로 읽힌다 — "우리 managed search 서비스 버리고 OpenSearch로 옮겨야 하나?"
+팀이 빠지기 쉬운 함정이 있다. 벡터 스토어 비용 절감 소식이 나오면 이를 **RAG 엔진을 교체하라는 신호**로 읽는 것이다. "관리형 검색 서비스를 버리고 OpenSearch로 옮겨야 할까?"라는 질문으로 곧장 이어진다.
 
-이건 다른 결정이고, 이 발표는 그 중 하나만 건드린다.
+하지만 이것은 서로 다른 결정이며, 이번 발표는 그중 하나에만 영향을 준다.
 
-- **"기존 OpenSearch vector store를 NextGen으로 옮길까?"** — 그래, 충분히. 이미 돌리는 인프라의 비용 최적화다. 분석은 마이그레이션 비용(재인덱싱) vs idle compute 절감. duty cycle 낮은 환경이면 이 산수는 쉽다.
-- **"managed RAG 서비스를 OpenSearch로 대체할까?"** — 이 발표는 그 질문에 *무관*하다. 엔진 선택은 retrieval 품질, relevance 튜닝, ACL·멀티테넌트 필터 패리티, connector 생태계, 운영 부담의 문제다. vector 레이어에서 청구서 60% 줄어든다는 게 OpenSearch가 네 corpus에 대해 *더 잘* retrieve하는지, 지금의 접근제어 모델을 재현할 수 있는지에 대해 아무것도 말해주지 않는다. 엔진 교체를 검토 중이면 *그 축*들을 검토해라 — 비용 헤드라인이 그 작업을 대신하게 두지 마라.
+- **"기존 OpenSearch 벡터 스토어를 NextGen으로 옮길 것인가?"** 충분히 검토할 만하다. 이미 운영 중인 인프라의 비용 최적화이기 때문이다. 판단 기준은 마이그레이션 비용과 재인덱싱 비용, 그리고 유휴 컴퓨팅 비용 절감의 비교다. 가동률이 낮은 환경이라면 계산은 비교적 단순하다.
+- **"관리형 RAG 서비스를 OpenSearch로 대체할 것인가?"** 이번 발표는 이 질문과 직접적인 관련이 없다. 엔진 선택은 검색 품질, 관련성 튜닝, ACL 및 멀티 테넌트 필터링의 동등성, 커넥터 생태계, 운영 부담을 기준으로 판단해야 한다. 벡터 계층 비용이 60% 낮아진다는 사실은 OpenSearch가 특정 코퍼스에서 더 나은 검색 결과를 내는지, 기존 접근 제어 모델을 재현할 수 있는지 알려주지 않는다. 엔진 교체를 평가한다면 바로 이 기준을 검증해야 하며, 비용 절감 수치가 그 작업을 대신하게 해서는 안 된다.
 
-둘을 뭉뚱그리는 게, 결국 몇 달짜리 엔진 마이그레이션을 idle compute 얘기일 뿐이었던 숫자로 정당화하게 되는 경로다.
+두 결정을 섞으면 유휴 컴퓨팅 비용에 관한 수치 하나로 몇 달에 걸친 엔진 마이그레이션을 정당화하게 된다.
 
-## 그래서 뭘 해야 하나
+## 실제로 해야 할 일
 
-1. **이미 OpenSearch Serverless를 vector store로 돌린다면:** dev에서 NextGen 마이그레이션을 스파이크해라. min OCU 0짜리 `CollectionGroup` 엮고, 컬렉션 붙이고, **실제로 배포해라** — 그리고 knowledge base가 새 컬렉션에 재인덱싱하고 retrieve하는지 확인해라. synth 통과는 그 증명이 아니다.
-2. **config 한 줄이 아니라 재인덱싱으로 계획해라.** 컬렉션이 교체된다. commit 전에 환경별 재인덱싱 비용부터 알아둬라.
-3. **non-prod에 먼저 게이팅해라.** idle이 공짜인 데서 scale-to-zero 절감을 챙기고, 고객용 path 뒤에 두기 전에 cold-start latency부터 증명해라.
-4. **이걸로 RAG 엔진을 결정하지 마라.** managed search → OpenSearch 이동을 저울질 중이면, 그 결정이 실제로 요구하는 retrieval 품질·접근제어 평가를 돌려라. 이 발표는 거기 입력값이 아니다.
+1. **이미 OpenSearch Serverless를 벡터 스토어로 사용하고 있다면**, 개발 환경에서 NextGen 마이그레이션을 검증한다. 최소 OCU가 0인 `CollectionGroup`을 만들고 컬렉션을 연결한 뒤, 실제로 배포한다. 그런 다음 지식 기반이 새 컬렉션에 재인덱싱하고 검색 결과를 반환하는지 확인해야 한다. `cdk synth`의 성공만으로는 충분하지 않다.
+2. **설정 변경이 아니라 재인덱싱 작업으로 계획한다.** 컬렉션은 교체된다. 적용하기 전에 환경별 재인덱싱 비용과 소요 시간을 파악해야 한다.
+3. **먼저 비프로덕션 환경에 적용한다.** 유휴 시간이 많은 환경에서 비용 절감 효과를 확인하고, 사용자 경로에 적용하기 전에 콜드 스타트 지연 시간을 측정한다.
+4. **이 발표로 RAG 엔진을 결정하지 않는다.** 관리형 검색 서비스에서 OpenSearch로 옮길지 검토 중이라면 검색 품질과 접근 제어를 중심으로 별도의 평가를 진행해야 한다. 이번 발표는 그 결정의 근거가 아니다.
 
-NextGen은 맞는 워크로드한텐 진짜 좋은 변화다. 다만 이게 어떤 결정에 답하는지 — 그리고 어떤 결정을 조용히 건너뛰게 유혹하는지 — 정직하게 구분해라.
+NextGen은 적절한 워크로드에는 분명히 좋은 변화다. 다만 이 변화가 답하는 결정과, 사람들이 그 답을 핑계로 건너뛰기 쉬운 결정을 구분해야 한다.
