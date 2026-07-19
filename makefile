@@ -1,16 +1,14 @@
-ENV          ?= dev
+ENV          ?= prod
 HUGO         = hugo
 MAX_JPG_SIZE = 250
 MAX_WIDTH    = 1400
 PNG_LEVEL    = 4
 SHELL        := /bin/bash
-TERRAFORM    = terraform -chdir="./terraform/env/$(ENV)"
-# Determine the current live path from Terraform output, default to "blue"
-# Only get live_path for environments that have it (not global)
-CURRENT_LIVE_PATH := $(shell if [ "$(ENV)" != "global" ]; then $(TERRAFORM) output -raw live_path 2>/dev/null || echo "blue"; else echo "blue"; fi)
+TOFU         = tofu -chdir="./terraform/env/$(ENV)"
+CURRENT_LIVE_PATH = $(shell $(TOFU) output -raw live_path 2>/dev/null || true)
 NEXT_DEPLOY_PATH   = $(if $(filter blue,$(CURRENT_LIVE_PATH)),green,blue)
 
-REQUIRED_BINS := hugo terraform aws exiftool jpegoptim optipng mogrify cwebp
+REQUIRED_BINS := hugo tofu aws exiftool jpegoptim optipng mogrify cwebp
 $(foreach bin,$(REQUIRED_BINS),\
     $(if $(shell command -v $(bin) 2> /dev/null),,$(error Please install `$(bin)`)))
 
@@ -24,49 +22,68 @@ optimize: exif
 exif:
 	exiftool -all= public/images* -overwrite_original
 
-# compress:
-# 	for i in public/images/*; do \
-# 		mogrify -resize '$(MAX_WIDTH)>' "$$i" ; \
-# 		if [[ "$$i" == *png ]]; then \
-# 			optipng -f4 -clobber -strip all -o $(PNG_LEVEL) -quiet "$$i" ; \
-# 		fi ; \
-# 		if [[ "$$i" == *jp ]]; then \
-# 			jpegoptim --strip-all --size=$(MAX_JPG_SIZE) -quiet "$$i" ; \
-# 		fi ; \
-# 	done
-
 serve:
 	$(HUGO) server -D
 
 init:
-	$(TERRAFORM) init
+	$(TOFU) init
+
+init-readonly:
+	$(TOFU) init -lockfile=readonly
 
 validate: validate-content
-	$(TERRAFORM) validate
+	$(TOFU) validate
 
 validate-content:
 	python3 scripts/validate_frontmatter.py
 
 plan:
 	@if [ "$(ENV)" = "global" ]; then \
-		$(TERRAFORM) plan; \
+		$(TOFU) plan; \
 	else \
-		$(TERRAFORM) plan -var="live_path=$(CURRENT_LIVE_PATH)"; \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		$(TOFU) plan -var="live_path=$(CURRENT_LIVE_PATH)"; \
+	fi
+
+plan-out:
+	@if [ "$(ENV)" = "global" ]; then \
+		$(TOFU) plan -out="$(CURDIR)/$(ENV).tfplan"; \
+	else \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		$(TOFU) plan -var="live_path=$(CURRENT_LIVE_PATH)" -out="$(CURDIR)/$(ENV).tfplan"; \
+	fi
+	$(TOFU) show -no-color "$(CURDIR)/$(ENV).tfplan" > "$(CURDIR)/$(ENV).plan.txt"
+
+refresh-plan:
+	@if [ "$(ENV)" = "global" ]; then \
+		$(TOFU) plan -refresh-only; \
+	else \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		$(TOFU) plan -refresh-only -var="live_path=$(CURRENT_LIVE_PATH)"; \
 	fi
 
 apply:
 	@if [ "$(ENV)" = "global" ]; then \
-		$(TERRAFORM) apply -auto-approve; \
+		$(TOFU) apply -auto-approve; \
 	else \
-		$(TERRAFORM) apply -auto-approve -var="live_path=$(CURRENT_LIVE_PATH)"; \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		$(TOFU) apply -auto-approve -var="live_path=$(CURRENT_LIVE_PATH)"; \
 	fi
+
+# Safe auto-apply: build a plan, reject it if it is destructive, then apply the
+# exact saved plan. Used by CI so non-destructive changes deploy automatically
+# while destroys/replaces halt and require a manual, approved apply.
+safe-apply: plan-out
+	scripts/check-plan-safety.sh "$(CURDIR)/$(ENV).plan.txt"
+	$(TOFU) apply -auto-approve "$(CURDIR)/$(ENV).tfplan"
 
 deploy: build optimize
 	@echo ">>> Deploying to standby path: $(NEXT_DEPLOY_PATH)"
 	@if [ "$(ENV)" = "global" ]; then \
 		echo ">>> Skipping deployment for global environment"; \
 	else \
-		aws s3 sync --delete public/ s3://$(shell $(TERRAFORM) output -raw bucket_name)/$(NEXT_DEPLOY_PATH)/; \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		aws s3 sync --delete public/ s3://$(shell $(TOFU) output -raw bucket_name)/$(NEXT_DEPLOY_PATH)/; \
 	fi
 
 promote:
@@ -74,20 +91,37 @@ promote:
 	@if [ "$(ENV)" = "global" ]; then \
 		echo ">>> Skipping promotion for global environment"; \
 	else \
-		$(TERRAFORM) apply -auto-approve -var="live_path=$(NEXT_DEPLOY_PATH)"; \
+		$(MAKE) require-live-path ENV=$(ENV); \
+		$(TOFU) apply -auto-approve -var="live_path=$(NEXT_DEPLOY_PATH)"; \
 	fi
+
+# Safe promote: plan the live_path flip to the standby path, reject if
+# destructive, then apply the exact saved plan and invalidate.
+safe-promote:
+	@if [ "$(ENV)" = "global" ]; then echo ">>> Skipping promotion for global environment"; exit 0; fi
+	$(MAKE) require-live-path ENV=$(ENV)
+	@echo ">>> Planning promotion of standby path '$(NEXT_DEPLOY_PATH)' to live"
+	$(TOFU) plan -var="live_path=$(NEXT_DEPLOY_PATH)" -out="$(CURDIR)/$(ENV)-promote.tfplan"
+	$(TOFU) show -no-color "$(CURDIR)/$(ENV)-promote.tfplan" > "$(CURDIR)/$(ENV)-promote.plan.txt"
+	scripts/check-plan-safety.sh "$(CURDIR)/$(ENV)-promote.plan.txt"
+	$(TOFU) apply -auto-approve "$(CURDIR)/$(ENV)-promote.tfplan"
+
+require-live-path:
+	@if [ "$(ENV)" = "global" ]; then exit 0; fi; \
+	path="$$($(TOFU) output -raw live_path 2>/dev/null)" || { echo "ERROR: unable to read live_path from $(ENV) state" >&2; exit 1; }; \
+	case "$$path" in blue|green) ;; *) echo "ERROR: invalid live_path '$$path'" >&2; exit 1 ;; esac
 
 release: promote invalidate
 
 destroy:
-	$(TERRAFORM) apply -destroy -auto-approve
+	$(TOFU) apply -destroy -auto-approve
 
 invalidate:
 	@echo ">>> Invalidating CloudFront cache"
 	@if [ "$(ENV)" = "global" ]; then \
 		echo ">>> Skipping cache invalidation for global environment"; \
 	else \
-		distribution_id=$$($(TERRAFORM) output -raw cloudfront_distribution_id); \
+		distribution_id=$$($(TOFU) output -raw cloudfront_distribution_id); \
 		aws cloudfront create-invalidation \
 			--distribution-id $$distribution_id \
 			--paths "/*" \

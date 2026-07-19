@@ -14,7 +14,13 @@ variable "domain_names" {
   description = "The domain names for the website"
 }
 
+variable "draw_rewrite_name" {
+  type        = string
+  description = "CloudFront Function name used to route /draw to its static index"
+  default     = "yopa-draw-index-rewrite"
+}
+
 variable "error_page_path" {
-  type = string
+  type    = string
   default = "/404.html"
 }

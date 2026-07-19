@@ -1,0 +1,10 @@
+title = "yopa.page secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated Excalidraw vendor bundles contain upstream public Firebase client configuration; source files remain covered by native push protection and this scan."
+paths = [
+  '''^static/draw/assets/''',
+]

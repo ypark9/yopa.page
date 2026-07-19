@@ -1,7 +1,8 @@
 ---
-title: Real-Time Voice Agents with AWS Nova Sonic (AWS re:Invent 2025)
+title: Real-Time Voice Agents with AWS Nova Sonic
 date: 2025-12-14
 author: Yoonsoo Park
+series: AWS re:Invent 2025
 description: "How to build ultra-low latency, interruptible voice agents using Amazon Nova Sonic and WebSocket streams."
 categories:
   - Voice AI
