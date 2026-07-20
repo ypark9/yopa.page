@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["github-actions", "terraform"],
+  "timezone": "America/New_York",
+  "schedule": ["before 6am on Monday"],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 1,
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Group GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Group OpenTofu provider updates and use the OpenTofu registry",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_provider"],
+      "registryUrls": ["https://registry.opentofu.org"],
+      "groupName": "OpenTofu providers"
+    },
+    {
+      "description": "Keep the OpenTofu runtime version manually managed during initial adoption",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_version"],
+      "enabled": false
+    }
+  ]
+}
