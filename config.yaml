@@ -37,7 +37,7 @@ params:
   siteDesc: A blog that's gonna put your software engineering skills to the test.
   author: Yoonsoo Park
   maxCategoryToShow: 10
-  articleAtlasPresenceEnabled: false
+  articleAtlasPresenceEnabled: true
   socialOptions:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/yopa.page
