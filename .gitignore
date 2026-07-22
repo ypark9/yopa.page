@@ -22,6 +22,7 @@ override.tf.json
 terraform.rc
 /public
 /resources
+terraform/modules/article_atlas_presence/article-atlas-presence.zip
 .hugo_build.lock
 .DS_Store
 .env

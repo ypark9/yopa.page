@@ -4,7 +4,7 @@
       <p class="home-atlas-eyebrow">A living map of yopa.page</p>
       <h2 id="home-atlas-title">Article Atlas</h2>
     </div>
-    <span class="home-atlas-presence"><i></i> Preview · simulated explorers</span>
+    <span class="home-atlas-presence" id="home-atlas-presence"><i></i><span>Preview · simulated explorers</span></span>
   </div>
 
   <a class="home-atlas" href="{{ "explore/" | relURL }}" aria-describedby="home-atlas-description">
@@ -17,4 +17,5 @@
 </section>
 
 <link rel="stylesheet" href="{{ "css/home-atlas.css" | relURL }}">
+<script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
 <script defer src="{{ "js/home-atlas.js" | relURL }}"></script>

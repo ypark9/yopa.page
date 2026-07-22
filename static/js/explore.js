@@ -70,11 +70,55 @@
     };
   });
 
-  const visitors = Array.from({ length: 11 }, (_, index) => {
+  const simulatedVisitors = Array.from({ length: 11 }, (_, index) => {
     const random = hash(`visitor-${index}`);
     const country = ["KR", "US", "CA", "DE", "JP", "BR", "GB"][index % 7];
-    return { x: (random() - .5) * 1100, y: random() * 1900, phase: random() * 8, country };
+    return { x: (random() - .5) * 1100, y: random() * 1900, phase: random() * 8, country, live: false };
   });
+  let visitors = simulatedVisitors;
+  let ownVisitorId = null;
+
+  function fromNormalized(x, y) {
+    return { x: -760 + x * 1580, y: -250 + y * 2180 };
+  }
+
+  function ownNormalizedPosition() {
+    const worldX = state.camera.x + state.pointer.x - state.width / 2;
+    const worldY = state.camera.y + state.pointer.y - state.height / 2;
+    return {
+      x: Math.max(0, Math.min(1, (worldX + 760) / 1580)),
+      y: Math.max(0, Math.min(1, (worldY + 250) / 2180))
+    };
+  }
+
+  function updatePresence(event) {
+    const label = document.querySelector("#explore-presence-status span:last-child");
+    ownVisitorId = event.visitorId;
+    if (event.mode === "live") {
+      const previous = new Map(visitors.filter((visitor) => visitor.live).map((visitor) => [visitor.id, visitor]));
+      visitors = event.visitors.filter((visitor) => visitor.id !== ownVisitorId).map((visitor) => {
+        const target = fromNormalized(visitor.x, visitor.y);
+        const existing = previous.get(visitor.id);
+        return {
+          ...visitor,
+          x: existing?.x ?? target.x,
+          y: existing?.y ?? target.y,
+          targetX: target.x,
+          targetY: target.y,
+          live: true
+        };
+      });
+      if (label) label.textContent = event.visitors.length ? `${event.visitors.length} explorers online` : "Be the first explorer";
+    } else if (event.mode === "connecting") {
+      if (label) label.textContent = "Connecting to the atlas…";
+    } else if (event.mode === "offline") {
+      visitors = [];
+      if (label) label.textContent = "Atlas is quiet right now";
+    } else {
+      visitors = simulatedVisitors;
+      if (label) label.textContent = "Prototype · simulated visitors";
+    }
+  }
 
   function resize() {
     state.width = innerWidth;
@@ -158,10 +202,13 @@
   }
 
   function drawVisitor(visitor, index) {
-    const drift = reducedMotion ? 0 : Math.sin(state.time * .00045 + visitor.phase) * 32;
-    const p = screen(visitor.x + drift, visitor.y + Math.cos(state.time * .00038 + visitor.phase) * 20);
+    const phase = visitor.phase || 0;
+    const drift = visitor.live || reducedMotion ? 0 : Math.sin(state.time * .00045 + phase) * 32;
+    const verticalDrift = visitor.live || reducedMotion ? 0 : Math.cos(state.time * .00038 + phase) * 20;
+    const p = screen(visitor.x + drift, visitor.y + verticalDrift);
     if (p.x < -50 || p.y < -50 || p.x > state.width + 50 || p.y > state.height + 50) return;
     ctx.save();
+    ctx.globalAlpha = visitor.status === "paused" ? .42 : 1;
     ctx.translate(p.x, p.y);
     ctx.rotate(-.45);
     ctx.beginPath();
@@ -178,11 +225,13 @@
     ctx.lineWidth = 2;
     ctx.fill(); ctx.stroke();
     ctx.restore();
+    ctx.globalAlpha = visitor.status === "paused" ? .42 : 1;
     ctx.fillStyle = "rgba(245,240,223,.9)";
     ctx.fillRect(p.x + 13, p.y - 12, 25, 15);
     ctx.fillStyle = "#263b32";
     ctx.font = "800 9px system-ui";
     ctx.fillText(visitor.country, p.x + 18, p.y - 1);
+    ctx.globalAlpha = 1;
   }
 
   function drawOwnCursor() {
@@ -232,6 +281,15 @@
       state.camera.x = Math.max(-760, Math.min(820, state.camera.x));
       state.camera.y = Math.max(-250, Math.min(1930, state.camera.y));
     }
+    visitors.forEach((visitor) => {
+      if (!visitor.live) return;
+      visitor.x += (visitor.targetX - visitor.x) * .12;
+      visitor.y += (visitor.targetY - visitor.y) * .12;
+    });
+    if (state.entered && state.pointer.active && !state.paused && window.ArticleAtlasPresence) {
+      const position = ownNormalizedPosition();
+      window.ArticleAtlasPresence.move(position.x, position.y);
+    }
     ctx.clearRect(0, 0, state.width, state.height);
     ctx.fillStyle = "#c9dfc4"; ctx.fillRect(0, 0, state.width, state.height);
     regions.forEach(blob);
@@ -259,6 +317,7 @@
 
   document.getElementById("explore-enter").addEventListener("click", () => {
     state.entered = true;
+    window.ArticleAtlasPresence?.connect();
     const intro = document.getElementById("explore-intro");
     intro.classList.add("is-leaving");
     setTimeout(() => { intro.hidden = true; }, reducedMotion ? 0 : 360);
@@ -293,6 +352,7 @@
     if (!state.entered || state.paused) return;
     closeWheel();
     state.paused = true;
+    window.ArticleAtlasPresence?.pause();
     pausePanel.hidden = false;
     document.getElementById("explore-resume").focus();
   }
@@ -301,6 +361,8 @@
     state.paused = false;
     pausePanel.hidden = true;
     state.pointer.active = false;
+    const position = ownNormalizedPosition();
+    window.ArticleAtlasPresence?.resume(position.x, position.y);
     canvas.focus({ preventScroll: true });
   }
 
@@ -341,6 +403,9 @@
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) pauseExploring();
   });
+
+  if (window.ArticleAtlasPresence) window.ArticleAtlasPresence.subscribe(updatePresence);
+  window.addEventListener("beforeunload", () => window.ArticleAtlasPresence?.stop());
 
   addEventListener("resize", resize);
   resize();

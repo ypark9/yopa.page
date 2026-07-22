@@ -56,7 +56,7 @@
     </div>
   </section>
 
-  <div class="explore-status" aria-hidden="true">
+  <div class="explore-status" id="explore-presence-status" aria-live="polite">
     <span class="explore-status-dot"></span>
     <span>Prototype · simulated visitors</span>
   </div>
@@ -75,5 +75,6 @@
 ]
 </script>
 <link rel="stylesheet" href="{{ "css/explore.css" | relURL }}">
+<script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
 <script defer src="{{ "js/explore.js" | relURL }}"></script>
 {{ end }}

@@ -12,7 +12,7 @@
     { name: "CODEWORKS", x: .35, y: .79, rx: .26, ry: .18, fill: "#d8d0b2", edge: "#8c805e" },
     { name: "ARCHIVE HARBOR", x: .78, y: .82, rx: .2, ry: .16, fill: "#b8d8d6", edge: "#59888d" }
   ];
-  const visitors = [
+  const simulatedVisitors = [
     { country: "KR", region: 0, phase: .3, color: "#ff7959" },
     { country: "US", region: 2, phase: 1.7, color: "#f5c85d" },
     { country: "JP", region: 1, phase: 3.2, color: "#6a94b4" },
@@ -20,6 +20,7 @@
     { country: "CA", region: 4, phase: 5.5, color: "#e37b78" },
     { country: "GB", region: 2, phase: 6.1, color: "#67a87b" }
   ];
+  let visitors = simulatedVisitors;
 
   function resize() {
     const box = canvas.getBoundingClientRect();
@@ -88,11 +89,18 @@
   }
 
   function drawCursor(visitor) {
-    const region = point(regions[visitor.region]);
-    const drift = reducedMotion ? 0 : state.time * .00025;
-    const angle = visitor.phase + drift;
-    const x = region.x + Math.cos(angle) * region.rx * .42;
-    const y = region.y + Math.sin(angle * 1.3) * region.ry * .35;
+    let x;
+    let y;
+    if (Number.isFinite(visitor.x) && Number.isFinite(visitor.y)) {
+      x = visitor.x * state.width;
+      y = visitor.y * state.height;
+    } else {
+      const region = point(regions[visitor.region]);
+      const drift = reducedMotion ? 0 : state.time * .00025;
+      const angle = visitor.phase + drift;
+      x = region.x + Math.cos(angle) * region.rx * .42;
+      y = region.y + Math.sin(angle * 1.3) * region.ry * .35;
+    }
 
     ctx.save();
     ctx.translate(x, y);
@@ -106,7 +114,8 @@
     ctx.lineTo(10, 12);
     ctx.lineTo(18, 11);
     ctx.closePath();
-    ctx.fillStyle = visitor.color;
+    ctx.globalAlpha = visitor.status === "paused" ? .42 : 1;
+    ctx.fillStyle = visitor.color || colorFor(visitor.id);
     ctx.strokeStyle = "#273c33";
     ctx.lineWidth = 1.7;
     ctx.fill();
@@ -119,6 +128,31 @@
     ctx.font = "700 9px system-ui";
     ctx.textAlign = "left";
     ctx.fillText(visitor.country, x + 16, y);
+    ctx.globalAlpha = 1;
+  }
+
+  function colorFor(value = "visitor") {
+    const colors = ["#ff7959", "#f5c85d", "#6a94b4", "#9b78ad", "#e37b78", "#67a87b"];
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
+    return colors[Math.abs(hash) % colors.length];
+  }
+
+  function updatePresence(event) {
+    const label = document.querySelector("#home-atlas-presence span:last-child");
+    if (!label) return;
+    if (event.mode === "live") {
+      visitors = event.visitors;
+      label.textContent = visitors.length ? `${visitors.length} explorers online` : "Be the first explorer";
+    } else if (event.mode === "connecting") {
+      label.textContent = "Connecting to the atlas…";
+    } else if (event.mode === "offline") {
+      visitors = [];
+      label.textContent = "Atlas is quiet right now";
+    } else {
+      visitors = simulatedVisitors;
+      label.textContent = "Preview · simulated explorers";
+    }
   }
 
   function render(time) {
@@ -133,6 +167,10 @@
   }
 
   window.addEventListener("resize", resize);
+  if (window.ArticleAtlasPresence) {
+    window.ArticleAtlasPresence.subscribe(updatePresence);
+    window.ArticleAtlasPresence.connect();
+  }
   resize();
   requestAnimationFrame(render);
 })();
