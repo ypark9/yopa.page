@@ -33,6 +33,8 @@ resource "aws_cloudfront_function" "draw_rewrite" {
       var request = event.request;
       if (request.uri === '/draw' || request.uri === '/draw/') {
         request.uri = '/draw/index.html';
+      } else if (request.uri === '/explore' || request.uri === '/explore/') {
+        request.uri = '/explore/index.html';
       }
       return request;
     }
