@@ -1,0 +1,21 @@
+<section class="home-atlas-section" aria-labelledby="home-atlas-title">
+  <div class="home-atlas-heading">
+    <div>
+      <p class="home-atlas-eyebrow">A living map of yopa.page</p>
+      <h2 id="home-atlas-title">Article Atlas</h2>
+    </div>
+    <span class="home-atlas-presence" id="home-atlas-presence"><i></i><span>Preview · simulated explorers</span></span>
+  </div>
+
+  <a class="home-atlas" href="{{ "explore/" | relURL }}" aria-describedby="home-atlas-description">
+    <canvas id="home-atlas-canvas" aria-hidden="true"></canvas>
+    <span class="home-atlas-enter">Enter the atlas <span aria-hidden="true">→</span></span>
+  </a>
+  <p class="home-atlas-description" id="home-atlas-description">
+    Wander between article regions and discover something you were not looking for.
+  </p>
+</section>
+
+<link rel="stylesheet" href="{{ "css/home-atlas.css" | relURL }}">
+<script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
+<script defer src="{{ "js/home-atlas.js" | relURL }}"></script>

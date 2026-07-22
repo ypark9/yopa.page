@@ -2,6 +2,10 @@ terraform {
   required_version = "= 1.12.3"
 
   required_providers {
+    archive = {
+      source  = "hashicorp/archive"
+      version = "= 2.7.1"
+    }
     aws = {
       source  = "hashicorp/aws"
       version = "= 5.100.0"
@@ -19,11 +23,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
+module "article_atlas_presence" {
+  source = "../../modules/article_atlas_presence"
+}
+
 module "website" {
-  source       = "../../modules/website"
-  bucket_name  = "yopa.page"
-  domain_names = ["yopa.page", "www.yopa.page"]
-  live_path    = var.live_path
+  source                  = "../../modules/website"
+  bucket_name             = "yopa.page"
+  domain_names            = ["yopa.page", "www.yopa.page"]
+  live_path               = var.live_path
+  presence_origin_enabled = true
+  presence_origin_domain  = module.article_atlas_presence.origin_domain_name
+  presence_origin_path    = "/${module.article_atlas_presence.stage_name}"
 }
 
 variable "live_path" {
@@ -42,4 +53,8 @@ output "bucket_name" {
 
 output "live_path" {
   value = module.website.live_path
+}
+
+output "article_atlas_presence_url" {
+  value = "wss://www.yopa.page/presence"
 }

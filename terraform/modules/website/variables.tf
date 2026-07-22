@@ -24,3 +24,21 @@ variable "error_page_path" {
   type    = string
   default = "/404.html"
 }
+
+variable "presence_origin_domain" {
+  type        = string
+  description = "Optional API Gateway WebSocket origin domain"
+  default     = ""
+}
+
+variable "presence_origin_enabled" {
+  type        = bool
+  description = "Whether to add the Article Atlas WebSocket origin and behavior"
+  default     = false
+}
+
+variable "presence_origin_path" {
+  type        = string
+  description = "API Gateway WebSocket stage path used by the viewer-request rewrite"
+  default     = ""
+}

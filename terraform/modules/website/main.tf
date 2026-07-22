@@ -1,5 +1,6 @@
 locals {
   cloudfront_origin_id = "s3"
+  presence_origin_id   = "article-atlas-presence"
   mime_types = {
     css   = "text/css"
     html  = "text/html"
@@ -32,6 +33,24 @@ resource "aws_cloudfront_function" "draw_rewrite" {
       var request = event.request;
       if (request.uri === '/draw' || request.uri === '/draw/') {
         request.uri = '/draw/index.html';
+      }
+      return request;
+    }
+  EOT
+}
+
+resource "aws_cloudfront_function" "presence_rewrite" {
+  count = var.presence_origin_enabled ? 1 : 0
+
+  name    = "article-atlas-presence-rewrite"
+  runtime = "cloudfront-js-1.0"
+  comment = "Rewrite /presence to the API Gateway WebSocket stage root"
+  publish = true
+  code    = <<-EOT
+    function handler(event) {
+      var request = event.request;
+      if (request.uri === '/presence' || request.uri === '/presence/') {
+        request.uri = '${var.presence_origin_path}';
       }
       return request;
     }
@@ -89,6 +108,14 @@ data "aws_cloudfront_response_headers_policy" "headers_policy" {
   name = "security-headers-policy"
 }
 
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
 resource "aws_cloudfront_distribution" "distribution" {
   aliases             = var.domain_names
   enabled             = true
@@ -100,6 +127,22 @@ resource "aws_cloudfront_distribution" "distribution" {
     origin_path = "/${var.live_path}"
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.identity.cloudfront_access_identity_path
+    }
+  }
+
+  dynamic "origin" {
+    for_each = var.presence_origin_enabled ? [var.presence_origin_domain] : []
+    content {
+      domain_name = origin.value
+      origin_id   = local.presence_origin_id
+      origin_path = ""
+
+      custom_origin_config {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
     }
   }
 
@@ -115,6 +158,25 @@ resource "aws_cloudfront_distribution" "distribution" {
     function_association {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.draw_rewrite.arn
+    }
+  }
+
+  dynamic "ordered_cache_behavior" {
+    for_each = var.presence_origin_enabled ? [1] : []
+    content {
+      path_pattern             = "presence*"
+      allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+      cached_methods           = ["GET", "HEAD"]
+      compress                 = false
+      target_origin_id         = local.presence_origin_id
+      viewer_protocol_policy   = "https-only"
+      cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+      origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+
+      function_association {
+        event_type   = "viewer-request"
+        function_arn = aws_cloudfront_function.presence_rewrite[0].arn
+      }
     }
   }
 
