@@ -39,6 +39,6 @@ variable "presence_origin_enabled" {
 
 variable "presence_origin_path" {
   type        = string
-  description = "API Gateway WebSocket stage path"
+  description = "API Gateway WebSocket stage path used by the viewer-request rewrite"
   default     = ""
 }

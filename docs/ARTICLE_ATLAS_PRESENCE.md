@@ -168,8 +168,12 @@ five. These controls are cost backstops, not substitutes for AWS Budgets.
 - **Cost gate (blocking):** move interval is at least five seconds, the global
   stage rate is at most 12 messages/second, burst is at most 24, room size is at
   most 20, and Lambda reserved concurrency is at most five.
-- **Cost gate (blocking):** configure AWS Budget alerts at USD 5, 10, and 25 and
-  verify the notification destination before production traffic is enabled.
+- **Cost gate (blocking):** verify an existing account-level AWS Budget and its
+  notification destination before production traffic is enabled; do not create
+  a duplicate budget. As verified on 2026-07-21, the account has a USD 10
+  monthly budget alerting at 80% and 95%, plus a USD 40 monthly budget alerting
+  at 50%, 80%, and 100%. Re-verify these values if the deployment is resumed in
+  a later billing period.
 - **Cost gate (blocking):** `params.articleAtlasPresenceEnabled` remains `false`
   through the infrastructure deploy and is enabled only after the budget alerts
   and production smoke test pass.

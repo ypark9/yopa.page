@@ -50,7 +50,7 @@ resource "aws_cloudfront_function" "presence_rewrite" {
     function handler(event) {
       var request = event.request;
       if (request.uri === '/presence' || request.uri === '/presence/') {
-        request.uri = '/';
+        request.uri = '${var.presence_origin_path}';
       }
       return request;
     }
@@ -135,7 +135,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     content {
       domain_name = origin.value
       origin_id   = local.presence_origin_id
-      origin_path = var.presence_origin_path
+      origin_path = ""
 
       custom_origin_config {
         http_port              = 80
@@ -164,7 +164,7 @@ resource "aws_cloudfront_distribution" "distribution" {
   dynamic "ordered_cache_behavior" {
     for_each = var.presence_origin_enabled ? [1] : []
     content {
-      path_pattern             = "/presence*"
+      path_pattern             = "presence*"
       allowed_methods          = ["GET", "HEAD", "OPTIONS"]
       cached_methods           = ["GET", "HEAD"]
       compress                 = false
