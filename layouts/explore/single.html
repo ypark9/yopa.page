@@ -1,0 +1,79 @@
+{{ define "main" }}
+{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ $posts = sort $posts "Date" "desc" }}
+<div class="explore-shell" id="explore-shell">
+  <canvas id="explore-world" aria-label="An interactive map of yopa.page articles"></canvas>
+
+  <header class="explore-header">
+    <a class="explore-brand" href="{{ .Site.Home.RelPermalink }}" aria-label="Back to yopa.page">
+      <span class="explore-brand-mark">yp</span>
+      <span>Article Atlas</span>
+    </a>
+    <div class="explore-actions">
+      <button class="explore-button" id="explore-help" type="button" aria-expanded="false">How to explore</button>
+      <a class="explore-button" href="{{ "articles.html" | relURL }}">All articles</a>
+    </div>
+  </header>
+
+  <section class="explore-intro" id="explore-intro" aria-labelledby="explore-title">
+    <p class="explore-kicker">A living map of yopa.page</p>
+    <h1 id="explore-title">Follow your curiosity.</h1>
+    <p>Move your cursor to wander. Drift near a beacon to discover an article.</p>
+    <button id="explore-enter" type="button">Enter the atlas</button>
+  </section>
+
+  <aside class="explore-help" id="explore-help-panel" hidden>
+    <strong>How to explore</strong>
+    <p>Move your cursor toward any edge to travel. Hover near a glowing article beacon, then click to read.</p>
+  </aside>
+
+  <article class="explore-card" id="explore-card" aria-live="polite" hidden>
+    <div class="explore-card-region" id="explore-card-region"></div>
+    <h2 id="explore-card-title"></h2>
+    <p id="explore-card-description"></p>
+    <div class="explore-card-footer">
+      <time id="explore-card-date"></time>
+      <a id="explore-card-link" href="#">Read article <span aria-hidden="true">→</span></a>
+    </div>
+  </article>
+
+  <nav class="explore-wheel" id="explore-wheel" aria-label="Explore compass" hidden>
+    <button class="explore-wheel-item explore-wheel-read" type="button" data-wheel-action="read" aria-label="Read nearby article">Read</button>
+    <button class="explore-wheel-item explore-wheel-center" type="button" data-wheel-action="center" aria-label="Center on my cursor">◎</button>
+    <button class="explore-wheel-item explore-wheel-random" type="button" data-wheel-action="random" aria-label="Take me to a random article">?</button>
+    <button class="explore-wheel-item explore-wheel-react" type="button" data-wheel-action="react" aria-label="Leave a heart reaction">♡</button>
+    <button class="explore-wheel-item explore-wheel-pause" type="button" data-wheel-action="pause" aria-label="Pause exploring">Ⅱ</button>
+    <button class="explore-wheel-close" type="button" data-wheel-action="close" aria-label="Close compass">×</button>
+  </nav>
+
+  <section class="explore-pause" id="explore-pause" aria-labelledby="explore-pause-title" hidden>
+    <div class="explore-pause-card">
+      <div class="explore-pause-compass" aria-hidden="true">✦</div>
+      <p class="explore-kicker">Article Atlas</p>
+      <h2 id="explore-pause-title">Taking a field-note break.</h2>
+      <p>Your cursor is paused and no position updates are being sent.</p>
+      <button id="explore-resume" type="button">Resume exploring</button>
+    </div>
+  </section>
+
+  <div class="explore-status" aria-hidden="true">
+    <span class="explore-status-dot"></span>
+    <span>Prototype · simulated visitors</span>
+  </div>
+
+  <noscript>
+    <div class="explore-noscript">This map needs JavaScript. You can still <a href="{{ "articles.html" | relURL }}">browse every article</a>.</div>
+  </noscript>
+</div>
+
+<script id="explore-posts" type="application/json">
+[
+{{- range $index, $post := $posts -}}
+  {{- if $index }},{{ end -}}
+  {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" $post.Params.categories | jsonify | safeJS -}}
+{{- end -}}
+]
+</script>
+<link rel="stylesheet" href="{{ "css/explore.css" | relURL }}">
+<script defer src="{{ "js/explore.js" | relURL }}"></script>
+{{ end }}
