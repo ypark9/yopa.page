@@ -1,0 +1,12 @@
+{{- if and hugo.IsProduction .Site.Params.adSensePublisherId .Site.Params.articleAdSlot -}}
+<aside class="article-ad" aria-label="Advertisement">
+  <span class="article-ad-label">Advertisement</span>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="{{ .Site.Params.adSensePublisherId }}"
+       data-ad-slot="{{ .Site.Params.articleAdSlot }}"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</aside>
+{{- end -}}

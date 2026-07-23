@@ -26,6 +26,23 @@ taxonomies:
   tag: tags
   category: categories
 
+# Keep Article Atlas trails and article-page recommendations on the same
+# build-time relationship model. Series wins, followed by shared topics.
+related:
+  threshold: 20
+  includeNewer: true
+  toLower: true
+  indices:
+    - name: series
+      weight: 500
+    - name: categories
+      weight: 70
+    - name: tags
+      weight: 40
+    - name: date
+      weight: 5
+      pattern: "2006"
+
 # Define main sections for content filtering
 params:
   mainSections: ["blog"]
@@ -38,6 +55,10 @@ params:
   author: Yoonsoo Park
   maxCategoryToShow: 10
   articleAtlasPresenceEnabled: true
+  # Optional monetization links stay disabled until their values are supplied.
+  articleAtlasSupportUrl: ""
+  adSensePublisherId: "ca-pub-3902057519310243"
+  articleAdSlot: ""
   socialOptions:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/yopa.page

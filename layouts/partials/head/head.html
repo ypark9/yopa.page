@@ -91,9 +91,11 @@
   <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
   {{ end }}
   {{ partial "head/custom.html" . }}
-  <script
-    async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3902057519310243"
-    crossorigin="anonymous"
-  ></script>
+  {{ if and hugo.IsProduction .IsPage (eq .Section "blog") .Site.Params.adSensePublisherId .Site.Params.articleAdSlot }}
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ .Site.Params.adSensePublisherId }}"
+      crossorigin="anonymous"
+    ></script>
+  {{ end }}
 </head>

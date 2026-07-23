@@ -1,5 +1,9 @@
 {{ define "main" }}
-{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ $posts := slice }}
+{{ range site.Sites }}
+  {{ $languagePosts := where .RegularPages "Section" "blog" }}
+  {{ $posts = $posts | append $languagePosts }}
+{{ end }}
 {{ $posts = sort $posts "Date" "desc" }}
 <div class="explore-shell" id="explore-shell">
   <canvas id="explore-world" aria-label="An interactive map of yopa.page articles"></canvas>
@@ -31,11 +35,24 @@
     <div class="explore-card-region" id="explore-card-region"></div>
     <h2 id="explore-card-title"></h2>
     <p id="explore-card-description"></p>
+    <div class="explore-card-trails" id="explore-card-trails" hidden>
+      <span>Choose a destination</span>
+      <div id="explore-card-related"></div>
+    </div>
     <div class="explore-card-footer">
       <time id="explore-card-date"></time>
       <a id="explore-card-link" href="#">Read article <span aria-hidden="true">→</span></a>
     </div>
   </article>
+
+  <aside class="explore-waypoint" id="explore-waypoint" aria-live="polite" hidden>
+    <span class="explore-waypoint-arrow" id="explore-waypoint-arrow" aria-hidden="true">↑</span>
+    <span>
+      <strong id="explore-waypoint-title"></strong>
+      <small id="explore-waypoint-distance"></small>
+    </span>
+    <button id="explore-waypoint-cancel" type="button" aria-label="Cancel destination">×</button>
+  </aside>
 
   <nav class="explore-wheel" id="explore-wheel" aria-label="Explore compass" hidden>
     <button class="explore-wheel-item explore-wheel-read" type="button" data-wheel-action="read" aria-label="Read nearby article">Read</button>
@@ -56,6 +73,19 @@
     </div>
   </section>
 
+  <section class="explore-pit" id="explore-pit" role="dialog" aria-modal="true" aria-labelledby="explore-pit-title" hidden>
+    <div class="explore-pit-card">
+      <div class="explore-pit-sign" aria-hidden="true">Definitely not a trap</div>
+      <p class="explore-kicker">Server Cost Pit</p>
+      <h2 id="explore-pit-title">Oh no. You found it.</h2>
+      <p>정말 미안하지만 서버비에 동전 하나 놓고 가도 돼요. 물론 그냥 탈출해도 됩니다.</p>
+      <button id="explore-pit-dismiss" type="button">Climb out — it’s free</button>
+      {{ with .Site.Params.articleAtlasSupportUrl }}
+      <a id="explore-pit-support" href="{{ . }}" target="_blank" rel="noopener noreferrer">Leave $1 for the server</a>
+      {{ end }}
+    </div>
+  </section>
+
   <div class="explore-status" id="explore-presence-status" aria-live="polite">
     <span class="explore-status-dot"></span>
     <span>Prototype · simulated visitors</span>
@@ -70,7 +100,11 @@
 [
 {{- range $index, $post := $posts -}}
   {{- if $index }},{{ end -}}
-  {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" $post.Params.categories | jsonify | safeJS -}}
+  {{- $relatedURLs := slice -}}
+  {{- range first 3 ($post.Site.RegularPages.Related $post) -}}
+    {{- $relatedURLs = $relatedURLs | append .RelPermalink -}}
+  {{- end -}}
+  {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" ($post.Params.categories | default slice) "tags" ($post.Params.tags | default slice) "series" ($post.Params.series | default "") "language" $post.Language.Lang "related" $relatedURLs | jsonify | safeJS -}}
 {{- end -}}
 ]
 </script>
