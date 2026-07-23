@@ -200,9 +200,73 @@ body:has(.explore-shell) > main {
   -webkit-line-clamp: 2;
 }
 
+.explore-card-trails {
+  margin: 0 0 17px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(33, 53, 45, .16);
+}
+
+.explore-card-trails > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #63776b;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+#explore-card-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#explore-card-related button {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 6px 9px;
+  border: 1px solid rgba(33, 53, 45, .42);
+  border-radius: 999px;
+  background: #fff9e9;
+  color: var(--explore-ink);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#explore-card-related button:hover,
+#explore-card-related button:focus-visible { background: #ffe98a; }
+
 .explore-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; }
 .explore-card-footer a { color: var(--explore-ink); font-weight: 800; }
 .explore-card-footer time { color: #63776b; }
+
+.explore-waypoint {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(520px, calc(100vw - 28px));
+  padding: 9px 12px;
+  border: 2px solid var(--explore-ink);
+  border-radius: 999px;
+  background: rgba(245, 240, 223, .94);
+  box-shadow: 3px 3px 0 var(--explore-ink);
+  transform: translateX(-50%);
+}
+.explore-waypoint[hidden] { display: none; }
+.explore-waypoint-arrow { display: inline-block; color: var(--explore-accent); font-size: 25px; line-height: 1; }
+.explore-waypoint > span:nth-child(2) { min-width: 0; }
+.explore-waypoint strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.explore-waypoint small { display: block; color: #63776b; font-size: 10px; }
+.explore-waypoint button { border: 0; background: transparent; color: var(--explore-ink); font-size: 20px; cursor: pointer; }
 
 .explore-status {
   right: clamp(18px, 4vw, 54px);
@@ -277,6 +341,33 @@ body:has(.explore-shell) > main {
 
 .explore-pause[hidden] { display: none; }
 
+.explore-pit {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(24, 40, 33, .46);
+}
+.explore-pit[hidden] { display: none; }
+.explore-pit-card {
+  width: min(470px, 100%);
+  padding: 28px;
+  border: 3px solid var(--explore-ink);
+  border-radius: 22px;
+  background: var(--explore-paper);
+  box-shadow: 8px 10px 0 rgba(33, 53, 45, .45);
+  text-align: center;
+}
+.explore-pit-sign { width: fit-content; margin: -52px auto 22px; padding: 9px 14px; border: 2px solid var(--explore-ink); border-radius: 6px; background: #ffe37b; box-shadow: 3px 3px 0 var(--explore-ink); font-size: 12px; font-weight: 900; transform: rotate(-2deg); }
+.explore-pit-card h2 { margin: 6px 0 12px; font-family: Georgia, serif; font-size: clamp(28px, 6vw, 40px); font-weight: 500; }
+.explore-pit-card > p:not(.explore-kicker) { color: #506158; line-height: 1.55; }
+#explore-pit-dismiss,
+#explore-pit-support { display: block; box-sizing: border-box; width: 100%; margin-top: 12px; padding: 13px 16px; border: 2px solid var(--explore-ink); border-radius: 11px; font: inherit; font-weight: 850; text-align: center; cursor: pointer; }
+#explore-pit-dismiss { background: var(--explore-accent); color: #fff9e9; box-shadow: 3px 4px 0 var(--explore-ink); }
+#explore-pit-support { background: transparent; color: var(--explore-ink); text-decoration: none; }
+
 .explore-pause-card {
   width: min(440px, calc(100vw - 40px));
   box-sizing: border-box;
@@ -310,6 +401,8 @@ body:has(.explore-shell) > main {
   .explore-status { display: none; }
   .explore-card { bottom: 14px; }
   .explore-wheel { transform: translate(-50%, -50%) scale(.88); }
+  .explore-waypoint { top: 72px; max-width: calc(100vw - 24px); }
+  .explore-pit-card { padding: 24px 18px 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

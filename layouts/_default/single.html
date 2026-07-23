@@ -1,4 +1,5 @@
 {{ define "main" }}
+<link rel="stylesheet" href="{{ "css/article-atlas-trails.css" | relURL }}">
 <div class="container">
     <article>
         <header class="article-header">
@@ -38,9 +39,26 @@
     <div class="article-post">
     {{ .Content }}
     </div>
+    {{ partial "article-ad.html" . }}
 </div>
 
 <div class="container">
+    {{ $related := first 3 (site.RegularPages.Related .) }}
+    <aside class="article-atlas-trails" aria-labelledby="article-atlas-trails-title">
+        <div>
+            <span class="article-atlas-trails-kicker">Continue exploring</span>
+            <h2 id="article-atlas-trails-title">Follow this trail</h2>
+        </div>
+        {{ with $related }}
+        <ul>
+            {{ range . }}
+            <li><a href="{{ .RelPermalink }}">{{ .Title }} <span aria-hidden="true">→</span></a></li>
+            {{ end }}
+        </ul>
+        {{ end }}
+        <a class="article-atlas-return" href="{{ "explore/" | relURL }}?article={{ .RelPermalink | urlquery }}">Return to Article Atlas <span aria-hidden="true">↗</span></a>
+    </aside>
+
     {{ if .Section }}
     <nav class="flex container suggested">
         {{ with .PrevInSection }}

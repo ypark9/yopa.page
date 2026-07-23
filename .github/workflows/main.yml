@@ -37,8 +37,8 @@ jobs:
       - name: Validate frontmatter
         run: python3 scripts/validate_frontmatter.py
 
-      - name: Test Article Atlas presence validation
-        run: python3 -m unittest tests/test_atlas_presence_validation.py
+      - name: Test Article Atlas
+        run: python3 -m unittest discover -s tests
 
       - name: Build Hugo site
         run: hugo --gc --minify

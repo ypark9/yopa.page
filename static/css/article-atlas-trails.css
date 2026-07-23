@@ -1,0 +1,56 @@
+.article-atlas-trails {
+  margin: 2.5rem 0 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid rgba(59, 75, 67, .24);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(216, 230, 207, .62), rgba(245, 240, 223, .72));
+}
+
+.article-atlas-trails-kicker {
+  color: #63776b;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.article-atlas-trails h2 {
+  margin: .25rem 0 1rem;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+}
+
+.article-atlas-trails ul {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.article-atlas-trails li + li { margin-top: .55rem; }
+.article-atlas-trails li a { font-weight: 650; }
+
+.article-atlas-return {
+  display: inline-block;
+  padding: .65rem .9rem;
+  border-radius: 999px;
+  background: #21352d;
+  color: #fff9e9 !important;
+  font-size: .85rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+.article-ad {
+  min-height: 120px;
+  margin: 42px 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(71, 85, 79, .16);
+}
+
+.article-ad-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #7b8580;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+}
