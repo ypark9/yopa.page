@@ -6,7 +6,7 @@
 {{ end }}
 {{ $posts = sort $posts "Date" "desc" }}
 <div class="explore-shell" id="explore-shell">
-  <canvas id="explore-world" aria-label="An interactive map of yopa.page articles"></canvas>
+  <canvas id="explore-world" tabindex="0" aria-label="An interactive map of yopa.page articles" aria-describedby="explore-instructions"></canvas>
 
   <header class="explore-header">
     <a class="explore-brand" href="{{ .Site.Home.RelPermalink }}" aria-label="Back to yopa.page">
@@ -22,7 +22,7 @@
   <section class="explore-intro" id="explore-intro" aria-labelledby="explore-title">
     <p class="explore-kicker">A living map of yopa.page</p>
     <h1 id="explore-title">Follow your curiosity.</h1>
-    <p>Move your cursor to wander. Drift near a beacon to discover an article.</p>
+    <p id="explore-instructions">Move your cursor to wander. Drift near a beacon to discover an article. On touch screens, drag toward an edge.</p>
     <button id="explore-enter" type="button">Enter the atlas</button>
   </section>
 
@@ -63,7 +63,7 @@
     <button class="explore-wheel-close" type="button" data-wheel-action="close" aria-label="Close compass">×</button>
   </nav>
 
-  <section class="explore-pause" id="explore-pause" aria-labelledby="explore-pause-title" hidden>
+  <section class="explore-pause" id="explore-pause" role="dialog" aria-modal="true" aria-labelledby="explore-pause-title" hidden>
     <div class="explore-pause-card">
       <div class="explore-pause-compass" aria-hidden="true">✦</div>
       <p class="explore-kicker">Article Atlas</p>
@@ -88,7 +88,7 @@
 
   <div class="explore-status" id="explore-presence-status" aria-live="polite">
     <span class="explore-status-dot"></span>
-    <span>Prototype · simulated visitors</span>
+    <span>Solo exploration · live presence off</span>
   </div>
 
   <noscript>
@@ -110,5 +110,6 @@
 </script>
 <link rel="stylesheet" href="{{ "css/explore.css" | relURL }}">
 <script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
+<script defer src="{{ "js/atlas-preview-docking.js" | relURL }}"></script>
 <script defer src="{{ "js/explore.js" | relURL }}"></script>
 {{ end }}

@@ -54,7 +54,9 @@ params:
   siteDesc: A blog that's gonna put your software engineering skills to the test.
   author: Yoonsoo Park
   maxCategoryToShow: 10
-  articleAtlasPresenceEnabled: true
+  # Production release gate: enable in a separate settings-only deployment
+  # after the static Atlas, AWS Budget, and WebSocket smoke checks pass.
+  articleAtlasPresenceEnabled: false
   # Optional monetization links stay disabled until their values are supplied.
   articleAtlasSupportUrl: ""
   adSensePublisherId: "ca-pub-3902057519310243"

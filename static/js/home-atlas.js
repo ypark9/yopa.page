@@ -3,8 +3,7 @@
   if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const state = { width: 0, height: 0, dpr: 1, time: 0 };
+  const state = { width: 0, height: 0, dpr: 1 };
   const regions = [
     { name: "NEW POST CAMP", x: .5, y: .18, rx: .25, ry: .15, fill: "#f0ddb0", edge: "#a58755" },
     { name: "CLOUD HIGHLANDS", x: .25, y: .47, rx: .23, ry: .2, fill: "#d8e6cf", edge: "#789679" },
@@ -12,15 +11,7 @@
     { name: "CODEWORKS", x: .35, y: .79, rx: .26, ry: .18, fill: "#d8d0b2", edge: "#8c805e" },
     { name: "ARCHIVE HARBOR", x: .78, y: .82, rx: .2, ry: .16, fill: "#b8d8d6", edge: "#59888d" }
   ];
-  const simulatedVisitors = [
-    { country: "KR", region: 0, phase: .3, color: "#ff7959" },
-    { country: "US", region: 2, phase: 1.7, color: "#f5c85d" },
-    { country: "JP", region: 1, phase: 3.2, color: "#6a94b4" },
-    { country: "DE", region: 3, phase: 4.6, color: "#9b78ad" },
-    { country: "CA", region: 4, phase: 5.5, color: "#e37b78" },
-    { country: "GB", region: 2, phase: 6.1, color: "#67a87b" }
-  ];
-  let visitors = simulatedVisitors;
+  let visitors = [];
 
   function resize() {
     const box = canvas.getBoundingClientRect();
@@ -30,6 +21,7 @@
     canvas.width = Math.round(state.width * state.dpr);
     canvas.height = Math.round(state.height * state.dpr);
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+    render();
   }
 
   function point(region) {
@@ -94,13 +86,7 @@
     if (Number.isFinite(visitor.x) && Number.isFinite(visitor.y)) {
       x = visitor.x * state.width;
       y = visitor.y * state.height;
-    } else {
-      const region = point(regions[visitor.region]);
-      const drift = reducedMotion ? 0 : state.time * .00025;
-      const angle = visitor.phase + drift;
-      x = region.x + Math.cos(angle) * region.rx * .42;
-      y = region.y + Math.sin(angle * 1.3) * region.ry * .35;
-    }
+    } else return;
 
     ctx.save();
     ctx.translate(x, y);
@@ -150,20 +136,19 @@
       visitors = [];
       label.textContent = "Atlas is quiet right now";
     } else {
-      visitors = simulatedVisitors;
-      label.textContent = "Preview · simulated explorers";
+      visitors = [];
+      label.textContent = "Solo exploration · live presence off";
     }
+    render();
   }
 
-  function render(time) {
-    state.time = time;
+  function render() {
     ctx.clearRect(0, 0, state.width, state.height);
     ctx.fillStyle = "#c7ddc2";
     ctx.fillRect(0, 0, state.width, state.height);
     drawPath();
     regions.forEach(drawRegion);
     visitors.forEach(drawCursor);
-    requestAnimationFrame(render);
   }
 
   window.addEventListener("resize", resize);
@@ -172,5 +157,4 @@
     window.ArticleAtlasPresence.connect();
   }
   resize();
-  requestAnimationFrame(render);
 })();
