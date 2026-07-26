@@ -53,7 +53,7 @@
   }
 
   function connect() {
-    if (!enabled()) { emit("simulated"); return; }
+    if (!enabled()) { emit("disabled"); return; }
     if (state.socket && [WebSocket.OPEN, WebSocket.CONNECTING].includes(state.socket.readyState)) return;
     state.stopped = false;
     emit("connecting");
@@ -111,7 +111,7 @@
 
   function subscribe(subscriber) {
     subscribers.add(subscriber);
-    subscriber({ mode: enabled() ? "connecting" : "simulated", visitorId: state.visitorId, country: state.country, visitors: state.visitors });
+    subscriber({ mode: enabled() ? "connecting" : "disabled", visitorId: state.visitorId, country: state.country, visitors: state.visitors });
     return () => subscribers.delete(subscriber);
   }
 

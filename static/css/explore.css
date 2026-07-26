@@ -31,6 +31,11 @@ body:has(.explore-shell) > main {
   touch-action: none;
 }
 
+#explore-world:focus-visible {
+  outline: 3px solid #fff9e9;
+  outline-offset: -6px;
+}
+
 .explore-header {
   position: fixed;
   z-index: 5;
@@ -166,12 +171,57 @@ body:has(.explore-shell) > main {
 .explore-help p { margin: 7px 0 0; font-size: 13px; line-height: 1.45; }
 
 .explore-card {
-  left: clamp(16px, 4vw, 54px);
-  bottom: clamp(18px, 5vh, 48px);
   width: min(410px, calc(100vw - 32px));
+  max-height: calc(100dvh - 176px);
+  overflow-y: auto;
   box-sizing: border-box;
   padding: 22px;
   border-radius: 22px 18px 24px 18px;
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+.explore-card[data-dock="top-left"] {
+  top: 88px;
+  left: clamp(16px, 4vw, 54px);
+}
+
+.explore-card[data-dock="top-center"] {
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.explore-card[data-dock="top-right"] {
+  top: 88px;
+  right: clamp(16px, 4vw, 54px);
+}
+
+.explore-card[data-dock="center-left"] {
+  top: 50%;
+  left: clamp(16px, 4vw, 54px);
+  transform: translateY(-50%);
+}
+
+.explore-card[data-dock="center-right"] {
+  top: 50%;
+  right: clamp(16px, 4vw, 54px);
+  transform: translateY(-50%);
+}
+
+.explore-card[data-dock="bottom-left"] {
+  bottom: clamp(18px, 5vh, 48px);
+  left: clamp(16px, 4vw, 54px);
+}
+
+.explore-card[data-dock="bottom-center"] {
+  bottom: clamp(18px, 5vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.explore-card[data-dock="bottom-right"] {
+  right: clamp(16px, 4vw, 54px);
+  bottom: clamp(82px, 11vh, 112px);
 }
 
 .explore-card-region {
@@ -397,14 +447,49 @@ body:has(.explore-shell) > main {
 #explore-resume { width: 100%; padding: 13px 18px; border: 2px solid var(--explore-ink); border-radius: 12px; background: var(--explore-accent); color: #fff9e9; font: inherit; font-weight: 800; box-shadow: 3px 4px 0 var(--explore-ink); cursor: pointer; }
 
 @media (max-width: 640px) {
+  .explore-header { padding: 12px; }
+  .explore-brand { font-size: 13px; }
+  .explore-brand-mark { width: 32px; height: 32px; }
   .explore-actions .explore-button:first-child { display: none; }
+  .explore-button { padding: 8px 10px; font-size: 12px; }
   .explore-status { display: none; }
-  .explore-card { bottom: 14px; }
+  .explore-intro {
+    box-sizing: border-box;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding: 26px 20px;
+  }
+  .explore-card[data-dock] {
+    top: auto;
+    right: auto;
+    left: 10px;
+    bottom: 10px;
+    transform: none;
+    width: calc(100vw - 20px);
+    max-height: min(52dvh, 430px);
+    overflow-y: auto;
+    padding: 17px;
+  }
+  .explore-card h2 { font-size: 22px; }
+  .explore-card-footer { position: sticky; bottom: -17px; margin: 0 -17px -17px; padding: 12px 17px 17px; background: rgba(245, 240, 223, .97); }
   .explore-wheel { transform: translate(-50%, -50%) scale(.88); }
-  .explore-waypoint { top: 72px; max-width: calc(100vw - 24px); }
-  .explore-pit-card { padding: 24px 18px 20px; }
+  .explore-waypoint { top: 64px; box-sizing: border-box; width: calc(100vw - 24px); max-width: none; }
+  .explore-pause,
+  .explore-pit { padding: 14px; }
+  .explore-pause-card,
+  .explore-pit-card {
+    box-sizing: border-box;
+    max-height: calc(100dvh - 28px);
+    overflow-y: auto;
+    padding: 24px 18px 20px;
+  }
+  .explore-pit-sign { margin-top: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .explore-intro { transition: none; }
+  .explore-card,
+  .explore-waypoint-arrow,
+  .explore-wheel-item,
+  .explore-pause-compass { transition: none; }
 }

@@ -98,6 +98,79 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn('id="explore-pit-dismiss"', template)
         self.assertIn('aria-modal="true"', template)
 
+    def test_presence_is_fail_closed_without_simulated_people(self):
+        config = (ROOT / "config.yaml").read_text()
+        explore = (ROOT / "static" / "js" / "explore.js").read_text()
+        home = (ROOT / "static" / "js" / "home-atlas.js").read_text()
+
+        self.assertIn("articleAtlasPresenceEnabled: false", config)
+        self.assertIn("data-enabled=false", self.explore_html)
+        self.assertNotIn("simulatedVisitors", explore)
+        self.assertNotIn("simulatedVisitors", home)
+        self.assertIn("Solo exploration · live presence off", self.explore_html)
+
+    def test_rendering_is_viewport_culled_and_stops_behind_modals(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        self.assertIn("function regionIsVisible", source)
+        self.assertIn("const visibleRegions = regions.filter", source)
+        self.assertIn("if (p.x < -60 || p.y < -60", source)
+        self.assertIn("function stopAnimation", source)
+        self.assertIn("document.hidden || state.paused || state.pitOpen", source)
+        self.assertGreaterEqual(source.count("stopAnimation();"), 3)
+
+    def test_keyboard_and_reduced_motion_contracts_are_present(self):
+        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        self.assertIn('id="explore-world" tabindex="0"', template)
+        self.assertIn('id="explore-pause" role="dialog" aria-modal="true"', template)
+        self.assertIn("ArrowUp", source)
+        self.assertIn('event.key === "Escape" && state.paused', source)
+        self.assertIn("@media (prefers-reduced-motion: reduce)", styles)
+        self.assertIn("max-height: calc(100dvh - 28px)", styles)
+
+    def test_preview_docking_maps_all_pointer_regions_to_the_opposite_side(self):
+        script = """
+const docking = require('./static/js/atlas-preview-docking.js');
+const cases = [
+  [10, 10, 'bottom-right'],
+  [10, 50, 'center-right'],
+  [10, 90, 'top-right'],
+  [50, 10, 'bottom-center'],
+  [50, 50, 'bottom-left'],
+  [50, 90, 'top-center'],
+  [90, 10, 'bottom-left'],
+  [90, 50, 'center-left'],
+  [90, 90, 'top-left'],
+];
+for (const [x, y, expected] of cases) {
+  const actual = docking.forPointer(x, y, 100, 100);
+  if (actual !== expected) throw new Error(`${x},${y}: ${actual} !== ${expected}`);
+}
+"""
+        subprocess.run(
+            ["node", "-e", script],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+    def test_preview_tracks_the_shell_and_keeps_its_dock_until_article_changes(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        self.assertIn('shell.addEventListener("pointermove"', source)
+        self.assertNotIn('canvas.addEventListener("pointermove"', source)
+        self.assertIn('window.addEventListener("blur"', source)
+        self.assertIn("if (article === state.previewArticle) return;", source)
+        self.assertIn("if (nearest) selectArticle(nearest);", source)
+        self.assertIn('.explore-card[data-dock="bottom-right"]', styles)
+        self.assertIn(".explore-card[data-dock] {", styles)
+        self.assertIn("top: auto;", styles)
+        self.assertIn("transform: none;", styles)
+
 
 if __name__ == "__main__":
     unittest.main()

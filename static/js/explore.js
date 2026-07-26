@@ -37,12 +37,14 @@
     paused: false,
     wheelOpen: false,
     nearest: null,
+    previewArticle: null,
     waypoint: null,
     visitedRegions: new Set(),
     activeSeconds: 0,
     lastTick: null,
     pitOpen: false,
-    time: 0
+    time: 0,
+    frameId: null
   };
 
   function normalizedTerms(post) {
@@ -151,18 +153,7 @@
     state.camera.y = startingArticle.y;
   }
 
-  const simulatedVisitors = Array.from({ length: 11 }, (_, index) => {
-    const random = hash(`visitor-${index}`);
-    const country = ["KR", "US", "CA", "DE", "JP", "BR", "GB"][index % 7];
-    return {
-      x: world.minX + random() * (world.maxX - world.minX),
-      y: world.minY + random() * (world.maxY - world.minY),
-      phase: random() * 8,
-      country,
-      live: false
-    };
-  });
-  let visitors = simulatedVisitors;
+  let visitors = [];
   let ownVisitorId = null;
 
   function fromNormalized(x, y) {
@@ -205,8 +196,8 @@
       visitors = [];
       if (label) label.textContent = "Atlas is quiet right now";
     } else {
-      visitors = simulatedVisitors;
-      if (label) label.textContent = "Prototype · simulated visitors";
+      visitors = [];
+      if (label) label.textContent = "Solo exploration · live presence off";
     }
   }
 
@@ -221,6 +212,14 @@
 
   function screen(worldX, worldY) {
     return { x: worldX - state.camera.x + state.width / 2, y: worldY - state.camera.y + state.height / 2 };
+  }
+
+  function regionIsVisible(region, padding = 100) {
+    const p = screen(region.x, region.y);
+    return p.x + region.rx >= -padding
+      && p.x - region.rx <= state.width + padding
+      && p.y + region.ry >= -padding
+      && p.y - region.ry <= state.height + padding;
   }
 
   function blob(region) {
@@ -357,10 +356,20 @@
   }
 
   function selectArticle(article) {
-    if (article === state.nearest) return;
-    state.nearest = article;
+    if (article === state.previewArticle) return;
+    state.previewArticle = article;
     const card = document.getElementById("explore-card");
-    if (!article) { card.hidden = true; return; }
+    if (!article) {
+      card.hidden = true;
+      delete card.dataset.dock;
+      return;
+    }
+    card.dataset.dock = window.ArticleAtlasPreviewDocking?.forPointer(
+      state.pointer.x,
+      state.pointer.y,
+      state.width,
+      state.height
+    ) || "bottom-left";
     const related = relatedArticles(article);
     document.getElementById("explore-card-region").textContent = palette[article.regionId].name;
     document.getElementById("explore-card-title").textContent = article.title;
@@ -388,6 +397,7 @@
     state.pointer.x = state.width / 2;
     state.pointer.y = state.height / 2;
     state.pointer.active = true;
+    state.nearest = article;
     selectArticle(article);
   }
 
@@ -426,6 +436,7 @@
     if (distance < 82) {
       const destination = state.waypoint;
       clearWaypoint();
+      state.nearest = destination;
       selectArticle(destination);
     }
   }
@@ -474,10 +485,34 @@
       const distance = Math.hypot(article.x - worldX, article.y - worldY);
       if (distance < best) { best = distance; nearest = article; }
     });
-    selectArticle(nearest);
+    state.nearest = nearest;
+    if (nearest) selectArticle(nearest);
+  }
+
+  function renderWorld() {
+    ctx.clearRect(0, 0, state.width, state.height);
+    ctx.fillStyle = "#c9dfc4"; ctx.fillRect(0, 0, state.width, state.height);
+    const visibleRegions = regions.filter((region) => regionIsVisible(region));
+    visibleRegions.forEach(blob);
+    visibleRegions.forEach(landscape);
+    articles.forEach(drawArticle);
+    visitors.forEach(drawVisitor);
+    drawOwnCursor();
+  }
+
+  function scheduleFrame() {
+    if (state.frameId !== null || document.hidden || state.paused || state.pitOpen) return;
+    state.frameId = requestAnimationFrame(tick);
+  }
+
+  function stopAnimation() {
+    if (state.frameId !== null) cancelAnimationFrame(state.frameId);
+    state.frameId = null;
+    state.lastTick = null;
   }
 
   function tick(time) {
+    state.frameId = null;
     state.time = time;
     const elapsed = state.lastTick === null ? 0 : Math.min(.1, (time - state.lastTick) / 1000);
     state.lastTick = time;
@@ -507,31 +542,43 @@
       const position = ownNormalizedPosition();
       window.ArticleAtlasPresence.move(position.x, position.y);
     }
-    ctx.clearRect(0, 0, state.width, state.height);
-    ctx.fillStyle = "#c9dfc4"; ctx.fillRect(0, 0, state.width, state.height);
-    regions.forEach(blob);
-    regions.forEach(landscape);
-    articles.forEach(drawArticle);
-    visitors.forEach(drawVisitor);
-    drawOwnCursor();
+    renderWorld();
     updateNearest();
     updateWaypoint();
     maybeOpenPit();
-    requestAnimationFrame(tick);
+    scheduleFrame();
   }
 
-  canvas.addEventListener("pointermove", (event) => {
+  shell.addEventListener("pointermove", (event) => {
     if (state.paused) return;
     state.pointer.x = event.clientX; state.pointer.y = event.clientY; state.pointer.active = true;
   });
-  canvas.addEventListener("pointerleave", () => { state.pointer.active = false; });
+  shell.addEventListener("pointerleave", () => { state.pointer.active = false; });
+  window.addEventListener("blur", () => { state.pointer.active = false; });
   canvas.addEventListener("click", () => {
     if (state.wheelOpen) { closeWheel(); return; }
     if (state.nearest) navigateToArticle(state.nearest);
   });
   canvas.addEventListener("pointerdown", (event) => {
     if (event.pointerType !== "touch") return;
+    canvas.setPointerCapture?.(event.pointerId);
     state.pointer.x = event.clientX; state.pointer.y = event.clientY; state.pointer.active = true;
+  });
+  canvas.addEventListener("keydown", (event) => {
+    if (!state.entered || state.paused || state.pitOpen) return;
+    const movement = { ArrowUp: [0, -120], ArrowDown: [0, 120], ArrowLeft: [-120, 0], ArrowRight: [120, 0] }[event.key];
+    if (movement) {
+      event.preventDefault();
+      state.camera.x = Math.max(world.minX, Math.min(world.maxX, state.camera.x + movement[0]));
+      state.camera.y = Math.max(world.minY, Math.min(world.maxY, state.camera.y + movement[1]));
+      state.pointer.x = state.width / 2;
+      state.pointer.y = state.height / 2;
+      state.pointer.active = true;
+      updateNearest();
+    } else if (event.key === "Enter" && state.nearest) {
+      event.preventDefault();
+      navigateToArticle(state.nearest);
+    }
   });
 
   document.getElementById("explore-enter").addEventListener("click", () => {
@@ -539,13 +586,19 @@
     window.ArticleAtlasPresence?.connect();
     if (requestedArticle) {
       if (!restoreNavigation(requestedArticle)) focusArticle(requestedArticle);
-      else selectArticle(requestedArticle);
+      else {
+        state.nearest = requestedArticle;
+        selectArticle(requestedArticle);
+      }
     }
     const intro = document.getElementById("explore-intro");
     intro.classList.add("is-leaving");
-    setTimeout(() => { intro.hidden = true; }, reducedMotion ? 0 : 360);
+    setTimeout(() => {
+      intro.hidden = true;
+      canvas.focus({ preventScroll: true });
+    }, reducedMotion ? 0 : 360);
   });
-  document.getElementById("explore-card-link").addEventListener("click", () => saveNavigation(state.nearest));
+  document.getElementById("explore-card-link").addEventListener("click", () => saveNavigation(state.previewArticle));
   document.getElementById("explore-card-related").addEventListener("click", (event) => {
     const button = event.target.closest("[data-article-url]");
     if (!button) return;
@@ -562,6 +615,7 @@
   const pausePanel = document.getElementById("explore-pause");
   const pitPanel = document.getElementById("explore-pit");
   let pitPreviousFocus = null;
+  let pausePreviousFocus = null;
 
   function pitWasSeen() {
     try { return sessionStorage.getItem(PIT_SESSION_KEY) === "seen"; }
@@ -577,6 +631,7 @@
     state.pointer.active = false;
     window.ArticleAtlasPresence?.pause();
     pitPanel.hidden = false;
+    stopAnimation();
     document.getElementById("explore-pit-dismiss").focus();
   }
 
@@ -588,6 +643,7 @@
     window.ArticleAtlasPresence?.resume(position.x, position.y);
     if (pitPreviousFocus instanceof HTMLElement) pitPreviousFocus.focus({ preventScroll: true });
     else canvas.focus({ preventScroll: true });
+    scheduleFrame();
   }
 
   function openWheel(x, y) {
@@ -609,10 +665,12 @@
 
   function pauseExploring() {
     if (!state.entered || state.paused) return;
+    pausePreviousFocus = document.activeElement;
     closeWheel();
     state.paused = true;
     window.ArticleAtlasPresence?.pause();
     pausePanel.hidden = false;
+    stopAnimation();
     document.getElementById("explore-resume").focus();
   }
 
@@ -622,7 +680,15 @@
     state.pointer.active = false;
     const position = ownNormalizedPosition();
     window.ArticleAtlasPresence?.resume(position.x, position.y);
-    canvas.focus({ preventScroll: true });
+    if (pausePreviousFocus instanceof HTMLElement
+      && pausePreviousFocus !== document.body
+      && pausePreviousFocus.isConnected
+      && !pausePreviousFocus.closest("[hidden]")) {
+      pausePreviousFocus.focus({ preventScroll: true });
+    } else {
+      canvas.focus({ preventScroll: true });
+    }
+    scheduleFrame();
   }
 
   canvas.addEventListener("contextmenu", (event) => {
@@ -659,24 +725,34 @@
     if (event.target === pitPanel) closePit();
   });
   document.addEventListener("keydown", (event) => {
-    if (state.pitOpen && event.key === "Tab") {
-      const focusable = [...pitPanel.querySelectorAll("button, a[href]")].filter((element) => !element.hidden);
+    const activeModal = state.pitOpen ? pitPanel : state.paused ? pausePanel : null;
+    if (activeModal && event.key === "Tab") {
+      const focusable = [...activeModal.querySelectorAll("button, a[href]")].filter((element) => !element.hidden);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     } else if (event.key === "Escape" && state.pitOpen) closePit();
+    else if (event.key === "Escape" && state.paused) resumeExploring();
     else if (event.key === "Escape" && state.wheelOpen) closeWheel();
     else if (event.key === "Escape" && state.entered && !state.paused) pauseExploring();
   });
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) pauseExploring();
+    if (document.hidden) {
+      if (state.entered) pauseExploring();
+      else stopAnimation();
+    } else if (!state.paused && !state.pitOpen) {
+      scheduleFrame();
+    }
   });
 
   if (window.ArticleAtlasPresence) window.ArticleAtlasPresence.subscribe(updatePresence);
   window.addEventListener("beforeunload", () => window.ArticleAtlasPresence?.stop());
 
-  addEventListener("resize", resize);
+  addEventListener("resize", () => {
+    resize();
+    if (state.frameId === null) renderWorld();
+  });
   resize();
-  requestAnimationFrame(tick);
+  scheduleFrame();
 })();
