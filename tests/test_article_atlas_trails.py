@@ -130,23 +130,19 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("@media (prefers-reduced-motion: reduce)", styles)
         self.assertIn("max-height: calc(100dvh - 28px)", styles)
 
-    def test_preview_docking_maps_all_pointer_regions_to_the_opposite_side(self):
+    def test_preview_is_anchored_near_the_pointer_and_flips_at_the_edge(self):
         script = """
 const docking = require('./static/js/atlas-preview-docking.js');
 const cases = [
-  [10, 10, 'bottom-right'],
-  [10, 50, 'center-right'],
-  [10, 90, 'top-right'],
-  [50, 10, 'bottom-center'],
-  [50, 50, 'bottom-left'],
-  [50, 90, 'top-center'],
-  [90, 10, 'bottom-left'],
-  [90, 50, 'center-left'],
-  [90, 90, 'top-left'],
+  [200, 300, 'right'],
+  [1180, 300, 'left'],
+  [640, 700, 'right'],
 ];
-for (const [x, y, expected] of cases) {
-  const actual = docking.forPointer(x, y, 100, 100);
-  if (actual !== expected) throw new Error(`${x},${y}: ${actual} !== ${expected}`);
+for (const [x, y, side] of cases) {
+  const actual = docking.forPointer(x, y, 1280, 720, 410, 400);
+  if (actual.side !== side) throw new Error(`${x},${y}: ${actual.side} !== ${side}`);
+  if (actual.left < 12 || actual.left + 410 > 1268) throw new Error(`horizontal overflow: ${JSON.stringify(actual)}`);
+  if (actual.top < 76 || actual.top + 400 > 708) throw new Error(`vertical overflow: ${JSON.stringify(actual)}`);
 }
 """
         subprocess.run(
@@ -157,7 +153,7 @@ for (const [x, y, expected] of cases) {
             text=True,
         )
 
-    def test_preview_tracks_the_shell_and_keeps_its_dock_until_article_changes(self):
+    def test_preview_tracks_the_shell_and_freezes_interaction_near_the_card(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
         styles = (ROOT / "static" / "css" / "explore.css").read_text()
 
@@ -165,9 +161,11 @@ for (const [x, y, expected] of cases) {
         self.assertNotIn('canvas.addEventListener("pointermove"', source)
         self.assertIn('window.addEventListener("blur"', source)
         self.assertIn("if (article === state.previewArticle) return;", source)
-        self.assertIn("if (nearest) selectArticle(nearest);", source)
-        self.assertIn('.explore-card[data-dock="bottom-right"]', styles)
-        self.assertIn(".explore-card[data-dock] {", styles)
+        self.assertIn("PREVIEW_SWITCH_DELAY = 200", source)
+        self.assertIn("state.previewEngaged", source)
+        self.assertIn('id="explore-card-bridge"', (ROOT / "layouts" / "explore" / "single.html").read_text())
+        self.assertIn(".explore-card-bridge", styles)
+        self.assertIn(".explore-card[data-side] {", styles)
         self.assertIn("top: auto;", styles)
         self.assertIn("transform: none;", styles)
 

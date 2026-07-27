@@ -170,6 +170,11 @@ body:has(.explore-shell) > main {
 
 .explore-help p { margin: 7px 0 0; font-size: 13px; line-height: 1.45; }
 
+.explore-card-bridge {
+  position: fixed;
+  z-index: 6;
+}
+
 .explore-card {
   width: min(410px, calc(100vw - 32px));
   max-height: calc(100dvh - 176px);
@@ -180,48 +185,11 @@ body:has(.explore-shell) > main {
   transition: opacity .16s ease, transform .16s ease;
 }
 
-.explore-card[data-dock="top-left"] {
-  top: 88px;
-  left: clamp(16px, 4vw, 54px);
-}
-
-.explore-card[data-dock="top-center"] {
-  top: 88px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.explore-card[data-dock="top-right"] {
-  top: 88px;
-  right: clamp(16px, 4vw, 54px);
-}
-
-.explore-card[data-dock="center-left"] {
-  top: 50%;
-  left: clamp(16px, 4vw, 54px);
-  transform: translateY(-50%);
-}
-
-.explore-card[data-dock="center-right"] {
-  top: 50%;
-  right: clamp(16px, 4vw, 54px);
-  transform: translateY(-50%);
-}
-
-.explore-card[data-dock="bottom-left"] {
-  bottom: clamp(18px, 5vh, 48px);
-  left: clamp(16px, 4vw, 54px);
-}
-
-.explore-card[data-dock="bottom-center"] {
-  bottom: clamp(18px, 5vh, 48px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.explore-card[data-dock="bottom-right"] {
-  right: clamp(16px, 4vw, 54px);
-  bottom: clamp(82px, 11vh, 112px);
+@media (min-width: 641px) {
+  .explore-card:not(.is-measuring):not(:hover):not(:focus-within) #explore-card-description,
+  .explore-card:not(.is-measuring):not(:hover):not(:focus-within) .explore-card-trails {
+    display: none;
+  }
 }
 
 .explore-card-region {
@@ -459,7 +427,7 @@ body:has(.explore-shell) > main {
     overflow-y: auto;
     padding: 26px 20px;
   }
-  .explore-card[data-dock] {
+  .explore-card[data-side] {
     top: auto;
     right: auto;
     left: 10px;
@@ -470,6 +438,7 @@ body:has(.explore-shell) > main {
     overflow-y: auto;
     padding: 17px;
   }
+  .explore-card-bridge { display: none; }
   .explore-card h2 { font-size: 22px; }
   .explore-card-footer { position: sticky; bottom: -17px; margin: 0 -17px -17px; padding: 12px 17px 17px; background: rgba(245, 240, 223, .97); }
   .explore-wheel { transform: translate(-50%, -50%) scale(.88); }
