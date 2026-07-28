@@ -8,8 +8,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const rawContentElement = document.getElementById("raw-markdown-content");
 
   if (!copyButton || !rawContentElement) {
-    console.warn("Copy AI button or raw content element not found");
     return;
+  }
+
+  const labelElement = copyButton.querySelector(".copy-ai-label");
+  const defaultLabel = copyButton.dataset.defaultLabel || "Copy for AI";
+  const successLabel = copyButton.dataset.successLabel || "Copied";
+  const errorLabel = copyButton.dataset.errorLabel || "Copy failed";
+  let resetTimer;
+
+  function setButtonState(state, label, disabled) {
+    window.clearTimeout(resetTimer);
+    copyButton.dataset.state = state;
+    copyButton.disabled = disabled;
+    labelElement.textContent = label;
+
+    resetTimer = window.setTimeout(() => {
+      delete copyButton.dataset.state;
+      copyButton.disabled = false;
+      labelElement.textContent = defaultLabel;
+    }, 2000);
   }
 
   copyButton.addEventListener("click", async function () {
@@ -31,36 +49,21 @@ document.addEventListener("DOMContentLoaded", function () {
         textArea.select();
 
         try {
-          document.execCommand("copy");
+          if (!document.execCommand("copy")) {
+            throw new Error("Copy command was rejected");
+          }
         } catch (err) {
           console.error("Fallback copy failed:", err);
           throw new Error("Copy failed");
+        } finally {
+          document.body.removeChild(textArea);
         }
-
-        document.body.removeChild(textArea);
       }
 
-      // Provide user feedback
-      const originalText = copyButton.textContent;
-      copyButton.textContent = "✅ Copied!";
-      copyButton.disabled = true;
-
-      // Reset button after 2 seconds
-      setTimeout(() => {
-        copyButton.textContent = originalText;
-        copyButton.disabled = false;
-      }, 2000);
+      setButtonState("success", successLabel, true);
     } catch (err) {
       console.error("Failed to copy content:", err);
-
-      // Show error feedback
-      const originalText = copyButton.textContent;
-      copyButton.textContent = "❌ Copy failed";
-
-      // Reset button after 2 seconds
-      setTimeout(() => {
-        copyButton.textContent = originalText;
-      }, 2000);
+      setButtonState("error", errorLabel, false);
     }
   });
 });
