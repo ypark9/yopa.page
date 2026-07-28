@@ -10,7 +10,6 @@
   const SESSION_KEY = "article-atlas-navigation-v1";
   const PIT_SESSION_KEY = "article-atlas-server-cost-pit-v1";
   const PIT_DELAY_SECONDS = 60;
-  const PREVIEW_SWITCH_DELAY = 200;
   const world = { minX: -1450, maxX: 1450, minY: -550, maxY: 6650 };
   const palette = {
     cloud: { name: "Cloud Highlands", fill: "#d8e6cf", edge: "#7aa17b", beacon: "#ff8b5c" },
@@ -38,11 +37,6 @@
     paused: false,
     wheelOpen: false,
     nearest: null,
-    previewArticle: null,
-    previewAnchor: null,
-    previewEngaged: false,
-    previewCandidate: null,
-    previewCandidateSince: 0,
     waypoint: null,
     visitedRegions: new Set(),
     activeSeconds: 0,
@@ -360,51 +354,11 @@
       .slice(0, 3);
   }
 
-  function positionPreviewCard(card) {
-    const bridge = document.getElementById("explore-card-bridge");
-    if (!state.previewAnchor || state.width <= 640) {
-      card.dataset.side = "mobile";
-      card.style.removeProperty("left");
-      card.style.removeProperty("top");
-      bridge.hidden = true;
-      return;
-    }
-    card.classList.add("is-measuring");
-    const bounds = card.getBoundingClientRect();
-    const placement = window.ArticleAtlasPreviewDocking?.forPointer(
-      state.previewAnchor.x,
-      state.previewAnchor.y,
-      state.width,
-      state.height,
-      bounds.width,
-      bounds.height
-    ) || { side: "right", left: state.previewAnchor.x + 20, top: state.previewAnchor.y - 40 };
-    card.dataset.side = placement.side;
-    card.style.left = `${placement.left}px`;
-    card.style.top = `${placement.top}px`;
-    card.classList.remove("is-measuring");
-
-    const cardEdge = placement.side === "right" ? placement.left : placement.left + bounds.width;
-    bridge.style.left = `${Math.min(state.previewAnchor.x, cardEdge)}px`;
-    bridge.style.top = `${Math.max(0, state.previewAnchor.y - 28)}px`;
-    bridge.style.width = `${Math.max(20, Math.abs(cardEdge - state.previewAnchor.x))}px`;
-    bridge.style.height = "56px";
-    bridge.hidden = false;
-  }
-
   function selectArticle(article) {
-    if (article === state.previewArticle) return;
-    state.previewArticle = article;
+    if (article === state.nearest) return;
+    state.nearest = article;
     const card = document.getElementById("explore-card");
-    const bridge = document.getElementById("explore-card-bridge");
-    if (!article) {
-      card.hidden = true;
-      bridge.hidden = true;
-      delete card.dataset.side;
-      return;
-    }
-    state.previewAnchor = { x: state.pointer.x, y: state.pointer.y };
-    state.previewCandidate = null;
+    if (!article) { card.hidden = true; return; }
     const related = relatedArticles(article);
     document.getElementById("explore-card-region").textContent = palette[article.regionId].name;
     document.getElementById("explore-card-title").textContent = article.title;
@@ -423,7 +377,6 @@
     }));
     trails.hidden = related.length === 0;
     card.hidden = false;
-    positionPreviewCard(card);
   }
 
   function focusArticle(article) {
@@ -433,7 +386,6 @@
     state.pointer.x = state.width / 2;
     state.pointer.y = state.height / 2;
     state.pointer.active = true;
-    state.nearest = article;
     selectArticle(article);
   }
 
@@ -461,7 +413,7 @@
   }
 
   function updateWaypoint() {
-    if (!state.waypoint || !state.pointer.active || state.previewEngaged) return;
+    if (!state.waypoint || !state.pointer.active) return;
     const traveler = travelerPosition();
     const dx = state.waypoint.x - traveler.x;
     const dy = state.waypoint.y - traveler.y;
@@ -472,7 +424,6 @@
     if (distance < 82) {
       const destination = state.waypoint;
       clearWaypoint();
-      state.nearest = destination;
       selectArticle(destination);
     }
   }
@@ -512,7 +463,7 @@
   }
 
   function updateNearest() {
-    if (!state.entered || !state.pointer.active || state.paused || state.wheelOpen || state.pitOpen || state.previewEngaged) return;
+    if (!state.entered || !state.pointer.active || state.paused || state.wheelOpen || state.pitOpen) return;
     const worldX = state.camera.x + state.pointer.x - state.width / 2;
     const worldY = state.camera.y + state.pointer.y - state.height / 2;
     let nearest = null;
@@ -521,19 +472,7 @@
       const distance = Math.hypot(article.x - worldX, article.y - worldY);
       if (distance < best) { best = distance; nearest = article; }
     });
-    state.nearest = nearest;
-    if (!nearest || nearest === state.previewArticle) {
-      state.previewCandidate = null;
-      return;
-    }
-    if (!state.previewArticle) {
-      selectArticle(nearest);
-    } else if (state.previewCandidate !== nearest) {
-      state.previewCandidate = nearest;
-      state.previewCandidateSince = state.time;
-    } else if (state.time - state.previewCandidateSince >= PREVIEW_SWITCH_DELAY) {
-      selectArticle(nearest);
-    }
+    selectArticle(nearest);
   }
 
   function renderWorld() {
@@ -563,7 +502,7 @@
     state.time = time;
     const elapsed = state.lastTick === null ? 0 : Math.min(.1, (time - state.lastTick) / 1000);
     state.lastTick = time;
-    if (state.entered && state.pointer.active && !state.paused && !state.wheelOpen && !state.pitOpen && !state.previewEngaged) {
+    if (state.entered && state.pointer.active && !state.paused && !state.wheelOpen && !state.pitOpen) {
       state.activeSeconds += elapsed;
       const nx = state.pointer.x / state.width * 2 - 1;
       const ny = state.pointer.y / state.height * 2 - 1;
@@ -585,7 +524,7 @@
       visitor.x += (visitor.targetX - visitor.x) * .12;
       visitor.y += (visitor.targetY - visitor.y) * .12;
     });
-    if (state.entered && state.pointer.active && !state.paused && !state.pitOpen && !state.previewEngaged && window.ArticleAtlasPresence) {
+    if (state.entered && state.pointer.active && !state.paused && !state.pitOpen && window.ArticleAtlasPresence) {
       const position = ownNormalizedPosition();
       window.ArticleAtlasPresence.move(position.x, position.y);
     }
@@ -596,11 +535,11 @@
     scheduleFrame();
   }
 
-  shell.addEventListener("pointermove", (event) => {
+  canvas.addEventListener("pointermove", (event) => {
     if (state.paused) return;
     state.pointer.x = event.clientX; state.pointer.y = event.clientY; state.pointer.active = true;
   });
-  shell.addEventListener("pointerleave", () => { state.pointer.active = false; });
+  canvas.addEventListener("pointerleave", () => { state.pointer.active = false; });
   window.addEventListener("blur", () => { state.pointer.active = false; });
   canvas.addEventListener("click", () => {
     if (state.wheelOpen) { closeWheel(); return; }
@@ -634,7 +573,6 @@
     if (requestedArticle) {
       if (!restoreNavigation(requestedArticle)) focusArticle(requestedArticle);
       else {
-        state.nearest = requestedArticle;
         selectArticle(requestedArticle);
       }
     }
@@ -645,28 +583,12 @@
       canvas.focus({ preventScroll: true });
     }, reducedMotion ? 0 : 360);
   });
-  document.getElementById("explore-card-link").addEventListener("click", () => saveNavigation(state.previewArticle));
+  document.getElementById("explore-card-link").addEventListener("click", () => saveNavigation(state.nearest));
   document.getElementById("explore-card-related").addEventListener("click", (event) => {
     const button = event.target.closest("[data-article-url]");
     if (!button) return;
     setWaypoint(articleByPath.get(normalizePath(button.dataset.articleUrl)));
   });
-  const previewCard = document.getElementById("explore-card");
-  const previewBridge = document.getElementById("explore-card-bridge");
-  const engagePreview = () => { state.previewEngaged = true; };
-  const releasePreview = () => {
-    requestAnimationFrame(() => {
-      state.previewEngaged = previewCard.matches(":hover")
-        || previewBridge.matches(":hover")
-        || previewCard.contains(document.activeElement);
-    });
-  };
-  previewCard.addEventListener("pointerenter", engagePreview);
-  previewBridge.addEventListener("pointerenter", engagePreview);
-  previewCard.addEventListener("pointerleave", releasePreview);
-  previewBridge.addEventListener("pointerleave", releasePreview);
-  previewCard.addEventListener("focusin", engagePreview);
-  previewCard.addEventListener("focusout", releasePreview);
   document.getElementById("explore-waypoint-cancel").addEventListener("click", clearWaypoint);
   document.getElementById("explore-help").addEventListener("click", (event) => {
     const panel = document.getElementById("explore-help-panel");
@@ -814,7 +736,6 @@
 
   addEventListener("resize", () => {
     resize();
-    if (!document.getElementById("explore-card").hidden) positionPreviewCard(document.getElementById("explore-card"));
     if (state.frameId === null) renderWorld();
   });
   resize();

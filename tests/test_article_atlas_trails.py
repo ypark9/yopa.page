@@ -130,44 +130,32 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("@media (prefers-reduced-motion: reduce)", styles)
         self.assertIn("max-height: calc(100dvh - 28px)", styles)
 
-    def test_preview_is_anchored_near_the_pointer_and_flips_at_the_edge(self):
-        script = """
-const docking = require('./static/js/atlas-preview-docking.js');
-const cases = [
-  [200, 300, 'right'],
-  [1180, 300, 'left'],
-  [640, 700, 'right'],
-];
-for (const [x, y, side] of cases) {
-  const actual = docking.forPointer(x, y, 1280, 720, 410, 400);
-  if (actual.side !== side) throw new Error(`${x},${y}: ${actual.side} !== ${side}`);
-  if (actual.left < 12 || actual.left + 410 > 1268) throw new Error(`horizontal overflow: ${JSON.stringify(actual)}`);
-  if (actual.top < 76 || actual.top + 400 > 708) throw new Error(`vertical overflow: ${JSON.stringify(actual)}`);
-}
-"""
-        subprocess.run(
-            ["node", "-e", script],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+    def test_preview_is_fixed_to_the_lower_left(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
 
-    def test_preview_tracks_the_shell_and_freezes_interaction_near_the_card(self):
+        self.assertIn("left: clamp(16px, 4vw, 54px);", styles)
+        self.assertIn("bottom: clamp(18px, 5vh, 48px);", styles)
+        self.assertIn('canvas.addEventListener("pointermove"', source)
+        self.assertNotIn('shell.addEventListener("pointermove"', source)
+        self.assertIn('window.addEventListener("blur"', source)
+        self.assertNotIn("previewEngaged", source)
+        self.assertNotIn("positionPreviewCard", source)
+        self.assertNotIn("explore-card-bridge", template)
+        self.assertNotIn("atlas-preview-docking.js", template)
+        self.assertFalse((ROOT / "static" / "js" / "atlas-preview-docking.js").exists())
+
+    def test_mobile_destination_does_not_lock_map_movement(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
         styles = (ROOT / "static" / "css" / "explore.css").read_text()
 
-        self.assertIn('shell.addEventListener("pointermove"', source)
-        self.assertNotIn('canvas.addEventListener("pointermove"', source)
-        self.assertIn('window.addEventListener("blur"', source)
-        self.assertIn("if (article === state.previewArticle) return;", source)
-        self.assertIn("PREVIEW_SWITCH_DELAY = 200", source)
-        self.assertIn("state.previewEngaged", source)
-        self.assertIn('id="explore-card-bridge"', (ROOT / "layouts" / "explore" / "single.html").read_text())
-        self.assertIn(".explore-card-bridge", styles)
-        self.assertIn(".explore-card[data-side] {", styles)
-        self.assertIn("top: auto;", styles)
-        self.assertIn("transform: none;", styles)
+        self.assertIn("setWaypoint(articleByPath.get", source)
+        self.assertIn("if (!state.waypoint || !state.pointer.active) return;", source)
+        self.assertNotIn("previewEngaged", source)
+        self.assertIn("@media (max-width: 640px)", styles)
+        self.assertIn("width: calc(100vw - 20px);", styles)
+        self.assertIn("max-height: min(52dvh, 430px);", styles)
 
 
 if __name__ == "__main__":

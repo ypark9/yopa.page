@@ -31,7 +31,6 @@
     <p>Move your cursor toward any edge to travel. Hover near a glowing article beacon, then click to read.</p>
   </aside>
 
-  <div class="explore-card-bridge" id="explore-card-bridge" aria-hidden="true" hidden></div>
   <article class="explore-card" id="explore-card" aria-live="polite" hidden>
     <div class="explore-card-region" id="explore-card-region"></div>
     <h2 id="explore-card-title"></h2>
@@ -111,6 +110,5 @@
 </script>
 <link rel="stylesheet" href="{{ "css/explore.css" | relURL }}">
 <script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
-<script defer src="{{ "js/atlas-preview-docking.js" | relURL }}"></script>
 <script defer src="{{ "js/explore.js" | relURL }}"></script>
 {{ end }}
