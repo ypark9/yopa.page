@@ -145,6 +145,9 @@ jobs:
     needs: static-checks
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://yopa.page
     concurrency:
       group: deploy-prod
       cancel-in-progress: false

@@ -55,8 +55,8 @@ make ENV=prod promote
 ```
 
 `make release` runs promotion followed by CloudFront invalidation. Use it only
-from the approved deployment workflow after the same-commit plan has been
-reviewed and the production approval gate has passed.
+after the same-commit plan has been reviewed and the production safety gate
+has passed.
 
 ```sh
 make ENV=prod release
@@ -66,3 +66,16 @@ For the V1 recovery, infrastructure reconciliation and the final `green` to
 `blue` live-path switch are separate approvals. The V2 API, Lambda, Cognito,
 DynamoDB, and private scene storage resources are intentionally absent from
 the V1 configuration.
+
+## GitHub deployment history
+
+Pushes to `main` run the `deploy (auto, non-destructive only)` job. The job is
+attached to the GitHub `production` environment with `https://yopa.page` as
+its environment URL, so each real AWS deployment is represented in the
+repository Deployments history.
+
+The environment is an observability boundary rather than a manual approval
+gate for routine releases. Automation is instead stopped by
+`scripts/check-plan-safety.sh` when an OpenTofu plan contains destructive
+actions. Recovery operations that intentionally change or retire
+infrastructure still require the separate approvals described below.
