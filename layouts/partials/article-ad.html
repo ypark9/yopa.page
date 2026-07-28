@@ -1,4 +1,4 @@
-{{- if and hugo.IsProduction .Site.Params.adSensePublisherId .Site.Params.articleAdSlot -}}
+{{- if and hugo.IsProduction .IsPage (eq .Section "blog") .Site.Params.adSensePublisherId .Site.Params.articleAdSlot -}}
 <aside class="article-ad" aria-label="Advertisement">
   <span class="article-ad-label">Advertisement</span>
   <ins class="adsbygoogle"
