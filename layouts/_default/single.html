@@ -20,18 +20,36 @@
                             <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
                             {{ end }}
                         </div>
+                        {{ $copyLabel := "Copy for AI" }}
+                        {{ $copiedLabel := "Copied" }}
+                        {{ $copyFailedLabel := "Copy failed" }}
+                        {{ if eq .Language.Lang "ko" }}
+                          {{ $copyLabel = "AI용으로 복사" }}
+                          {{ $copiedLabel = "복사됨" }}
+                          {{ $copyFailedLabel = "복사 실패" }}
+                        {{ end }}
+                        <div class="copy-ai-container">
+                            <button
+                                id="copy-ai-button"
+                                class="copy-ai-button"
+                                type="button"
+                                data-default-label="{{ $copyLabel }}"
+                                data-success-label="{{ $copiedLabel }}"
+                                data-error-label="{{ $copyFailedLabel }}"
+                                aria-live="polite"
+                            >
+                                <svg class="copy-ai-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M9 8h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Z"></path>
+                                    <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"></path>
+                                </svg>
+                                <span class="copy-ai-label">{{ $copyLabel }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
     </article>
-
-    <!-- Copy for AI Button -->
-    <div class="copy-ai-container">
-        <button id="copy-ai-button" class="copy-ai-button" type="button">
-            📋 Copy content for AI
-        </button>
-    </div>
 
     <!-- Hidden div containing raw markdown content -->
     <div id="raw-markdown-content" style="display: none;">{{ .RawContent }}</div>
