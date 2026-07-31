@@ -1,8 +1,8 @@
 ---
-title: "AgentCore Identity, 이제 공유 시크릿 없이"
+title: "공유 클라이언트 시크릿 없이 AgentCore Identity 사용하기"
 date: 2026-07-30T09:00:00-04:00
 author: Yoonsoo Park
-description: "AgentCore Identity가 이제 Private Key JWT client authentication을 지원한다. 같은 에이전트, 같은 목표인데 공유 client secret이 사라지고 private key는 KMS 밖으로 나가지 않는다. 하나의 예시로 before/after, 세 가지 grant flow, 그리고 함정을 정리한다."
+description: "AgentCore Identity의 Private Key JWT 클라이언트 인증이 공유 클라이언트 시크릿을 어떻게 대체하는지, KMS는 어디에 쓰이는지, 세 가지 권한 부여 방식은 어떻게 선택하는지 살펴본다."
 categories:
   - AWS
 tags:
@@ -14,27 +14,25 @@ tags:
   - bedrock
 ---
 
-에이전트 하나를 딱 잡고 끝까지 그걸로 가보자.
+고객지원 에이전트가 내부 주문 API에서 고객의 주문 내역을 조회한다고 가정해 보자. 이 API는 ID 공급자(IdP)로 보호되어 있으므로 에이전트가 요청을 보내려면 액세스 토큰이 필요하다. 토큰을 받으려면 먼저 IdP에 자신의 신원을 증명해야 한다.
 
-고객지원 에이전트가 내부 orders API에서 고객의 주문내역을 읽어야 한다. 이 API는 우리 IdP(identity provider)로 보호돼 있다. 그래서 에이전트가 API를 부르기 전에 access token이 필요하고, 그 토큰을 받으려면 IdP한테 *자기가 누구인지* 증명해야 한다.
+이 글에서 다룰 내용이 바로 이 인증 단계다. 2026년 7월 AWS는 [Amazon Bedrock AgentCore Identity에 Private Key JWT 클라이언트 인증을 추가](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/)했다. 기존의 공유 클라이언트 시크릿을 대신할 수 있는 방식이다.
 
-바로 그 마지막 단계, 에이전트가 IdP한테 신원을 어떻게 증명하느냐가 이 글의 전부다. 2026년 7월, AWS가 [Amazon Bedrock AgentCore Identity에 Private Key JWT client authentication을 추가](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/)했는데, 이게 그 답을 꽤 의미 있게 바꾼다.
+## AgentCore에서 Identity의 역할
 
-## AgentCore에서 Identity가 앉는 자리
-
-에이전트가 보호된 downstream 리소스를 부를 때, 토큰을 하드코딩하지 않는다. AgentCore Identity한테 달라고 한다:
+에이전트는 보호된 다운스트림 리소스를 호출할 때 AgentCore Identity에 토큰을 요청한다.
 
 ```
 agent → GetResourceOauth2Token → (access token) → orders API
 ```
 
-AgentCore Identity가 우리 IdP의 token endpoint로 가서 인증하고, access token을 받아다가 에이전트한테 건네주는 조각이다. 그러면 에이전트가 그 토큰으로 orders API를 불러 주문내역을 읽는다.
+AgentCore Identity는 IdP의 토큰 엔드포인트에 인증하고 액세스 토큰을 받은 뒤 에이전트에 전달한다. 에이전트는 이 토큰으로 주문 API를 호출한다.
 
-재밌는 질문은 "인증하고" 안에 숨어 있다. IdP는 아무한테나 토큰을 내주지 않는다. client(여기선 에이전트를 대신하는 AgentCore Identity)가 먼저 자기 자신을 인증해야 한다. 그 방법이 두 가지 있고, 예전 방식에서 새 방식으로 넘어가는 게 이 글의 핵심이다.
+여기서 중요한 점은 AgentCore Identity가 IdP에 인증하는 방법이다. IdP가 토큰을 발급하기 전에 클라이언트, 즉 에이전트를 대신하는 AgentCore Identity가 먼저 자신의 신원을 증명해야 한다.
 
-## 예전: 공유 client secret
+## 기존 방식: 공유 클라이언트 시크릿
 
-고전적인 OAuth 2.0 client-credentials 셋업은 공유 시크릿을 쓴다. 에이전트를 IdP에 client로 등록하면 `client_id`와 `client_secret`을 받고, 그 secret을 우리 쪽에 저장한다. AgentCore Identity가 토큰을 요청할 때 둘 다 보낸다:
+전통적인 OAuth 2.0 클라이언트 자격 증명 방식은 공유 시크릿을 사용한다. 에이전트를 IdP에 클라이언트로 등록해 `client_id`와 `client_secret`을 발급받고, 시크릿을 별도로 저장한다. AgentCore Identity는 토큰을 요청할 때 두 값을 함께 보낸다.
 
 ```
 POST /token
@@ -43,76 +41,76 @@ client_id=support-agent
 client_secret=SUPER_SECRET_VALUE   ← 공유되는 문자열
 ```
 
-동작은 한다. 근데 이제 뭘 떠안게 됐는지 보자. 우리 쪽 어딘가(Secrets Manager, 환경변수, config store)에 상주해야 하는 수명 긴 secret, 양쪽이 똑같은 사본을 들고 있는 secret, 그리고 그걸 읽는 사람 누구에게나 에이전트 완전 사칭 권한을 주는 secret이다. 그래서 secret 수명주기의 익숙한 잡일들을 전부 물려받는다:
+이 방식은 단순하지만 수명이 긴 자격 증명을 직접 관리해야 한다. 시크릿은 Secrets Manager나 환경 변수, 설정 저장소 등에 보관해야 하고, IdP와 클라이언트 양쪽이 같은 값을 갖는다. 시크릿을 확보한 사람은 누구나 에이전트를 사칭할 수 있다. 운영 과정에서는 다음과 같은 문제가 생긴다.
 
-- **어딘가 at rest로 앉아 있다.** 이제 그걸 보호하고 감사해야 한다.
-- **로테이션이 수동이고 양측 동시다.** IdP에서 돌리고, 우리 store를 업데이트하고, 그 사이 틈에 아무 호출도 안 오길 빈다.
-- **유출 = 신원 도용.** 그 문자열을 가진 사람은 우리 에이전트로 토큰을 발급할 수 있고, 요청만 봐서는 그 사람과 우리를 구분할 방법이 없다.
-- **스케일이 안 된다.** 에이전트나 integration이 하나 늘 때마다 저장하고 로테이션하고 걱정할 secret이 하나씩 는다.
+- **보관:** 시크릿을 저장하는 위치마다 보호와 감사가 필요하다.
+- **교체:** IdP와 내부 저장소의 값을 서비스 중단 없이 함께 바꿔야 한다.
+- **유출:** 시크릿을 가진 사람은 에이전트 이름으로 토큰을 요청할 수 있으며, IdP는 이를 정상 요청과 구분할 수 없다.
+- **확장:** 에이전트나 연동 대상이 늘어날 때마다 관리할 시크릿도 하나씩 늘어난다.
 
-근본 문제는 신뢰 모델이다. 공유 시크릿은 *대칭*이다. 양쪽이 같은 문자열을 들고 있으니, 소유가 곧 신원이다. IdP는 "진짜 에이전트"와 "문자열을 복사해간 누군가"를 구별하지 못한다.
+이 문제는 대칭형 신뢰 모델에서 비롯된다. 양쪽이 같은 값을 보관하기 때문에 시크릿을 소유했다는 사실만으로 인증이 성립한다.
 
-## 지금: Private Key JWT
+## 대안: Private Key JWT
 
-Private Key JWT은 대칭 시크릿을 *비대칭* 서명으로 갈아끼운다. 키페어를 만들고, IdP에는 **공개키**만 등록하고, **개인키**는 AWS KMS 안에 둔다. 개인키는 거기서 절대 안 나온다.
+Private Key JWT는 대칭 시크릿을 비대칭 서명으로 대체한다. 키 쌍을 생성해 IdP에는 **공개 키**만 등록하고, **개인 키**는 AWS KMS에 보관한다.
 
-이제 에이전트가 토큰이 필요하면:
+토큰 요청은 다음 순서로 진행된다.
 
 1. 에이전트가 AgentCore Identity의 `GetResourceOauth2Token`을 부른다.
-2. AgentCore Identity가 credential provider 설정(client ID, KMS key ARN, signing algorithm)을 읽어 수명 짧은 JWT client assertion을 만들고, 우리 KMS 키에 `kms:Sign`을 건다.
-3. KMS가 assertion에 서명해 서명값을 돌려준다. **개인키는 KMS를 벗어나지 않는다.**
-4. AgentCore Identity가 서명된 assertion을 `grant_type=client_credentials`와 `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`로 IdP token endpoint에 POST한다.
-5. IdP가 등록된 공개키로 서명을 검증하고 access token을 돌려준다.
-6. AgentCore Identity가 토큰을 에이전트한테 넘기고, 에이전트는 orders API를 불러 주문내역을 읽는다.
+2. AgentCore Identity가 자격 증명 공급자 설정(클라이언트 ID, KMS 키 ARN, 서명 알고리즘)을 읽고 수명이 짧은 JWT 클라이언트 어설션을 만든 뒤 KMS 키로 `kms:Sign`을 호출한다.
+3. KMS가 어설션에 서명해 서명 값을 반환한다. **개인 키는 KMS를 벗어나지 않는다.**
+4. AgentCore Identity가 서명된 어설션을 `grant_type=client_credentials`, `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`와 함께 IdP 토큰 엔드포인트로 보낸다.
+5. IdP가 등록된 공개 키로 서명을 검증하고 액세스 토큰을 반환한다.
+6. AgentCore Identity가 토큰을 에이전트에 전달하고, 에이전트는 이 토큰으로 주문 API를 호출한다.
 
-같은 에이전트, 같은 orders API, 같은 결과. 바뀐 건 중간이다. secret 문자열을 실어 보내는 대신, client가 뭔가에 서명해서 신원을 증명한다. 쓸 수는 있지만 끄집어낼 수는 없는 키로.
+에이전트와 주문 API는 그대로다. 달라지는 부분은 클라이언트 인증 방식뿐이다. 공유 시크릿을 전송하는 대신, 클라이언트는 외부로 꺼낼 수 없는 개인 키로 서명해 신원을 증명한다.
 
-credential provider 설정을 보면 이 전환이 그대로 드러난다. 예전엔 민감한 재료가 곧 설정 자체였다:
+자격 증명 공급자 설정에서도 차이를 확인할 수 있다. 공유 시크릿 방식에서는 민감한 값이 설정에 직접 들어간다.
 
 ```
 client_id:     support-agent
 client_secret: SUPER_SECRET_VALUE     ← 우리가 지켜야 하는 그것
 ```
 
-지금은 설정이 키를 *가리키기만* 하고, 비밀 부분은 IAM 정책 아래 KMS 안에 산다:
+Private Key JWT 방식에서는 설정이 KMS 키를 가리키고, IAM으로 키 사용 권한을 제어한다.
 
 ```
 client_id:      support-agent
 kms_key_arn:    arn:aws:kms:us-east-1:111122223333:key/....
-signing_alg:    ES256                 ← secret이 안 보인다
+signing_alg:    ES256                 ← 설정에 개인 키가 없다
 ```
 
-앞에서 나열한 잡일 목록을 그대로 다시 훑으면 대부분 증발한다:
+이 방식은 공유 시크릿의 운영 부담을 상당 부분 줄여 준다.
 
-- **우리 쪽에 민감한 게 at rest로 안 남는다.** 개인키는 KMS 안이고, 우리는 ARN만 저장한다.
-- **로테이션이 한쪽에서 깔끔하게 끝난다.** 키를 돌리고, 새 공개키를 등록하고, 옛것을 은퇴시킨다. 개인 재료를 어디로도 복사할 필요가 없다.
-- **설정이 유출돼도 신원 유출이 아니다.** ARN은 그 키에 대한 `kms:Sign` 권한 없이는 쓸모없다.
-- **에이전트별 키까지 잘게 내려간다.** 키마다 정책, 키마다 감사 흔적.
+- **보관:** 개인 키는 KMS에 남고 설정에는 ARN만 저장된다.
+- **교체:** 새 키를 만든 뒤 공개 키를 등록하고 기존 키를 폐기하면 된다. 개인 키를 복사할 필요가 없다.
+- **유출:** 키 ARN만으로는 인증할 수 없으며, 해당 키에 대한 `kms:Sign` 권한도 필요하다.
+- **확장:** 에이전트마다 키와 정책, 감사 기록을 분리할 수 있다.
 
-## 어떤 grant flow? 내 케이스에 매핑하기
+## 권한 부여 방식 선택하기
 
-Private Key JWT은 *client*를 인증한다. 이건 결과로 나오는 토큰이 *누구의* 신원을 대표하느냐와는 별개다. AgentCore Identity는 세 가지 grant flow를 지원하는데, 고르는 건 결국 에이전트가 누구로서 행동하느냐의 문제다:
+Private Key JWT는 *클라이언트*를 인증한다. 발급된 토큰이 *누구의* 신원을 나타내는지는 별개의 문제다. AgentCore Identity는 세 가지 권한 부여 방식을 지원하며, 에이전트가 누구의 자격으로 동작하는지에 따라 선택할 수 있다.
 
-- **Machine-to-machine (M2M)**: 에이전트가 *자기 자신*으로 행동. 사람이 안 낀다. 누가 트리거하든 어떤 지원 에이전트나 그 데이터를 읽을 수 있다. `client_credentials` grant를 쓰고, 토큰의 subject는 client 자신이다. **우리 예시가 여기 해당한다.** 주문내역 읽기는 특정 로그인 유저에 묶인 게 아니라 서비스 레벨 조회다.
+- **머신 투 머신(M2M):** 에이전트가 사용자 신원 없이 자기 자신의 자격으로 동작한다. `client_credentials` 권한 부여를 사용하며 토큰의 주체는 클라이언트다. 이 글의 주문 내역 조회처럼 서비스 수준에서 수행하는 작업에 적합하다.
 
-- **On-behalf-of (OBO)**: 에이전트가 *특정 유저를 대신해* 그 유저의 기존 토큰으로 행동. 유저가 이미 어딘가 로그인했고, 그 권한과 신원을 downstream 호출까지 그대로 끌고 가고 싶을 때다. AgentCore Identity가 들어온 유저 토큰을 downstream 토큰으로 교환(RFC 8693 token exchange 또는 RFC 7523 JWT authorization grant)하면서, 자기 자신은 여전히 client assertion으로 인증한다.
+- **대리 인증(OBO):** 에이전트가 이미 토큰을 가진 특정 사용자를 대신해 동작한다. AgentCore Identity는 들어온 사용자 토큰을 다운스트림 토큰으로 교환하면서(RFC 8693 토큰 교환 또는 RFC 7523 JWT 권한 부여), 클라이언트 어설션으로 자신의 신원도 인증한다.
 
-- **User-delegated access**: 에이전트가 유저를 대신하지만 기존 토큰이 없어서, 유저가 인터랙티브 로그인/consent(3-legged authorization-code flow)를 거쳐 에이전트가 뭘 할 수 있는지 먼저 승인한다.
+- **사용자 위임 액세스:** 기존 토큰이 없는 사용자를 대신하는 경우다. 사용자가 대화형 로그인과 동의 절차(3자 권한 부여 코드 흐름)를 거쳐 에이전트에 필요한 권한을 승인한다.
 
-우리 지원 에이전트가 *고객으로서* 고객 본인 권한으로 데이터를 읽어야 했다면 OBO로 갔을 거다. 서비스 레벨로 읽으니 M2M이 맞다. Private Key JWT은 셋 다 밑에서 똑같이 동작한다.
+지원 에이전트가 고객의 신원과 권한으로 데이터를 읽어야 한다면 OBO가 더 적합하다. 이 글의 예시처럼 서비스 수준에서 조회한다면 M2M을 선택할 수 있다. Private Key JWT는 세 방식 모두에서 클라이언트 인증에 사용할 수 있다.
 
-## 내가 지켜볼 함정들
+## 설정할 때 확인할 점
 
-**signing algorithm은 3자 합의다.** IdP가 Private Key JWT에 요구하는 알고리즘을 AWS KMS도 지원하고 *그리고* AgentCore Identity도 지원하고 *그리고* 우리가 설정한 것과 일치해야 한다. 선택지는 RS256, PS256, ES256이고 KMS key spec도 여기 맞아야 한다(AWS 예시는 `ECC_NIST_P256` + `ES256`). 알고리즘을 먼저 정하고, 그걸 지원하는 spec의 KMS 키를 만들어라. 이게 어긋나면 키 생성 시점이 아니라 token endpoint에서 헷갈리는 검증 실패로 터진다.
+**서명 알고리즘은 세 시스템에서 일치해야 한다.** IdP가 요구하는 알고리즘을 AWS KMS와 AgentCore Identity가 모두 지원해야 하며, 자격 증명 공급자 설정도 같은 값을 사용해야 한다. 선택지는 RS256, PS256, ES256이며 KMS 키 사양도 이에 맞아야 한다. AWS 예제에서는 `ECC_NIST_P256`과 `ES256`을 사용한다. 알고리즘을 먼저 정한 뒤 이를 지원하는 KMS 키를 만드는 편이 좋다. 값이 일치하지 않으면 키를 만들 때가 아니라 토큰 엔드포인트에서 서명 검증 오류가 발생할 수 있다.
 
-**`kms:ViaService`로 키를 AgentCore에 묶어라.** KMS key policy에서 `kms:Sign`을 주되, `bedrock-agentcore-identity.<region>.amazonaws.com`으로 스코프한 `kms:ViaService` 조건으로 제한해라. 그러면 요청이 AgentCore Identity를 경유할 때만 서명에 쓸 수 있고, 우연히 `kms:Sign`을 들고 있는 다른 무엇도 못 쓴다. "이 키가 존재한다"와 "이 키는 내가 만든 그 한 가지 일만 할 수 있다"의 차이다.
+**`kms:ViaService`로 키 사용 경로를 제한한다.** KMS 키 정책에 `kms:Sign`을 허용하되, `bedrock-agentcore-identity.<region>.amazonaws.com`을 지정한 `kms:ViaService` 조건을 추가한다. 그러면 다른 주체가 `kms:Sign` 권한을 갖고 있더라도 AgentCore Identity를 거치지 않고는 이 키를 사용할 수 없다.
 
-**키 재료를 누가 소유할지 정해라.** 두 갈래다. KMS에서 키페어를 만들고 공개키를 IdP로 export(`kms:GetPublicKey`)하거나, IdP가 페어를 생성하게 하고 개인 재료를 KMS로 import(`kms:GetParametersForImport` + `kms:ImportKeyMaterial`)한다. 첫 번째가 개인키를 KMS-born으로 두고 export 불가로 유지하니 더 강한 자세다. IdP가 두 번째를 강제하지 않는 한 첫 번째를 택해라.
+**키 쌍을 어디에서 생성할지 정한다.** KMS에서 키 쌍을 만든 뒤 공개 키를 IdP에 전달하거나(`kms:GetPublicKey`), IdP에서 키 쌍을 만들고 개인 키를 KMS로 가져올 수 있다(`kms:GetParametersForImport`, `kms:ImportKeyMaterial`). KMS에서 생성하면 개인 키가 처음부터 내보낼 수 없는 상태로 유지된다. IdP가 다른 방식을 요구하지 않는다면 이쪽이 더 안전하다.
 
-**CloudTrail로 서명 호출을 감사해라.** credential provider가 거는 모든 `kms:Sign`이 CloudTrail에 남는다. 에이전트를 위한 토큰이 언제, 누구 요청으로 발급됐는지 기록이 생긴다는 뜻이다. 공유 시크릿이 절대 못 주던 가시성이 바로 이거다(secret이 유출돼 딴 데서 재사용돼도 우리 쪽엔 아무 흔적이 안 남는다).
+**CloudTrail에서 서명 호출을 감사한다.** 자격 증명 공급자가 호출한 `kms:Sign`은 CloudTrail에 기록된다. 이를 통해 언제, 누구의 요청으로 키가 사용되었는지 확인할 수 있다. 공유 시크릿이 외부에서 재사용되는 경우에는 이와 같은 기록을 남기기 어렵다.
 
-## 그래서 뭘 해야 하나
+## 마이그레이션할 때
 
-공유 client secret을 아직 쓰는 credential provider가 있으면 마이그레이션 목록에 올려라. 손이 가는 건 소박하고(KMS 키 하나, 공개키 등록, 설정 변경), 얻는 건 수명 긴 secret 하나를 공격면에서 지우는 거다.
+공유 클라이언트 시크릿을 사용하는 기존 자격 증명 공급자를 옮기려면 KMS 키를 만들고, IdP에 공개 키를 등록하고, 자격 증명 공급자 설정을 변경해야 한다. 이 과정을 거치면 인증 경로에서 수명이 긴 공유 시크릿을 제거할 수 있다.
 
-신규는 처음부터 Private Key JWT으로 시작해라. 2026년에 client가 서명으로 자기를 증명하고 개인키를 아예 안 들 수 있는데, 굳이 새 공유 시크릿을 들일 이유가 별로 없다. 신뢰 모델이 "우리 둘 다 비밀번호를 안다"에서 "나는 서명할 수 있지만 그 방법은 너한테 못 알려준다"로 조용히 옮겨갔다. 네 에이전트를 돌릴 때 원하는 건 후자 쪽이다.
+IdP가 지원한다면 새 연동에는 Private Key JWT를 우선 검토할 만하다. 클라이언트가 서명으로 신원을 증명하면서 개인 키는 KMS 안에 유지할 수 있어, 시크릿 관리 부담과 자격 증명 유출 위험을 함께 줄일 수 있다.

@@ -1,8 +1,8 @@
 ---
-title: "AgentCore Identity, Now Without the Shared Secret"
+title: "Using AgentCore Identity Without a Shared Client Secret"
 date: 2026-07-30T09:00:00-04:00
 author: Yoonsoo Park
-description: "AgentCore Identity now supports Private Key JWT client authentication. Same agent, same goal, but the shared client secret is gone and the private key never leaves KMS. Here's the before/after with a running example, the three grant flows, and the pitfalls."
+description: "AgentCore Identity now supports Private Key JWT client authentication. This post explains how it replaces a shared client secret, where KMS fits, and how to choose among the three supported grant flows."
 categories:
   - AWS
 tags:
@@ -14,27 +14,25 @@ tags:
   - bedrock
 ---
 
-Let's start with one concrete agent and keep it the whole way through.
+Consider a customer-support agent that needs to read a customer's order history from an internal orders API. The API is protected by an identity provider (IdP), so the agent needs an access token before it can make the request. To obtain that token, it first has to authenticate itself to the IdP.
 
-A customer-support agent needs to read a customer's order history from an internal orders API. That API is protected by your identity provider (IdP). So before the agent can call the API, it needs an access token, and to get that token it has to prove to the IdP *who it is*.
-
-That last step, how the agent proves its identity to the IdP, is the whole subject of this post. In July 2026 AWS [added Private Key JWT client authentication to Amazon Bedrock AgentCore Identity](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/), and it changes the answer in a way worth understanding.
+This authentication step is the focus of this post. In July 2026, AWS [added Private Key JWT client authentication to Amazon Bedrock AgentCore Identity](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/), providing an alternative to shared client secrets.
 
 ## Where Identity fits in AgentCore
 
-When an agent needs to call a protected downstream resource, it doesn't hardcode a token. It asks AgentCore Identity for one:
+When an agent needs to call a protected downstream resource, it asks AgentCore Identity for a token:
 
 ```
 agent → GetResourceOauth2Token → (access token) → orders API
 ```
 
-AgentCore Identity is the piece that goes to your IdP's token endpoint, authenticates, gets an access token back, and hands it to the agent. The agent then calls the orders API with that token and reads the order history.
+AgentCore Identity authenticates with the IdP's token endpoint, obtains an access token, and returns it to the agent. The agent then uses the token to call the orders API.
 
-The interesting question hides inside "authenticates." The IdP won't hand out a token to just anyone. The client (here, AgentCore Identity acting for your agent) has to authenticate itself first. There are two ways to do that, and moving from the old one to the new one is the point.
+The important detail is how that authentication works. Before the IdP issues a token, the client, in this case AgentCore Identity acting for the agent, must prove its identity.
 
 ## Before: the shared client secret
 
-The classic OAuth 2.0 client-credentials setup uses a shared secret. You register the agent as a client on your IdP, get back a `client_id` and a `client_secret`, and store the secret on your side. When AgentCore Identity requests a token, it sends both:
+A traditional OAuth 2.0 client-credentials setup uses a shared secret. You register the agent as a client with the IdP, receive a `client_id` and `client_secret`, and store the secret. AgentCore Identity sends both values when it requests a token:
 
 ```
 POST /token
@@ -43,76 +41,76 @@ client_id=support-agent
 client_secret=SUPER_SECRET_VALUE   ← the shared string
 ```
 
-That works. But look at what you now own: a long-lived secret that has to live somewhere on your side (Secrets Manager, an env var, a config store), that both parties hold a copy of, and that grants full impersonation of the agent to anyone who reads it. So you inherit all the usual secret-lifecycle chores:
+The approach works, but it leaves you responsible for a long-lived credential. The secret must be stored somewhere, such as Secrets Manager, an environment variable, or a configuration store. Both parties retain a copy, and anyone who obtains it can impersonate the agent. That creates several operational problems:
 
-- **It sits at rest** somewhere you now have to protect and audit.
-- **Rotation is manual and bilateral.** You rotate on the IdP, then update your store, and hope nothing calls in the gap.
-- **Leak = identity theft.** Anyone with the string can mint tokens as your agent, and nothing about the request distinguishes them from you.
-- **It doesn't scale.** Every additional agent or integration is another secret to store, rotate, and worry about.
+- **Storage:** The secret has to be protected and audited wherever it is stored.
+- **Rotation:** The value must be changed at the IdP and in your own store without interrupting requests.
+- **Exposure:** Anyone with the secret can request tokens as the agent, and the IdP cannot distinguish that request from a legitimate one.
+- **Scale:** Each new agent or integration adds another secret to store and rotate.
 
-The root problem is the trust model. A shared secret is *symmetric*: both sides hold the same string, so possession is identity. The IdP can't tell "the real agent" from "someone who copied the string."
+The limitation comes from the symmetric trust model: both sides hold the same value, so possession of the secret is enough to authenticate.
 
 ## After: Private Key JWT
 
-Private Key JWT swaps the symmetric secret for an *asymmetric* signature. You generate a key pair, register only the **public** key with your IdP, and keep the **private** key in AWS KMS, where it never leaves.
+Private Key JWT replaces the symmetric secret with an asymmetric signature. You generate a key pair, register the **public key** with the IdP, and keep the **private key** in AWS KMS.
 
-Now when the agent needs a token:
+The token request then works as follows:
 
 1. The agent calls `GetResourceOauth2Token` on AgentCore Identity.
-2. AgentCore Identity reads your credential provider config (client ID, KMS key ARN, signing algorithm), builds a short-lived JWT client assertion, and calls `kms:Sign` against your KMS key.
-3. KMS signs the assertion and returns the signature. **The private key never leaves KMS.**
+2. AgentCore Identity reads the credential provider configuration (client ID, KMS key ARN, and signing algorithm), creates a short-lived JWT client assertion, and calls `kms:Sign` with the KMS key.
+3. KMS signs the assertion and returns the signature. **The private key remains in KMS.**
 4. AgentCore Identity posts the signed assertion to your IdP's token endpoint with `grant_type=client_credentials` and `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
 5. The IdP verifies the signature against the public key you registered and returns an access token.
-6. AgentCore Identity hands the token to the agent, which calls the orders API and reads the order history.
+6. AgentCore Identity returns the token to the agent, which uses it to call the orders API.
 
-Same agent, same orders API, same end result. What changed is the middle. Instead of shipping a secret string, the client proves identity by signing something with a key it can use but can never extract.
+The agent and downstream API do not change. Only the client-authentication step changes: instead of sending a shared secret, the client proves that it can use the private key without extracting or transmitting it.
 
-The credential-provider config tells the whole story of the shift. Before, the sensitive material *is* the config:
+The difference is also visible in the credential provider configuration. With a shared secret, the sensitive value is part of the configuration:
 
 ```
 client_id:     support-agent
 client_secret: SUPER_SECRET_VALUE     ← the thing you must guard
 ```
 
-After, the config just *points* at a key, and the secret part lives in KMS under an IAM policy:
+With Private Key JWT, the configuration points to a KMS key, and IAM controls who can use it:
 
 ```
 client_id:      support-agent
 kms_key_arn:    arn:aws:kms:us-east-1:111122223333:key/....
-signing_alg:    ES256                 ← no secret in sight
+signing_alg:    ES256                 ← no private key in the config
 ```
 
-Walk down the same list of chores from before and they mostly evaporate:
+This addresses many of the operational problems of a shared secret:
 
-- **Nothing sensitive at rest on your side.** The private key is in KMS; you only store an ARN.
-- **Rotation is one-sided and clean.** Roll the key, register the new public key, retire the old. The private material never has to be copied anywhere.
-- **A leaked config isn't a leaked identity.** The ARN is useless without `kms:Sign` permission on the key.
-- **It scales down to per-agent keys** with per-key policies and per-key audit trails.
+- **Storage:** The private key stays in KMS; the configuration stores only its ARN.
+- **Rotation:** You can create a new key, register its public key, and then retire the old one without copying private key material.
+- **Exposure:** A leaked key ARN is not sufficient to authenticate without `kms:Sign` permission.
+- **Scale:** Each agent can have its own key, policy, and audit trail.
 
-## Which grant flow? Map it to your case
+## Choosing a grant flow
 
-Private Key JWT authenticates the *client*, and that's orthogonal to *whose* identity the resulting token represents. AgentCore Identity supports three grant flows, and choosing is really a question about who the agent is acting as:
+Private Key JWT authenticates the *client*. It does not determine whose identity the resulting token represents. AgentCore Identity supports three grant flows, and the right choice depends on who the agent is acting as:
 
-- **Machine-to-machine (M2M)**: the agent acts as *itself*. No human in the loop. Any support agent can read the data regardless of who triggered it. Uses the `client_credentials` grant; the token's subject is the client. **Our running example lands here**: reading order history is a service-level read, not tied to a specific signed-in user.
+- **Machine-to-machine (M2M):** The agent acts as itself, without a user identity. It uses the `client_credentials` grant, and the token subject is the client. The example in this post fits this flow because the order-history lookup is a service-level operation.
 
-- **On-behalf-of (OBO)**: the agent acts *for a specific user* using that user's existing token. A user already signed in somewhere, and you want their permissions and identity to carry through to the downstream call. AgentCore Identity exchanges the inbound user token for a downstream one (RFC 8693 token exchange or the RFC 7523 JWT authorization grant), while still authenticating itself with the client assertion.
+- **On-behalf-of (OBO):** The agent acts for a specific user who already has a token. AgentCore Identity exchanges the incoming user token for a downstream token (RFC 8693 token exchange or the RFC 7523 JWT authorization grant) while authenticating the client with its assertion.
 
-- **User-delegated access**: the agent acts for a user, but there's no pre-existing token, so the user goes through an interactive login/consent (three-legged authorization-code flow) and approves what the agent can do first.
+- **User-delegated access:** The agent acts for a user who does not yet have a token. The user completes an interactive sign-in and consent flow (a three-legged authorization-code flow) before the agent can act.
 
-If our support agent needed to read data *as the customer* with the customer's own permissions, we'd move to OBO. Since it reads at the service level, M2M is the right fit. Private Key JWT works the same way underneath all three.
+If the support agent had to read data using the customer's own identity and permissions, OBO would be a better fit. For a service-level lookup, M2M is appropriate. Private Key JWT can authenticate the client in all three flows.
 
-## Pitfalls I'd watch for
+## Details to check
 
-**The signing algorithm is a three-way agreement.** The algorithm your IdP requires for Private Key JWT has to be supported by AWS KMS *and* by AgentCore Identity *and* match what you configure. Options are RS256, PS256, or ES256, and the KMS key spec has to line up (the AWS example uses `ECC_NIST_P256` with `ES256`). Pick the algorithm first, then create a KMS key whose spec supports it. Getting these out of sync produces confusing verification failures at the token endpoint, not at key-creation time.
+**The signing algorithm must match across three systems.** The algorithm required by the IdP must be supported by AWS KMS and AgentCore Identity, and it must match the credential provider configuration. The available options are RS256, PS256, and ES256, with a compatible KMS key specification. The AWS example uses `ECC_NIST_P256` with `ES256`. Choose the algorithm first, then create a KMS key that supports it. A mismatch typically appears as a verification failure at the token endpoint rather than during key creation.
 
-**Lock the key to AgentCore with `kms:ViaService`.** In the KMS key policy, grant `kms:Sign` but constrain it with a `kms:ViaService` condition scoped to `bedrock-agentcore-identity.<region>.amazonaws.com`. That means the key can only be used to sign when the request originates through AgentCore Identity, not by anything else that happens to hold `kms:Sign`. It's the difference between "this key exists" and "this key can only do the one job you built it for."
+**Restrict the key with `kms:ViaService`.** Grant `kms:Sign` in the KMS key policy, but constrain it with a `kms:ViaService` condition for `bedrock-agentcore-identity.<region>.amazonaws.com`. This limits signing to requests made through AgentCore Identity, even if another principal has `kms:Sign` permission.
 
-**Decide who owns the key material.** Two paths: create the key pair in KMS and export the public key to your IdP (`kms:GetPublicKey`), or let the IdP generate the pair and import the private material into KMS (`kms:GetParametersForImport` + `kms:ImportKeyMaterial`). The first keeps the private key born-in-KMS and never exportable, which is the stronger posture. Prefer it unless your IdP forces the second.
+**Choose where the key pair is generated.** You can create the key pair in KMS and send the public key to the IdP (`kms:GetPublicKey`), or generate it at the IdP and import the private material into KMS (`kms:GetParametersForImport` and `kms:ImportKeyMaterial`). Generating the key in KMS keeps the private key non-exportable from the start and is preferable unless the IdP requires the second approach.
 
-**Audit the signing calls in CloudTrail.** Every `kms:Sign` your credential provider triggers shows up in CloudTrail. That gives you a record of when a token was minted for the agent and under whose request, which is exactly the visibility a shared secret never gave you (a secret leaking and being reused elsewhere leaves no trace on your side).
+**Audit signing calls in CloudTrail.** Each `kms:Sign` call made by the credential provider is recorded in CloudTrail. These events provide a record of when and under whose request the key was used. A shared secret reused outside your environment does not provide the same visibility.
 
-## What to actually do
+## Migration guidance
 
-If you have a credential provider still using a shared client secret, put it on the migration list. The mechanics are modest (a KMS key, a public-key registration, a config change) and the payoff is deleting a long-lived secret from your surface area.
+For an existing credential provider that uses a shared client secret, migration requires a KMS key, public-key registration at the IdP, and a credential provider configuration change. The main benefit is removing a long-lived shared secret from the authentication path.
 
-For anything new, start with Private Key JWT. There's little reason to introduce a fresh shared secret in 2026 when the client can prove itself with a signature and never hold the private key at all. The trust model quietly moved from "we both know the password" to "I can sign, but I can't tell you how," and that's the version you want your agents running.
+For new integrations, Private Key JWT is a sensible default when the IdP supports it. It lets the client authenticate with a signature while keeping the private key inside KMS, reducing both secret-management work and the risk of credential exposure.
