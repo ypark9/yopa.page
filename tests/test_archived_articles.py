@@ -22,6 +22,12 @@ def frontmatter(path):
 
 
 class ArchivedArticleTemplateTests(unittest.TestCase):
+    def test_articles_index_links_back_to_article_atlas(self):
+        template = (ROOT / "layouts/_default/archives.html").read_text()
+        self.assertIn('aria-label="Article Atlas"', template)
+        self.assertIn('class="article-atlas-return"', template)
+        self.assertIn('{{ "explore/" | relURL }}', template)
+
     def test_discovery_surfaces_filter_archived_articles(self):
         paths = [
             "layouts/index.html",
