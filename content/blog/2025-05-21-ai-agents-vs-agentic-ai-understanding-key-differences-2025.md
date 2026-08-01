@@ -1,6 +1,11 @@
 ---
 title: AI Agents vs. Agentic AI - Understanding the Key Differences That Matter in 2025
 date: 2025-05-21
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article presents a marketing-driven agent-versus-agentic-AI binary as a stable taxonomy, although autonomy, planning, delegation, persistence, and topology are independent design dimensions."
+replacement_url_en: "/blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html"
+replacement_url_ko: "/ko/blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html"
 author: Yoonsoo Park
 description: "Discover the critical distinctions between AI agents and agentic AI systems, their architectural differences, real-world applications, and why understanding these concepts is essential for making smart AI investment decisions in 2025."
 categories:
@@ -8,9 +13,9 @@ categories:
   - AI Architecture
 tags:
   - AI Agents
-  - Agentic AI
   - Multi-Agent Systems
-  - AI Architecture
+  - AI Evaluation
+  - Security
 ---
 
 > Discover the critical distinctions between AI agents and agentic AI systems, their architectural differences, real-world applications, and why understanding these concepts is essential for making smart AI investment decisions in 2025.

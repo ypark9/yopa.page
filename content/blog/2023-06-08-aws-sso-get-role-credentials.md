@@ -1,12 +1,20 @@
 ---
 title: aws sso get-role-credentials
 date: 2023-06-08T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "Manually extracting IAM Identity Center access tokens and role credentials is brittle; current AWS tools can resolve and refresh temporary credentials from a configured profile."
+replacement_url_en: "/blog/2026-08-01-export-iam-identity-center-credentials-safely.html"
+replacement_url_ko: "/ko/blog/2026-08-01-export-iam-identity-center-credentials-safely.html"
 author: Yoonsoo Park
 description: "Using-AWS-SSO-Get-Role-Credentials-in-Real-World-Scenarios"
 categories:
   - AWS
 tags:
-  - AWS SSO
+  - IAM Identity Center
+  - AWS CLI
+  - Temporary Credentials
+  - Security
 ---
 
 AWS Single Sign-On (SSO) is a cloud-based service that makes it easy to centrally manage access to multiple AWS accounts and business applications. One of the essential features it provides is the `get-role-credentials` command, which is an AWS CLI v2 operation that returns the STS (Security Token Service) credentials for an IAM role in AWS.

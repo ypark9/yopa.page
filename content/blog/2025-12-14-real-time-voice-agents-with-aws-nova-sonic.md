@@ -1,6 +1,11 @@
 ---
 title: Real-Time Voice Agents with AWS Nova Sonic
 date: 2025-12-14
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The Nova Sonic v1 framing and raw WebSocket model are stale; current Nova 2 Sonic integrations use the supported bidirectional streaming event API and require explicit interruption and privacy handling."
+replacement_url_en: "/blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"
+replacement_url_ko: "/ko/blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "How to build ultra-low latency, interruptible voice agents using Amazon Nova Sonic and WebSocket streams."
@@ -9,9 +14,11 @@ categories:
   - AWS Nova
   - Real-Time Systems
 tags:
-  - Nova Sonic
-  - Speech-to-Speech
-  - WebSockets
+  - Amazon Nova
+  - Voice AI
+  - AI Agents
+  - Streaming
+  - Security
 ---
 
 Building a real-time voice agent is hard because of **Latency**. If the user says "Hello," and the bot takes 3 seconds to convert Speech-to-Text (STT), then LLM, then Text-to-Speech (TTS), the conversation feels dead.

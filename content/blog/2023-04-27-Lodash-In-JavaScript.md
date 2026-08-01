@@ -1,12 +1,16 @@
 ---
 title: Level Up Your JavaScript Skills with Lodash
 date: 2023-04-27T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Lodash is a powerful utility library"
 categories:
   - JavaScript
 tags:
-  - Lodash
+  - JavaScript
+  - TypeScript
+  - Node.js
 ---
 
 ## Lodash
@@ -101,5 +105,3 @@ Output: [
 ]
 */
 ```
-
-Cheers! 🍺

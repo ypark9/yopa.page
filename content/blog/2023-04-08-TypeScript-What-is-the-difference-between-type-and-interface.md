@@ -1,13 +1,17 @@
 ---
 title: TypeScript - What is the difference between type and interface?
 date: 2023-04-08T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "What is the difference between type and interface in TypeScript"
 categories:
   - Programming
   - TypeScript
 tags:
-  - interface and type
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 ## Type vs Interface: When to Use Each One?
@@ -27,9 +31,7 @@ While there is some overlap between `types` and `interfaces`, there are some **k
 - You need to extend or implement `interfaces` in your code.
 - You need to define `optional` properties or `readonly` properties.
 
-In general, *types are more flexible than interfaces*, but *interfaces are more specific*. 
+In general, *types are more flexible than interfaces*, but *interfaces are more specific*.
 
-Types can represent more complex data structures and allow for more advanced type manipulation. 
+Types can represent more complex data structures and allow for more advanced type manipulation.
 Interfaces, on the other hand, are more rigid and allow for stricter type checking and code contracts.
-
-Cheer! 🍺

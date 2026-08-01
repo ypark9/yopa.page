@@ -1,13 +1,17 @@
 ---
 title: Optional Chaining in TypeScript
 date: 2023-04-06T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Optional Chaining in TypeScript"
 categories:
   - Programming
   - TypeScript
 tags:
-  - Optional Chaining
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 ## What is Optional Chaining?
@@ -88,5 +92,3 @@ const firstName = users?.[0]?.name;
 
 ```
 In this example, the optional chaining operator is used twice: once to check if the `users` array exists, and once to check if the first element in the array exists. If either the `users` array or the first element is null or undefined, the expression evaluates to undefined without throwing an error.
-
-Cheer! 🍺

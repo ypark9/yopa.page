@@ -1,15 +1,20 @@
 ---
 title: Mastering Generative AI for Efficient Software Development
 date: 2024-08-12
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "Role-prompt templates alone no longer provide a sufficient engineering workflow because they omit bounded context, threat modeling, deterministic validation, evaluation, review, and rollback."
+replacement_url_en: "/blog/2026-08-01-evidence-driven-ai-assisted-software-development.html"
+replacement_url_ko: "/ko/blog/2026-08-01-evidence-driven-ai-assisted-software-development.html"
 author: Yoonsoo Park
 description: "Unlock the full potential of generative AI in your software development process. Learn how to effectively integrate AI at every stage, from project management and architectural design to coding, using role-based prompting."
 categories:
   - AI in Software Development
 tags:
-  - Generative AI
+  - AI-Assisted Development
+  - AI Evaluation
+  - Security
   - Software Engineering
-  - Project Management
-  - Architectural Design
 ---
 
 ![oni-tiny-robot](images/oni-tiny-robot.webp)

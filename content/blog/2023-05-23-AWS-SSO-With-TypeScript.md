@@ -1,12 +1,20 @@
 ---
 title: AWS SSO with TypeScript
 date: 2023-05-23T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "AWS SSO is now IAM Identity Center, and shelling out with an interpolated profile name is less safe and less reliable than the AWS SDK for JavaScript v3 credential provider chain."
+replacement_url_en: "/blog/2026-08-01-iam-identity-center-with-typescript.html"
+replacement_url_ko: "/ko/blog/2026-08-01-iam-identity-center-with-typescript.html"
 author: Yoonsoo Park
 description: "AWS SSO"
 categories:
   - AWS
 tags:
-  - AWS SSO
+  - IAM Identity Center
+  - AWS SDK for JavaScript
+  - Temporary Credentials
+  - Security
 ---
 
 # AWS Single Sign-On: An In-depth Guide with TypeScript Example

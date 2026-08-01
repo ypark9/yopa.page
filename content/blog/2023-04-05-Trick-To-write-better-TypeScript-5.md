@@ -1,13 +1,17 @@
 ---
-title: Master TypeScript with Advanced Tricks - Partial
+title: Using TypeScript's Partial Utility Type
 date: 2023-04-05T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "Write Better TypeScript Code 4"
+description: "Use TypeScript's Partial utility type for intentional partial updates."
 categories:
   - Programming
   - TypeScript
 tags:
-  - Partial
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 ## Partial Utility Type
@@ -44,5 +48,3 @@ function updateUser(id: number, updates: PartialUser) {
 updateUser(1, { name: "Alice" });
 updateUser(2, { email: "bob@example.com", age: 25 });
 ```
-
-Cheer! 🍺

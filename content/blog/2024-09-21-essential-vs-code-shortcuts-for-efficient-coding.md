@@ -1,24 +1,28 @@
 ---
-title: Essential VS Code Shortcuts for Efficient Coding
+title: Useful VS Code Shortcuts for Everyday Editing
 date: 2024-09-21
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: Boost your productivity with these essential VS Code shortcuts that every developer should know.
+description: A practical reference for common VS Code navigation, editing, and search shortcuts.
 categories:
   - Development Tools
   - Productivity
 tags:
   - VS Code
-  - Shortcuts
-  - Coding Tips
+  - IDE
+  - CLI
 ---
 
-> Boost your productivity with these cool VS Code shortcuts that every developer should know.
+This reference lists common bindings; verify each one in the Keyboard Shortcuts editor for your operating system and keymap.
 
 [Visual Studio Code Keyboard Shortcuts Reference](https://code.visualstudio.com/docs/getstarted/keybindings)
 
 As developers, we're always obsessed with ways to streamline our workflow and boost productivity. Visual Studio Code (VS Code) offers numerous shortcuts to help us code more efficiently. In this article, we'll explore some cool VS Code shortcuts that can significantly improve your coding experience.
 
 ## Quick Reference Table
+
+Bindings vary by operating system, keymap extension, and user configuration. Use VS Code's Keyboard Shortcuts editor as the source of truth and inspect conflicts before changing a binding.
 
 | Function                              | Mac                             | Windows/Linux                  |
 | ------------------------------------- | ------------------------------- | ------------------------------ |
@@ -146,6 +150,4 @@ As developers, we're always obsessed with ways to streamline our workflow and bo
 
     Access all of VS Code's commands quickly.
 
-By mastering these shortcuts, you'll be able to navigate, edit, and manage your code more efficiently in VS Code. Remember, this allows you to work smarter but also other devs see you as a "pro". wink wink.
-
-Cheers! 🍺
+Use the shortcuts that remove friction from repeated work. There is no benefit in memorizing bindings that do not fit the way you edit or that conflict with accessibility needs.

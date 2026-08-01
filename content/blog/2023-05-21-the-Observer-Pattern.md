@@ -1,12 +1,16 @@
 ---
 title: The Observer Pattern
 date: 2023-05-21T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "The Observer Pattern - design pattern"
 categories:
   - Design Pattern
 tags:
-  - The Observer Pattern
+  - Design Patterns
+  - Software Design
+  - Architecture
 ---
 
 # Understanding the Observer Pattern in TypeScript: A Comprehensive Guide
@@ -87,6 +91,4 @@ weatherStation.setTemperature(20);
 
 In the example above, the `WeatherStation` is the subject that maintains the list of observers and notifies them of any changes. `TemperatureDisplay` is the observer that gets notified of the changes.
 
-The observer pattern is a powerful tool to have in your programming toolkit. It allows you to build flexible and modular systems that can handle changes and updates easily.
-
-Cheers! 🍺
+The observer pattern is useful when several consumers need notification of state changes. Define unsubscribe and error behavior explicitly so observers do not leak resources or silently stop receiving events.

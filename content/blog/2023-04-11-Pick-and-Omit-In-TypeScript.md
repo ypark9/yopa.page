@@ -1,12 +1,16 @@
 ---
 title: TypeScript's `Pick` and `Omit`
 date: 2023-04-11T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "TypeScript's Pick and Omit"
 categories:
   - TypeScript
 tags:
-  - Pick and Omit
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 TypeScript's `Pick` and `Omit` are two utility types that allow you to create new types based on existing types. These types can be very useful in creating new types that are more specialized for a specific use case.
@@ -64,6 +68,3 @@ Omit<Type, Keys>
 ```
 
 Here, `Type` is the type you want to exclude properties from, and `Keys` is a union of the keys you want to exclude from the new type.
-
-
-Cheer! 🍺

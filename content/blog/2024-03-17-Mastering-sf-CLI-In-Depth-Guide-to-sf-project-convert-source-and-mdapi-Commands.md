@@ -1,6 +1,8 @@
 ---
 title: Mastering SF CLI - In-Depth Guide to sf project convert source and mdapi Commands
 date: 2024-03-17
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Delve into the nuances of Salesforce CLI's latest commands, 'sf project convert source' and 'sf project convert mdapi', uncovering their roles, distinctions, and impact on contemporary Salesforce development practices."
 categories:
@@ -10,7 +12,7 @@ categories:
 tags:
   - Salesforce CLI
   - Metadata API
-  - Source Format
+  - Data Migration
 ---
 
 ![Salesforce CLI Conversion](images/oni-salesforce-2.webp)
@@ -19,7 +21,7 @@ Salesforce CLI (Command Line Interface) continues to evolve, introducing sophist
 
 ## Exploring `sf project convert source`
 
-The `sf project convert source` command, a recent addition to Salesforce CLI, plays a pivotal role in transforming source-formatted files into Metadata API format, a necessity for certain deployment contexts.
+`sf project convert source` transforms source-formatted files into Metadata API format for consumers that explicitly require that representation. Ordinary Salesforce CLI deployments can deploy source format directly, so conversion is not a default deployment step.
 
 ### Features and Advantages:
 
@@ -42,7 +44,7 @@ The `sf project convert mdapi` command complements `sf project convert source` b
 - **Transition to Source Format**: It simplifies the move to Source format, beneficial for version control, collaboration, and CI/CD integration.
 - **Legacy Integration**: It's crucial for developers migrating from Metadata API–based projects to the modular Source format.
 
-These tools underscore Salesforce's commitment to equipping developers with sophisticated resources for modern development methodologies.
+Treat converted output as an ephemeral interoperability artifact. Keep one source of truth in Git and avoid editing both representations.
 
 ### Comparing Metadata API and Source Format Structures
 
@@ -92,5 +94,4 @@ These distinctions highlight the strategic considerations in choosing the approp
 
 ## Wrapping it up 👏
 
-The introduction of `sf project convert source` alongside `sf project convert mdapi` signifies Salesforce's ongoing commitment to refining the developer experience. These commands are not merely about format conversion; they represent a strategic approach to structured, efficient, and collaborative Salesforce development. I am still not sure why they pick the command name in the current way. This is for the another time I guess.
-Cheer! 🍺
+Use `sf project deploy preview` and `sf project deploy start --dry-run` before direct deployment. Convert only at a legacy-tool or package boundary, write to a clean build directory, and verify the resulting `package.xml`. Reviewed against the [Salesforce CLI reference](https://developer.salesforce.com/docs/platform/salesforce-cli-reference/guide/cli_reference.html) on 2026-08-01.

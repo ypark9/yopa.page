@@ -1,107 +1,80 @@
 ---
-title: Designing Robust Multi-Agent Systems
+title: Designing Multi-Agent Systems Only When One Agent Is Not Enough
 date: 2025-12-12
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 series: AWS re:Invent 2025
-description: "A technical guide to architectural patterns for multi-agent systems: Hierarchical, Swarm, DAG, and ReWOO."
+description: "Choose single-agent, supervisor, peer delegation, or deterministic workflow patterns using measurable boundaries, failure handling, security, and evaluation."
 categories:
   - AI Agents
   - System Design
   - Architecture
 tags:
+  - AI Agents
   - Multi-Agent Systems
-  - Design Patterns
-  - ReWOO
+  - A2A
+  - AI Evaluation
+  - Reliability
+  - Security
 ---
 
-Moving from a single agent to a multi-agent system is not just about adding more bots. It's about structure.
+Multiple agents add coordination; they do not automatically add intelligence. Begin with one agent and a small typed tool set. Add another agent only when an explicit boundary—context, skill evaluation, security, ownership, or parallelism—improves a measured outcome.
 
-This guide details the four canonical architectures for multi-agent systems and introduces the advanced **ReWOO** pattern for optimization.
+## Four useful structures
 
-## 1. Hierarchical (The "Boss and Workers")
+### Single agent with tools
 
-This is the standard for complex business workflows. A Supervisor delegates tasks to specialized workers.
+This is the baseline. One policy, one context owner, and one trace make failures easier to understand. It often beats a multi-agent design for short tasks and shared context.
 
-**Best For:** Context Hiding. The Supervisor never sees the raw "junk" data (like HTML scraping) from the worker, keeping its memory clean.
+### Supervisor and specialists
 
-```mermaid
-graph TD  
-    Supervisor((🧠 Supervisor))  
-    Supervisor -->|Delegates| ManagerA[Manager A]
-    Supervisor -->|Delegates| ManagerB[Manager B]
-      
-    ManagerA -->|Task| Worker1[Worker 1]  
-    ManagerA -->|Task| Worker2[Worker 2]
-```
+A supervisor decomposes work and delegates to specialists with narrow contracts. It is useful when specialists need distinct context or tools. The supervisor should receive structured results and evidence, not every raw page or tool trace. “Context hiding” is not deleting relevant facts; it is deliberate summarization with source references and uncertainty.
 
-### The "Context Hiding" Pattern
+Failure modes include a weak decomposition, repeated delegation, lossy summaries, and a supervisor accepting an invalid result. Set delegation depth, time/token/tool budgets, schemas, and a fallback to human review.
 
-One of the biggest advantages of this hierarchy is memory management.
+### Peer-to-peer A2A
 
-```mermaid
-sequenceDiagram  
-    participant Supervisor
-    participant Researcher as Research Agent
-    participant Web as Web Tools
+Peer agents expose capabilities and communicate through a protocol such as A2A. This fits independently owned services, but discovery, authentication, authorization, version compatibility, deadlines, and audit are platform responsibilities. Do not let a caller's text claim establish user identity.
 
-    Note over Supervisor: Clean Memory
-    Supervisor->>Researcher: "Find details on Product X"
-    
-    rect rgb(240, 248, 255)
-        Note right of Researcher: Dirty Work
-        Researcher->>Web: Scrape HTML (100k tokens)
-        Web-->>Researcher: Raw Data
-        Researcher->>Researcher: Summarize
-    end
-    
-    Researcher-->>Supervisor: "It costs $50."
-    Note over Supervisor: Supervisor never saw the HTML
-```
+### Deterministic workflow or DAG
 
-## 2. Multi-Agent DAG (The Assembly Line)
+When dependencies and transitions are known, a workflow engine should own them. It provides durable state, retries, timeouts, compensation, and approval. Model steps can classify, draft, or recommend within nodes. This is usually more reliable than asking an LLM to remember the workflow.
 
-A **Directed Acyclic Graph (DAG)** is a fixed chain.
+ReWOO and plan-then-execute techniques can reduce repeated observation and model calls, but a precomputed plan can become stale. Add checkpoints that revalidate assumptions before consequential actions.
 
-**Best For:** Predictable pipelines like document processing.
+## Contract for every delegation
 
-```mermaid
-graph LR  
-    Step1((Step 1)) --> Step2((Step 2)) --> Step3((Step 3)) --> Finish[Done]
-```
+Define objective, allowed inputs, tool authority, output schema, evidence, deadline, idempotency key, and failure behavior. A specialist should return `status`, result, sources, uncertainty, and safe retry information. Treat its output as untrusted at the next boundary.
 
-## 3. ReWOO: Reasoning Without Observation
+Propagate authenticated identity separately from model content. Re-authorize tool calls at the target. Give specialists only their needed tools, and keep write operations behind human or policy gates.
 
-**ReWOO** decouples the "Planning" from the "Doing." This reduces token usage and latency.
+## Evaluate the system, not the conversation
 
-1.  **Planner:** Generates a full plan with placeholders (`#E1`, `#E2`).
-2.  **Worker:** Executes tools in parallel to fill placeholders.
-3.  **Solver:** Synthesizes the final answer.
+Create a single-agent baseline and compare:
 
-```mermaid
-graph TD  
-    subgraph "Phase 1: Planning"  
-    Planner[📝 Planner] -->|Plan| Plan[Plan: #E1, #E2]  
-    end
+- end-to-end task success and factual grounding;
+- incorrect delegation and invalid handoff rate;
+- unauthorized or unnecessary tool attempts;
+- latency, token/tool cost, and retry amplification;
+- recovery from timeout, duplicate message, partial result, and unavailable specialist;
+- reviewer correction and escalation quality.
 
-    subgraph "Phase 2: Execution"  
-    Plan --> Worker[👷 Worker]  
-    Worker -->|Parallel Tool Call| ToolA[Output #E1]  
-    Worker -->|Parallel Tool Call| ToolB[Output #E2]  
-    end
+Run adversarial tests with prompt injection in retrieved content and agent messages. Test cyclic delegation, conflicting specialists, stale memory, budget exhaustion, and one agent returning a syntactically valid but false result.
 
-    subgraph "Phase 3: Synthesis"  
-    ToolA --> Solver[🧩 Solver]  
-    ToolB --> Solver  
-    Solver --> Final[Answer]  
-    end
-```
+## Operational pattern
 
-## Decision Document: Hierarchical vs. DAG
+Store durable task state outside prompts. Use correlation IDs and traces across hops, redact sensitive content, and record model/tool/config versions. Cap concurrency to protect downstream services. Make actions idempotent. Provide cancellation and a kill switch. A session that times out must be resumable from durable state or fail explicitly.
 
-| Feature | Hierarchical | DAG |
-| :--- | :--- | :--- |
-| **Flexibility** | High (Can change plan mid-flight) | Low (Hardcoded path) |
-| **Latency** | Higher (Supervisor "thinking" time) | Lower (Immediate routing) |
-| **Use Case** | Customer Support, Research | Onboarding, Claims Processing |
+## Migration checklist
 
-**Conclusion:** Start with Hierarchical for most "Assistant" type apps. Use DAGs for backend automation.
+- Measure the current single-agent baseline.
+- Identify the precise boundary each proposed agent owns.
+- Replace free-form handoffs with versioned schemas and evidence.
+- Put known sequencing in a workflow engine.
+- Add hop-by-hop identity and authorization.
+- Set delegation, time, cost, and tool budgets.
+- Add fault injection and security evaluation.
+- Remove agents that do not improve success enough to justify complexity.
+
+Verified against the [A2A specification](https://a2a-protocol.org/latest/specification/), [MCP specification](https://modelcontextprotocol.io/specification/), and [AWS Step Functions guidance](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) on **2026-08-01**.

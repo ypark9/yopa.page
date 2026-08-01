@@ -1,12 +1,19 @@
 ---
 title: Decorators for Class in TypeScript
 date: 2023-04-19T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article presents only the legacy experimental decorator model and does not distinguish it from the standard decorator support available in modern TypeScript."
+replacement_url_en: "/blog/2026-08-01-typescript-decorators.html"
+replacement_url_ko: "/ko/blog/2026-08-01-typescript-decorators.html"
 author: Yoonsoo Park
 description: "Decorators for Class in TypeScript"
 categories:
   - TypeScript
 tags:
-  - Decorators
+  - TypeScript
+  - JavaScript
+  - Design Patterns
 ---
 
 Decorators in TypeScript are functions that can be applied to classes, methods, properties, and parameters to modify their behavior or add metadata. In this article, we will focus on decorators for classes and how they can be useful.

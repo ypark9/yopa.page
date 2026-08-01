@@ -1,36 +1,31 @@
 ---
 title: How to Fix This Schedulable Class Has Jobs Pending or In Progress Error
 date: 2023-04-28T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "How to Fix This Schedulable Class Has Jobs Pending or In Progress Error"
 categories:
   - Salesforce
 tags:
-  - Push code error
+  - Apex
+  - Asynchronous Apex
+  - CI/CD
 ---
 
-When working with Salesforce, you may encounter an error message that says "This schedulable class has jobs pending or in progress" when trying to push code to a Scratch Org. This error message can be frustrating and may cause delays in your development process.
+Salesforce can block deployment of a schedulable Apex class while jobs for that class are queued or running. Treat the jobs as production work to understand, not as an obstacle to bypass automatically.
 
-## The Solution
+## Diagnose before changing deployment settings
 
-To prevent the "This schedulable class has jobs pending or in progress" error message from occurring, you need to navigate to your Deployment Settings and enable the "Allow deployments of components when corresponding Apex jobs are pending or in progress" option.
+In Setup, review **Scheduled Jobs** and **Apex Jobs**. Confirm which class is running, who owns the schedule, when it runs next, and whether the deployment changes its behavior or state. In a scratch org, deleting and recreating a disposable schedule may be reasonable. In a shared or production org, coordinate a maintenance window and preserve the schedule expression and owner before aborting anything.
 
-Here are the steps you can follow:
+If it is safe to stop a job, abort the specific job through Setup or a reviewed Apex administration procedure, deploy with the current CLI, then reschedule and verify it:
 
-1. Log in to your Salesforce org.
+```bash
+sf project deploy start --source-dir force-app/main/default/classes \
+  --target-org staging --dry-run --test-level RunLocalTests
+```
 
-2. Navigate to the Setup page.
+The Deployment Settings option **Allow deployments of components when corresponding Apex jobs are pending or in progress** is a governed exception, not the default fix. It permits class replacement while related work exists, so use it only after assessing compatibility and rollback. Record the previous setting and restore it after the controlled deployment if your policy requires that.
 
-3. In the Quick Find box, search for "Deployment Settings".
-
-4. Click on the "Deployment Settings" link to open the Deployment Settings page.
-
-5. Scroll down to the "Deployment Options" section and locate the "Allow deployments of components when corresponding Apex jobs are pending or in progress" option.
-
-6. Click the checkbox next to the option to enable it.
-
-7. Save your changes by clicking the "Save" button.
-
-By enabling this option, you are allowing the deployment of components, even when corresponding Apex jobs are pending or in progress. This means that you can push your code to a Scratch Org without encountering the "This schedulable class has jobs pending or in progress" error message.
-
-Cheers! 🍺
+Verification includes the deployment result, Apex tests, the recreated schedule, and the next successful job execution. Reviewed on 2026-08-01 against the [Apex Scheduler documentation](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_scheduler.htm) and current Salesforce CLI reference.

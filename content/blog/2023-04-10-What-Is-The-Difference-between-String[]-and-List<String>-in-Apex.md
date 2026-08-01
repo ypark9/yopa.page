@@ -1,12 +1,19 @@
 ---
 title: What is the difference between String[] and List<String> in Apex?
 date: 2023-04-10T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article contains non-compiling examples and an inaccurate explanation of Apex list storage."
+replacement_url_en: "/blog/2026-08-01-apex-list-syntax-and-nested-collections.html"
+replacement_url_ko: "/ko/blog/2026-08-01-apex-list-syntax-and-nested-collections.html"
 author: Yoonsoo Park
 description: "Let's find out the real difference between String[] and List<String> in Apex"
 categories:
   - Apex
 tags:
-  - List vs Array 
+  - Apex
+  - Collections
+  - Apex Testing
 ---
 
 In Apex, arrays are collections of elements of the same type that are stored sequentially in memory. Each element in the array is accessed by an index, which starts from zero. Although Apex does not have a true "array" data type, the List data type in Apex is similar in behavior and can be used in much the same way as an array.

@@ -1,14 +1,19 @@
 ---
 title: Understanding Salesforce Packaging - A Comprehensive Comparison of 1GP vs 2GP
 date: 2024-02-05
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "Current package namespace, promotion, and dependency behavior differs materially from this comparison."
+replacement_url_en: "/blog/2026-08-01-choose-a-salesforce-package-model.html"
+replacement_url_ko: "/ko/blog/2026-08-01-choose-a-salesforce-package-model.html"
 author: Yoonsoo Park
 description: "Dive deep into the core distinctions between Salesforce's 1st Generation Packaging (1GP) and 2nd Generation Packaging (2GP), offering a clear guide for developers and businesses navigating these essential Salesforce development tools."
 categories:
   - Salesforce
 tags:
-  - 2GP
+  - Salesforce Packaging
   - Salesforce DX
-  - 1GP vs 2GP
+  - CI/CD
 ---
 
 ![Salesforce 2GP](images/oni-salesforce.webp)

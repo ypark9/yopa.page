@@ -1,16 +1,17 @@
 ---
-title: Mastering Environment Variables in Shell Scripts -- The Power of .env, set -a, and set +a
+title: Environment Variables in Shell Scripts with set -a
 date: 2024-01-20
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explore the nuanced yet powerful techniques of managing environment variables in shell scripts using .env files along with the set -a and set +a commands for a cleaner, more secure, and highly maintainable scripting environment."
 categories:
   - Programming
   - Shell Scripting
 tags:
-  - Environment Variables
-  - Shell Scripting
-  - .env
-  - Best Practices
+  - CLI
+  - Shell
+  - macOS
 ---
 
 ![oni-shell](images/oni-shell.webp)
@@ -24,6 +25,8 @@ Before diving deep, it's important to grasp the basics. An environment variable 
 `.env` files are a simple and popular method to configure environment variables. They are plain text files containing key-value pairs, making them easy to create and manage. However, variables defined in `.env` files aren't automatically available in the shell script. They need to be explicitly imported.
 
 ### The Role of `source .env`
+
+Sourcing a file executes it as shell code; `.env` is not a universal data format. Only source a file you control, quote its path, restrict its permissions, and keep secrets in the deployment platform secret store.
 
 The `source` command, used as `source .env`, executes the file passed as an argument, in the current shell. It reads and imports environment variables from `.env` into the shell session, but it doesn't export them to child processes by default.
 
@@ -73,7 +76,7 @@ ENV_FILE=".env.production"
 
 # Automatically export variables
 set -a
-source $ENV_FILE
+. ""
 set +a
 
 # Run database migrations
@@ -98,6 +101,4 @@ In this script:
 
 While `source .env` works fine for simple cases, the combination of `set -a` and `set +a` offers a controlled, secure, and clear approach to managing environment variables in shell scripts. It's a testament to the thoughtfulness that goes into professional script writing, ensuring that your scripts work predictably and securely, no matter the complexity.
 
-In the world of shell scripting, mastering the nuances of environment variables can significantly improve the robustness and reliability of your scripts. Embracing these practices is a step towards writing cleaner, more maintainable, and secure code.
-
-Cheers! 🍺
+Use `set -a` only across the smallest controlled section, restore it with `set +a`, and validate every required variable before starting the application.

@@ -1,12 +1,19 @@
 ---
 title: How to Update SFDX CLI from One Version to Another
 date: 2023-06-22T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The sfdx CLI is unsupported and the cleanup steps can destructively remove authentication and configuration."
+replacement_url_en: "/blog/2026-08-01-install-and-update-salesforce-cli.html"
+replacement_url_ko: "/ko/blog/2026-08-01-install-and-update-salesforce-cli.html"
 author: Yoonsoo Park
 description: "A simple guide to updating your Salesforce CLI (SFDX) to the latest version."
 categories:
   - Salesforce
 tags:
-  - SFDX
+  - Salesforce CLI
+  - Developer Tools
+  - Security
 ---
 
 From time to time, updates and improvements to the SFDX CLI are released and users may need to update their CLI version. Here is a step-by-step guide on how to do this.

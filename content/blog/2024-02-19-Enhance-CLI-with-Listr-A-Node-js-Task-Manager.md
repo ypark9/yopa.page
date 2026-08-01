@@ -1,24 +1,25 @@
 ---
-title: Enhance CLI with Listr - The Node.js Task Manager
-date: 2024-02-20
+title: Structured CLI Tasks with Listr2
+date: 2024-02-19
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "Ditch boring command-line updates! Transform your scripts with Listr's interactive and stylish task lists."
+description: "Use Listr2 to present structured task progress while preserving useful CI and non-interactive output."
 categories:
   - Node.js
   - User Interface Design
 tags:
-  - Listr
+  - Node.js
+  - JavaScript
+  - Package Management
   - CLI
-  - Task management
-  - User experience
-  - TypeScript
 ---
 
 ![Listr Task List Example](images/oni-speaker.webp)
 
 **Introduction**
 
-Have you ever run a terminal command or a long-running build process, staring at a wall of scrolling text without much clue about progress? Enter Listr, a Node.js library designed to create dynamic, interactive task lists within your command-line interface (CLI). Listr leverages Node.js to transform mundane terminal outputs into a visually appealing, informative experience. This tool is especially valuable for developers, CLI tool creators, and anyone looking to enhance their command-line operations.
+Listr2 presents structured progress for multi-step CLI operations. Use it when task hierarchy helps users understand progress, while retaining plain and complete output for CI and logs.
 
 **Why Listr?**
 
@@ -30,6 +31,8 @@ Have you ever run a terminal command or a long-running build process, staring at
 
 Before diving into Listr, ensure you have a compatible Node.js environment. Listr's TypeScript support offers strong typing benefits, making your task management scripts more maintainable and error-resistant.
 
+The original `listr` package is superseded by `listr2`, which includes its own TypeScript types. Pin a compatible release and configure a non-interactive renderer for CI, logs, and redirected output. Progress UI must not hide command failures.
+
 1. **Install Listr and types:**
 
    ```bash
@@ -39,8 +42,8 @@ Before diving into Listr, ensure you have a compatible Node.js environment. List
 2. **A simple TypeScript example:**
 
    ```typescript
-   import Listr from "listr";
-   import { Task } from "listr"; // Import for type definitions
+   import { Listr } from "listr2";
+   import type { ListrTask } from "listr2";
 
    // Define a context for your tasks to use
    interface MyContext {
@@ -130,8 +133,6 @@ tasks.add([
 ]);
 ```
 
-**Wrapping it up 👏**
+**Wrapping it up **
 
-Listr is an invaluable tool for anyone working with Node.js, TypeScript, and CLI environments, striving for an enhanced user experience. Its flexibility, error handling, and customization options make it suitable for a wide range of applications. For a deeper dive into Listr's capabilities, visit the ["official documentation"](https://github.com/SamVerschueren/listr) and start exploring how it can revolutionize your terminal tasks.
-
-Cheers! 🍺
+Listr2 is useful when interactive progress materially improves a multi-step command. Review its current [official documentation](https://github.com/cenk1cenk2/listr2), and keep the underlying task functions independent from the renderer.

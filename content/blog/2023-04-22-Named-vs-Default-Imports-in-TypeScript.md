@@ -1,12 +1,16 @@
 ---
 title: Named vs. Default Imports in TypeScript
 date: 2023-04-22T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Named vs. Default Imports in TypeScript"
 categories:
   - TypeScript
 tags:
-  - Named vs. Default Imports
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 # Named vs. Default Imports in TypeScript
@@ -61,5 +65,3 @@ export default {
   },
 };
 ```
-
-Cheers! 🍺

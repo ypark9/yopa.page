@@ -1,6 +1,8 @@
 ---
 title: "RAG를 위한 AWS 벡터 데이터베이스 — 2026년판 아키텍처 결정 가이드"
 date: 2025-05-25T02:30:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "AWS에서 벡터 스토어를 고르는 건 이제 다섯 개 중 하나를 고르는 문제가 아니다. OpenSearch, pgvector, Neptune Analytics, Bedrock Knowledge Bases, Kendra에 S3 Vectors가 합류하면서, 진짜 질문은 '내 워크로드가 비용/지연 곡선의 어느 구간에 사는가'임. 업데이트된 결정 프레임워크를 정리한다."
 categories:
@@ -8,14 +10,12 @@ categories:
   - Machine Learning
   - RAG
 tags:
-  - opensearch
-  - pgvector
-  - bedrock
-  - s3-vectors
-  - neptune-analytics
-  - kendra
-  - vector-search
-  - rag
+  - AWS
+  - RAG
+  - Vector Search
+  - Amazon Bedrock
+  - Amazon S3 Vectors
+  - Amazon OpenSearch Service
 ---
 
 > 예전엔 AWS에서 벡터 스토어를 고르는 게 다섯 개 중 하나를 고르는 문제였다. **Amazon S3 Vectors**가 등장하면서 이제는 *내 워크로드가 비용/지연 곡선의 어느 구간(tier)에 속하는가*로 다시 묻는 게 맞다. 각 옵션이 뭘 잘하고, 언제 낫고, 어떻게 같이 쓰일 수 있게 되는지 — 결정 프레임워크를 다시 정의한다.

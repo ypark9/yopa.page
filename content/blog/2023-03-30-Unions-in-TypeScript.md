@@ -1,13 +1,17 @@
 ---
 title: TypeScript Unions - Exploring Discriminated Unions and Best Practices
 date: 2023-03-30T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Unions in TypeScript are like a group of friends who hang out together but each one of them has their own unique personality."
 categories:
   - Programming
   - TypeScript
 tags:
-  - Union
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 ## Why do you need unions in TypeScript
@@ -66,6 +70,3 @@ We can also see that the function can handle different types of shapes thanks to
 One best practice is to use discriminants, like the kind property in the example above, to help you determine which type you are dealing with inside your functions. This way, you can avoid runtime errors by ensuring that you are only using the properties that are common to all types in the union.
 
 Another best practice is to keep your union types as simple as possible. Unions can quickly become complex if you start nesting them or adding too many types, which can make your code harder to read and maintain.
-
-P.S. Have you encountered a similar feature in other type-safe programming languages? If so, what was it? Do you think TypeScript has a similar feature as well? Then why does TS have Union? Think about it.
-Cheer! 🍺

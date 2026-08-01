@@ -1,22 +1,24 @@
 ---
-title: Ruby on Rails Tutorial - Essential Syntax and Methods Guide for Beginners
+title: Ruby Syntax and Core Collection Methods for Beginners
 date: 2025-01-31
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: A beginner-friendly guide exploring Ruby's syntax and built-in methods for common data structures, with insightful comparisons to Python.
+description: A beginner-friendly guide to Ruby classes, methods, scope, iteration, and core collection APIs, with concise Python comparisons.
 categories:
   - Ruby
-  - Ruby on Rails
 tags:
   - Ruby
-  - Rails
-  - Programming
+  - Object-Oriented Programming
+  - Collections
+  - Language Fundamentals
 ---
 
-# Getting Started with Ruby on Rails: Syntax and Built-in Methods
+# Ruby Syntax and Built-in Methods
 
-> A comprehensive guide exploring Ruby's syntax and built-in methods for common data structures, with helpful comparisons to Python.
+This is a Ruby language reference, not a Rails tutorial. Rails builds on Ruby, but it adds its own framework conventions, APIs, and lifecycle.
 
-📚 [Official Ruby on Rails Documentation](https://rubyonrails.org/)
+The examples were reviewed on 2026-08-01 against the [official Ruby syntax documentation](https://docs.ruby-lang.org/en/3.4/syntax_rdoc.html) and [Ruby in Twenty Minutes](https://www.ruby-lang.org/en/documentation/quickstart/). Check the [official Ruby documentation index](https://www.ruby-lang.org/en/documentation/) and maintenance status before selecting a version for a new project. The examples use syntax available in maintained modern Ruby releases; pin the project's version in development and CI rather than relying on the macOS system Ruby.
 
 ## Table of Contents
 
@@ -36,7 +38,7 @@ tags:
 
 ## Introduction
 
-If you're new to Ruby on Rails like me, the initial learning curve might seem steep. However, once you grasp Ruby's syntax basics, Rails becomes a natural progression. Let's walk through basic Ruby syntax elements with Python comparisons to help you understand the concepts better. Let's get started!
+Ruby is an object-oriented language in which expressions return values and blocks are central to collection APIs. The Python comparisons below are orientation aids, not claims that the two object models are identical.
 
 ## Class Definitions
 
@@ -75,7 +77,7 @@ person = Person("Alice", 30)
 print(person.introduce())
 ```
 
-> 💡 **Key Difference**: Ruby uses `@` for instance variables, while Python uses `self`.
+Ruby instance variables use an `@` prefix. Python stores comparable state through attributes on `self`.
 
 ## Inheritance
 
@@ -106,7 +108,7 @@ class Employee(Person):
         return f"{self.name} is working as a {self.position}."
 ```
 
-> 💡 **Key Difference**: Ruby uses `<` for inheritance, Python uses parentheses.
+Ruby writes superclass inheritance with `<`; Python places base classes in parentheses.
 
 ## Function Definitions
 
@@ -144,10 +146,11 @@ print(calc.add(7))      # => 7 (uses default value)
 def demonstrate_variables
   local_var = "I am local"           # Local variable
   @instance_var = "Instance scope"   # Instance variable
-  @@class_var = "Class scope"        # Class variable
-  $global_var = "Global scope"       # Global variable
+  [local_var, @instance_var]
 end
 ```
+
+Ruby also has class variables (`@@name`) and globals (`$name`), but both introduce wider mutable state and should not be the default for ordinary application data. Prefer explicit objects, constants for immutable shared values, and class-instance variables when class-owned state is genuinely required.
 
 ### Python Variables
 
@@ -206,8 +209,7 @@ str.split(",")  # => ["Hello", " World!"]
 
 ### Array Methods
 
-> 💡 **Note**: In Ruby (and Rails), arrays are very flexible and can hold objects of different types simultaneously, similar to Python lists (not tuples, since Python tuples are immutable).
-> This flexibility is one of Ruby's core principles: "everything is an object" and the language tries to be as permissive as possible to make developers' lives easier.
+Ruby arrays can contain objects of different classes, like Python lists. That flexibility is a Ruby language property and does not depend on Rails.
 >
 > ```ruby
 > # Mixed type array examples
@@ -216,49 +218,35 @@ str.split(",")  # => ["Hello", " World!"]
 > mixed_array.push(:symbol)  # Adds a Symbol
 > mixed_array << nil        # Adds nil using the shovel operator
 > mixed_array.unshift(42.0) # Adds a Float at the beginning
-> # All valid operations!
+> # These operations are valid; mixed collections still require clear application contracts.
 > ```
 
 ```ruby
 # Array operations
 arr = [1, 2, 3, 4, 5]
-arr.length        # => 5
+arr.length       # => 5
 arr.first        # => 1
 arr.last         # => 5
-arr.push(6)      # => [1, 2, 3, 4, 5, 6]
-arr.pop          # => 6
 arr.include?(3)  # => true
 
-# how to insert an element at the beginning of the array
-arr.unshift(0)   # => [0, 1, 2, 3, 4, 5]
+# Mutating operations change their receiver
+arr.push(6)       # arr => [1, 2, 3, 4, 5, 6]
+arr.pop           # => 6; arr => [1, 2, 3, 4, 5]
+arr.unshift(0)    # arr => [0, 1, 2, 3, 4, 5]
+arr.shift         # => 0; arr => [1, 2, 3, 4, 5]
+arr.insert(2, 99) # arr => [1, 2, 99, 3, 4, 5]
+arr.delete_at(2)  # => 99; arr => [1, 2, 3, 4, 5]
 
-# how to insert an element at the end of the array
-arr.push(6)      # => [0, 1, 2, 3, 4, 5, 6]
+# delete removes every matching value and returns the argument when found
+values = [0, 1, 0, 2]
+values.delete(0) # => 0; values => [1, 2]
 
-# how to insert an element at a specific index
-arr.insert(0, 0) # => [0, 0, 1, 2, 3, 4, 5]
+# delete_if removes values matching the block
+numbers = [1, 2, 3, 4, 5]
+numbers.delete_if { |n| n.even? } # numbers => [1, 3, 5]
 
-# how to remove an element at a specific index
-arr.delete_at(0) # => [0, 1, 2, 3, 4, 5]
-
-# how to remove an element at a specific **value**
-arr.delete(0) # => [1, 2, 3, 4, 5]
-
-# how to remove all elements from the array that satisfy the condition
-arr.delete_if { |n| n.even? } # => [1, 3, 5]  # Removes all elements that satisfy the condition
-
-# how to remove all elements from the array
-arr.clear # => []
-
-# how to remove the first element from the array and return the removed element
-arr.shift # => [0]  # Removes the first element from the array and returns it
-
-# how to insert an element at the beginning of the array
-arr.unshift(-1) # => [0, 0, 1, 2, 3, 4, 5]
-arr.unshift("a" , "b") # => ["a", "b", 0, 0, 1, 2, 3, 4, 5]
-
-# how to remove the last element from the array and return the removed element
-arr.pop # => [5]  # Removes the last element from the array and returns it
+# clear removes all values
+numbers.clear # numbers => []
 ```
 
 ### Hash Methods
@@ -326,7 +314,7 @@ numbers.inject(0) { |result, element| result + element }  # => 15  # More explic
                                # - Second parameter is always the current element
 
 # Sort
-numbers.sort                    # => [1, 2, 3, 4, 5]  # Sorts numbers in ascending order (they are sorted already... but you get the point)
+numbers.sort                    # => [1, 2, 3, 4, 5]  # Returns ascending order
 numbers.sort.reverse            # => [5, 4, 3, 2, 1]  # Sorts numbers in descending order
 
 # Reverse
@@ -340,4 +328,4 @@ numbers.any? { |n| n > 3 }     # => true  # Returns true because at least one nu
 numbers.all? { |n| n < 6 }     # => true  # Returns true because every number (1,2,3,4,5) is less than 6
 ```
 
-Cheers! 🍺
+Use `ruby -c file.rb` for a syntax check and run examples with the same Ruby version used by the project. For API details, consult the documentation for that exact release because core methods and keyword behavior can evolve across major versions.

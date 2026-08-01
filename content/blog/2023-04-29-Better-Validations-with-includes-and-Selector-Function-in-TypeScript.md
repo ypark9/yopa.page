@@ -1,12 +1,16 @@
 ---
 title: Better Validations with includes and Selector Function in TypeScript
 date: 2023-04-29T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Better Validations with includes and Selector Function"
 categories:
   - TypeScript
 tags:
-  - Includes and Selector
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 As a developer, ensuring that your code is robust and free from errors is crucial. One way to achieve this is through proper validation of data inputs. TypeScript provides many tools for type checking and validation, and in this article, we will explore how to use the `includes` method and `selector` function for better validations.
@@ -54,5 +58,3 @@ function validateEmails(people: Person[]): boolean {
 ```
 
 In this example, we have a `getEmail` function that takes in a `Person` object and returns the `email` property. We then use every to check that every `Person` object in the array has a valid email address.
-
-Cheers! 🍺

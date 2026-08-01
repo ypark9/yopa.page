@@ -1,19 +1,22 @@
 ---
 title: Understanding Constructor Injection in Dependency Injection - A Comprehensive Guide
 date: 2023-03-25T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Do you know about Construction Injection in Dependency Injection?"
 categories:
   - Programming
   - Dependency Injection
 tags:
-  - Construction Injection
+  - Dependency Injection
+  - Design Patterns
+  - Software Design
 ---
 
-# Construction Injection in Dependency Injection – No Hard Hats Required!
+# Constructor Injection in Dependency Injection
 
-Welcome to the construction site, where we're not building a new housing development but instead, we're working on some code.
-Let's talk about construction injection - it might not involve hard hats, but it's still the most recommended and important concept in dependency injection.
+Constructor injection supplies required dependencies when an object is created. It is a useful default because a successfully constructed instance has everything it needs to operate.
 
 Let's say we have a simple example of a `Computer` class that depends on another class, `CPU`. We can use construction injection to provide the `CPU` class to the `Computer` constructor like so:
 
@@ -40,5 +43,3 @@ const computer: Computer = new Computer(amd_cpu);
 
 With construction injection, our Computer class is no longer responsible for creating its own dependencies.
 Instead, it's provided with everything it needs to work correctly.
-
-P.S. Sure, because we all love injecting methods into our code without a second thought, right? But seriously, do you happen to know about `Method Injection`? ;-) cheeers. 🍺

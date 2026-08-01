@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from io import StringIO
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).parents[1]
@@ -34,7 +35,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
     def tearDownClass(cls):
         shutil.rmtree(cls.output_dir)
 
-    def hugo_paths(self, state):
+    def hugo_rows(self, state):
         result = subprocess.run(
             ["hugo", "list", state],
             cwd=ROOT,
@@ -42,16 +43,29 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        return {row["path"] for row in csv.DictReader(StringIO(result.stdout)) if row["section"] == "blog"}
+        return list(csv.DictReader(StringIO(result.stdout)))
+
+    def hugo_paths(self, state):
+        return {row["path"] for row in self.hugo_rows(state) if row["section"] == "blog"}
+
+    def visible_blog_rows(self):
+        unpublished = self.hugo_paths("future") | self.hugo_paths("drafts") | self.hugo_paths("expired")
+        rows = []
+        for row in self.hugo_rows("all"):
+            if row["section"] != "blog" or row["kind"] != "page" or row["path"] in unpublished:
+                continue
+            source = (ROOT / row["path"]).read_text()
+            if "maintenance_status: archived" in source:
+                continue
+            rows.append(row)
+        return rows
 
     def test_payload_contains_every_published_article(self):
-        source_paths = {str(path.relative_to(ROOT)) for path in (ROOT / "content" / "blog").glob("*.md")}
-        unpublished = self.hugo_paths("future") | self.hugo_paths("drafts") | self.hugo_paths("expired")
-        expected_count = len(source_paths - unpublished)
-        urls = [post["url"] for post in self.posts]
+        expected_urls = {urlsplit(row["permalink"]).path for row in self.visible_blog_rows()}
+        urls = {post["url"] for post in self.posts}
 
-        self.assertEqual(len(self.posts), expected_count)
-        self.assertEqual(len(urls), len(set(urls)))
+        self.assertEqual(urls, expected_urls)
+        self.assertEqual(len(self.posts), len(urls))
         self.assertEqual({post["language"] for post in self.posts}, {"en", "ko"})
 
     def test_related_urls_are_valid_and_never_self_links(self):
@@ -63,13 +77,61 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             for field in ("categories", "tags", "series", "language"):
                 self.assertIn(field, post)
 
+    def test_article_header_distinguishes_publication_and_update_dates(self):
+        updated = (
+            self.output_dir
+            / "blog"
+            / "2023-03-26-method-injection-in-dependency-injection.html"
+        ).read_text()
+        new_article = (
+            self.output_dir
+            / "blog"
+            / "2026-08-01-python-project-environments.html"
+        ).read_text()
+
+        self.assertIn("Published", updated)
+        self.assertIn("Updated", updated)
+        self.assertIn('datetime=2023-03-26', updated)
+        self.assertIn('datetime=2026-08-01', updated)
+        self.assertIn("Published", new_article)
+        self.assertNotIn("Updated", new_article)
+
+    def test_tag_taxonomy_keeps_the_atlas_graph_connected(self):
+        by_url = {post["url"]: post for post in self.posts}
+        connected = [post for post in self.posts if post["related"]]
+        edges = [
+            (post, by_url[url])
+            for post in self.posts
+            for url in post["related"]
+        ]
+        tag_supported_edges = [
+            (source, target)
+            for source, target in edges
+            if set(source["tags"]) & set(target["tags"])
+        ]
+
+        self.assertGreaterEqual(len(connected) / len(self.posts), 0.90)
+        self.assertTrue(edges)
+        self.assertGreaterEqual(len(tag_supported_edges) / len(edges), 0.95)
+
     def test_series_relations_take_priority(self):
         by_url = {post["url"]: post for post in self.posts}
         series_posts = [post for post in self.posts if post["series"] == "AWS re:Invent 2025"]
-        self.assertEqual(len(series_posts), 10)
+        expected_series_urls = {
+            urlsplit(row["permalink"]).path
+            for row in self.visible_blog_rows()
+            if "series: AWS re:Invent 2025" in (ROOT / row["path"]).read_text()
+        }
+        self.assertEqual({post["url"] for post in series_posts}, expected_series_urls)
+        self.assertTrue(series_posts)
+        expected_series_relations = min(3, len(series_posts) - 1)
         for post in series_posts:
             self.assertTrue(post["related"])
-            self.assertTrue(all(by_url[url]["series"] == post["series"] for url in post["related"]))
+            same_series = [
+                url for url in post["related"] if by_url[url]["series"] == post["series"]
+            ]
+            self.assertEqual(len(same_series), expected_series_relations)
+            self.assertEqual(post["related"][:expected_series_relations], same_series)
 
     def test_sparse_articles_receive_region_backbone_trails(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()

@@ -82,6 +82,29 @@ def validate_frontmatter(file_path):
         except ValueError:
             errors.append(f"Invalid date format: '{date_str}'. Expected ISO 8601 (e.g., YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS+HH:MM)")
 
+    # Archived articles stay accessible but must explain why they are outdated
+    # and point readers to both maintained language versions.
+    if data.get('maintenance_status') == 'archived':
+        for field in ['reviewed_at', 'archive_reason', 'replacement_url_en', 'replacement_url_ko']:
+            if not data.get(field):
+                errors.append(f"Archived article is missing required field: '{field}'")
+        replacement_patterns = {
+            'replacement_url_en': r'^/blog/[^/]+\.html$',
+            'replacement_url_ko': r'^/ko/blog/[^/]+\.html$',
+        }
+        for field, pattern in replacement_patterns.items():
+            if data.get(field) and not re.match(pattern, str(data[field])):
+                errors.append(
+                    f"Archived article field '{field}' must be a root-relative Hugo ugly URL ending in .html"
+                )
+
+    for field in ['lastmod', 'reviewed_at']:
+        if field in data and data[field]:
+            try:
+                datetime.fromisoformat(str(data[field]))
+            except ValueError:
+                errors.append(f"Invalid {field} format: '{data[field]}'. Expected ISO 8601")
+
     return errors
 
 def main():

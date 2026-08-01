@@ -1,6 +1,11 @@
 ---
 title: "The AgentCore Ecosystem: Runtime, Identity, Gateway, Memory, and Observability"
 date: 2025-12-15
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "Several illustrative snippets are not current service APIs and the article blurs AgentCore control-plane, runtime, identity, gateway, memory, tools, and observability responsibilities."
+replacement_url_en: "/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html"
+replacement_url_ko: "/ko/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A comprehensive overview of the AgentCore ecosystem: Runtime, Identity, Gateway, Memory, and Observability."
@@ -9,9 +14,11 @@ categories:
   - Enterprise Architecture
   - AgentCore
 tags:
-  - Bedrock AgentCore
-  - Observability
+  - Amazon Bedrock AgentCore
+  - AI Agents
   - Security
+  - Observability
+  - AWS Architecture
 ---
 
 AWS Bedrock AgentCore is the "Infrastructure-as-Code" layer for AI agents. It wraps your raw python code with enterprise-grade security and scaling, effectively moving AI Agents from "Laptop Experiments" to "Enterprise Production".

@@ -1,15 +1,19 @@
 ---
 title: Retreive GitHub Pull Requests Code
 date: 2023-06-20T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "How to efficiently retrieve and check out code from GitHub Pull Requests locally."
 categories:
   - GitHub
 tags:
-  - Pull-Requests
+  - Git
+  - GitHub
+  - CLI
 ---
 
-When collaborating on a shared repository, it's typical to review pull requests (PRs) made by other contributors. While it's possible to view these PRs through the GitHub web interface, there's an often-overlooked alternative that provides a more thorough review process - reviewing them directly from your local machine via the command line. 
+When collaborating on a shared repository, it's typical to review pull requests (PRs) made by other contributors. While it's possible to view these PRs through the GitHub web interface, there's an often-overlooked alternative that provides a more thorough review process - reviewing them directly from your local machine via the command line.
 
 ## The Advantages of Local Review
 
@@ -58,5 +62,3 @@ After a thorough assessment, you're now ready to provide constructive feedback, 
 ## Conclusion
 
 Although the GitHub web interface is a convenient tool for reviewing PRs, checking them out locally allows for a more comprehensive review process. By fetching and running the changes proposed in a pull request on your machine, you can deliver higher quality feedback and help ensure the stability and efficiency of your shared codebase. After your review, remember to switch back to your original branch and clean up the PR branches to keep your local repo organized.
-
-Cheers! 🍺

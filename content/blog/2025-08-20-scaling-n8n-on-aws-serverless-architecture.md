@@ -1,6 +1,11 @@
 ---
 title: Deploy n8n on AWS Step by Step
 date: 2025-08-20
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The claimed enterprise architecture uses mutable latest images, a single main task, incomplete queue-mode roles, and no safe upgrade, backup, restore, or rollback design."
+replacement_url_en: "/blog/2026-08-01-run-n8n-queue-mode-on-aws-ecs.html"
+replacement_url_ko: "/ko/blog/2026-08-01-run-n8n-queue-mode-on-aws-ecs.html"
 author: Yoonsoo Park
 description: "A technical guide to deploying n8n on AWS using CDK, Fargate, and Aurora Serverless."
 categories:
@@ -9,11 +14,12 @@ categories:
   - Serverless
   - DevOps
 tags:
-  - CDK
-  - Fargate
-  - Aurora
   - n8n
-  - Automation
+  - Amazon ECS
+  - Queue Mode
+  - Amazon RDS
+  - Amazon ElastiCache
+  - Security
 ---
 
 Deploying n8n for personal automation is often as simple as running a Docker container on a VPS. However, when deploying n8n for enterprise use—where reliability, security, and scalability are non-negotiable—a robust cloud architecture is required. The official doc suggests to use EKS with K8s but if you are looking for a more cost-effective solution, you can use ECS Fargate. (plus you also want to avoid the complexity of managing a Kubernetes cluster)
@@ -339,4 +345,3 @@ To replicate this setup:
 5.  **Push to Release:** Commit your application code and push to the `release` branch. The pipeline will pick up the changes, build the containers, and deploy the Data and Compute stacks to your QA environment automatically.
 
 By following this architecture, you move away from a weak single-server instance to a scalable and secure automation platform capable of handling enterprise workloads.
-

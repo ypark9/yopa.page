@@ -1,12 +1,19 @@
 ---
-title: How to Delete Unwanted Files from a Pull Request 
+title: How to Delete Unwanted Files from a Pull Request
 date: 2023-06-19T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The workflow conflates unstaging, restoring, and removing already-committed files, and includes destructive commands that can discard unrelated work."
+replacement_url_en: "/blog/2026-08-01-remove-unwanted-files-from-a-pull-request.html"
+replacement_url_ko: "/ko/blog/2026-08-01-remove-unwanted-files-from-a-pull-request.html"
 author: Yoonsoo Park
 description: "Learn how to clean up your Pull Requests by removing unwanted files using Git commands."
 categories:
   - Git
 tags:
-  - Pull-Request
+  - Git
+  - GitHub
+  - CLI
 ---
 
 Sometimes, while working on a project and preparing to create a Pull Request (PR), you might realize that there are certain files you accidentally staged for commit. These could be files that don't contribute to the PR's purpose, such as temporary logs, unrequired backups, or any file that you didn't intend to change.
@@ -53,10 +60,7 @@ This will open a text editor (typically VI/VIM) for you to enter a commit messag
 
 If there are other unstaged changes in your repository, you might want to discard those too. You can achieve this by running one of the following commands:
 
-```bash
-git checkout -- . # Discard unstaged changes, but keep untracked files
-git reset --hard @ # Discard all changes including untracked files
-```
+> Safety note added in 2026: do not use the commands previously shown here as a general cleanup step. They can discard unrelated tracked changes, and `git reset --hard` does not remove untracked files. Use the replacement guide to identify the file's state and preview the exact change first.
 
 Choose the command that suits your situation.
 

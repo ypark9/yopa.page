@@ -1,16 +1,23 @@
 ---
 title: Passing Command-Line Arguments to a TypeScript Script using NPM
 date: 2023-08-18T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "A step-by-step guide on passing command-line arguments to a TypeScript script using npm run."
 categories:
     - TypeScript Development
 tags:
-    - TypeScript
-    - npm
-    - CLI
-    - Development
+  - TypeScript
+  - Node.js
+  - npm
+  - CLI
+  - Input Validation
 ---
+
+## Argument boundary and validation
+
+`npm run script -- arg1 arg2` remains the portable argument boundary. Use the project-pinned TypeScript runner or compiled JavaScript, validate `process.argv` with a maintained parser for nontrivial CLIs, and return a nonzero exit code for invalid input.
 
 ## Introduction
 
@@ -68,5 +75,3 @@ For more advanced command-line argument parsing, consider using libraries like `
 ## Conclusion
 
 Passing command-line arguments to your TypeScript scripts via `npm run` can greatly enhance their flexibility. Whether you're looking to provide different configurations, paths, or any other kind of data, this method can simplify and streamline your development process.
-
-Cheers! 🍺

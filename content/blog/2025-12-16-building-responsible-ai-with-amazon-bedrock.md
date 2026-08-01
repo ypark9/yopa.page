@@ -1,72 +1,90 @@
 ---
-title: Building Responsible AI with Amazon Bedrock
+title: Validate Policy Claims with Amazon Bedrock Automated Reasoning Checks
 date: 2025-12-16
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 series: AWS re:Invent 2025
-description: "How to use Amazon Bedrock Guardrails and Automated Reasoning to enforce strict business policies on your AI agents."
+description: "Use Bedrock Guardrails Automated Reasoning with versioned policies, claim findings, ambiguity handling, evaluation, and application authorization."
 categories:
   - Responsible AI
   - AWS Bedrock
   - Compliance
 tags:
+  - Amazon Bedrock
   - Guardrails
   - Automated Reasoning
-  - Safety
+  - Responsible AI
+  - Security
 ---
 
-The biggest barrier to Enterprise AI adoption is trust. "How do I know the bot won't promise a refund we can't give?"
+Amazon Bedrock Automated Reasoning checks can validate whether translated claims logically follow from a formalized policy. The solver is deterministic for the formal problem it receives. The overall system is not: natural-language policy translation can be incomplete or ambiguous, input may be out of scope, and a valid claim can still be unsafe for reasons the policy does not encode.
 
-Standard "Prompt Engineering" (e.g., "Please don't lie") is probabilistic and fails. **Amazon Bedrock Guardrails** introduces a deterministic layer: **Automated Reasoning**.
+Use Automated Reasoning as one policy-verification layer, not as universal authorization or a guarantee that an answer is true.
 
-## The Hybrid Approach
+## Build and version the policy
 
-This system combines two types of AI:
-1.  **Neural (The Translator):** Reads your policy ("Refunds < 30 days only") and converts it to math.
-2.  **Symbolic (The Judge):** Uses a logic solver to mathematically prove if the model's answer violates the rule.
+Create a focused policy from authoritative source documents. Review extracted variables, types, and rules with domain owners. Test contradictory, boundary, missing-information, and out-of-domain examples. Keep unrelated domains in separate policies.
 
-For the rules it can encode, this gives you **deterministic, verifiable** policy enforcement, rather than the statistical guess of an LLM.
+The working `DRAFT` changes during development. Publish an immutable numbered policy and guardrail version for production so an edit cannot silently change deployed behavior. Record source-document version, reviewer, tests, and release date.
 
-## Implementation: The `apply_guardrail` API
+## Validate with `ApplyGuardrail`
 
-You decouple generation from validation. The Guardrail acts as a firewall *after* the model output but *before* the user sees it.
+`ApplyGuardrail` is the recommended standalone API when the application controls generation and validation separately. Provide at least one claim block. Include the user query as context when the policy decision depends on stated conditions.
 
 ```python
 import boto3
 
-bedrock_runtime = boto3.client('bedrock-runtime', region_name='us-east-1')
-
-def check_safety(model_response):
-    response = bedrock_runtime.apply_guardrail(
-        guardrailIdentifier='GUARDRAIL_ID',
-        guardrailVersion='DRAFT',
-        source='OUTPUT', 
-        content=[{
-            'text': {
-                'text': model_response,
-                'qualifiers': ['guard_content']
-            }
-        }]
-    )
-    
-    action = response['action']
-    
-    if action == 'GUARDRAIL_INTERVENED':
-        print("VIOLATION: The response was blocked by policy.")
-        return False
-    
-    return True
+client = boto3.client("bedrock-runtime", region_name="us-east-1")
+response = client.apply_guardrail(
+    guardrailIdentifier="guardrail-id",
+    guardrailVersion="3",
+    source="OUTPUT",
+    content=[
+        {"text": {"text": "User: I bought it 45 days ago.", "qualifiers": ["query"]}},
+        {"text": {"text": "Assistant: You qualify for a refund.", "qualifiers": ["guard_content"]}},
+    ],
+)
 ```
 
-## The 5 Layers of Protection
+Do not only check `response["action"]`. Inspect `assessments[].automatedReasoningPolicy.findings`. A finding can be valid, invalid, satisfiable, impossible, translation-ambiguous, too complex, or have no translations. Only `invalid` directly establishes contradiction under the translated policy. Ambiguous or missing translations should trigger clarification, safe fallback, or human review—not approval.
 
-Guardrails aren't just for "toxicity." They cover:
+Use a numbered version in production, not `DRAFT`. Confirm Automated Reasoning actually ran by monitoring assessment and usage data; a mis-tagged `Converse` request can succeed without performing the intended check.
 
-1.  **Denied Topics:** "Do not give financial advice."
-2.  **Content Filters:** Hate speech, violence.
-3.  **Word Filters:** Competitor names, profanity.
-4.  **Sensitive Information:** Auto-redact PII (SSN, Email).
-5.  **Automated Reasoning:** Logical business rule violations.
+## Enforcement flow
 
-## Conclusion
+1. Authenticate and authorize the user's requested action in application code.
+2. Retrieve the applicable versioned policy and required factual inputs from trusted systems.
+3. Generate or receive a proposed claim/action.
+4. Run Automated Reasoning and interpret all findings.
+5. Block invalid results; clarify satisfiable/ambiguous cases; escalate complex/no-translation cases.
+6. Re-check mutable business data immediately before execution.
+7. Record policy version, non-sensitive inputs, findings, decision, actor, and request ID.
 
-By moving safety checks out of the prompt and into the infrastructure, you gain **explainability**. When a response is blocked, the API tells you exactly *which* policy line was violated, enabling auditing for compliance teams.
+Guardrails do not grant refunds, approve loans, or authorize records. The transactional service must enforce identity, permissions, limits, state, idempotency, and audit.
+
+## Other guardrail layers
+
+Denied topics, content and word filters, sensitive-information filters, and contextual grounding checks solve different problems. Apply the smallest relevant set and understand qualifiers. Contextual grounding evaluates support/relevance against supplied source and query; it is not the same as formal policy entailment.
+
+## Evaluation and operations
+
+Maintain golden policy cases, adversarial paraphrases, omitted facts, conflicting premises, out-of-domain requests, multilingual inputs, and policy-version regression tests. Measure false allow, false block, ambiguous/no-translation rate, latency, cost, and human escalation. Sample production decisions under privacy controls and provide a kill switch or conservative fallback.
+
+## Migration checklist
+
+- Replace deterministic-safety claims with a bounded policy-check description.
+- Review the translated formal policy with domain experts.
+- Publish and pin numbered versions.
+- Inspect findings, not only intervention action.
+- Add explicit handling for every finding type.
+- Keep authorization and transaction controls outside the model/guardrail.
+- Add regression evaluation, monitoring, audit, and rollback to the prior policy version.
+
+Verified on **2026-08-01**.
+
+## Primary sources
+
+- [Integrate Automated Reasoning checks](https://docs.aws.amazon.com/bedrock/latest/userguide/integrate-automated-reasoning-checks.html)
+- [Automated Reasoning concepts](https://docs.aws.amazon.com/bedrock/latest/userguide/automated-reasoning-checks-concepts.html)
+- [Contextual grounding checks](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html)

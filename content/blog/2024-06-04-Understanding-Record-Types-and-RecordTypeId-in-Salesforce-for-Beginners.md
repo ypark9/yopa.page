@@ -1,14 +1,19 @@
 ---
 title: Understanding Record Types and RecordTypeId in Salesforce for Beginners
 date: 2024-06-04
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The example confuses individual Accounts with Person Accounts and relies on hard-coded RecordTypeIds."
+replacement_url_en: "/blog/2026-08-01-salesforce-record-types-without-hard-coded-ids.html"
+replacement_url_ko: "/ko/blog/2026-08-01-salesforce-record-types-without-hard-coded-ids.html"
 author: Yoonsoo Park
 description: "A beginner's guide to using Record Types and RecordTypeId in Salesforce, including detailed real-life examples."
 categories:
   - Salesforce
 tags:
-  - Salesforce Basics
-  - Data Management
-  - Salesforce Configuration
+  - Salesforce
+  - Record Types
+  - Data Migration
 ---
 
 In the ecosystem of Salesforce, understanding how to use `RecordType` and `RecordTypeId` is key for customizing and managing your CRM to meet the business needs. This article provides a beginner-friendly explanation of these concepts, along with a real-life example to illustrate their practical application.

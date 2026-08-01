@@ -2,16 +2,19 @@
 title: Solving SSH Connection Issues on macOS - A Guide to Fixing 'Unprotected Private Key File' Error
 title-with-dash: Solving-SSH-Connection-Issues-on-macOS-A-Guide-to-Fixing-Unprotected-Private-Key-File-Error
 date: 2023-11-28T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Learn how to resolve the 'Unprotected Private Key File' error on macOS when connecting to an EC2 instance via SSH."
 categories:
     - Development
     - Troubleshooting
 tags:
-    - SSH
-    - AWS EC2
-    - macOS
-    - Security
+  - CLI
+  - Shell
+  - macOS
+  - SSH
+  - Security
 ---
 
 # Solving SSH Connection Issues on macOS: A Guide to Fixing 'Unprotected Private Key File' Error
@@ -70,5 +73,3 @@ ssh -i /path/to/ec2-demo.pem ec2-user@3.8x.6x.1xx
 ```
 
 Replace `/path/to/` with the actual path to your `.pem` file.
-
-Cheers! 🍺

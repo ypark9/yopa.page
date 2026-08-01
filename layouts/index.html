@@ -27,6 +27,7 @@
 </div>
 
 {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
+{{ $pages = where $pages "Params.maintenance_status" "ne" "archived" }}
 {{ $projects := where .Site.RegularPages "Section" "projects" }}
 {{ $pages = .Paginate ($pages) }}
 {{ $archivesPage := first 1 (where .Site.RegularPages "Layout" "eq" "archives") }}

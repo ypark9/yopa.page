@@ -36,9 +36,9 @@ related:
     - name: series
       weight: 500
     - name: categories
-      weight: 70
+      weight: 35
     - name: tags
-      weight: 40
+      weight: 80
     - name: date
       weight: 5
       pattern: "2006"

@@ -1,13 +1,16 @@
 ---
 title: Partially Applied Types with Type Currying TypeScript
 date: 2023-05-06T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Partially Applied Types with Type Currying"
 categories:
   - TypeScript
 tags:
-  - Type Currying
-  - Partially Applied Types
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 Type Currying is a technique used in functional programming that allows us to transform a function with multiple arguments into a series of functions that take a single argument. This makes the functions more flexible and easier to compose.
@@ -72,5 +75,3 @@ const result: SuccessResult<number> = { kind: 'success', value: 42 };
 ```
 
 In this new type, we have partially applied the second type parameter `E` with the `never` type, which means we don't care about the error case. This new type can be used in place of the original `Result` type wherever we only care about the successful case.
-
-Cheers! 🍺

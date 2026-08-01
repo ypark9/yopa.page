@@ -1,19 +1,22 @@
 ---
 title: Understanding Inversion of Control (IoC) in Software Development - Definition and Benefits
 date: 2023-03-28T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "It's all about turning things upside down and making your code work for you instead of the other way around."
 categories:
   - Programming
   - Architecture
 tags:
-  - Inversion of Control (IoC)
-  - Design Pattern
+  - Dependency Injection
+  - Design Patterns
+  - Software Design
 ---
 
 ## Inversion of Control (IoC)
 
-Oh boy, Inversion of Control (IoC) - it's like the superhero of programming concepts! It's all about turning things upside down and making your code work for you instead of the other way around.
+Inversion of Control (IoC) moves responsibility for orchestration or dependency creation outside the component doing the work.
 
 ## Think about it like this
 
@@ -76,10 +79,8 @@ This gives us more control over how our dependencies are managed and makes our c
 
 1. Complexity: IoC can be like a Rubik's cube - fun to play with at first, but frustrating when you can't figure out how to solve it. And unlike a Rubik's cube, there's no guidebook for IoC that tells you exactly what to do.
 
-2. Performance: If your application is slow, blame it on IoC! It's like having a friend who always takes forever to make a decision and slows down the group. Except in this case, it's your dependencies that are causing the hold-up.
+2. Performance: container startup, reflection, or a large dependency graph can add measurable overhead. Profile the real application before treating IoC as the cause.
 
 3. Configuration: Setting up IoC can feel like trying to assemble IKEA furniture without instructions. You're not sure which pieces go where, and by the time you're done, you have a few extra screws left over.
 
 4. Learning curve: IoC can be like learning a new language - at first, everything sounds like gibberish. But with practice, you start to understand the syntax and grammar, and before you know it, you're speaking fluently.
-
-P.S. IoC can be a powerful tool when used correctly. But it's important to be aware of its weaknesses so you can avoid common pitfalls and make the most of this approach. Cheer! 🍺

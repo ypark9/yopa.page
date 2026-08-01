@@ -1,18 +1,26 @@
 ---
 title: Walking the Directory and Creating a TreeNode
 date: 2023-05-24T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Walking the Directory and Creating a TreeNode in Node.js"
 categories:
   - Node.js
 tags:
-  - Directory Traversal
+  - Node.js
+  - TypeScript
+  - File System
 ---
+
+## A non-blocking traversal for new code
+
+For new code, prefer `fs.promises.readdir(path, { withFileTypes: true })` so traversal does not block the event loop or call `stat` for every entry. Decide explicitly how to handle symbolic links, permission errors, cycles, and paths that disappear during traversal.
 
 
 # Walking the Directory and Creating a TreeNode in Node.js
 
-In this article, we will be exploring how to navigate or walk through a file directory in Node.js, creating a `TreeNode` for each file or subdirectory we encounter. This will involve using Node's built-in `fs` (file system) and `path` modules, as well as the `crypto` module for hashing file contents. 
+In this article, we will be exploring how to navigate or walk through a file directory in Node.js, creating a `TreeNode` for each file or subdirectory we encounter. This will involve using Node's built-in `fs` (file system) and `path` modules, as well as the `crypto` module for hashing file contents.
 
 First, let's begin by creating an `interface` for our file metadata:
 
@@ -52,33 +60,40 @@ The `TreeNode` class represents a node in our tree structure. Each node contains
 We'll need a method to hash a file's content. For this, we use Node.js's built-in `crypto` module:
 
 ```typescript
-function hashFile(file: string): string {
-    const fileBuffer = fs.readFileSync(file);
+async function hashFile(file: string): Promise<string> {
+    const fileBuffer = await fs.promises.readFile(file);
     const hashSum = crypto.createHash('sha256');
     hashSum.update(fileBuffer);
     return hashSum.digest('hex');
 }
 ```
 
-The `hashFile` function reads a file synchronously into a buffer, then uses `crypto.createHash` to create a SHA-256 hash, which is updated with the file content buffer. The digest is then returned as a hexadecimal string.
+The `hashFile` function reads a file without blocking the event loop, then computes a SHA-256 digest. For very large files, use a stream instead of buffering the entire file.
 
 Finally, we create the `walkDir` function:
 
 ```typescript
-function walkDir(dir: string): TreeNode {
-    const dirent = fs.lstatSync(dir);
-    if (dirent.isDirectory()) {
-        const children = fs.readdirSync(dir).map(name => walkDir(path.join(dir, name)));
-        return new TreeNode({ path: dir, isDirectory: true }, children);
-    } else {
-        return new TreeNode({ path: dir, isDirectory: false, hash: hashFile(dir) });
+async function walkDir(currentPath: string): Promise<TreeNode> {
+    const stat = await fs.promises.lstat(currentPath);
+    if (stat.isSymbolicLink()) {
+        throw new Error(`Symbolic links are not followed: ${currentPath}`);
     }
+    if (!stat.isDirectory()) {
+        return new TreeNode({
+            path: currentPath,
+            isDirectory: false,
+            hash: await hashFile(currentPath),
+        });
+    }
+
+    const entries = await fs.promises.readdir(currentPath, { withFileTypes: true });
+    const children = await Promise.all(
+        entries.map(entry => walkDir(path.join(currentPath, entry.name)))
+    );
+    return new TreeNode({ path: currentPath, isDirectory: true }, children);
 }
 ```
 
-The `walkDir` function synchronously gets the status of the input directory (`dir`). If it's a directory, it reads the directory's contents and recursively walks each entry, creating a `TreeNode` for each one. If the input `dir` is a file, it creates a `TreeNode` for the file, computing and storing the file's hash.
+The traversal rejects symbolic links instead of following them outside the requested tree or entering a cycle. Decide whether permission and disappearance errors should stop the walk or be represented in the result. `Promise.all` can open too many files in a very large tree, so production crawlers should add a concurrency limit.
 
-With the use of these Node.js methods and our defined `TreeNode` class, we can efficiently traverse a file directory, create a tree-like structure for it, and obtain the hash of each file. This is particularly useful when you need to track the state of files in a directory, for example in a version control system.
-
-
-Cheers! 🍺
+This produces a useful tree for a controlled directory. It is not a replacement for a version-control object model: files can change during the walk, metadata is platform-dependent, and a stable snapshot requires additional consistency rules.

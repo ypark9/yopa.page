@@ -1,15 +1,19 @@
 ---
 title: Log Out (Unlink) the Scratch Org from the Project in Salesforce using SFDX
 date: 2023-05-10T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Log out (unlink) the Scratch org from the project in Salesforce"
 categories:
   - Salesforce
 tags:
-  - sfdx
+  - Salesforce CLI
+  - Scratch Orgs
+  - OAuth
 ---
 
- Once the work in the Scratch Org is completed, it is essential to log out (unlink) the Scratch Org from the project. This ensures that you can easily create and authorize new Scratch Orgs without any conflicts. In this article, we will discuss how to log out a Scratch Org from the project using the Salesforce CLI and the `force:auth:logout` command.
+Logging out and deleting a scratch org are different operations. Logging out removes local authorization. Deleting a scratch org disposes of the remote org through its Dev Hub. Choose the operation that matches your intent.
 
 ## Prerequisites
 Before proceeding, make sure that you have the following:
@@ -18,22 +22,18 @@ Before proceeding, make sure that you have the following:
 - A Salesforce DX project connected to your Dev Hub org
 - At least one Scratch Org created and authorized for the project
 
-## Logging Out (Unlinking) a Scratch Org from the Project
-To log out a Scratch Org from the project, open a terminal or command prompt and navigate to the root directory of your Salesforce DX project. Then, run the following command:
+## Remove local authorization
 
 ```
-sfdx force:auth:logout -u <Scratch Org Username> 
+sf org logout --target-org my-scratch
 ```
 
-This command uses the `force:auth:logout` command to log out (unlink) the specified Scratch Org from the project. Here's what the parameter does:
-
-- -u: Specifies the username of the Scratch Org you want to log out
-For example, if you have a Scratch Org with the username `test-scratch-org`, you would run the following command:
+Then verify the local authorization list:
 
 ```
-sfdx force:auth:logout -u test-scratch-org
+sf org list auth
 ```
 
-This will log out the specified Scratch Org from the project. You can verify that the Scratch Org is no longer linked to the project by running the `sfdx force:org:list` command.
+This does not delete the scratch org. If the project still targets that alias, select another with `sf config set target-org=another-org`.
 
-Cheers! 🍺
+To dispose of the org, first verify its ID with `sf org display --target-org my-scratch`, then run `sf org delete scratch --target-org my-scratch`. Keep the confirmation prompt for interactive work. Reviewed against the [Salesforce CLI org reference](https://developer.salesforce.com/docs/platform/salesforce-cli-reference/guide/cli_reference_org.html) on 2026-08-01.

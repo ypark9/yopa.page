@@ -1,6 +1,8 @@
 ---
-title: How to Remove Inaccessible Scratch Orgs from Your Local SFDX Configuration
+title: How to Clean Up Inaccessible Scratch Org Authorizations
 date: 2023-09-12T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Learn how to remove inaccessible or problematic scratch orgs from your local Salesforce DX configuration."
 categories:
@@ -8,18 +10,18 @@ categories:
     - Development
     - Troubleshooting
 tags:
-    - Salesforce DX
-    - Scratch Orgs
-    - SFDX
+  - Salesforce CLI
+  - Scratch Orgs
+  - OAuth
 ---
 
 ## Introduction
 
-If you're working with Salesforce DX, you're probably already familiar with the concept of Scratch Orgs. These are temporary Salesforce orgs where you can do your development and testing. But what happens when a scratch org that you're done with still shows up in your local list, and attempts to remove it result in errors? This article aims to tackle precisely this issue.
+An expired or already-deleted scratch org can leave a stale local authorization. Use supported CLI commands to diagnose and remove it; don't edit Salesforce CLI's internal files by hand.
 
 ## Identifying the Problem
 
-You run `sfdx force:org:list` and notice an org that you no longer need. When you try to remove it using `sfdx force:org:delete`, you get an error message like `DomainNotFoundError` or "The org cannot be found". These issues often occur when the scratch org has already been deleted on the Salesforce side but still exists in your local SFDX configuration.
+Start with `sf org list auth` and `sf org display --target-org <alias>`. If display fails because the remote org no longer exists, remove only the local authorization.
 
 **Symptoms:**
 
@@ -32,43 +34,31 @@ You run `sfdx force:org:list` and notice an org that you no longer need. When yo
     ERROR running force:org:delete:  The org cannot be found
     ```
 
-## Solutions
-
-### 1. Directly Remove from Local Configuration
-
-Navigate to the `.sfdx` folder, usually located in your home directory. Inside, you'll find `orgs.json`. Open it and manually remove the entry for the problematic scratch org.
+## Supported cleanup flow
 
 ```bash
-# Navigate to the .sfdx folder in your home directory
-cd ~/.sfdx
-
-# Open the orgs.json file in a text editor and manually remove the entry
+sf org list auth
+sf org logout --target-org stale-alias
 ```
 
-### 2. Use `sfdx force:org:list --clean`
+If the scratch org still exists and you intend to dispose of it, use `sf org delete scratch --target-org <alias>` instead. This updates the Dev Hub as well as local state.
 
-Running this command will clean your local list of orgs, removing any that it can't find on the server.
-
-```bash
-sfdx force:org:list --clean
-```
-
-### 3. Re-authenticate the Org (If Possible)
+### Reauthenticate only when the org still exists
 
 If the org still exists on the Salesforce server, sometimes re-authenticating can resolve these issues.
 
 ```bash
-sfdx force:auth:web:login -r https://test.salesforce.com -a My_Scratch_Org
+sf org login web --instance-url https://test.salesforce.com --alias my-scratch
 ```
 
 After re-authenticating, try to delete the org again.
 
-### 4. Use `sfdx force:config:set`
+### Move the project default
 
 Set another default org to potentially resolve some edge cases.
 
 ```bash
-sfdx force:config:set defaultusername=mynewdefaultorg@example.com
+sf config set target-org=my-new-default
 ```
 
-Cheers! 🍺
+Do not edit `~/.sfdx/orgs.json` or other internal state: storage formats change, and hand edits can corrupt unrelated authorizations. If supported logout fails, run `sf doctor`, preserve its sanitized diagnostics, and use Salesforce CLI support guidance. Reviewed against the [org command reference](https://developer.salesforce.com/docs/platform/salesforce-cli-reference/guide/cli_reference_org.html) on 2026-08-01.

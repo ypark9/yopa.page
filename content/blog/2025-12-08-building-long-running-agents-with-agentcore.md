@@ -1,6 +1,11 @@
 ---
 title: Building Long-Running Agents with AgentCore
 date: 2025-12-08
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The runtime configuration and base image are not current APIs, and an eight-hour runtime instance lifetime is incorrectly presented as durable multi-day job execution."
+replacement_url_en: "/blog/2026-08-01-durable-long-running-jobs-with-agentcore.html"
+replacement_url_ko: "/ko/blog/2026-08-01-durable-long-running-jobs-with-agentcore.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A technical guide to building persistent, long-running AI agents using AWS Bedrock AgentCore. Includes architecture diagrams and configuration steps."
@@ -9,9 +14,12 @@ categories:
   - AI Agents
   - Bedrock
 tags:
-  - AgentCore
-  - Long-running Tasks
-  - Memory Architecture
+  - Amazon Bedrock AgentCore
+  - AI Agents
+  - Durable Workflows
+  - AWS Step Functions
+  - Reliability
+  - Security
 ---
 
 Most AI demos fail in the real world for two reasons: **Amnesia** and **Timeouts**.

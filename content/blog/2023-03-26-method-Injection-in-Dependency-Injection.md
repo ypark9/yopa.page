@@ -1,16 +1,20 @@
 ---
 title: Understanding Method Injection in Dependency Injection - A Guide to Avoid Common Pitfalls
 date: 2023-03-26T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "do you know about Method Injection in Dependency Injection?"
 categories:
   - Programming
   - Dependency Injection
 tags:
-  - Method Injection
+  - Dependency Injection
+  - Design Patterns
+  - Software Design
 ---
 
-## Method Injection in DI: How to Shoot Yourself in the Foot!
+## Method injection and its tradeoffs
 
 Dependency injection (DI) is a powerful technique that allows you to write flexible, scalable code. One of its key features is method injection - the ability to pass dependencies to methods directly rather than through constructor injection.
 
@@ -27,7 +31,7 @@ It can lead to unnecessary object creation. When you inject a dependency into a 
 
 ## What Is A Better Way? ➡️ Constructor Injection
 
-Oh, you want to learn about Constructor Injection? How bold of you! Well, look no further - I have all the juicy details waiting for you on my blog. Ready or not, here comes the knowledge! ;)
+Constructor injection is the usual default when a dependency is required for every valid instance.
 
 However, there are cases where method injection still makes sense. For example, if you have a single method that requires a specific dependency, it may be more appropriate to inject that dependency directly.
 
@@ -47,5 +51,3 @@ class UserService {
 ```
 
 Notice that we also inject a logger dependency into the constructor using the more traditional constructor injection.
-
-P.S. when it comes to DI, method injection is like a gun - it can be quite dangerous if not handled carefully. ;-) cheeers. 🍺

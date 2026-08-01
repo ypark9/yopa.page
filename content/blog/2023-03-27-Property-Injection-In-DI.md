@@ -1,13 +1,17 @@
 ---
 title: Injecting Properties Using Dependency Injection
 date: 2023-03-27T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "do you know about Property Injection in DI?"
 categories:
   - Programming
   - Dependency Injection
 tags:
-  - Property Injection
+  - Dependency Injection
+  - Design Patterns
+  - Software Design
 ---
 
 ## Property Injection in DI
@@ -42,5 +46,3 @@ In this example, we have a `Car` class that has an `engine` property. Instead of
 
 - One option is to use a DI container that can handle property injection for us.
 - Another option is to use **constructor injection instead**, which makes dependencies more explicit and easier to test.
-
-P.S. Have you ever heard of the term **"Inversion of Control" (IoC)**? It's like a fancy way of saying that sometimes, **the things you depend on should depend on you instead**. And that's where Dependency Injection (DI) comes in - it's like a mediator that helps you and your dependencies communicate better. So, do you know about this cool duo? cheeers. 🍺
