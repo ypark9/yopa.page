@@ -84,6 +84,54 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         template = (ROOT / "layouts" / "explore" / "single.html").read_text()
         self.assertIn('id="explore-waypoint"', template)
 
+    def test_article_and_signpost_panels_lock_before_navigation(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
+
+        self.assertIn("lockedTarget: null", source)
+        self.assertIn("function lockTarget(kind, target", source)
+        self.assertIn("function unlockTarget(", source)
+        self.assertIn('lockTarget("article", state.nearest)', source)
+        self.assertNotIn("if (state.nearest) navigateToArticle(state.nearest);", source)
+        self.assertIn("state.pointerGesture.moved", source)
+        self.assertIn(">= 8", source)
+        self.assertIn('id="explore-card-close"', template)
+        self.assertIn('id="explore-signpost-close"', template)
+        self.assertGreaterEqual(template.count('role="dialog" aria-modal="false"'), 2)
+
+    def test_article_preview_keeps_its_light_palette_and_touch_close(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        self.assertIn("color-scheme: light;", styles)
+        self.assertIn(".explore-card h2", styles)
+        self.assertIn("color: var(--explore-ink);", styles)
+        self.assertIn("touch-action: manipulation;", styles)
+        self.assertIn('articleCardClose.addEventListener("pointerup"', source)
+        self.assertIn('event.pointerType !== "touch"', source)
+        self.assertIn('articleCardClose.addEventListener("click"', source)
+
+    def test_signposts_use_proximity_hint_and_anchored_menu(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        self.assertIn('id="explore-signpost-hint"', template)
+        self.assertIn("function showLandmarkHint(landmark)", source)
+        self.assertIn("Click the sign to find another region", source)
+        self.assertIn("Click to see what’s coming next", source)
+        self.assertIn("function positionLandmarkOverlays()", source)
+        self.assertIn('state.pointer.mapActive = stage.contains(event.target)', source)
+        self.assertIn('stage.addEventListener("click"', source)
+        self.assertIn('{ focus: false }', source)
+        self.assertIn("&& !state.lockedTarget && !state.nearbyLandmark", source)
+        self.assertIn("if (nearby) selectArticle(null);", source)
+        self.assertIn("SIGNPOST_INTERACTION_RADIUS = 58", source)
+        self.assertIn("Math.min(item.interactionRadius, SIGNPOST_INTERACTION_RADIUS)", source)
+        self.assertIn('.explore-signpost-hint', styles)
+        self.assertIn('pointer-events: none;', styles)
+        self.assertIn('z-index: 20;', styles)
+
     def test_explore_never_renders_adsense_and_links_to_kofi_once(self):
         self.assertNotIn("pagead2.googlesyndication.com", self.explore_html)
         self.assertNotIn("adsbygoogle", self.explore_html)
@@ -141,10 +189,10 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
 
         self.assertEqual(manifest["version"], 1)
         self.assertEqual(manifest["tileSize"], 512)
-        self.assertEqual(manifest["revision"], "2026-07-31-chunk-navigation-1")
+        self.assertEqual(manifest["revision"], "2026-08-01-deep-night-1")
         self.assertEqual(manifest["world"], {"width": 7168, "height": 5120, "originX": -3584, "originY": -768})
         self.assertEqual(len(manifest["connections"]), 9)
-        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v4"', template)
+        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v5"', template)
         self.assertIn("function rectIsVisible", source)
         self.assertIn("function drawAtlasTiles(layer)", source)
         self.assertIn("function drawAtlasObjects(layer)", source)
@@ -173,6 +221,33 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertEqual(manifest["portals"][0]["id"], "app-garden-portal")
         self.assertIn("function drawAtlasChunks()", source)
         self.assertIn("function updateNearbyLandmark()", source)
+
+    def test_deep_night_mode_uses_shared_manifest_and_site_theme(self):
+        manifest_path = ROOT / "static" / "images" / "article-atlas" / "v1" / "atlas-manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        explore = (ROOT / "static" / "js" / "explore.js").read_text()
+        home = (ROOT / "static" / "js" / "home-atlas.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        self.assertEqual(manifest["night"]["tint"], {
+            "color": "#182744", "opacity": 0.62, "blend": "multiply"
+        })
+        self.assertEqual({light["region"] for light in manifest["night"]["lights"]}, {
+            "cloud", "agents", "code", "salesforce", "python", "engineering", "archive"
+        })
+        for light in manifest["night"]["lights"]:
+            self.assertTrue((manifest_path.parent / light["src"]).exists(), light["src"])
+        for source in (explore, home):
+            self.assertIn("dataset.userColorScheme", source)
+            self.assertIn('window.addEventListener("onColorSchemeChange"', source)
+            self.assertIn('globalCompositeOperation = "screen"', source)
+        self.assertIn('nightFilter.style.mixBlendMode = tint.blend || "multiply"', explore)
+        self.assertIn('globalCompositeOperation = tint.blend || "multiply"', home)
+        self.assertIn("elapsed / .3", explore)
+        self.assertIn("elapsed / .3", home)
+        self.assertIn('.atlas-night-mode .explore-shell', styles)
+        self.assertIn('matchMedia("(prefers-color-scheme: dark)")', explore)
+        self.assertIn('matchMedia("(prefers-color-scheme: dark)")', home)
 
     def test_world_objects_articles_and_visitors_share_depth_order(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
@@ -237,7 +312,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         source = (ROOT / "static" / "js" / "home-atlas.js").read_text()
 
         self.assertEqual(len(manifest["regions"]), 7)
-        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v4"', partial)
+        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v5"', partial)
         self.assertIn("async function loadManifest()", source)
         self.assertIn("manifest?.regions || fallbackRegions", source)
         self.assertIn("manifest.tiles.base", source)

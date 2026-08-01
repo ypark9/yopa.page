@@ -1,12 +1,91 @@
 {
   "version": 1,
-  "revision": "2026-07-31-chunk-navigation-1",
+  "revision": "2026-08-01-deep-night-1",
   "tileSize": 512,
   "world": {
     "width": 7168,
     "height": 5120,
     "originX": -3584,
     "originY": -768
+  },
+  "night": {
+    "tint": {
+      "color": "#182744",
+      "opacity": 0.62,
+      "blend": "multiply"
+    },
+    "lights": [
+      {
+        "id": "cloud-observatory-windows",
+        "region": "cloud",
+        "src": "night/warm-window-glow.webp",
+        "x": -2548,
+        "y": 210,
+        "width": 330,
+        "opacity": 0.76,
+        "pulse": 0.03
+      },
+      {
+        "id": "agent-house-windows",
+        "region": "agents",
+        "src": "night/warm-window-glow.webp",
+        "x": 570,
+        "y": 316,
+        "width": 430,
+        "opacity": 0.9,
+        "pulse": 0.06
+      },
+      {
+        "id": "code-workshop-windows",
+        "region": "code",
+        "src": "night/warm-window-glow.webp",
+        "x": -2568,
+        "y": 1958,
+        "width": 360,
+        "opacity": 0.78,
+        "pulse": 0.04
+      },
+      {
+        "id": "salesforce-moonlit-water",
+        "region": "salesforce",
+        "src": "night/moonlit-water-glow.webp",
+        "x": 650,
+        "y": 2100,
+        "width": 520,
+        "opacity": 0.82,
+        "pulse": 0.05
+      },
+      {
+        "id": "python-cottage-windows",
+        "region": "python",
+        "src": "night/warm-window-glow.webp",
+        "x": 2060,
+        "y": 1940,
+        "width": 350,
+        "opacity": 0.72,
+        "pulse": 0.03
+      },
+      {
+        "id": "engineering-fireflies",
+        "region": "engineering",
+        "src": "night/firefly-glow.webp",
+        "x": 2680,
+        "y": 410,
+        "width": 420,
+        "opacity": 0.9,
+        "pulse": 0.08
+      },
+      {
+        "id": "archive-ghost-lantern",
+        "region": "archive",
+        "src": "night/ghost-lantern-glow.webp",
+        "x": 300,
+        "y": 3260,
+        "width": 330,
+        "opacity": 0.82,
+        "pulse": 0.07
+      }
+    ]
   },
   "regions": [
     {

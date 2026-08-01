@@ -7,13 +7,14 @@
 {{ $posts = sort $posts "Date" "desc" }}
 <div class="explore-shell" id="explore-shell">
   <div class="atlas-stage" id="atlas-stage"
-  data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v4"
+  data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v5"
     data-atlas-assets="{{ "images/article-atlas/v1/" | relURL }}"
     data-rive-wasm="{{ "vendor/rive-2.31.5/rive.wasm" | relURL }}">
     <canvas id="atlas-backdrop" class="atlas-layer" aria-hidden="true"></canvas>
     <canvas id="atlas-base" class="atlas-layer" aria-hidden="true"></canvas>
     <canvas id="atlas-world" class="atlas-layer" aria-hidden="true"></canvas>
     <canvas id="atlas-top" class="atlas-layer" aria-hidden="true"></canvas>
+    <div id="atlas-night-filter" class="atlas-night-filter" aria-hidden="true"></div>
     <canvas id="explore-world" class="atlas-layer atlas-cursor" tabindex="0"
       aria-label="An interactive map of yopa.page articles"
       aria-describedby="explore-instructions"></canvas>
@@ -129,8 +130,8 @@
 {{- end -}}
 ]
 </script>
-<link rel="stylesheet" href="{{ "css/explore.css" | relURL }}?v=atlas-signpost-v3">
+<link rel="stylesheet" href="{{ "css/explore.css" | relURL }}?v=atlas-preview-v1">
 <script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
 <script defer src="{{ "vendor/rive-2.31.5/rive.js" | relURL }}"></script>
-<script defer src="{{ "js/explore.js" | relURL }}?v=atlas-signpost-v4"></script>
+<script defer src="{{ "js/explore.js" | relURL }}?v=atlas-preview-v1"></script>
 {{ end }}

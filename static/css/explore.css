@@ -20,7 +20,16 @@ body:has(.explore-shell) > main {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  color: var(--explore-ink);
+  color-scheme: light;
   font-family: ui-rounded, "Avenir Next", Avenir, system-ui, sans-serif;
+}
+
+.atlas-night-mode .explore-shell {
+  --explore-ink: #f8efcf;
+  --explore-paper: #17243a;
+  --explore-accent: #f0b84f;
+  color-scheme: dark;
 }
 
 .atlas-stage,
@@ -29,6 +38,15 @@ body:has(.explore-shell) > main {
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.atlas-night-filter {
+  position: absolute;
+  z-index: 15;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 .atlas-stage {
@@ -217,7 +235,9 @@ body:has(.explore-shell) > main {
   font: inherit;
   font-size: 24px;
   line-height: 1;
+  touch-action: manipulation;
   cursor: pointer;
+  z-index: 2;
 }
 .explore-panel-close:hover,
 .explore-panel-close:focus-visible { background: rgba(255, 227, 123, .7); }
@@ -232,6 +252,9 @@ body:has(.explore-shell) > main {
 
 .explore-card h2 {
   margin: 8px 0;
+  padding: 0;
+  border: 0;
+  color: var(--explore-ink);
   font-family: Georgia, serif;
   font-size: clamp(22px, 4vw, 30px);
   line-height: 1.08;
@@ -564,4 +587,61 @@ body:has(.explore-shell) > main {
   .explore-waypoint-arrow,
   .explore-wheel-item,
   .explore-pause-compass { transition: none; }
+}
+
+body.atlas-night-mode:has(.explore-shell) {
+  background: #101a2c;
+}
+
+.atlas-night-mode .explore-help,
+.atlas-night-mode .explore-card,
+.atlas-night-mode .explore-status,
+.atlas-night-mode .explore-noscript,
+.atlas-night-mode .explore-signpost-hint,
+.atlas-night-mode .explore-signpost-menu,
+.atlas-night-mode .explore-waypoint,
+.atlas-night-mode .explore-intro {
+  border-color: rgba(248, 239, 207, .72);
+  background: rgba(23, 36, 58, .94);
+  color: var(--explore-ink);
+  box-shadow: 4px 5px 0 rgba(4, 10, 22, .62);
+}
+
+.atlas-night-mode .explore-card p,
+.atlas-night-mode .explore-intro > p:not(.explore-kicker),
+.atlas-night-mode .explore-help p,
+.atlas-night-mode .explore-pause-card > p:not(.explore-kicker),
+.atlas-night-mode .explore-pit-card > p:not(.explore-kicker) {
+  color: #d2d9d5;
+}
+
+.atlas-night-mode .explore-kicker,
+.atlas-night-mode .explore-card-region,
+.atlas-night-mode .explore-card-trails > span,
+.atlas-night-mode .explore-card-footer time,
+.atlas-night-mode .explore-waypoint small {
+  color: #b7c4c3;
+}
+
+.atlas-night-mode #explore-card-related button,
+.atlas-night-mode #explore-signpost-destinations button {
+  border-color: rgba(248, 239, 207, .72);
+  background: #f0c765;
+  color: #182438;
+}
+
+.atlas-night-mode .explore-card-footer {
+  background: rgba(23, 36, 58, .97);
+}
+
+.atlas-night-mode .explore-signpost-hint::after,
+.atlas-night-mode .explore-signpost-menu::before {
+  background: var(--explore-paper);
+}
+
+.atlas-night-mode .explore-pause-card,
+.atlas-night-mode .explore-pit-card {
+  border-color: rgba(248, 239, 207, .72);
+  background: var(--explore-paper);
+  color: var(--explore-ink);
 }

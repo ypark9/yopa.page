@@ -94,10 +94,23 @@
   font-size: 13px;
 }
 
-.dark .home-atlas-eyebrow,
-.dark .home-atlas-presence,
-.dark .home-atlas-description {
+.atlas-night-mode .home-atlas-eyebrow,
+.atlas-night-mode .home-atlas-presence,
+.atlas-night-mode .home-atlas-description {
   color: #9da8ad;
+}
+
+.atlas-night-mode .home-atlas {
+  border-color: rgba(164, 186, 200, .42);
+  background: #101a2c;
+  box-shadow: 0 16px 40px rgba(2, 7, 18, .42);
+}
+
+.atlas-night-mode .home-atlas-enter {
+  border-color: #f8efcf;
+  background: rgba(23, 36, 58, .94);
+  color: #f8efcf;
+  box-shadow: 3px 4px 0 rgba(2, 7, 18, .72);
 }
 
 @media (max-width: 640px) {

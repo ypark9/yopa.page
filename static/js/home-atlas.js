@@ -4,7 +4,19 @@
   if (!canvas || !shell) return;
 
   const ctx = canvas.getContext("2d");
-  const state = { width: 0, height: 0, dpr: 1 };
+  const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  const configuredScheme = document.documentElement.dataset.userColorScheme;
+  const initialDarkMode = configuredScheme ? configuredScheme === "dark" : colorSchemeMedia.matches;
+  document.body.classList.toggle("atlas-night-mode", initialDarkMode);
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const state = {
+    width: 0,
+    height: 0,
+    dpr: 1,
+    nightAmount: initialDarkMode ? 1 : 0,
+    nightTarget: initialDarkMode ? 1 : 0,
+    nightFrame: null
+  };
   const assetRoot = new URL(shell.dataset.atlasAssets || "", location.href);
   const images = new Map();
   let manifest = null;
@@ -187,6 +199,59 @@
     });
   }
 
+  function drawNightEffects() {
+    const night = manifest?.night;
+    if (!night || state.nightAmount <= .001) return;
+    const tint = night.tint || {};
+    ctx.save();
+    ctx.globalCompositeOperation = tint.blend || "multiply";
+    ctx.globalAlpha = (tint.opacity ?? .62) * state.nightAmount;
+    ctx.fillStyle = tint.color || "#182744";
+    ctx.fillRect(0, 0, state.width, state.height);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    (night.lights || []).forEach((light) => {
+      const asset = ensureImage(light.src);
+      if (asset?.status !== "ready") return;
+      const p = point(light.x, light.y);
+      const width = light.width * p.scale;
+      const height = width * asset.image.naturalHeight / asset.image.naturalWidth;
+      ctx.globalAlpha = (light.opacity ?? 1) * state.nightAmount;
+      ctx.drawImage(asset.image, p.x - width / 2, p.y - height / 2, width, height);
+    });
+    ctx.restore();
+  }
+
+  function setNightMode(dark) {
+    state.nightTarget = dark ? 1 : 0;
+    document.body.classList.toggle("atlas-night-mode", dark);
+    if (reducedMotion) {
+      state.nightAmount = state.nightTarget;
+      render();
+      return;
+    }
+    if (state.nightFrame !== null) return;
+    let previous = null;
+    const step = (time) => {
+      const elapsed = previous === null ? 0 : Math.min(.1, (time - previous) / 1000);
+      previous = time;
+      const direction = Math.sign(state.nightTarget - state.nightAmount);
+      state.nightAmount += direction * elapsed / .3;
+      if ((direction >= 0 && state.nightAmount >= state.nightTarget)
+        || (direction < 0 && state.nightAmount <= state.nightTarget)) {
+        state.nightAmount = state.nightTarget;
+        state.nightFrame = null;
+        render();
+        return;
+      }
+      render();
+      state.nightFrame = requestAnimationFrame(step);
+    };
+    state.nightFrame = requestAnimationFrame(step);
+  }
+
   function drawCursor(visitor) {
     if (!Number.isFinite(visitor.x) || !Number.isFinite(visitor.y)) return;
     const bounds = worldBounds();
@@ -251,8 +316,9 @@
     regions.forEach(drawRegion);
     drawTiles();
     drawObjects("world");
-    visitors.forEach(drawCursor);
     drawObjects("top");
+    drawNightEffects();
+    visitors.forEach(drawCursor);
   }
 
   async function loadManifest() {
@@ -270,6 +336,10 @@
   }
 
   window.addEventListener("resize", resize);
+  window.addEventListener("onColorSchemeChange", (event) => setNightMode(event.detail === "dark"));
+  colorSchemeMedia.addEventListener("change", (event) => {
+    if (!document.documentElement.dataset.userColorScheme) setNightMode(event.matches);
+  });
   if (window.ArticleAtlasPresence) {
     window.ArticleAtlasPresence.subscribe(updatePresence);
     window.ArticleAtlasPresence.connect();
