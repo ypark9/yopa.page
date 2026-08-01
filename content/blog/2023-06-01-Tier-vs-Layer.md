@@ -1,12 +1,16 @@
 ---
 title: Tier vs Layer - Understanding the Organization of Software Architecture
 date: 2023-06-01T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Tier vs Layer"
 categories:
   - Software Development
 tags:
   - Architecture
+  - API Design
+  - Software Design
 ---
 
 In software architecture, the concepts of "tier" and "layer" play a crucial role in organizing and structuring complex systems. While often used interchangeably, understanding the distinctions between these terms is essential for designing scalable and maintainable applications. Let's explore the difference between tiers and layers using a fictional e-commerce platform as an example.
@@ -46,5 +50,3 @@ Layers, on the other hand, are modular groupings or abstractions of components w
 ## Conclusion
 
 Understanding the distinctions between tiers and layers in software architecture is vital for designing scalable, modular, and maintainable systems. Tiers represent logical or physical divisions based on functionality, while layers provide structured groupings within each tier. By effectively organizing components into tiers and layers, developers can build robust and well-structured applications.
-
-Cheers! 🍺

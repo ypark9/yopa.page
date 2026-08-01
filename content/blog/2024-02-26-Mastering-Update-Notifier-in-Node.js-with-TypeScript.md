@@ -1,6 +1,8 @@
 ---
-title: Mastering Update-Notifier in Node.js with TypeScript
+title: Update Notifications in Node.js with TypeScript
 date: 2024-02-26
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explore how to integrate and leverage the update-notifier package in your TypeScript-based Node.js applications, including advanced usage and detailed examples."
 categories:
@@ -8,10 +10,10 @@ categories:
   - TypeScript
   - npm packages
 tags:
-  - update-notifier
+  - Node.js
+  - JavaScript
+  - Package Management
   - TypeScript
-  - npm
-  - advanced usage
 ---
 
 ![TypeScript with Update-Notifier](images/oni-red-flag.webp)
@@ -42,11 +44,12 @@ The `resolveJsonModule` option in `compilerOptions` allows TypeScript to nativel
 
 ### Installing Update-Notifier
 
+Current `update-notifier` releases include TypeScript declarations and are ESM. Confirm the package version and Node module mode before using the examples. Notifications should be disabled in CI and non-interactive output, and should never block the command.
+
 To add `update-notifier` to your project, run:
 
 ```bash
 npm install update-notifier
-npm install @types/update-notifier --save-dev
 ```
 
 The second command installs the TypeScript type definitions for `update-notifier`, allowing for type checking and IntelliSense in your IDE.
@@ -153,8 +156,6 @@ if (notifier.update) {
 }
 ```
 
-## Wrapping it up 👏
+## Conclusion
 
-Integrating `update-notifier` with TypeScript in your Node.js applications not only keeps your users informed about new updates but also enhances your code with type safety and modularity. By setting the `resolveJsonModule` option in your TypeScript configuration, you can import and utilize JSON modules seamlessly, further streamlining your update notification system. Harness the power of `update-notifier` in TypeScript to provide a superior user experience and maintain an edge in application reliability and user engagement.
-
-Cheers! 🍺
+Update notifications should be a non-blocking convenience. Respect CI and non-interactive environments, provide an opt-out where appropriate, and do not make network availability a requirement for the command to succeed.

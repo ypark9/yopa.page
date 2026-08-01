@@ -1,6 +1,8 @@
 ---
-title: Master Git - Understanding Branches, Remotes, and HEAD for Better Collaboration
+title: Git Branches, Remotes, and HEAD
 date: 2024-10-15
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: Demystify key Git concepts like local vs. remote branches, fetching, pulling, pushing, and the HEAD pointer to improve your version control skills and team collaboration.
 categories:
@@ -8,8 +10,8 @@ categories:
   - Software Development
 tags:
   - Git
-  - GitHub
-  - Collaboration
+  - CLI
+  - Version Control
 ---
 
 > Demystify key Git concepts like local vs. remote branches, fetching, pulling, pushing, and the HEAD pointer to improve your version control skills and team collaboration.
@@ -84,7 +86,7 @@ This is Git's way of protecting you from accidentally overwriting changes on the
    git push origin awesome-feature
    ```
 
-## The Mysterious HEAD
+## HEAD and detached HEAD
 
 HEAD is Git's way of knowing "where you are" in the history of your project. It's like a bookmark in a book.
 
@@ -101,9 +103,9 @@ HEAD -> awesome-feature -> Latest Commit
 Sometimes, you might checkout a specific commit or a remote branch directly:
 
 ```bash
-git checkout abc123  # Some commit hash
+git switch --detach abc123  # Some commit hash
 # or
-git checkout origin/awesome-feature
+git switch --detach origin/awesome-feature
 ```
 
 Now you're in a "detached HEAD" state. It's like you've placed your bookmark on a specific page, rather than at the end of a chapter.
@@ -114,13 +116,11 @@ In this state:
 - If you make commits, they won't belong to any branch.
 - To save your work, create a new branch:
   ```bash
-  git checkout -b experimental-idea
+  git switch -c experimental-idea
   ```
 
 ## Best Practices
 
 1. **Fetch Often**: Regularly run `git fetch` to stay updated with remote changes.
-2. **Pull Before Push**: Always pull before pushing to avoid rejection.
+2. **Integrate Deliberately**: Fetch, inspect the divergence, then use the repository's merge or rebase policy. A blind pull can create an unintended merge.
 3. **Use Branches**: Create feature branches for new work to keep main/master clean.
-
-Cheers! 🍺

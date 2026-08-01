@@ -1,6 +1,8 @@
 ---
-title: Mastering Python Package Management - A Guide to Updating and Verifying Your Packages
+title: Python Package Updates - A Guide to Updating and Verifying Your Packages
 date: 2024-08-22
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: Learn how to keep your Python packages up-to-date and verify their versions for secure and efficient development.
 categories:
@@ -9,18 +11,20 @@ categories:
 tags:
   - Python
   - Package Management
-  - pip
+  - CLI
 ---
 
 > Learn how to keep your Python packages up-to-date and verify their versions for secure and efficient development.
 
 [Python Package Index (PyPI)](https://pypi.org/)
 
-# Mastering Python Package Management: A Guide to Updating and Verifying Your Packages
+# Updating and Verifying Python Packages
 
 In the fast-paced world of Python development, staying up-to-date with your packages is crucial for maintaining secure, efficient, and bug-free applications. This guide will walk you through the essential steps of updating your Python packages and verifying their versions, ensuring you're always working with the latest and greatest tools.
 
 ## Updating Python Packages
+
+Work in an isolated environment and update the project declaration or lock workflow, not merely the installed environment. Review release notes, resolve a small scope, and run the full test and build gates before merging.
 
 Once you've installed a Python package using pip, you might wonder how to keep it current. The process is straightforward:
 
@@ -36,7 +40,7 @@ Once you've installed a Python package using pip, you might wonder how to keep i
 For example, to update a package called "requests", you would run:
 
 ```
-pip install --upgrade requests
+python -m pip install --upgrade requests
 ```
 
 This command fetches the latest version of the package from the Python Package Index (PyPI) and installs it, replacing the older version.
@@ -50,7 +54,7 @@ After updating, it's a good practice to verify that you're running the latest ve
 To see the currently installed version of a package, use the `pip show` command:
 
 ```
-pip show package_name
+python -m pip show package_name
 ```
 
 This displays information about the package, including its version number.
@@ -60,7 +64,7 @@ This displays information about the package, including its version number.
 To see all available versions of a package, including the latest, use:
 
 ```
-pip index versions package_name
+python -m pip index versions package_name
 ```
 
 The output will show all available versions, with the most recent typically at the top.
@@ -74,7 +78,7 @@ Compare the installed version (from step 1) with the latest available version (f
 For a quick overview of all installed packages that have updates available, use:
 
 ```
-pip list --outdated
+python -m pip list --outdated
 ```
 
 This command displays a list of packages with newer versions available, showing both the current and latest versions.
@@ -86,5 +90,3 @@ This command displays a list of packages with newer versions available, showing 
 - Use virtual environments to isolate project dependencies and avoid conflicts between different projects.
   - [Setting Up Virtual Environments for Multiple Python Versions](https://www.yopa.page/blog/2023-04-17-setting-up-virtual-environments-for-multiple-python-versions.html)
 - Keep an eye on the changelogs or release notes of critical packages to understand what's new in each update.
-
-Cheers! 🍺

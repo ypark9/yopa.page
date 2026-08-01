@@ -1,58 +1,46 @@
 ---
 title: How to Uninstall Salesforce CLI from a Specific Node.js Version on macOS
 date: 2023-12-01T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "a systematic approach to troubleshoot to Uninstall Salesforce CLI from a Specific Node.js Version on macOS"
+description: "Identify and remove an npm-installed Salesforce CLI from one Node.js version without deleting authentication state."
 categories:
     - Software Development
 tags:
-    - Nodejs
-    - SalesforceCLI
-    - npm
-    - DevelopmentEnvironment
+  - Salesforce CLI
+  - Developer Tools
+  - Security
 ---
 
-**Introduction:**
+## Identify the active installation
 
-When working with multiple versions of Node.js, especially in a development environment that leverages Salesforce CLI, it's not uncommon to encounter challenges in managing different package versions. This can often lead to confusion and, sometimes, a frustrating experience when trying to uninstall or switch between versions of Salesforce CLI (sfdx-cli) across different Node.js versions. In this article, we'll explore a systematic approach to troubleshoot and resolve these issues, ensuring a smoother development experience.
+Node version managers give each Node.js version its own global npm directory. Before removing anything, determine whether the active `sf` executable came from npm or Salesforce's native installer.
 
-**Understanding the Environment:**
+```bash
+type -a sf
+command -v sf
+sf version --verbose
+npm prefix --global
+npm list --global --depth=0 @salesforce/cli sfdx-cli
+```
 
-Before diving into the solution, it's crucial to understand how Node.js versions and npm (Node Package Manager) work in tandem. Node.js is a runtime environment for executing JavaScript outside the browser, and npm is its package manager. When you install Node.js, npm comes bundled with it. If you are using a version manager like `nvm` (Node Version Manager), each version of Node.js can have its own separate npm environment and set of global packages.
+If `command -v sf` points outside the reported npm prefix, changing npm packages will not remove that executable.
 
-**The Challenge with Salesforce CLI:**
+## Remove only the package owned by this Node version
 
-Salesforce CLI (`sfdx-cli`) is a powerful command-line interface that simplifies development and build automation when working with Salesforce applications. However, when you have multiple Node.js versions, each with its own Salesforce CLI installation, managing these versions can become complex.
+The supported npm package is `@salesforce/cli`; `sfdx-cli` is legacy. Switch to the intended Node version, confirm its prefix again, and uninstall the package it owns:
 
-**Step-by-Step Troubleshooting:**
+```bash
+npm uninstall --global @salesforce/cli
+# If the listing showed the retired package:
+npm uninstall --global sfdx-cli
+hash -r
+type -a sf
+```
 
-1. **Identifying the Active Node.js Version:**
-   Begin by determining which version of Node.js is active. If you're using `nvm`, you can switch between versions easily. For example, `nvm use 20` activates Node.js version 20.
+Do not manually delete whichever file `which` returns, and do not remove `~/.sfdx` or other CLI state directories. Those actions bypass the package owner and can destroy authorization or configuration unrelated to this Node version.
 
-2. **Listing Global npm Packages:**
-   To see if Salesforce CLI is installed under the active Node.js version, use `npm list -g --depth=0`. This command lists all globally installed packages.
+If another `sf` remains in `type -a`, identify its owner before deciding whether it should stay. A native installer is a good workstation default because it does not move when `nvm` changes Node versions; npm is reasonable when the team deliberately manages global tools per Node version.
 
-3. **Uninstalling Salesforce CLI:**
-   If you find `sfdx-cli` listed, uninstall it using `npm uninstall -g sfdx-cli`. This should remove it from the global npm environment of the active Node.js version.
-
-4. **Navigating Multiple npm Instances:**
-   Remember, each Node.js version has its own npm environment. Repeat the listing and uninstallation process for each Node.js version where `sfdx-cli` is installed.
-
-5. **Checking the PATH:**
-   Your system's PATH environment variable might still reference `sfdx-cli`. Inspect it with `echo $PATH` and manually search the directories for any lingering `sfdx-cli` instances.
-
-6. **Manual Removal:**
-   If necessary, manually remove the `sfdx-cli` executable. Locate it with `which sfdx` and delete it using `rm`.
-
-7. **Reinstalling Salesforce CLI:**
-   If you accidentally remove the wrong version, simply reinstall Salesforce CLI under the correct Node.js version.
-
-8. **Restarting the Terminal:**
-   After uninstallation, restart your terminal to ensure all changes take effect.
-
-9. **Verification:**
-   Verify the removal by executing `sfdx --version`. An error message should indicate successful uninstallation.
-
-Happy Friday.
-Cheers! 🍺
-
+Verify removal in a fresh shell. If you intend to keep Salesforce CLI, install one supported distribution and run `sf doctor` plus a read-only command against a nonproduction org. Reviewed on 2026-08-01 against [Install Salesforce CLI](https://developer.salesforce.com/docs/platform/salesforce-cli-guide/guide/install-sfdx-cli.html).

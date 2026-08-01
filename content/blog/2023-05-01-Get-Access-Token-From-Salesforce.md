@@ -1,12 +1,19 @@
 ---
 title: Get Access Token from Salesforce
 date: 2023-05-01T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The workflow exposes a bearer token in terminal output and uses the unsupported sfdx CLI."
+replacement_url_en: "/blog/2026-08-01-salesforce-cli-authentication-without-token-leaks.html"
+replacement_url_ko: "/ko/blog/2026-08-01-salesforce-cli-authentication-without-token-leaks.html"
 author: Yoonsoo Park
 description: "Get Access Token with SFDX CLI"
 categories:
   - Salesforce
 tags:
-  - sfdx
+  - Salesforce CLI
+  - OAuth
+  - Security
 ---
 
 Access tokens are unique strings of characters that authenticate a user's identity and provide secure access to Salesforce APIs. In this article, we will discuss how to obtain an access token using SFDX CLI.

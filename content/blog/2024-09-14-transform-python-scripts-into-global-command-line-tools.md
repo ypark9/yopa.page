@@ -1,6 +1,11 @@
 ---
 title: Transform Your Python Scripts into Global Command-Line Tools
 date: 2024-09-14
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "A manual symlink to a script does not provide portable packaging, dependency isolation, reliable upgrades, or command metadata for a maintained Python CLI."
+replacement_url_en: "/blog/2026-08-01-package-and-install-python-cli.html"
+replacement_url_ko: "/ko/blog/2026-08-01-package-and-install-python-cli.html"
 author: Yoonsoo Park
 description: Learn how to make your Python scripts accessible from anywhere on your system, enhancing convenience and productivity.
 categories:
@@ -8,8 +13,8 @@ categories:
   - Development
 tags:
   - Python
-  - Command-line tools
-  - Productivity
+  - Package Management
+  - CLI
 ---
 
 > Learn how to make your Python scripts accessible from anywhere on your system, enhancing convenience and productivity.
@@ -29,6 +34,8 @@ Before we dive into the how-to, let's consider why you might want to make your s
 3. **Professionalism**: Transform your script into a proper command-line tool.
 
 ## Steps to Make Your Script Globally Accessible
+
+> Maintenance note added in 2026: the symlink workflow below is preserved as historical context for a personal local script. For a maintained or shared command, use the replacement guide's `pyproject.toml` console entry point and an isolated `pipx` installation.
 
 ### 1. Make Your Script Executable
 

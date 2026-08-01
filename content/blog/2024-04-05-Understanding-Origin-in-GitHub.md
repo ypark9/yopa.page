@@ -1,20 +1,24 @@
 ---
-title: Understanding 'Origin' in GitHub
-date: 2024-04-07
+title: Understanding the Git Remote Named 'origin'
+date: 2024-04-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Exploring the concept of 'origin' in GitHub, its significance, and how it impacts your workflow."
 categories:
   - GitHub
   - Version Control
 tags:
-  - GitHub
   - Git
-  - Origin
+  - GitHub
+  - CLI
 ---
 
 In the realm of Git and GitHub, grasping the concept of `origin` is crucial for developers to effectively manage and collaborate on code. The term `origin` might sound abstract, but it plays a critical role in your interactions with Git repositories. This article demystifies `origin`, breaking down its importance and functionality in the context of GitHub.
 
 ### Remote Repository Alias
+
+`origin` is a conventional Git remote name created by `git clone`, not a GitHub feature and not a guarantee. Inspect it with `git remote -v`; repositories can rename it or have several remotes.
 
 When you clone a repository from GitHub, Git doesn't leave you juggling with the full URL of your remote repository every time you need to interact with it. Instead, it kindly sets up a shorthand alias named `origin`. This alias points directly to the URL of the cloned repository, simplifying your command-line operations.
 
@@ -41,8 +45,6 @@ git fetch origin develop
 
 This command doesn't care which branch is default; it fetches updates from `develop`, demonstrating `origin`'s versatility.
 
-### Wrapping it up 👏
+### Wrapping it up
 
 The concept of `origin` in GitHub is a cornerstone for efficient repository management and collaboration. It is essentially a nickname or alias for the remote repository from which you cloned your code!
-
-Cheers! 🍺

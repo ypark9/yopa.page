@@ -1,6 +1,11 @@
 ---
 title: Architecture Patterns for Strands and MCP
 date: 2025-12-11
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The A2A wrapper code and semantic-discovery claim no longer match the current AgentCore A2A protocol contract and Strands integration."
+replacement_url_en: "/blog/2026-08-01-mcp-and-a2a-boundaries-on-agentcore.html"
+replacement_url_ko: "/ko/blog/2026-08-01-mcp-and-a2a-boundaries-on-agentcore.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A definitive guide to the Strands framework, Model Context Protocol (MCP), and Agent-to-Agent (A2A) communication."
@@ -9,9 +14,11 @@ categories:
   - AI Protocols
   - Integration
 tags:
-  - Strands
+  - Amazon Bedrock AgentCore
+  - AI Agents
   - MCP
   - A2A
+  - Security
 ---
 
 In the "Agentic Era," software architecture is defined by three components:

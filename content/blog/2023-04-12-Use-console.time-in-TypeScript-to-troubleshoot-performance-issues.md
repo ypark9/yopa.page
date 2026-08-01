@@ -1,12 +1,16 @@
 ---
 title: Use console.time in TypeScript to troubleshoot performance issues
 date: 2023-04-12T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Use console.time in TypeScript"
 categories:
   - TypeScript
 tags:
-  - console.time
+  - TypeScript
+  - JavaScript
+  - Node.js
 ---
 
 ## console.time()
@@ -37,5 +41,3 @@ function sortArray(array: number[]): number[] {
 In this example, we use `console.time()` to start a timer called **sortArray** at the beginning of the function, and `console.timeEnd()` to stop the timer at the end. The output of `console.timeEnd()` will show the time elapsed between the two calls.
 
 By using `console.time()` and `console.timeEnd()` in this way, we can quickly identify which parts of our code are taking the longest to execute and focus our optimization efforts on those areas.
-
-Cheers! 🍺

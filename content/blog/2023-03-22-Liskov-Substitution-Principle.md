@@ -1,22 +1,24 @@
 ---
 title: Understanding and Applying the Liskov Substitution Principle in Object-Oriented Programming
 date: 2023-03-22T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "If you're not sure what Liskov Substitution Principle (LSP) means, your object-oriented programming skills are in for a world of hurt!"
+description: "Use behavioral contracts to decide whether one subtype can safely replace another."
 categories:
   - Programming
   - OOP
 tags:
-  - OOP
-  - Principle
+  - SOLID
+  - Software Design
+  - Design Patterns
 ---
 
-Well hello there, my dear friend! It's time we talk about the **Liskov Substitution Principle** (LSP).
-Now, you better grab your favorite beverage(should be **beer**) and sit tight because this principle is no _*joke*_!
+The **Liskov Substitution Principle** (LSP) is about behavioral compatibility. Code written for a base type should continue to work when it receives any valid subtype. Sharing a method name is not enough: the subtype must preserve the base type's promises, including valid inputs, results, side effects, and invariants.
 
 ## Let say...
 
-If you have a base class **A** and a subclass _B_ that inherits from **A**, then you should be able to substitute _B_ for **A** without any problems. In other words, _B_ should behave just like **A**, but with extra _coolness_.
+If `B` is a subtype of `A`, clients that depend on `A` should not need type checks or special recovery logic when given `B`. A subtype must not require stricter preconditions or provide weaker postconditions than its base contract.
 
 ## Example
 
@@ -54,26 +56,21 @@ function letTheBirdsSing(bird: Bird): void {
 }
 ```
 
-## Problem
+## Where a violation actually appears
 
 Here's where it gets interesting.
-Say you try to pass in a **Penguin** object that cannot fly to a different function called `letTheBirdsFly(Bird: Bird)`.
-According to LSP, this should work too, right? But, since **Penguin** cannot fly, the function would fail miserably!
-That's why we need to be careful when applying LSP and ensure that our subclasses can truly substitute their base class.
+The `Bird` type above promises only `makeSound`, so both subtypes satisfy that contract. Adding a `fly` requirement to every bird would create the modeling error. A client should depend on a narrower capability instead:
 
 What can be a solution to this problem?
 
 ```typescript
-function letTheBirdsFly(bird: Bird): void {
-  if (bird instanceof Eagle) {
-    bird.fly();
-  } else {
-    console.log("This bird cannot fly");
-  }
+interface FlyingBird extends Bird {
+  fly(): void;
+}
+
+function letTheBirdFly(bird: FlyingBird): void {
+  bird.fly();
 }
 ```
 
-So, my friend, remember the Liskov Substitution Principle when working on your projects.
-Otherwise, your knowledge about OOP will be in danger, and we don't want that!
-
-P.S. Do you know how LSP differs from Polymorphism? Cheers. 🍺
+This design makes the required behavior explicit and avoids an `instanceof` branch. Composition and small capability interfaces are often clearer than forcing every real-world category into one inheritance hierarchy.

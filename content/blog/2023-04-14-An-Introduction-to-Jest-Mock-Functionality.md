@@ -1,12 +1,17 @@
 ---
 title: An Introduction to Jest Mock Functionality
 date: 2023-04-14T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Jest Mock Functionality"
 categories:
   - Jest
 tags:
-  - Mock
+  - Jest
+  - TypeScript
+  - JavaScript
+  - Node.js
 ---
 
 At times, when writing unit tests for your application, you may find it challenging to isolate the test subjects from their dependencies. `Mocking` is a technique that can help you overcome this challenge. By replacing dependencies with objects that you can control and inspect, you can isolate the test subjects and test them in isolation.
@@ -135,4 +140,3 @@ Finally, we use the toHaveBeenCalledWith() matcher to assert that mock has been 
 Let's explore the topic of "Mocking Modules and Functions" tomorrow and learn how to use this powerful feature in our testing workflow.
 
 Tomorrow is Friday!!! YES!
-Cheers! 🍺

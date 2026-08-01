@@ -1,14 +1,16 @@
 ---
-title: Mastering Git Diff - A Comprehensive Guide with Advanced Examples
+title: Git Diff for Working Trees, Commits, and Branches
 date: 2024-01-27
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Dive deeper into the advanced functionalities of 'git diff' with detailed examples."
 categories:
   - git
 tags:
   - Git
-  - Programming
-  - Software Development
+  - CLI
+  - Version Control
 ---
 
 ![oni-github](images/oni-github-1.webp)
@@ -52,6 +54,8 @@ This compares two local files, showing differences even if they aren't tracked b
 ## Advanced Usage of Git Diff
 
 ### **1. Difference Between Two Branches**
+
+Use `base...topic` to inspect changes introduced since the merge base, as a pull request usually does. Use `base..topic` only when an endpoint tree comparison is intended.
 
 `git diff main..feature-branch`
 
@@ -113,8 +117,6 @@ It breaks down the differences to the word level, offering a more granular view.
 
 This ignores white space changes, focusing only on actual content changes.
 
-## Wrapping it up 👏
+## Conclusion
 
-Understanding `git diff` at both basic and advanced levels empowers developers to effectively track and understand changes in their codebase. Whether it's a quick check of unstaged changes or a detailed comparison of branches, `git diff` proves to be an invaluable tool in the software development lifecycle. A deep dive into `git diff` not only enhances your Git proficiency but also contributes to better collaboration and code quality in your projects.
-
-Cheers! 🍺
+Use `git diff` by first choosing the two states you intend to compare: working tree, index, commit endpoints, or a merge base. Review path exclusions carefully so important generated or policy files remain visible.

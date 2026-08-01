@@ -1,4 +1,7 @@
 {{ if and .IsPage (eq .Section "blog") }}
+  {{ if eq .Params.maintenance_status "archived" }}
+  <link rel="stylesheet" href="{{ "css/maintenance.css" | relURL }}">
+  {{ end }}
 <!-- Custom CSS and JS for Copy AI Button -->
 <link rel="stylesheet" href="{{ "css/copy-ai-button.css" | relURL }}?v=article-atlas">
 <script defer src="{{ "js/copyAiButton.js" | relURL }}?v=article-atlas"></script>

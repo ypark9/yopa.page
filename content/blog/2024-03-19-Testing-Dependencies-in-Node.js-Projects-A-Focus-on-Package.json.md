@@ -1,6 +1,8 @@
 ---
 title: Testing Dependencies in Node.js Projects - A Focus on Package.json
 date: 2024-03-19
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explore strategies for testing and debugging Node.js project dependencies, focusing on managing internal libraries and their interaction with main projects."
 categories:
@@ -8,9 +10,9 @@ categories:
   - Dependency Management
   - Debugging
 tags:
-  - npm
-  - package.json
-  - Node.js Libraries
+  - Node.js
+  - JavaScript
+  - Package Management
 ---
 
 Dependency management is a critical factor in the development of Node.js projects, significantly influencing the reliability and maintainability of applications. For teams that maintain their own libraries in conjunction with main projects, the task of debugging and testing these dependencies can pose unique challenges. This article explores a situation where a Node.js library, referred to as `@yopa/the-library`, requires comprehensive testing within a primary project to validate its functionality.
@@ -22,6 +24,8 @@ Imagine you're working on a Node.js project, and your application relies on an i
 Traditionally, this library is managed as a npm package and versioned something like `@yopa/the-library: ^1.12.10`, which introduces complexity when attempting to debug interactions between the library and the main project. This becomes even more challenging when you need to modify the library code and test these changes directly within the main project.
 
 ### A Strategic Approach to Dependency Testing
+
+Prefer a workspace, a `file:` dependency, or `npm pack` to test the exact library artifact. `npm link` is useful for live iteration but can change module resolution and produce duplicate singleton dependencies. Do not delete lockfiles or rewrite `package.json` without preserving and reviewing the diff.
 
 To efficiently tackle this challenge, the following steps provide a systematic method for testing and debugging the library within the context of the main project:
 
@@ -39,8 +43,6 @@ By adopting this workflow, you can directly test how changes in your library aff
 
 In the realm of software development, collaboration and mutual learning are key to overcoming challenges and achieving success. I'd like to extend my sincere gratitude to my team members, Steven and Ryan, for their insights, support, and the collaborative spirit they bring to our projects. Working alongside such dedicated individuals is not only inspiring but also immensely educational.
 
-Wrapping it up 👏
+Wrapping it up
 
 By utilizing local packaging and strategic modifications in `package.json`, developers can achieve a more integrated and responsive debugging environment.
-
-Cheers! 🍺

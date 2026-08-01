@@ -1,12 +1,20 @@
 ---
 title: Leveraging AWS SSO to Acquire AWS SecretAccessKey and SessionToken
 date: 2023-06-15T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "Reading an arbitrary IAM Identity Center cache file and passing its token through a shell command is unsupported and can select or expose the wrong session."
+replacement_url_en: "/blog/2026-08-01-use-aws-temporary-credentials-without-reading-cache-files.html"
+replacement_url_ko: "/ko/blog/2026-08-01-use-aws-temporary-credentials-without-reading-cache-files.html"
 author: Yoonsoo Park
 description: "Using AWS SSO to Acquire AWS SecretAccessKey and SessionToken"
 categories:
   - AWS
 tags:
-  - AWS-SSO
+  - IAM Identity Center
+  - AWS SDK for JavaScript
+  - Temporary Credentials
+  - Security
 ---
 
 Developing secure applications necessitates the safe management of resource access. AWS SSO (Single Sign-On), a widely utilized service for safeguarding access management, comes in handy for this purpose. This article will delve into the utilization of AWS SSO to obtain role credentials, which will subsequently be used to fetch AWS SecretAccessKey and sessionToken. Note that this isn't the official way of obtaining these secrets and incorporates a workaround approach. Our tools for the task will be Node.js and its modules: child_process, fs, path, and ini.

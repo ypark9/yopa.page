@@ -1,12 +1,16 @@
 ---
 title: Promises in TypeScript
 date: 2023-04-21T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "sfdx force:source:push vs sfdx force:source:deploy"
+description: "How TypeScript promises represent asynchronous results, including creation, consumption, and chaining."
 categories:
   - TypeScript
 tags:
-  - Promise
+  - TypeScript
+  - JavaScript
+  - Asynchronous Programming
 ---
 
 ## What is a Promise?
@@ -78,5 +82,3 @@ console.error(Promise rejected: ${err});
 In this example, we've defined two functions: `add`, which takes a number `x` and returns a function that takes another number `y` and returns the sum of `x` and `y`, and `delayAdd`, which takes a number `x` and a delay time in milliseconds and returns a Promise that resolves with the value of `x` after the specified delay time.
 
 We then chain these two functions together using the `then` method. We call `delayAdd` with `1` and `1000`, which returns a Promise that resolves with the value `1` after a delay of 1000 milliseconds. We then attach a `then` callback to the Promise that calls `add(5)` with the result of the previous Promise, which returns a new Promise that resolves with the sum of `1` and `5`. Finally, we attach another `then` callback that logs the result to the console.
-
-Cheers! 🍺

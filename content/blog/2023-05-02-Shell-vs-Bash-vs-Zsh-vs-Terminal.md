@@ -1,15 +1,19 @@
 ---
 title: Shell vs Bash vs Zsh vs Terminal
 date: 2023-05-02T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Shell vs Bash vs Zsh vs Terminal"
 categories:
   - shell
 tags:
+  - CLI
   - Shell
+  - macOS
 ---
 
-Are you confused by the terms "shell," "Bash," "Zsh," and "terminal"? Don't worry, you're not alone! These terms are often used interchangeably, leading to much confusion among developers. In this article, we'll take a humorous look at these terms and try to clear up some of the confusion.
+The terms shell, Bash, Zsh, and terminal describe related but different parts of a command-line environment. Distinguishing the interface from the shell implementation makes configuration and troubleshooting easier.
 
 ## What is a Shell?
 
@@ -26,5 +30,3 @@ Finally, let's talk about the `terminal`. **This is the program you use to inter
 ## So, What's the Verdict?
 
 To sum up, a shell is a program that provides a command-line interface for interacting with the operating system. Bash and Zsh are both Unix shells, with some differences in features. The terminal is the program you use to interact with the shell, not the shell itself.
-
-Cheers! 🍺

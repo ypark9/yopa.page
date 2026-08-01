@@ -1,146 +1,72 @@
 ---
-title: Kiro IDE - The Smart Coding Tool That Plans Before It Builds
+title: "Kiro After General Availability: Specs, Agents, CLI, and Web"
 date: 2025-07-22
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "Kiro IDE is Amazon's new AI coding assistant. It helps you plan your project before writing any code, instead of just generating code quickly. This makes it different from other AI coding tools."
+description: "A current guide to choosing Kiro specs, agentic chat, CLI, Web, steering, hooks, MCP, checkpoints, and evaluation without relying on stale preview limits."
 categories:
   - Development Tools
   - AI Coding
 tags:
-  - Kiro IDE
-  - AWS
-  - AI Development
-  - Coding Assistant
+  - Kiro
+  - AI-Assisted Development
+  - Spec-Driven Development
+  - AI Evaluation
+  - Security
 ---
 
-> Kiro IDE is Amazon's new AI coding assistant. It helps you plan your project before writing any code, instead of just generating code quickly. This makes it different from other AI coding tools.
+Kiro launched in preview in July 2025 and reached general availability in November 2025. It is no longer just a preview IDE with “vibe” and “spec” modes. The product now spans IDE and CLI workflows, team features, property-based testing, checkpoints, remote MCP, global steering, custom and parallel agents, and Kiro Web preview. Availability, models, credit accounting, and prices change, so use the live product and pricing pages for purchasing decisions.
 
-[Try Kiro IDE (Public Preview)](https://kiro.dev)
+## Choose the interaction by task
 
-## What Makes Kiro IDE Different?
+Use **specs** when the work needs explicit requirements, design, tasks, and traceability. They help when a feature crosses components or when a team needs to review intent before implementation. A spec is not proof that the requirement is correct; review acceptance criteria, data, security, migration, and non-goals.
 
-Kiro IDE is Amazon’s new AI coding assistant that helps you plan before you code. Unlike other tools that just write code quickly, Kiro focuses on creating clear plans and requirements first.
+Use **agentic chat** for bounded exploration, diagnosis, and small edits where a full spec would add ceremony. Ask it to inspect current repository facts first and require changed-file and validation evidence.
 
-Kiro IDE launched on July 14, 2025. It’s different from other coding tools because it makes you plan your project before writing any code. Think of it like building a house: most AI tools start building right away, but Kiro wants you to draw up blueprints first.
+Use **Kiro CLI** when terminal context, scripts, or remote environments matter. Use **Kiro Web** for asynchronous repository work and pull-request creation when its preview status and connected-repository permissions fit the task. Keep branch protection and human review; a generated PR is not an approval.
 
-This method follows Amazon’s own way of building software—always planning before coding. Now, anyone can use this approach with Kiro IDE.
+## Persistent project context
 
-## Two Ways to Work: Vibe Mode vs Spec Mode
+Steering files capture durable conventions: architecture boundaries, build/test commands, naming, privacy, and release rules. Keep them short and version-controlled. Do not put secrets, customer data, personal preferences unrelated to the project, or frequently changing status in steering.
 
-Kiro gives you two different ways to work:
+Hooks automate actions around events. They consume credits and can amplify mistakes, so start with read-only checks or formatting/tests. Avoid hooks that deploy, publish, delete, or broadly rewrite without an explicit approval boundary.
 
-**Vibe Mode** - Ask questions, get code samples, or fix bugs through chat. It’s good for learning or trying new ideas.
+MCP connects tools and external context. Treat MCP servers as privileged software: review origin, permissions, data sent, authentication, and tool schemas. Remote content can contain prompt injection.
 
-**Spec Mode** - Kiro asks you detailed questions about your project before writing any code. Example questions:
+## A reliable workflow
 
-- What exactly do you want to build?
-- Who will use it?
-- What could go wrong?
-- How should it handle errors?
+1. Open the intended repository/branch and inspect its instructions and dirty state.
+2. Write a small task brief with goal, non-goals, constraints, acceptance tests, and rollback.
+3. Use a spec for cross-cutting work; otherwise begin with a plan and targeted reads.
+4. Keep edits small and review checkpoints before high-impact steps.
+5. Run deterministic format, type, unit, integration, and build checks.
+6. Inspect the diff and test negative/security cases.
+7. Commit to a branch and use normal CI/review/release controls.
 
-After you answer, it makes a full plan and then writes the code.
+Property-based testing can derive general properties from specs and generate many cases, which is valuable for input spaces. It complements example tests; it does not replace integration, security, usability, or production acceptance.
 
-## Real Example: Building a Review System
+## Tradeoffs and evaluation
 
-Let's say you want to add reviews to your product website. Here's how each mode works:
+Specs improve alignment but can become stale or produce false confidence. Chat is fast but may drift across a large task. Parallel agents can reduce elapsed time when file ownership is disjoint, but increase conflicts and inconsistent assumptions. More tool access increases capability and risk.
 
-**In Vibe Mode:**
+Evaluate Kiro on representative repository tasks: success rate, escaped defects, reviewer edit distance, latency, credit/cost, security violations, and ability to recover. Compare against the team's current workflow. Do not choose based only on a polished greenfield demo.
 
-- You: "Add reviews to products"
-- Kiro: _immediately creates React components for reviews_
+## Migration from the preview-era workflow
 
-**In Spec Mode:**
+- Remove waitlist and fixed preview-limit claims; link live pricing.
+- Move durable repository guidance into reviewed steering files.
+- Convert reusable high-risk hooks to manual commands or approval-gated automation.
+- Review MCP servers and custom-agent permissions.
+- Add checkpoints, deterministic validation, and branch/PR review.
+- Re-evaluate IDE, CLI, and Web separately for data and repository access.
+- Re-run a small benchmark when models or credit policies change.
 
-- You: "Add reviews to products"
-- Kiro: "Let me understand this better. Should users be able to rate with stars? Edit their reviews? What happens with spam reviews?"
-- After you discuss these details, Kiro creates a complete plan with database designs, user stories, and security considerations
-- Only then does it write the actual code
+Verified on **2026-08-01**.
 
-## The Magic Behind the Scenes
+## Primary sources
 
-Kiro uses several AI agents:
-
-- Planning agents decide what needs to be built.
-- Code agents write the code.
-- Quality agents check for good practices.
-- Integration agents make sure everything works together.
-
-Kiro is powered by Claude Sonnet 4.0, a strong AI model that handles complex projects well. (also you can use Claude 3.5 Sonnet)
-
-## Key Features That Make Developers Happy
-
-**Smart Project Organization:** Keeps all your plans and documents organized in a special folder, `.kiro`.
-
-**Task Management:** Breaks work into small tasks you can approve.
-
-**AWS Integration:** Works with AWS—turn hand-drawn diagrams into real cloud code.
-
-**Automatic Documentation:** Updates documentation automatically.
-
-**Background Helpers:** Runs tests and checks code quality in the background.
-
-## Developers have mixed opinions:
-
-- Enterprise developers like it—they built complex systems quickly with full documentation and security. (I'm one of them)
-- Startup developers are split. Some like the planning, others find it slow for quick experiments.
-- Common complaints: repeats suggestions, can be too generic, uses lots of computer power, and sometimes slows down.
-
-## Compared to other AI Coding Tools (purely my opinion)
-
-- Cursor: Fast code writing and debugging, but messy for big projects.
-- GitHub Copilot: Great for code completion, but focuses on speed, not planning.
-- Windsurf: Used to be popular but lost users after business problems.
-- Kiro: The only tool that requires planning and creates organized code.
-
-## Current limits:
-
-**Language Support:** Best with TypeScript, Python, and Java. Other languages work but not as well.
-
-**Learning Curve:** Takes time to learn the planning approach but this is where it shines.
-
-**Performance Issues:** Can be slow or limited during busy times.
-
-**Setup Challenges:** Can get confused by complex development environments or unusual configurations.
-
-**.NET Problems:** Doesn't work well for C# developers due to missing Microsoft tools. (I'm not a C# developer so take this with a grain of salt)
-
-## Pricing and Availability
-
-Right now, Kiro is free during the public preview, but there are daily limits on how much you can use it.
-
-Amazon originally announced these prices:
-
-- Free: 50 interactions per month
-- Pro ($19/month): 1,000 interactions
-- Pro+ ($39/month): 3,000 interactions
-
-But they removed these details due to user confusion about what counts as an "interaction." New pricing should be announced soon.
-
-The good news: you don't need an AWS account to use Kiro. You can sign in with Google, GitHub, or AWS credentials.
-
-## Should You Try Kiro IDE?
-
-**Kiro is perfect if you:**
-
-- Work on complex, long-term projects
-- Want to write maintainable code from the start
-- Like having detailed documentation
-- Work in a team that values planning (I am in this category)
-- Build enterprise or production systems
-
-**Stick with other tools if you:**
-
-- Do lots of experimental coding
-- Need to prototype very quickly (go with Cursor)
-- Work mostly alone on small projects
-- Prefer maximum flexibility over structure
-
-## Wrapping it up 👏
-
-I believe Kiro is best for people working on complex, long-term projects, teams that care about planning, or anyone who wants maintainable code from the start. If you need to build quick prototypes or work alone on small projects, other tools may be faster (hmmm. Cursor).
-
-Kiro changes how we use AI for coding. Instead of just speeding up code writing, it helps you design better systems. This could become the new standard for building reliable software.
-
-Kiro is still in preview, but its focus on planning and maintainability makes it stand out. As Amazon improves it, Kiro could become a must-have for professional developers. At least I love to see the new direction of AI coding tools in the market.
-
-Cheers! 🍺
+- [Kiro general availability](https://kiro.dev/blog/general-availability/)
+- [Kiro documentation](https://kiro.dev/docs/)
+- [Kiro Web](https://kiro.dev/blog/introducing-kiro-web/)
+- [Kiro pricing](https://kiro.dev/pricing/)

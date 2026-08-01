@@ -1,6 +1,8 @@
 ---
 title: How to Rename a Git Branch Using the CLI
 date: 2023-10-30T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "This blog post walks you through the process of renaming a local and remote Git branch using the command-line interface."
 categories:
@@ -8,10 +10,11 @@ categories:
     - Development
     - Command Line
 tags:
-    - git
-    - branch
-    - cli
-    - rename
+  - Git
+  - CLI
+  - Version Control
+  - Git Branches
+  - Pull Requests
 ---
 
 ## Introduction
@@ -23,7 +26,7 @@ Renaming a Git branch may seem like a trivial task, but it can become complex, e
 Before you can rename a branch, you need to switch to it. Open your terminal and run the following command:
 
 ```bash
-git checkout old-branch-name
+git switch old-branch-name
 ```
 
 ## Step 2: Rename the Local Branch
@@ -49,6 +52,8 @@ The `-u` flag sets the upstream, so future `git pull` and `git push` commands on
 
 ## Step 4: Update Any Open Pull Requests
 
+GitHub does not let you retarget an existing pull request to an arbitrary renamed head branch. Check the pull request state before deleting the old remote branch; you may need to keep it or open a replacement PR.
+
 If you have any open pull requests that involve the old branch name, remember to update those manually to point to the new branch name.
 
 ## Step 5: Inform Your Team Members
@@ -61,5 +66,3 @@ git fetch origin
 git branch --unset-upstream
 git branch -u origin/new-branch-name
 ```
-
-Cheers! 🍺

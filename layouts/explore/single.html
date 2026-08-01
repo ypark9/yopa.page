@@ -2,6 +2,7 @@
 {{ $posts := slice }}
 {{ range site.Sites }}
   {{ $languagePosts := where .RegularPages "Section" "blog" }}
+  {{ $languagePosts = where $languagePosts "Params.maintenance_status" "ne" "archived" }}
   {{ $posts = $posts | append $languagePosts }}
 {{ end }}
 {{ $posts = sort $posts "Date" "desc" }}
@@ -123,7 +124,8 @@
 {{- range $index, $post := $posts -}}
   {{- if $index }},{{ end -}}
   {{- $relatedURLs := slice -}}
-  {{- range first 3 ($post.Site.RegularPages.Related $post) -}}
+  {{- $relatedCandidates := where $post.Site.RegularPages "Params.maintenance_status" "ne" "archived" -}}
+  {{- range first 3 ($relatedCandidates.Related $post) -}}
     {{- $relatedURLs = $relatedURLs | append .RelPermalink -}}
   {{- end -}}
   {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" ($post.Params.categories | default slice) "tags" ($post.Params.tags | default slice) "series" ($post.Params.series | default "") "language" $post.Language.Lang "related" $relatedURLs | jsonify | safeJS -}}

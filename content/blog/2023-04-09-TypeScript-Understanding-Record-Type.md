@@ -1,13 +1,17 @@
 ---
 title: Understanding TypeScript's Record Type
 date: 2023-04-09T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Understanding TypeScript's Record Type"
 categories:
   - Programming
   - TypeScript
 tags:
-  - Record type
+  - TypeScript
+  - Type System
+  - Utility Types
 ---
 
 In TypeScript, the `Record` type is a built-in utility type that represents an `object` type whose `property` keys are of a `specified type` and whose property values are of a `specified type`. It's essentially an object type that maps keys of one type to values of another type.
@@ -78,5 +82,3 @@ In this example, we define an interface `MyInterface` with three properties of d
 
 We then create a value of type `MyRecord` called `myRecord` using object literals to set the values for each key. This allows us to create an object with the same keys as `MyInterface`, but with a uniform value property for each key.
 </details>
-
-Cheer! 🍺

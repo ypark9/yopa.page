@@ -1,12 +1,16 @@
 ---
 title: How to Add Tags in GitHub
 date: 2023-06-18T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "How to Add Tags in GitHub"
 categories:
   - GitHub
 tags:
-  - Tags
+  - Git
+  - GitHub
+  - CLI
 ---
 
 Tags in GitHub are a great way to mark specific points in your project's history, such as significant releases or milestones. They provide a reference point for easier navigation and can be useful for collaboration and version control. In this article, we'll explore two methods of adding tags in GitHub: using Git commands and using the web user interface (UI).
@@ -60,5 +64,4 @@ Remember, tags are useful for organizing and tracking different versions of your
 
 *Note: If you're using a different Git platform or hosting service, the steps may vary slightly. However, the general concept of adding tags remains the same.*
 
-My first article from my first house! ;) 
-Cheers! 🍺
+My first article from my first house! ;)

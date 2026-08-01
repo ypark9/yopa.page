@@ -1,89 +1,75 @@
 ---
-title: Understanding Common DNS and Email Authentication Terms
+title: DNS and Email Authentication Without the Misleading Shortcuts
 date: 2024-11-25
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: A comprehensive guide to understanding common DNS records and email authentication terms like DKIM, CNAME, MX, and more.
+description: "A practical guide to A, CNAME, MX, TXT, SPF, DKIM, and DMARC records, including alignment, limits, rollout, and verification."
 categories:
   - Technology
   - Web Development
 tags:
   - DNS
-  - Email
+  - Email Authentication
+  - SPF
+  - DKIM
+  - DMARC
   - Security
 ---
 
-> A comprehensive guide to understanding common DNS records and email authentication terms like DKIM, CNAME, MX, and more.
+DNS publishes routing and policy data. It does not perform an HTTP redirect, prove that every sender is trustworthy, or guarantee email delivery. Understanding the boundary of each record prevents configurations that look correct but fail authentication or create outages.
 
-When setting up a domain for your website or email system, you'll encounter various DNS-related terms and records. Let's demystify these common terms and understand their significance in modern web infrastructure.
+## Common DNS records
 
-## DKIM (DomainKeys Identified Mail)
+- **A / AAAA:** map a hostname to an IPv4 or IPv6 address.
+- **CNAME:** aliases one DNS name to another canonical name. It is not a browser redirect and normally cannot coexist with other data at the same owner name. DNS providers may offer ALIAS/ANAME-style flattening at the zone apex; that is provider behavior, not a CNAME at the apex.
+- **MX:** identifies mail exchangers for a domain. A lower preference number is tried first. Multiple MX records help only when they lead to genuinely independent, correctly configured delivery paths; a fake “backup MX” can weaken filtering or queue mail incorrectly.
+- **TXT:** carries arbitrary text used by ownership checks and email policies. Publishing several unrelated TXT records is normal, but a domain must not publish multiple SPF records.
 
-DKIM serves as your email's digital signature, acting like a wax seal on traditional letters. This authentication method ensures that emails genuinely come from your claimed domain and haven't been tampered with during transmission.
+## SPF: authorize sending infrastructure
 
-### How DKIM Works
+SPF evaluates whether the connecting mail server is authorized for the RFC5321.MailFrom/return-path domain. It does not by itself authenticate the visible `From` header. Keep one SPF record per domain, end with an intentional qualifier, and watch the RFC-defined DNS lookup limit. Flattening provider ranges can become stale, while excessive `include` chains can produce `permerror`.
 
-1. When you send an email, your email server adds a digital signature to the message header
-2. This signature is created using a private key that only your server knows
-3. The recipient's server can verify this signature using a public key published in your DNS records
-4. If the verification succeeds, the email is considered authentic
+Example:
 
-### Easy DKIM
+```dns
+example.com. TXT "v=spf1 include:_spf.example-sender.com -all"
+```
 
-AWS has simplified the DKIM implementation through Easy DKIM:
+Use a subdomain for a third-party sender when it reduces blast radius, and remove providers when they are no longer used.
 
-- Automatically manages the cryptographic aspects
-- Creates three DKIM tokens for redundancy
-- Requires minimal technical knowledge to set up
-- Handles key rotation and maintenance automatically
+## DKIM: sign messages
 
-## CNAME (Canonical Name)
+DKIM adds a cryptographic signature. The receiver retrieves the public key at a selector such as `selector1._domainkey.example.com`. Protect the private key at the sender, use supported key sizes, rotate selectors, and keep an old selector published until messages signed with it have aged out.
 
-CNAME records are like sophisticated mail forwarding services in the DNS world. They allow you to create an alias from one domain name to another. Common uses include:
+AWS SES Easy DKIM can generate and rotate keys, but the DNS records must remain correct. “Three CNAMEs” is an SES implementation detail, not the definition of DKIM.
 
-- Pointing subdomains to content delivery networks (CDNs)
-- Setting up email authentication records
-- Creating memorable URLs that redirect to longer, technical ones
+## DMARC: require alignment and publish handling policy
 
-## MX (Mail Exchange)
+DMARC passes when at least one of SPF or DKIM both passes and aligns with the visible `From` domain. It then tells receivers the requested policy and where to send aggregate reports.
 
-MX records are the postal service of the email world. They tell other servers where to deliver emails for your domain. Key aspects include:
+```dns
+_dmarc.example.com. TXT "v=DMARC1; p=none; rua=mailto:dmarc@example.com; adkim=r; aspf=r; pct=100"
+```
 
-- Priority numbers (lower = higher priority)
-- Multiple MX records for redundancy
-- Different priorities for primary and backup mail servers
+Start with monitoring only after the mailbox and privacy handling for reports are ready. Inventory legitimate senders, fix alignment, then move deliberately to `quarantine` and `reject`. `p=none` gathers data but does not ask receivers to block failing mail. Receiver behavior and local policy can still vary.
 
-## Additional Common DNS Terms
+## Safe change procedure
 
-### SPF (Sender Policy Framework)
+1. Inventory every service sending with the domain, including marketing, support, billing, alerts, and forwarding.
+2. Query current authoritative DNS and record TTLs.
+3. Configure DKIM and an aligned return-path for each sender.
+4. Publish one reviewed SPF policy and a DMARC monitoring record.
+5. Validate syntax with authoritative queries and send test messages to independent receivers.
+6. Inspect `Authentication-Results` headers and aggregate reports.
+7. Tighten DMARC gradually, monitoring false positives and forwarded/list mail.
+8. Document owner, purpose, provider, selector, and removal date for every record.
 
-- Specifies which servers are authorized to send emails from your domain
-- Helps prevent email spoofing
-- Works alongside DKIM for better email security
+DNS caching means rollback is not instant. Lowering TTL only helps after the previous TTL has elapsed. DNSSEC protects authenticity of DNS responses when correctly deployed, but it does not replace SPF, DKIM, or DMARC.
 
-### DMARC (Domain-based Message Authentication, Reporting, and Conformance)
+Official standards reviewed on **2026-08-01**:
 
-- Tells receiving servers what to do with emails that fail SPF or DKIM checks
-- Provides reporting capabilities for better insight into email authentication
-- Helps maintain domain reputation
-
-### TXT Records
-
-- General-purpose text records in DNS
-- Often used for domain ownership verification
-- Can store SPF records and other domain verification data
-
-### A Records
-
-- Maps a domain directly to an IP address
-- Most basic type of DNS record
-- Essential for website hosting
-
-## Best Practices
-
-1. Always maintain proper backup MX records
-2. Implement all three email authentication methods (SPF, DKIM, and DMARC)
-3. Regularly audit your DNS records
-4. Use appropriate TTL (Time To Live) values for different record types
-5. Document all DNS changes and their purposes
-
-Cheers! 🍺
+- [SPF, RFC 7208](https://www.rfc-editor.org/rfc/rfc7208)
+- [DKIM, RFC 6376](https://www.rfc-editor.org/rfc/rfc6376)
+- [DMARC, RFC 7489](https://www.rfc-editor.org/rfc/rfc7489)
+- [Amazon SES Easy DKIM](https://docs.aws.amazon.com/ses/latest/dg/send-email-authentication-dkim-easy.html)

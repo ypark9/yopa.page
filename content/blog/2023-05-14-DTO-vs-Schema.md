@@ -1,13 +1,16 @@
 ---
 title: DTO vs Schema
 date: 2023-05-14T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "DTO vs Schema"
 categories:
   - Design
 tags:
-  - DTO
-  - Schema
+  - Architecture
+  - API Design
+  - Software Design
 ---
 
 ## Data Transfer Object (DTO)
@@ -45,11 +48,10 @@ In this example, we create a `userSchema` using the `Yup` library. It defines th
 Schemas provide a powerful mechanism for validating data integrity and enforcing consistency within an application. They allow you to define complex validation rules, perform data transformations, and handle error conditions effectively.
 
 ## DTO vs Schema
-While DTOs and schemas share some similarities, they have distinct purposes within an application. 
+While DTOs and schemas share some similarities, they have distinct purposes within an application.
 - DTOs focus on transferring data between components or across system boundaries.
   - DTOs excel at enabling clear communication and decoupling between different parts of an application. They ensure consistency and type safety when passing data, reducing potential errors and making code more maintainable.
 - Schemas concentrate on defining and validating the structure of data within an application.
   - schemas provide a mechanism for formally defining data structures and applying validation rules. They enhance data integrity, enforce constraints, and facilitate robust data handling throughout an application.
 
 Tomorrow is Monday guys. yike.. Good luck!
-Cheers! 🍺

@@ -1,7 +1,9 @@
 ---
-title: Boost Your Productivity with VS Code Multi-root Workspaces - Complete Guide 2024
+title: Working with VS Code Multi-root Workspaces
 title-with-dash: boost-your-productivity-with-vs-code-multi-root-workspaces
 date: 2024-11-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: Learn how to efficiently manage multiple project folders in Visual Studio Code using multi-root workspaces. Discover setup tips, best practices, and advanced configurations for improved development workflow.
 categories:
@@ -10,11 +12,8 @@ categories:
   - Knowledge Management
 tags:
   - VS Code
-  - Developer Tools
-  - Productivity
   - IDE
-  - Obsidian
-  - Knowledge Base
+  - CLI
 ---
 
 > Learn how to efficiently manage multiple project folders in Visual Studio Code using multi-root workspaces. Discover setup tips, best practices, and advanced configurations for improved development workflow and knowledge management.
@@ -25,6 +24,8 @@ As developers, juggling multiple projects or working with distributed codebases 
 
 ## What Makes Multi-root Workspaces Special?
 
+Multi-root workspaces remain supported. Prefer relative folder paths in shared `.code-workspace` files, keep machine-specific secrets out of workspace settings, and confirm that each extension supports folder-scoped configuration.
+
 Think of multi-root workspaces as your digital workspace organizer. Instead of cluttering your taskbar with multiple VS Code windows or constantly switching between different project folders, you can have everything you need in one place. This feature is particularly valuable for:
 
 - Full-stack developers working with separate frontend and backend codebases
@@ -32,7 +33,7 @@ Think of multi-root workspaces as your digital workspace organizer. Instead of c
 - Developers maintaining documentation alongside their code
 - Anyone working with related projects spread across different locations
 
-## The Power of Unified Knowledge Management
+## Unified knowledge folders
 
 ### Integrating with Obsidian and iCloud
 
@@ -225,5 +226,3 @@ Multi-root workspaces excel in scenarios like:
 ## Looking Ahead
 
 As modern development becomes increasingly complex, tools like VS Code's multi-root workspaces become essential for maintaining productivity. This feature continues to evolve with each VS Code release, offering new capabilities for managing complex development environments.
-
-Cheers! 🍺

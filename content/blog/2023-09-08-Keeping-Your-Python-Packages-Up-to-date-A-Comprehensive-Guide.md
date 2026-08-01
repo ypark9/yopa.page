@@ -1,6 +1,11 @@
 ---
 title: Keeping Your Python Packages Up-to-date - A Comprehensive Guide
 date: 2023-09-08T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The bulk-upgrade pipeline updates an entire environment without preserving declared dependency intent or a reproducible lock and is not a safe default workflow."
+replacement_url_en: "/blog/2026-08-01-safe-python-dependency-updates.html"
+replacement_url_ko: "/ko/blog/2026-08-01-safe-python-dependency-updates.html"
 author: Yoonsoo Park
 description: "In this article, we explore various methods to keep your Python packages up-to-date, from manual updates to automated dependency management services."
 categories:
@@ -8,10 +13,11 @@ categories:
     - Development
     - Dependency Management
 tags:
-    - Python
-    - pip
-    - Package Management
-    - Dependency Management
+  - Python
+  - Package Management
+  - Dependency Management
+  - pip
+  - Reproducible Builds
 ---
 
 # Keeping Your Python Packages Up-to-date: A Comprehensive Guide
@@ -32,9 +38,7 @@ pip install --upgrade package_name
 
 To update all packages to their latest versions, use:
 
-```bash
-pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
-```
+> Safety note added in 2026: the bulk-upgrade pipeline previously shown here has been removed. It could upgrade direct and transitive dependencies together without preserving project intent. Follow the replacement guide for a declared, locked, and tested update workflow.
 
 ### Freeze New Versions
 

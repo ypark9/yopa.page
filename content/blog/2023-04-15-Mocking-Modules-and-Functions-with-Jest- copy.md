@@ -1,15 +1,20 @@
 ---
 title: Mocking Modules and Functions with Jest
 date: 2023-04-15T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Mocking Modules and Functions"
 categories:
   - Jest
 tags:
-  - Mock modules and functions
+  - Jest
+  - TypeScript
+  - JavaScript
+  - Node.js
 ---
 
-## Mocking Modules and Functions with Jest: A Complete Tutorial
+## Mocking Modules and Functions with Jest
 
 In this tutorial, we'll explore how Jest can be used to Mock Modules and Functions. We'll discuss the different techniques involved and provide examples that demonstrate their usage.
 
@@ -46,18 +51,21 @@ In the above code, the `multiply()` function depends on the `add()` function. To
 ```typescript
 // app.test.ts
 import { multiply } from "./app";
-import * as math from "./math";
+import { add } from "./math";
+
+jest.mock("./math", () => ({ add: jest.fn() }));
 
 test("multiply function calls add function", () => {
-  math.add = jest.fn();
+  const mockedAdd = jest.mocked(add);
+  mockedAdd.mockReturnValue(5);
   multiply(2, 3);
-  expect(math.add).toHaveBeenCalledTimes(1);
+  expect(mockedAdd).toHaveBeenCalledWith(2, 3);
 });
 ```
 
-In the above example, we create a Mock Function for the `add()` function using `jest.fn()`. We then assign the Mock Function to the `math.add` property, replacing the original function with the Mock Function.
+The module factory replaces `add`, and `jest.mocked` gives the import its mock-aware TypeScript type. Assigning directly to an imported ESM namespace is invalid because module bindings are read-only.
 
-Finally, we call the multiply() function with the arguments 2 and 3. Since multiply() calls `add()` internally, the Mock Function will be called instead, allowing us to test the behavior of multiply() in isolation.
+This example assumes Jest's transformed/CommonJS mocking flow. Native ESM projects have different loading rules; follow Jest's current [ECMAScript Modules guide](https://jestjs.io/docs/ecmascript-modules) and use `jest.unstable_mockModule` where required.
 
 ## Using jest.mock to Mock Modules
 
@@ -95,5 +103,3 @@ The next line jest.mock Mocks the entire math.js module. The second argument of 
 Next, the code sets the return values for the Mock Functions using mockReturnValue(). For example, math.add.mockReturnValue(3) sets the return value for the add function Mock to 3.
 
 Finally, the code calls the Mock Functions with arguments and asserts that the return values match the expected values using Jest's expect function and the toBe matcher.
-
-Cheers! 🍺

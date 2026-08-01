@@ -1,6 +1,8 @@
 ---
-title: Mastering Jest with TypeScript - A Comprehensive Guide
+title: Testing TypeScript with Jest
 date: 2024-02-10
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "An insightful guide into using Jest with TypeScript, covering setup, matchers, and best practices with detailed examples."
 categories:
@@ -9,6 +11,7 @@ tags:
   - Jest
   - TypeScript
   - JavaScript
+  - Node.js
 ---
 
 ![Jest and Oni](images/oni-jest.webp)
@@ -16,6 +19,8 @@ tags:
 In the realm of JavaScript and TypeScript development, testing your code is just as important as writing it. Jest, a delightful JavaScript Testing Framework, has gained immense popularity for its simplicity and feature-rich environment. When combined with TypeScript, it brings strong typing and helps catch errors early, leading to more reliable and maintainable code. In this article, we dive deep into how to use Jest with TypeScript, exploring its powerful features through practical examples.
 
 ## Setting up Jest with TypeScript
+
+This setup uses `ts-jest` and Jest transforms. Native ESM projects require different configuration and mocking rules; follow the current [Jest ESM guide](https://jestjs.io/docs/ecmascript-modules) instead of copying CommonJS assumptions.
 
 Before harnessing the power of Jest in a TypeScript environment, you need to set up your project correctly. Start by installing TypeScript, Jest, and the necessary dependencies:
 
@@ -295,8 +300,6 @@ In this example, `initializeDatabase` and `closeDatabaseConnection` are used for
 
 These functions help in organizing the test code and managing resources efficiently, making the tests more reliable and maintainable.
 
-## Wrapping it up 👏
+## Conclusion
 
 Jest, when used with TypeScript, provides a robust framework for writing and managing your tests. Its rich set of matchers, combined with TypeScript's strong typing, ensures that your tests are both powerful and maintainable.
-
-Cheers! 🍺

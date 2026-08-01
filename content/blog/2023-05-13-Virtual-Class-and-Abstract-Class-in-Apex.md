@@ -1,15 +1,19 @@
 ---
 title: Virtual Class and Abstract Class in Apex
 date: 2023-05-12T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Virtual Class and Abstract Class in Apex"
 categories:
   - Salesforce
 tags:
   - Apex
+  - Software Design
+  - Apex Testing
 ---
 
-In the world of Apex programming, two important concepts that developers often encounter are `Virtual` Classes and `Abstract` Classes. Both of these class types provide powerful tools for building modular and extensible code, but they serve different purposes and have distinct characteristics. Let's get it~.
+`virtual` and `abstract` both allow inheritance in Apex, but they express different contracts. Use them deliberately; an interface or composition is often simpler when callers only need behavior rather than shared state.
 
 ## Virtual Classes
 A virtual class in Apex is a class that allows its methods to be overridden by subclasses. It provides a way to define a base implementation while also enabling customization and extension by derived classes. In other words, virtual classes serve as a starting point for creating specialized implementations.
@@ -83,8 +87,10 @@ class MyConcreteClass extends MyAbstractClass {
 
 Abstract classes are useful when you want to define a common set of methods and properties for a group of related classes, ensuring consistent behavior across different implementations.
 
-## Wrap this up!
-- Virtual classes allow for method overriding, enabling customization and extension of base implementations. 
-- Abstract classes establish a contract for derived classes, ensuring the implementation of required methods.
+## Choosing between them
+- Use a virtual class when a useful default implementation exists and subclasses may override selected virtual methods.
+- Use an abstract class when the base must not be instantiated and subclasses must supply one or more abstract operations.
+- Use an interface when unrelated implementations need the same contract without shared implementation.
+- Prefer composition when inheritance would expose internals or create a fragile hierarchy.
 
-Cheers! 🍺
+Keep visibility explicit (`public` or `global` only when required), add `override` to implementations, and write tests against both the base behavior and each specialization. `global` expands the package-level compatibility commitment, so don't use it as a default. Reviewed on 2026-08-01 against the [Apex class definition reference](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_defining.htm).

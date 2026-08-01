@@ -1,6 +1,8 @@
 ---
 title: Resolving 'No Default Dev Hub' Error When Creating Salesforce Scratch Orgs
-date: 2024-08-26
+date: 2024-07-16
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: Learn how to fix the 'No Default Dev Hub' error when creating Salesforce scratch orgs using Salesforce CLI, with step-by-step solutions and explanations.
 categories:
@@ -9,7 +11,7 @@ categories:
 tags:
   - Salesforce CLI
   - Scratch Orgs
-  - DevHub
+  - Developer Tools
 ---
 
 > Learn how to fix the 'No Default Dev Hub' error when creating Salesforce scratch orgs using Salesforce CLI, with step-by-step solutions and explanations.
@@ -59,7 +61,7 @@ If you work with multiple DevHubs or prefer not to set a default, you can explic
 1. Modify your original command to include the `-v` or `--target-dev-hub` flag, followed by your DevHub username:
 
    ```bash
-   sf org create scratch --definition-file=config/project-scratch-def.json --alias=my-scratch --set-default --duration-days=30 --wait=15 -v your-devhub-username@example.com
+   sf org create scratch --definition-file=config/project-scratch-def.json --alias=my-scratch --set-default --duration-days=30 --wait=15 --target-dev-hub your-devhub-username@example.com
    ```
 
    Again, replace `your-devhub-username@example.com` with your actual DevHub username.
@@ -68,7 +70,9 @@ If you work with multiple DevHubs or prefer not to set a default, you can explic
 
 This method gives you more flexibility if you need to switch between different DevHubs for various projects or teams.
 
-## Conclusion
+## Verification and CI guidance
+
+Run `sf org display --target-org my-scratch` and confirm the org ID, expiration, and intended Dev Hub. Project-local `target-dev-hub` is convenient for developers; an explicit `--target-dev-hub` is safer in CI because it does not depend on ambient configuration. Verified against the [scratch org guide](https://developer.salesforce.com/docs/platform/functions/guide/scratch-orgs.html) on 2026-08-01.
 
 The "No Default Dev Hub" error is a common hurdle in Salesforce development, but it's easily overcome with these simple solutions. Whether you choose to set a default DevHub or specify it in each command, you'll be able to create scratch orgs smoothly and continue your development work without interruption.
 

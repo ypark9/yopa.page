@@ -1,15 +1,16 @@
 ---
 title: Managing Multiple Versions with Pyenv and Virtual Environments
 date: 2024-01-01
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Dive into the essentials of Python development by learning how to manage multiple Python versions with Pyenv and create isolated project environments using virtual environments."
 categories:
   - Python
 tags:
-  - Multiple Python Versions
-  - pyenv
-  - Homebrew
-  - Virtual Environments
+  - Python
+  - Package Management
+  - CLI
 ---
 
 ![oni working on python](images/oni-python-1.webp)
@@ -37,6 +38,8 @@ Before setting up virtual environments, ensure you have the desired versions of 
 
 ## Managing Multiple Python Versions with pyenv
 
+Select a release that is still supported on the [Python versions page](https://devguide.python.org/versions/). The concrete version below is an example; pin the version required by the project and use the same value in CI.
+
 `pyenv` is an indispensable tool for managing multiple Python versions:
 
 1. **Install pyenv**: Install `pyenv` using Homebrew:
@@ -55,14 +58,13 @@ Before setting up virtual environments, ensure you have the desired versions of 
 3. **Install Python Versions**: Install the desired Python versions:
 
    ```bash
-   pyenv install 3.8.6
-   pyenv install 2.7.18
+   pyenv install 3.13.5
    ```
 
 4. **Set Global Python Version**: Choose a global Python version with `pyenv`:
 
    ```bash
-   pyenv global 3.8.6
+   pyenv local 3.13.5
    ```
 
 ## Creating and Activating Virtual Environments
@@ -72,15 +74,15 @@ Virtual environments are created and activated to isolate project dependencies:
 1. **Creating a Virtual Environment**: Navigate to your project directory and create a virtual environment:
 
    ```bash
-   python3 -m venv env
+   python3 -m venv .venv
    ```
 
-   Replace `env` with your preferred environment name.
+   Replace `.venv` with your preferred environment name.
 
 2. **Activating the Virtual Environment**: Activate the virtual environment to use it:
 
    ```bash
-   source env/bin/activate
+   source .venv/bin/activate
    ```
 
    Upon activation, your shell prompt might change to indicate the active environment. Now, the environment's Python version and packages are isolated from the rest of your system.
@@ -104,4 +106,3 @@ deactivate
 ```
 
 Your shell's prompt will return to normal, and you'll be using the global Python version and packages again.
-Cheers! 🍺

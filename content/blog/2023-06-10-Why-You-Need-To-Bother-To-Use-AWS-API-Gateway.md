@@ -1,48 +1,53 @@
 ---
-title: Why You Need to Bother to Use AWS API Gateway
+title: Choosing When to Use Amazon API Gateway
 date: 2023-06-10T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "AWS API Gateway"
+description: "A practical comparison of API Gateway HTTP APIs, REST APIs, Lambda Function URLs, and load balancers."
 categories:
   - AWS
 tags:
-  - API Gateway
+  - Amazon API Gateway
+  - AWS Architecture
+  - Security
 ---
 
-APIs are handy for connecting systems and facilitating data exchange. Of course they are tons of tools available to manage APIs and Amazon Web Services (AWS) provides a tool known as the API Gateway for that.
+Amazon API Gateway is a managed front door for HTTP, REST, and WebSocket APIs. It can provide routing, authorization, throttling, metrics, stages, and integrations without requiring a team to operate an API proxy fleet. That does not mean every service needs it.
 
-## What is AWS API Gateway?
+## Start with the requirement
 
-The AWS API Gateway is a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale. APIs act as the "front door" for applications to access data, business logic, or functionality from your backend services. (e.g. one way to create microservices architecture)
+Choose **API Gateway HTTP API** for a relatively simple Lambda or HTTP proxy API when JWT/OIDC authorization, IAM authorization, custom domains, CORS, and lower cost are important. Choose **API Gateway REST API** when a required feature is available only there, such as usage plans/API keys, request validation or transformation capabilities, or particular caching and private API patterns. Check the official feature comparison because the two products are not interchangeable.
 
-## Why AWS API Gateway?
+Consider alternatives:
 
-### 1. Scalability and Performance
+- **Lambda Function URL:** one Lambda, simple ingress, and no need for API Gateway's broader management features.
+- **Application Load Balancer:** existing container or instance services, long-lived connections, or load-balancer-native routing.
+- **AWS AppSync:** GraphQL and managed real-time/data-source integration requirements.
+- **Direct service-to-service integration:** asynchronous EventBridge, SNS, or SQS may be a better boundary than a synchronous API.
 
-AWS API Gateway is designed to handle thousands to millions of concurrent API calls, ensuring your application can scale as demand changes. It reduces the time and effort to manually manage infrastructure and traffic distribution. which means as developers we can focus on building and improving applications more.
+## Security is configuration, not a default outcome
 
-### 2. Security
+Pick authorization for the caller: IAM/SigV4 for AWS workloads, JWT authorizers for OIDC identities, Cognito user pools where appropriate, or a Lambda authorizer for genuinely custom logic. An API key identifies a usage-plan consumer; it is not authentication by itself.
 
-API Gateway provides several tools to authorize access to your APIs and control service access. These include AWS Identity and Access Management (IAM), AWS Cognito, and Lambda authorizers for that access management.
+Apply throttling and quotas intentionally, validate input at the application boundary, restrict backend roles, and avoid logging tokens or sensitive request bodies. A private API or resource policy can reduce network exposure, but authorization remains necessary.
 
-### 3. Cost Efficiency
+## Operations and cost
 
-With API Gateway, you only pay for the API calls you receive and the amount of data transferred out without upfront costs. The service includes a tiered pricing model that reduces costs as your API usage increases.
+API Gateway scales the managed entry point, not the backend. Set Lambda concurrency, database connection limits, retries, and timeouts so a traffic spike does not move the failure downstream. Emit access logs with request IDs, metrics and alarms for latency, 4xx/5xx responses, integration errors, and throttles. Sample tracing where it answers an operational question.
 
-### 4. Development and Operational Efficiency
+Pricing differs by API type, Region, request volume, payload and data transfer. Compare the live pricing page with ALB or direct alternatives for the expected traffic shape rather than assuming pay-per-request is always cheaper.
 
-API Gateway allows for seamless API version management, staging, and lifecycle management. With built-in features (e.g. traffic management, throttling, and backend connection pooling), we can manage our APIs more efficiently.
+## A small decision checklist
 
-### 5. Monitoring and Troubleshooting
+1. Identify protocol, caller identity, traffic shape, payload size, and latency target.
+2. List the required authorization, transformation, caching, WebSocket, and private-network features.
+3. Pick HTTP API by default when it meets the list; use REST API only for a required REST-specific capability.
+4. Test throttling, authorization denial, backend timeout, malformed input, and deployment rollback.
+5. Verify logs and alarms without collecting secrets.
 
-With AWS CloudWatch integration, we can monitor API usage and troubleshoot issues more easily. (e.g. with detailed metrics and logging, we can understand how our APIs are being used)
+Official documentation reviewed on **2026-08-01**:
 
-## Real-life Example: Online Retail Store
-
-Let's say you're developing an e-commerce website "INeedThatFast". Your website includes numerous services like user management, inventory management, order processing, payment processing, and so on... All these services need to communicate with each other to function correctly.
-
-Instead of allowing these services to communicate directly (which can become a management nightmare!), you can use AWS API Gateway to manage these interactions. This not only ensures secure and efficient communication, but also allows us to monitor and manage these interactions from a single spot.
-
-For example, when a customer places an order, the website interacts with the inventory management and order processing services. API Gateway routes these interactions for us. If the website traffic suddenly increases during a sale event, API Gateway will automatically scale to handle the increased incoming traffic. This allows us to provide a smooth shopping experience for the customers no matter what the website traffic is.
-
-Cheers! 🍺
+- [Choose between HTTP APIs and REST APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html)
+- [API Gateway security](https://docs.aws.amazon.com/apigateway/latest/developerguide/security.html)
+- [API Gateway quotas](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html)

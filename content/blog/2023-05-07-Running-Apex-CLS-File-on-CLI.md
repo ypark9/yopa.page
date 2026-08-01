@@ -1,13 +1,19 @@
 ---
 title: Running Apex CLS File on CLI
 date: 2023-05-07T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The script treats class files as anonymous Apex and interpolates untrusted paths into a shell command."
+replacement_url_en: "/blog/2026-08-01-run-anonymous-apex-safely-with-sf-cli.html"
+replacement_url_ko: "/ko/blog/2026-08-01-run-anonymous-apex-safely-with-sf-cli.html"
 author: Yoonsoo Park
 description: "Running Apex CLS File on CLI"
 categories:
   - Salesforce
 tags:
-  - Apex cls
-  - CLI
+  - Apex
+  - Salesforce CLI
+  - Security
 ---
 
 In this article, we will explore how to run an Apex CLS file on the Command Line Interface (CLI) using a TypeScript code snippet. This code snippet will allow you to execute Apex classes in a specified folder, and return the results to the CLI.

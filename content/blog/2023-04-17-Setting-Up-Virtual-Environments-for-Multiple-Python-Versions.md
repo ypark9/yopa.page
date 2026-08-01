@@ -1,12 +1,19 @@
 ---
 title: Setting Up Virtual Environments for Multiple Python Versions
 date: 2023-04-17T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article recommends python2 -m venv, but the standard-library venv workflow is a Python 3 feature and the examples no longer provide a supported environment-management path."
+replacement_url_en: "/blog/2026-08-01-python-project-environments.html"
+replacement_url_ko: "/ko/blog/2026-08-01-python-project-environments.html"
 author: Yoonsoo Park
 description: "Setting Up Virtual Environments for Multiple Python Versions"
 categories:
   - Python
 tags:
-  - Multiple Python Versions
+  - Python
+  - Package Management
+  - CLI
 ---
 
 ## Setting Up Virtual Environments for Multiple Python Versions

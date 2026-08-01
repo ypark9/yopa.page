@@ -2,6 +2,8 @@
 title: Initializing a Python Project in Visual Studio Code
 title-with-dash: Initializing-a-Python-Project-in-Visual-Studio-Code
 date: 2023-08-31T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "This article guides you through the process of initializing a Python project in Visual Studio Code, installing dependencies, and setting up a GitHub repository."
 categories:
@@ -9,10 +11,16 @@ categories:
     - Python
     - Visual Studio Code
 tags:
-    - Python
-    - VS Code
-    - GitHub
+  - Python
+  - VS Code
+  - Virtual Environments
+  - GitHub
+  - Developer Workflow
 ---
+
+## Current VS Code environment workflow
+
+VS Code now provides a Python Environments workflow that discovers `.venv`, pyenv, conda, Poetry, Pipenv, and uv environments. Prefer `.venv`, `python -m pip`, a declared project dependency file, and the repository default branch instead of assuming a global interpreter or `master`.
 
 # Initializing a Python Project in Visual Studio Code
 
@@ -104,5 +112,3 @@ Push your local commits to the GitHub repository:
 ```bash
 git push -u origin master
 ```
-
-Cheers! 🍺

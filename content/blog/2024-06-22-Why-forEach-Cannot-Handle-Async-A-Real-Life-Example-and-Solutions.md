@@ -1,6 +1,8 @@
 ---
 title: Why `forEach` Cannot Handle Async - A Real-Life Example and Solutions
 date: 2024-06-22
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explore why `forEach` is not suitable for handling asynchronous operations and discover how to use `for...of` loops or `map` with `Promise.all` for effective async handling in JavaScript."
 categories:
@@ -9,8 +11,8 @@ categories:
   - Best Practices
 tags:
   - JavaScript
-  - Async
-  - forEach
+  - TypeScript
+  - Asynchronous Programming
 ---
 
 In JavaScript, handling asynchronous operations can be tricky, especially when dealing with collections of data. One common pitfall is using the `forEach` method for asynchronous tasks. This article explains why `forEach` cannot handle async operations properly and presents solutions using `for...of` loops or the `map` method combined with `Promise.all`.
@@ -61,6 +63,8 @@ With this approach, you will see each file upload log message in sequence, follo
 
 ## Solution 2: Using `map` with `Promise.all`
 
+`Promise.all` is fail-fast and starts all mapped operations immediately. Use `Promise.allSettled` when every result must be collected, or a maintained concurrency limiter when the input can exhaust sockets, memory, or service quotas.
+
 Another solution is to use the `map` method to create an array of promises and then wait for all of them to resolve using `Promise.all`. This approach is useful when you want to perform async operations in parallel.
 
 ```javascript
@@ -81,9 +85,8 @@ uploadFiles(files);
 
 This code will log the upload messages for each file, potentially out of order, but "All files uploaded" will be logged only after all files have been processed.
 
-## Wrapping it up 👏
+## Conclusion
 
 Handling asynchronous operations in JavaScript requires careful consideration, especially when dealing with loops. The `forEach` method is not suitable for async tasks because it does not wait for promises to resolve. Instead, use `for...of` loops to handle async operations sequentially or `map` with `Promise.all` to handle them in parallel.
 
-Another day to learn another stuff! Life is wonderful.
-Cheers! 🍺
+Choose sequential, unbounded parallel, settled-result, or bounded-concurrency execution from the operation's ordering, error, and resource requirements.

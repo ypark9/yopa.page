@@ -1,6 +1,8 @@
 ---
 title: "AWS Vector Databases for RAG — A 2026 Architectural Decision Guide"
 date: 2025-05-25T02:30:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Choosing a vector store on AWS is no longer a five-way decision. With S3 Vectors added to OpenSearch, pgvector, Neptune Analytics, Bedrock Knowledge Bases, and Kendra, the real question is which tier of the cost/latency curve your workload lives on. Here's an updated decision framework."
 categories:
@@ -8,14 +10,12 @@ categories:
   - Machine Learning
   - RAG
 tags:
-  - opensearch
-  - pgvector
-  - bedrock
-  - s3-vectors
-  - neptune-analytics
-  - kendra
-  - vector-search
-  - rag
+  - AWS
+  - RAG
+  - Vector Search
+  - Amazon Bedrock
+  - Amazon S3 Vectors
+  - Amazon OpenSearch Service
 ---
 
 > Choosing a vector store on AWS used to be a five-way decision. With **Amazon S3 Vectors** in the picture, it's now better framed as a question of *which tier of the cost/latency curve your workload belongs to*. This is an updated decision framework — what each option is good at, when it wins, and how they increasingly combine instead of compete.

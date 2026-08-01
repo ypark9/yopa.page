@@ -1,20 +1,29 @@
 ---
 title: git diff with Two Tags using simple-git TypeScript
 date: 2023-05-15T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "git diff with Two Tags using simple-git"
 categories:
   - git
 tags:
-  - simple-git
+  - Git
+  - CLI
+  - TypeScript
+  - Node.js
 ---
+
+## Repository and reference safety
+
+Treat repository URLs, refs, and output paths as untrusted input. Use a unique temporary directory, pass refs as separate arguments, validate that they resolve to commits, and remove the directory in `finally`. Confirm the installed `simple-git` version because its TypeScript return types have changed across releases.
 
 ## Performing Git Diff with simple-git
 
 First, make sure you have the simple-git library imported in your TypeScript file:
 
 ```typescript
-import simpleGit, { SimpleGit, DiffResult } from "simple-git";
+import simpleGit, { SimpleGit } from "simple-git";
 ```
 
 Create a function that will perform the `Git diff` operation between two tags. The function should accept the tag names as parameters and return a promise that resolves to the diff output string.
@@ -23,12 +32,13 @@ Create a function that will perform the `Git diff` operation between two tags. T
 async function getGitDiff(tag1: string, tag2: string): Promise<string> {
   const git: SimpleGit = simpleGit();
 
-  const diff: DiffResult = await git.diff([`${tag1}..${tag2}`]);
-  return diff.diff;
+  await git.revparse(["--verify", `${tag1}^{commit}`]);
+  await git.revparse(["--verify", `${tag2}^{commit}`]);
+  return git.diff([tag1, tag2]);
 }
 ```
 
-In the above code, we use the simpleGit function from the `simple-git` library to instantiate a new `SimpleGit` object. Then, we call the diff method with the tag range specified as `${tag1}..${tag2}`. This will retrieve the diff result as a `DiffResult` object, from which we extract the `diff` property containing the actual `diff output`.
+The refs are verified as commits before they are passed as separate `git diff` arguments. Current `simple-git` releases return the textual diff from this overload. Pin the package version and compile the example because older releases exposed different typings.
 
 Now you can call the getGitDiff function and retrieve the diff output between two tags:
 
@@ -43,49 +53,27 @@ console.log(diff);
 ## Use case: clone the repo to local drive then perform git diff
 
 ```typescript
-import simpleGit, { SimpleGit, DiffResult } from "simple-git";
-import * as fs from "fs-extra";
+import simpleGit from "simple-git";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 async function gitDiff(
   repositoryUrl: string,
   tag1: string,
   tag2: string
-): Promise<void> {
-  const git: SimpleGit = simpleGit();
-
-  const tempDir = "./temp-repo";
-
-  // Delete the temporary directory if it exists
-  if (fs.existsSync(tempDir)) {
-    console.log("tempDir exists, removing it");
-    await fs.remove(tempDir);
-  }
-
-  // Create a new empty temporary directory
-  console.log("creating tempDir");
-  await fs.mkdir(tempDir);
-
-  // Clone the repository from the provided URL
-  await git.clone(repositoryUrl, "./temp-repo");
-
-  // Change the working directory to the cloned repository
-  git.cwd("./temp-repo");
-
-  // Perform the 'git diff' operation
-  let diff: string = "";
+): Promise<string> {
+  const tempDir = await mkdtemp(join(tmpdir(), "tag-diff-"));
   try {
-    diff = await git.diff([`${tag1}..${tag2}`]);
-    console.log("diff", diff);
-
-    // Rest of the code...
-  } catch (error) {
-    console.error("An error occurred while performing git diff:", error);
+    await simpleGit().clone(repositoryUrl, tempDir, ["--no-checkout"]);
+    const git = simpleGit(tempDir);
+    await git.revparse(["--verify", `${tag1}^{commit}`]);
+    await git.revparse(["--verify", `${tag2}^{commit}`]);
+    return await git.diff([tag1, tag2]);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
   }
-
-  // Remove the temporary repository
-  console.log(diff);
-  await fs.remove(tempDir);
 }
 ```
 
-Cheers! 🍺
+This function is appropriate only when the caller is allowed to clone the supplied repository. Production services should also restrict protocols and hosts, set time and size limits, and avoid logging credentials embedded in a URL.

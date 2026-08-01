@@ -1,12 +1,16 @@
 ---
 title: The Strategy Pattern
 date: 2023-05-17T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "The Strategy Pattern - design pattern"
 categories:
   - Design Pattern
 tags:
-  - The Strategy Pattern
+  - Design Patterns
+  - Software Design
+  - Architecture
 ---
 
 The ability to modify or extend functionality without impacting the existing codebase is crucial in a rapidly evolving technological landscape. One design pattern that helps achieve this goal is `the Strategy Pattern`.
@@ -100,5 +104,3 @@ Next, we create the `Sorter` class as the context. It has a reference to the `So
 In the client code, we instantiate a `Sorter` object and initially set it to use the `BubbleSortStrategy`. We call the sort() method on the `Sorter` object, and it delegates the sorting operation to the currently set strategy (`BubbleSortStrategy`).
 
 We can dynamically change the sorting strategy by calling `set_strategy()` with a different strategy object (`QuickSortStrategy`, `MergeSortStrategy`, etc.). The `Sorter` object will then use the new strategy for subsequent sorting operations.
-
-Cheers! 🍺
