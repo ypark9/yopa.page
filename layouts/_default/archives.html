@@ -1,9 +1,14 @@
 {{ define "main" }}
 
+<link rel="stylesheet" href="{{ "css/article-atlas-trails.css" | relURL }}">
+
 <header>
     <div class="container">
         <h1>{{ .Title }}</h1>
         <p class="subtitle">{{ .Params.subtitle }}</p>
+        <nav class="archives-atlas-nav" aria-label="Article Atlas">
+            <a class="article-atlas-return" href="{{ "explore/" | relURL }}">Return to Article Atlas <span aria-hidden="true">↗</span></a>
+        </nav>
     </div>
 </header>
 

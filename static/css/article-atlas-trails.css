@@ -38,6 +38,22 @@
   font-weight: 750;
   text-decoration: none;
 }
+
+.article-atlas-return:hover,
+.article-atlas-return:focus-visible {
+  background: #355246;
+  color: #fff9e9 !important;
+}
+
+.article-atlas-return:focus-visible {
+  outline: 3px solid #ffd479;
+  outline-offset: 3px;
+}
+
+.archives-atlas-nav {
+  margin-top: 1.25rem;
+}
+
 .article-ad {
   min-height: 120px;
   margin: 42px 0;
