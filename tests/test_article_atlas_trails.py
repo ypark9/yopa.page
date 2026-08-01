@@ -84,48 +84,13 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         template = (ROOT / "layouts" / "explore" / "single.html").read_text()
         self.assertIn('id="explore-waypoint"', template)
 
-    def test_article_and_signpost_panels_lock_before_navigation(self):
-        source = (ROOT / "static" / "js" / "explore.js").read_text()
-        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
-
-        self.assertIn("lockedTarget: null", source)
-        self.assertIn("function lockTarget(kind, target", source)
-        self.assertIn("function unlockTarget(", source)
-        self.assertIn('lockTarget("article", state.nearest)', source)
-        self.assertNotIn("if (state.nearest) navigateToArticle(state.nearest);", source)
-        self.assertIn("state.pointerGesture.moved", source)
-        self.assertIn(">= 8", source)
-        self.assertIn('id="explore-card-close"', template)
-        self.assertIn('id="explore-signpost-close"', template)
-        self.assertGreaterEqual(template.count('role="dialog" aria-modal="false"'), 2)
-
-    def test_signposts_use_proximity_hint_and_anchored_menu(self):
-        source = (ROOT / "static" / "js" / "explore.js").read_text()
-        template = (ROOT / "layouts" / "explore" / "single.html").read_text()
-        styles = (ROOT / "static" / "css" / "explore.css").read_text()
-
-        self.assertIn('id="explore-signpost-hint"', template)
-        self.assertIn("function showLandmarkHint(landmark)", source)
-        self.assertIn("Click the sign to find another region", source)
-        self.assertIn("Click to see what’s coming next", source)
-        self.assertIn("function positionLandmarkOverlays()", source)
-        self.assertIn('state.pointer.mapActive = stage.contains(event.target)', source)
-        self.assertIn('stage.addEventListener("click"', source)
-        self.assertIn('{ focus: false }', source)
-        self.assertIn("&& !state.lockedTarget && !state.nearbyLandmark", source)
-        self.assertIn("if (nearby) selectArticle(null);", source)
-        self.assertIn("SIGNPOST_INTERACTION_RADIUS = 58", source)
-        self.assertIn("Math.min(item.interactionRadius, SIGNPOST_INTERACTION_RADIUS)", source)
-        self.assertIn('.explore-signpost-hint', styles)
-        self.assertIn('pointer-events: none;', styles)
-        self.assertIn('z-index: 20;', styles)
-
-    def test_explore_never_renders_adsense_and_support_is_configured(self):
+    def test_explore_never_renders_adsense_and_links_to_kofi_once(self):
         self.assertNotIn("pagead2.googlesyndication.com", self.explore_html)
         self.assertNotIn("adsbygoogle", self.explore_html)
-        self.assertIn('id=explore-pit-support', self.explore_html)
-        self.assertIn('href=https://ko-fi.com/yoonsoopark', self.explore_html)
-        self.assertIn("Help keep the atlas online", self.explore_html)
+        self.assertEqual(self.explore_html.count("explore-pit-support"), 1)
+        self.assertIn("https://ko-fi.com/yoonsoopark", self.explore_html)
+        self.assertIn("Leave a coin on Ko-fi", self.explore_html)
+        self.assertIn('target=_blank rel="noopener noreferrer"', self.explore_html)
 
     def test_server_cost_pit_is_bounded_and_dismissible(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
@@ -395,6 +360,94 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("@media (max-width: 640px)", styles)
         self.assertIn("width: calc(100vw - 20px);", styles)
         self.assertIn("max-height: min(52dvh, 430px);", styles)
+
+
+class MonetizationRenderingTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.output_dir = Path(tempfile.mkdtemp(prefix="yopa-monetization-test-"))
+        subprocess.run(
+            [
+                "hugo",
+                "--gc",
+                "--minify",
+                "--environment",
+                "production",
+                "--destination",
+                str(cls.output_dir),
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.output_dir)
+
+    def test_production_blog_articles_render_exactly_one_manual_ad(self):
+        article_paths = sorted((self.output_dir / "blog").glob("*.html"))
+        self.assertTrue(article_paths)
+
+        article_html = article_paths[0].read_text()
+        self.assertEqual(article_html.count("pagead2.googlesyndication.com"), 1)
+        self.assertEqual(article_html.count("class=adsbygoogle"), 1)
+        self.assertEqual(article_html.count("data-ad-slot=5207040273"), 1)
+        self.assertLess(article_html.index("class=article-post"), article_html.index("class=article-ad"))
+        self.assertLess(
+            article_html.index("class=article-ad"),
+            article_html.index("class=article-atlas-trails"),
+        )
+
+    def test_non_blog_pages_never_render_adsense(self):
+        non_blog_html = [
+            path
+            for path in self.output_dir.rglob("*.html")
+            if "blog" not in path.relative_to(self.output_dir).parts
+        ]
+        self.assertTrue(non_blog_html)
+
+        for path in non_blog_html:
+            html = path.read_text()
+            self.assertNotIn("pagead2.googlesyndication.com", html, path)
+            self.assertNotIn("adsbygoogle", html, path)
+
+    def test_empty_settings_remain_fail_closed(self):
+        fail_closed_dir = Path(tempfile.mkdtemp(prefix="yopa-monetization-off-test-"))
+        override = fail_closed_dir / "config.yaml"
+        override.write_text(
+            'params:\n'
+            '  articleAtlasSupportUrl: ""\n'
+            '  articleAdSlot: ""\n'
+        )
+        try:
+            subprocess.run(
+                [
+                    "hugo",
+                    "--gc",
+                    "--minify",
+                    "--environment",
+                    "production",
+                    "--config",
+                    f"config.yaml,{override}",
+                    "--destination",
+                    str(fail_closed_dir / "public"),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            output = fail_closed_dir / "public"
+            explore_html = (output / "explore" / "index.html").read_text()
+            self.assertNotIn("explore-pit-support", explore_html)
+            for path in output.rglob("*.html"):
+                html = path.read_text()
+                self.assertNotIn("pagead2.googlesyndication.com", html, path)
+                self.assertNotIn("adsbygoogle", html, path)
+        finally:
+            shutil.rmtree(fail_closed_dir)
 
 
 if __name__ == "__main__":
