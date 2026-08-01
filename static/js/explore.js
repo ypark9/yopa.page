@@ -2,6 +2,7 @@
   const canvas = document.getElementById("explore-world");
   const stage = document.querySelector(".atlas-stage");
   const shell = document.getElementById("explore-shell");
+  const nightFilter = document.getElementById("atlas-night-filter");
   const payload = document.getElementById("explore-posts");
   const layerCanvases = {
     backdrop: document.getElementById("atlas-backdrop"),
@@ -10,7 +11,7 @@
     top: document.getElementById("atlas-top"),
     cursor: canvas
   };
-  if (!canvas || !stage || !shell || !payload || Object.values(layerCanvases).some((item) => !item)) return;
+  if (!canvas || !stage || !shell || !nightFilter || !payload || Object.values(layerCanvases).some((item) => !item)) return;
 
   const layerContexts = Object.fromEntries(
     Object.entries(layerCanvases).map(([name, item]) => [name, item.getContext("2d")])
@@ -18,6 +19,10 @@
   let ctx = layerContexts.world;
   const posts = JSON.parse(payload.textContent || "[]");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  const configuredScheme = document.documentElement.dataset.userColorScheme;
+  const initialDarkMode = configuredScheme ? configuredScheme === "dark" : colorSchemeMedia.matches;
+  document.body.classList.toggle("atlas-night-mode", initialDarkMode);
   const SESSION_KEY = "article-atlas-navigation-v1";
   const PIT_SESSION_KEY = "article-atlas-server-cost-pit-v1";
   const PIT_DELAY_SECONDS = 60;
@@ -66,6 +71,8 @@
     pitOpen: false,
     time: 0,
     motionTime: 0,
+    nightAmount: initialDarkMode ? 1 : 0,
+    nightTarget: initialDarkMode ? 1 : 0,
     frameId: null
   };
 
@@ -394,6 +401,33 @@
     atlasManifest.objects
       .filter((item) => item.layer === layer)
       .forEach(drawAtlasObject);
+  }
+
+  function updateNightFilter() {
+    const night = atlasManifest?.night;
+    const amount = state.nightAmount;
+    if (!night || amount <= .001) {
+      nightFilter.style.opacity = "0";
+      return;
+    }
+    const tint = night.tint || {};
+    nightFilter.style.background = tint.color || "#182744";
+    nightFilter.style.mixBlendMode = tint.blend || "multiply";
+    nightFilter.style.opacity = String((tint.opacity ?? .62) * amount);
+  }
+
+  function drawNightLights() {
+    const night = atlasManifest?.night;
+    const amount = state.nightAmount;
+    if (!night || amount <= .001) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    (night.lights || []).forEach((light, index) => {
+      if (!rectIsVisible(light.x - light.width / 2, light.y - light.width / 2, light.width, light.width)) return;
+      const pulse = reducedMotion ? 1 : 1 + Math.sin(state.motionTime * .0016 + index * 1.7) * (light.pulse || 0);
+      drawAmbientSprite(light, light.src, light.x, light.y, light.width, (light.opacity ?? 1) * amount * pulse);
+    });
+    ctx.restore();
   }
 
   function signSpriteFor(regionId) {
@@ -1094,9 +1128,11 @@
     drawAtlasTiles("top");
     drawAtlasObjects("top");
     drawAmbientLayer("top");
+    updateNightFilter();
 
     ctx = layerContexts.cursor;
     ctx.clearRect(0, 0, state.width, state.height);
+    drawNightLights();
     drawOwnCursor();
     positionLandmarkOverlays();
   }
@@ -1118,6 +1154,17 @@
     const elapsed = state.lastTick === null ? 0 : Math.min(.1, (time - state.lastTick) / 1000);
     state.lastTick = time;
     state.motionTime += elapsed * 1000;
+    if (state.nightAmount !== state.nightTarget) {
+      if (reducedMotion) state.nightAmount = state.nightTarget;
+      else {
+        const direction = Math.sign(state.nightTarget - state.nightAmount);
+        state.nightAmount += direction * elapsed / .3;
+        if ((direction > 0 && state.nightAmount >= state.nightTarget)
+          || (direction < 0 && state.nightAmount <= state.nightTarget)) {
+          state.nightAmount = state.nightTarget;
+        }
+      }
+    }
     if (state.entered && state.pointer.active && state.pointer.mapActive && !state.paused && !state.wheelOpen && !state.pitOpen
       && !state.lockedTarget && !state.nearbyLandmark && state.pointerGesture?.pointerType !== "touch") {
       state.activeSeconds += elapsed;
@@ -1185,6 +1232,19 @@
   });
   stage.addEventListener("pointerleave", () => { state.pointer.mapActive = false; });
   window.addEventListener("blur", () => { state.pointer.active = false; state.pointer.mapActive = false; });
+  window.addEventListener("onColorSchemeChange", (event) => {
+    state.nightTarget = event.detail === "dark" ? 1 : 0;
+    document.body.classList.toggle("atlas-night-mode", state.nightTarget === 1);
+    if (reducedMotion) state.nightAmount = state.nightTarget;
+    scheduleFrame();
+  });
+  colorSchemeMedia.addEventListener("change", (event) => {
+    if (document.documentElement.dataset.userColorScheme) return;
+    state.nightTarget = event.matches ? 1 : 0;
+    document.body.classList.toggle("atlas-night-mode", state.nightTarget === 1);
+    if (reducedMotion) state.nightAmount = state.nightTarget;
+    scheduleFrame();
+  });
   stage.addEventListener("click", (event) => {
     if (state.wheelOpen) { closeWheel(); return; }
     if (state.suppressNextClick) { state.suppressNextClick = false; return; }
@@ -1273,7 +1333,17 @@
     }, reducedMotion ? 0 : 360);
   });
   document.getElementById("explore-card-link").addEventListener("click", () => saveNavigation(state.nearest));
-  document.getElementById("explore-card-close").addEventListener("click", () => unlockTarget());
+  const articleCardClose = document.getElementById("explore-card-close");
+  articleCardClose.addEventListener("pointerup", (event) => {
+    if (event.pointerType !== "touch") return;
+    event.preventDefault();
+    event.stopPropagation();
+    unlockTarget();
+  });
+  articleCardClose.addEventListener("click", (event) => {
+    event.stopPropagation();
+    unlockTarget();
+  });
   document.getElementById("explore-card-related").addEventListener("click", (event) => {
     const button = event.target.closest("[data-article-url]");
     if (!button) return;
