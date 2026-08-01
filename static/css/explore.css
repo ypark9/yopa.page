@@ -42,7 +42,7 @@ body:has(.explore-shell) > main {
 
 .atlas-night-filter {
   position: absolute;
-  z-index: 15;
+  z-index: 4;
   inset: 0;
   opacity: 0;
   pointer-events: none;
@@ -591,6 +591,21 @@ body:has(.explore-shell) > main {
 
 body.atlas-night-mode:has(.explore-shell) {
   background: #101a2c;
+}
+
+.atlas-night-mode .explore-button {
+  border-color: rgba(248, 239, 207, .72);
+  background: rgba(23, 36, 58, .92);
+  color: var(--explore-ink);
+  box-shadow: 2px 3px 0 rgba(4, 10, 22, .48);
+}
+
+.atlas-night-mode .explore-brand-mark {
+  color: #182438;
+}
+
+.atlas-night-mode .explore-pit-sign {
+  color: #182438;
 }
 
 .atlas-night-mode .explore-help,
