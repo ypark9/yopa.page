@@ -1,8 +1,10 @@
 ---
 title: "Sign API Gateway Requests with SigV4 and AWS SDK for JavaScript v3"
-date: 2026-08-01
+date: 2023-06-13T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-13-invoking-aws-api-gateway-with-sigv4.html"
 author: Yoonsoo Park
 description: "Invoke an IAM-authorized API Gateway endpoint with the JavaScript v3 signer and temporary credentials, including body signing and verification."
 categories:

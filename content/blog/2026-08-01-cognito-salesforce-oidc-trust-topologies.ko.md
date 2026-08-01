@@ -1,6 +1,10 @@
 ---
 title: Cognito와 Salesforce OIDC 신뢰 토폴로지 설계
-date: 2026-08-01
+date: 2025-04-11
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-04-11-setting-up-sso-between-aws-cognito-and-salesforce-a-beginners-guide.html"
 author: Yoonsoo Park
 description: Cognito와 Salesforce 중 어느 쪽이 IdP인지 먼저 정하고 discovery, callback, claim, provisioning, logout, test를 그 방향에 맞춰 구성한다.
 categories:

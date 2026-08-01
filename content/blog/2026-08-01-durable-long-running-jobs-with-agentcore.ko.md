@@ -1,8 +1,10 @@
 ---
 title: Amazon Bedrock AgentCore로 오래 걸리는 작업을 안전하게 운영하기
-date: 2026-08-01
+date: 2025-12-08
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-08-building-long-running-agents-with-agentcore.html"
 author: Yoonsoo Park
 description: "AgentCore 실행 세션을 장기 워크플로로 오해하지 않고 재시도, 세션 종료, 사람의 승인을 견디는 작업 구조를 설계한다."
 categories:

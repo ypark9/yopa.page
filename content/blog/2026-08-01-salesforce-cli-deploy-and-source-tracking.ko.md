@@ -1,6 +1,10 @@
 ---
 title: "Salesforce CLI 배포와 소스 추적"
-date: 2026-08-01
+date: 2023-04-20T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-20-sfdx-forcesourcepush-vs-sfdx-forcesourcedeploy.html"
 author: Yoonsoo Park
 description: "폐기된 push 명령 대신 현재 sf CLI의 배포와 소스 추적 흐름을 선택한다."
 categories:

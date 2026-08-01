@@ -1,6 +1,10 @@
 ---
 title: "Flow가 호출한 Queueable Apex를 연관 로그로 디버깅하기"
-date: 2026-08-01
+date: 2024-04-28
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-04-28-how-to-debug-salesforce-flows-with-asynchronous-apex-methods.html"
 author: Yoonsoo Park
 description: "Flow에서 Invocable Apex와 Queueable Apex로 이어지는 비동기 경계를 추적하고 비밀정보 없이 로그를 연결한다."
 categories:

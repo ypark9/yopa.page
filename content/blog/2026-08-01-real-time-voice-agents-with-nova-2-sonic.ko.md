@@ -1,8 +1,10 @@
 ---
 title: Amazon Nova 2 Sonic으로 실시간 음성 에이전트 만들기
-date: 2026-08-01
+date: 2025-12-14
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-14-real-time-voice-agents-with-aws-nova-sonic.html"
 author: Yoonsoo Park
 description: "Nova 2 Sonic의 양방향 이벤트 API, 끼어들기, 비동기 도구, 개인정보 보호와 지연 측정을 포함한 운영 가능한 음성 루프를 설계한다."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "캐시 파일을 읽지 않고 AWS 임시 자격 증명 사용하기"
-date: 2026-08-01
+date: 2023-06-15T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-15-leveraging-aws-sso-to-acquire-aws-secretaccesskey-and-sessiontoken.html"
 author: Yoonsoo Park
 description: "IAM Identity Center 토큰과 액세스 키, 갱신 로직을 직접 다루지 않고 credential provider를 중심으로 AWS 애플리케이션을 설계하는 방법."
 categories:

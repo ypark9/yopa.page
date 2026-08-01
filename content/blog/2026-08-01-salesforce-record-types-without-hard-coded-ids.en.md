@@ -1,6 +1,10 @@
 ---
 title: "Use Salesforce Record Types Without Hard-Coded IDs"
-date: 2026-08-01
+date: 2024-06-04
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-06-04-understanding-record-types-and-recordtypeid-in-salesforce-for-beginners.html"
 author: Yoonsoo Park
 description: "Decide when record types fit, handle Person Accounts, and resolve portable RecordTypeIds safely."
 categories:

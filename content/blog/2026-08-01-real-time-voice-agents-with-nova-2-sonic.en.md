@@ -1,8 +1,10 @@
 ---
 title: Real-Time Voice Agents with Amazon Nova 2 Sonic
-date: 2026-08-01
+date: 2025-12-14
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-14-real-time-voice-agents-with-aws-nova-sonic.html"
 author: Yoonsoo Park
 description: "Build a production voice loop with Nova 2 Sonic's bidirectional event API, barge-in, asynchronous tools, privacy controls, and measurable latency."
 categories:

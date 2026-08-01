@@ -1,8 +1,10 @@
 ---
 title: "증거 중심의 AI 보조 소프트웨어 개발"
-date: 2026-08-01
+date: 2024-08-12
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-08-12-mastering-generative-ai-for-efficient-software-development.html"
 author: Yoonsoo Park
 description: "명시적 맥락, 작은 변경, 결정론적 검증, 보안 검토와 rollback으로 coding agent를 통제하는 개발 흐름."
 categories:

@@ -1,6 +1,10 @@
 ---
 title: "Choose a Salesforce Package Model: 1GP, Managed 2GP, or Unlocked"
-date: 2026-08-01
+date: 2024-02-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-02-05-understanding-salesforce-packaging-a-comprehensive-comparison-of-1gp-vs-2gp.html"
 author: Yoonsoo Park
 description: "A lifecycle-based decision guide for Salesforce package models."
 categories:

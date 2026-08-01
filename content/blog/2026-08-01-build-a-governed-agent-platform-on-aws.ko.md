@@ -1,8 +1,10 @@
 ---
 title: "AWS에서 Governance를 갖춘 Agent Platform 만들기"
-date: 2026-08-01
+date: 2025-12-20
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-20-building-agent-factory-with-agentcore.html"
 author: Yoonsoo Park
 description: "declarative template, 최소 권한, signed artifact, evaluation, approval, observability와 rollback을 갖춘 agent 생성 platform."
 categories:

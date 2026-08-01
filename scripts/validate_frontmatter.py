@@ -98,6 +98,21 @@ def validate_frontmatter(file_path):
                     f"Archived article field '{field}' must be a root-relative Hugo ugly URL ending in .html"
                 )
 
+    if data.get('maintenance_status') == 'replacement':
+        for field in ['lastmod', 'reviewed_at', 'replaces_url']:
+            if not data.get(field):
+                errors.append(f"Replacement article is missing required field: '{field}'")
+        if data.get('replaces_url') and not re.match(r'^/(?:ko/)?blog/[^/]+\.html$', str(data['replaces_url'])):
+            errors.append("Replacement article field 'replaces_url' must point to a root-relative archived article URL")
+        if data.get('date') and data.get('lastmod'):
+            try:
+                published = datetime.fromisoformat(str(data['date'])[:10]).date()
+                rewritten = datetime.fromisoformat(str(data['lastmod'])[:10]).date()
+                if rewritten <= published:
+                    errors.append("Replacement article 'lastmod' must be later than its inherited publication date")
+            except ValueError:
+                pass
+
     for field in ['lastmod', 'reviewed_at']:
         if field in data and data[field]:
             try:

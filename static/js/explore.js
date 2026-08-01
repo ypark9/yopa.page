@@ -822,6 +822,9 @@
     if (!article) { card.hidden = true; return; }
     const related = relatedArticles(article);
     document.getElementById("explore-card-region").textContent = palette[article.regionId].name;
+    const maintenanceBadge = document.getElementById("explore-card-maintenance");
+    maintenanceBadge.hidden = article.maintenance_status !== "replacement";
+    maintenanceBadge.textContent = article.language === "ko" ? "개정 가이드" : "Updated guide";
     document.getElementById("explore-card-title").textContent = article.title;
     document.getElementById("explore-card-description").textContent = article.description;
     document.getElementById("explore-card-date").textContent = article.date;

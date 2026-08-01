@@ -1,6 +1,10 @@
 ---
 title: "sf CLI로 Salesforce scratch org 사용자 만들기"
-date: 2026-08-01
+date: 2023-06-02T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-02-using-sfdx-cli-command-to-insert-user-to-org.html"
 author: Yoonsoo Park
 description: "지원되는 CLI 명령과 명시적인 권한 설정으로 scratch org 사용자를 만든다."
 categories:

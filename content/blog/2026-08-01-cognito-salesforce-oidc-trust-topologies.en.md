@@ -1,6 +1,10 @@
 ---
 title: Cognito and Salesforce OIDC Trust Topologies
-date: 2026-08-01
+date: 2025-04-11
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-04-11-setting-up-sso-between-aws-cognito-and-salesforce-a-beginners-guide.html"
 author: Yoonsoo Park
 description: Design SSO by choosing whether Cognito or Salesforce is the identity provider, then configure discovery, callbacks, claims, provisioning, logout, and tests for that direction.
 categories:

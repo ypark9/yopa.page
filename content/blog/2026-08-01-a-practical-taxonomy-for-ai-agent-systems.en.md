@@ -1,8 +1,10 @@
 ---
 title: "A Practical Taxonomy for AI Agent Systems"
-date: 2026-08-01
+date: 2025-05-21
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-05-21-ai-agents-vs-agentic-ai-understanding-key-differences-2025.html"
 author: Yoonsoo Park
 description: "Evaluate AI systems by tools, planning horizon, autonomy, persistence, delegation, and risk instead of an unstable agent-versus-agentic-AI label."
 categories:

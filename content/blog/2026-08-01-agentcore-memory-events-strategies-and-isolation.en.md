@@ -1,8 +1,10 @@
 ---
 title: AgentCore Memory Events, Strategies, and Isolation
-date: 2026-08-01
+date: 2025-12-09
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-09-deep-dive-into-agentcore-memory-architecture.html"
 author: Yoonsoo Park
 description: "Use AgentCore Memory's current event, strategy, namespace, and IAM model without treating memory as an authorization system."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "2026년 AWS 접근 제어: 페더레이션과 임시 자격 증명부터"
-date: 2026-08-01
+date: 2023-05-22T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-22-aws-iam-user-vs-role.html"
 author: Yoonsoo Park
 description: "사람과 워크로드에 AWS 접근 권한을 줄 때 장기 IAM 액세스 키를 기본값으로 삼지 않는 실전 결정 가이드."
 categories:

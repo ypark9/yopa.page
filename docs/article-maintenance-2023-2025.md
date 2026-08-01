@@ -67,6 +67,14 @@ Non-technical book summaries, workplace advice, leadership, psychology, and gene
 
 Run `python3 scripts/validate_article_tags.py` after changing article tags. The validator enforces canonical spelling, 3-6 tags per scoped article, bilingual replacement parity, archived-to-replacement overlap, and a non-isolated reviewed graph.
 
+## Replacement publication history
+
+- A replacement guide belongs to the editorial lineage of the archived article it supersedes. Its `date` therefore inherits the archived original's first-publication date rather than the batch rewrite date.
+- `lastmod` and `reviewed_at` record the rewrite and technical-verification date. For this maintenance batch both are `2026-08-01`.
+- Replacement files retain their existing `2026-08-01-*` URLs for link stability, but appear at the original article's historical position in chronological lists and feeds.
+- `maintenance_status: replacement` and `replaces_url` make the lineage explicit. Reader surfaces label these entries as updated guides and link back to the archived original.
+- Standalone articles continue to use their real publication date and remain the only maintenance-unrelated entries promoted as newly published content.
+
 ### Salesforce and Apex
 
 | Original article | Why the original is archived | Replacement direction |

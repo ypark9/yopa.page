@@ -1,6 +1,10 @@
 ---
 title: "토큰을 노출하지 않는 Salesforce CLI 인증"
-date: 2026-08-01
+date: 2023-05-01T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-01-get-access-token-from-salesforce.html"
 author: Yoonsoo Park
 description: "Salesforce CLI 인증을 안전하게 사용하고 bearer token이 로그나 파이프라인에 남지 않게 한다."
 categories:

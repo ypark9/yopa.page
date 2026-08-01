@@ -1,6 +1,10 @@
 ---
 title: "Choose the Right Salesforce Configuration Tool"
-date: 2026-08-01
+date: 2023-06-21T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-21-record-based-configuration-in-salesforce.html"
 author: Yoonsoo Park
 description: "A practical decision guide for record types, Dynamic Forms, custom metadata, and Flow."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: Durable Long-Running Jobs with Amazon Bedrock AgentCore
-date: 2026-08-01
+date: 2025-12-08
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-08-building-long-running-agents-with-agentcore.html"
 author: Yoonsoo Park
 description: "Design AgentCore workloads that survive retries, session expiry, and human approval without pretending one runtime invocation is a durable workflow."
 categories:

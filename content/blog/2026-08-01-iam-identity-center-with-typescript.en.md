@@ -1,8 +1,10 @@
 ---
 title: "Use IAM Identity Center Profiles Safely from TypeScript"
-date: 2026-08-01
+date: 2023-05-23T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-23-aws-sso-with-typescript.html"
 author: Yoonsoo Park
 description: "Use AWS SDK for JavaScript v3 with IAM Identity Center profiles without parsing cache files, embedding keys, or interpolating shell commands."
 categories:

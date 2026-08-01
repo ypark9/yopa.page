@@ -1,6 +1,10 @@
 ---
 title: "sf CLI로 Anonymous Apex 안전하게 실행하기"
-date: 2026-08-01
+date: 2023-05-07T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-07-running-apex-cls-file-on-cli.html"
 author: Yoonsoo Park
 description: "검토한 .apex 스크립트를 셸 문자열 보간 없이 실행한다."
 categories:

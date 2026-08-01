@@ -1,8 +1,10 @@
 ---
 title: "Safe Container Updates on a Personal Docker Host"
-date: 2026-08-01
+date: 2024-01-22
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-01-22-harnessing-the-power-of-watchtower-for-docker-automated-updates-made-simple.html"
 author: Yoonsoo Park
 description: "A controlled update workflow for Docker and Synology hosts using pinned versions, notifications, backups, health checks, and rollback instead of blind latest-tag updates."
 categories:

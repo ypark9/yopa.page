@@ -1,6 +1,10 @@
 ---
 title: "Run Anonymous Apex Safely with sf CLI"
-date: 2026-08-01
+date: 2023-05-07T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-07-running-apex-cls-file-on-cli.html"
 author: Yoonsoo Park
 description: "Run reviewed .apex scripts with sf CLI without shell interpolation."
 categories:

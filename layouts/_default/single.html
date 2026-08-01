@@ -12,13 +12,23 @@
                             {{ if eq $author nil }}
                               {{ $author = .Site.Params.author }}
                             {{ end }}
+                            {{ $isReplacement := eq .Params.maintenance_status "replacement" }}
                             {{ if eq .Language.Lang "ko" }}작성자{{ else }}By{{ end }} {{ $author }} |
-                            {{ if eq .Language.Lang "ko" }}최초 발행{{ else }}Published{{ end }}
+                            {{ if $isReplacement }}
+                              {{ if eq .Language.Lang "ko" }}원문 최초 발행{{ else }}Originally published{{ end }}
+                            {{ else }}
+                              {{ if eq .Language.Lang "ko" }}최초 발행{{ else }}Published{{ end }}
+                            {{ end }}
                             <time datetime="{{ .Date.Format "2006-01-02" }}">
                               {{ if eq .Language.Lang "ko" }}{{ .Date.Format "2006년 1월 2일" }}{{ else }}{{ .Date.Format "January 02, 2006" }}{{ end }}
                             </time>
                             {{ if .Lastmod.After .Date }}
-                              | {{ if eq .Language.Lang "ko" }}최근 갱신{{ else }}Updated{{ end }}
+                              |
+                              {{ if $isReplacement }}
+                                {{ if eq .Language.Lang "ko" }}전면 재작성{{ else }}Rewritten{{ end }}
+                              {{ else }}
+                                {{ if eq .Language.Lang "ko" }}최근 갱신{{ else }}Updated{{ end }}
+                              {{ end }}
                               <time datetime="{{ .Lastmod.Format "2006-01-02" }}">
                                 {{ if eq .Language.Lang "ko" }}{{ .Lastmod.Format "2006년 1월 2일" }}{{ else }}{{ .Lastmod.Format "January 02, 2006" }}{{ end }}
                               </time>
@@ -73,6 +83,15 @@
             {{ with .Params.replacement_url_en }}<a href="{{ . }}">Read the current English guide</a>{{ end }}
             {{ with .Params.replacement_url_ko }}<a href="{{ . }}">최신 한국어 가이드 읽기</a>{{ end }}
         </div>
+    </aside>
+    {{ end }}
+
+    {{ if eq .Params.maintenance_status "replacement" }}
+    <aside class="maintenance-notice maintenance-replacement-notice" role="note" aria-labelledby="replacement-notice-title">
+        <span class="maintenance-badge">{{ if eq .Language.Lang "ko" }}개정 가이드{{ else }}Updated guide{{ end }}</span>
+        <strong id="replacement-notice-title">{{ if eq .Language.Lang "ko" }}기존 기술 글을 전면 개정했습니다{{ else }}This guide is a complete rewrite of an earlier article{{ end }}</strong>
+        <p>{{ if eq .Language.Lang "ko" }}원문의 발행 이력을 유지하면서 2026년 8월 1일 기준의 권장 방식으로 다시 작성했습니다.{{ else }}It keeps the original editorial history and was rewritten around current guidance verified on August 1, 2026.{{ end }}</p>
+        {{ with .Params.replaces_url }}<a href="{{ . }}">{{ if eq $.Language.Lang "ko" }}보관된 원문 보기{{ else }}View the archived original{{ end }}</a>{{ end }}
     </aside>
     {{ end }}
 

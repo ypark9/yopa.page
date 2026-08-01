@@ -1,6 +1,10 @@
 ---
 title: "Inspect Salesforce Orgs Without Exposing Secrets"
-date: 2026-08-01
+date: 2023-05-09T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-09-sfdx-forceorgdisplay-to-get-the-scratch-org-information-salesforce.html"
 author: Yoonsoo Park
 description: "Inspect org identity and scratch-org status while keeping access tokens out of output."
 categories:

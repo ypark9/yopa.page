@@ -1,6 +1,10 @@
 ---
 title: "Apex Nested Enums and Name Shadowing"
-date: 2026-08-01
+date: 2023-05-03T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-03-why-apex-test-cannot-find-enum-defined-in-apex-class.html"
 author: Yoonsoo Park
 description: "Reference nested Apex enums without confusing type and variable names."
 categories:

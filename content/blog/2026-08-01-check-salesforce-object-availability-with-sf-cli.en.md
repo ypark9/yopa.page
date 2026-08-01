@@ -1,6 +1,10 @@
 ---
 title: "Check Salesforce Object Availability with sf CLI"
-date: 2026-08-01
+date: 2023-04-25T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-25-checking-if-an-sobject-exists-in-a-salesforce-scratch-org.html"
 author: Yoonsoo Park
 description: "A reliable JSON and exit-code check for object availability in a Salesforce org."
 categories:

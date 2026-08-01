@@ -1,8 +1,10 @@
 ---
 title: "Export IAM Identity Center Credentials Only When a Tool Requires Them"
-date: 2026-08-01
+date: 2023-06-08T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-08-aws-sso-get-role-credentials.html"
 author: Yoonsoo Park
 description: "A bounded workflow for legacy tools that require AWS environment credentials, using AWS CLI-supported export rather than SSO token-cache parsing."
 categories:

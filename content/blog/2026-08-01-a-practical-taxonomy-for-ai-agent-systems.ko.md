@@ -1,8 +1,10 @@
 ---
 title: "AI Agent 시스템을 위한 실용적인 분류법"
-date: 2026-08-01
+date: 2025-05-21
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-05-21-ai-agents-vs-agentic-ai-understanding-key-differences-2025.html"
 author: Yoonsoo Park
 description: "불안정한 agent와 agentic AI 구분 대신 도구, 계획 기간, 자율성, 기억, 위임과 위험으로 AI 시스템을 평가하는 방법."
 categories:

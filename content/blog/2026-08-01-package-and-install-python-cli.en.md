@@ -1,6 +1,10 @@
 ---
 title: Package and Install a Python Command-Line Application
-date: 2026-08-01
+date: 2024-09-14
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-09-14-transform-python-scripts-into-global-command-line-tools.html"
 author: Yoonsoo Park
 description: Turn a Python command into an installable application with pyproject metadata, a console entry point, isolated installation, and a verified upgrade path.
 categories:

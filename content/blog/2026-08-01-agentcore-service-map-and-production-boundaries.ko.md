@@ -1,8 +1,10 @@
 ---
 title: "Amazon Bedrock AgentCore 서비스와 Production 경계"
-date: 2026-08-01
+date: 2025-12-15
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-15-partner-insights-agentcore-overview.html"
 author: Yoonsoo Park
 description: "AgentCore Runtime, Identity, Gateway, Memory, Browser, Code Interpreter와 observability의 control·data·security·cost 경계를 구분하는 가이드."
 categories:

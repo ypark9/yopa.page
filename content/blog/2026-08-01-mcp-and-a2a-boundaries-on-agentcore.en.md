@@ -1,8 +1,10 @@
 ---
 title: MCP and A2A Boundaries on Amazon Bedrock AgentCore
-date: 2026-08-01
+date: 2025-12-11
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-11-architecture-patterns-for-strands-and-mcp.html"
 author: Yoonsoo Park
 description: "Choose HTTP, MCP, or A2A by contract, deploy them correctly on AgentCore Runtime, and keep authorization outside model decisions."
 categories:

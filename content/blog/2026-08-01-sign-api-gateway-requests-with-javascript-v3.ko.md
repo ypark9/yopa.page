@@ -1,8 +1,10 @@
 ---
 title: "AWS SDK for JavaScript v3로 API Gateway SigV4 요청 서명하기"
-date: 2026-08-01
+date: 2023-06-13T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-13-invoking-aws-api-gateway-with-sigv4.html"
 author: Yoonsoo Park
 description: "임시 자격 증명과 JavaScript v3 signer를 사용해 IAM 인증 API Gateway를 호출하고 body 서명과 실패를 검증하는 방법."
 categories:

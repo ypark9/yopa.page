@@ -1,6 +1,10 @@
 ---
 title: Python CLI를 패키징하고 격리 설치하는 방법
-date: 2026-08-01
+date: 2024-09-14
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-09-14-transform-python-scripts-into-global-command-line-tools.html"
 author: Yoonsoo Park
 description: pyproject metadata, console entry point, 격리 설치와 검증된 upgrade 경로를 갖춘 Python command-line application을 만든다.
 categories:

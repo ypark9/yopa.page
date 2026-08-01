@@ -1,6 +1,10 @@
 ---
 title: "Salesforce CLI를 안전하게 설치하고 업데이트하기"
-date: 2026-08-01
+date: 2023-06-22T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-22-how-to-update-sfdx-cli-from-one-version-to-another.html"
 author: Yoonsoo Park
 description: "설치 주체를 확인하고 인증 정보를 보존하면서 지원되는 sf CLI를 업데이트한다."
 categories:
