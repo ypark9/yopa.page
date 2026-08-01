@@ -1,0 +1,3166 @@
+{
+  "version": 1,
+  "revision": "2026-07-31-chunk-navigation-1",
+  "tileSize": 512,
+  "world": {
+    "width": 7168,
+    "height": 5120,
+    "originX": -3584,
+    "originY": -768
+  },
+  "regions": [
+    {
+      "id": "cloud",
+      "name": "Cloud Highlands",
+      "x": -2468,
+      "y": 250,
+      "rx": 830,
+      "ry": 650,
+      "fill": "#d8e6cf",
+      "edge": "#7aa17b"
+    },
+    {
+      "id": "agents",
+      "name": "Agent Grove",
+      "x": 470,
+      "y": 296,
+      "rx": 790,
+      "ry": 680,
+      "fill": "#b9d9c1",
+      "edge": "#568b68"
+    },
+    {
+      "id": "code",
+      "name": "Codeworks",
+      "x": -2488,
+      "y": 1958,
+      "rx": 850,
+      "ry": 720,
+      "fill": "#d8d1b6",
+      "edge": "#8f8260"
+    },
+    {
+      "id": "salesforce",
+      "name": "Salesforce Springs",
+      "x": 470,
+      "y": 2034,
+      "rx": 760,
+      "ry": 650,
+      "fill": "#b9d9dc",
+      "edge": "#568f99"
+    },
+    {
+      "id": "python",
+      "name": "Python Meadow",
+      "x": 2120,
+      "y": 1960,
+      "rx": 700,
+      "ry": 600,
+      "fill": "#d9dba9",
+      "edge": "#8d9156"
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering Ridge",
+      "x": 2518,
+      "y": 330,
+      "rx": 760,
+      "ry": 620,
+      "fill": "#c9c4dc",
+      "edge": "#777091"
+    },
+    {
+      "id": "archive",
+      "name": "Archive Harbor",
+      "x": 132,
+      "y": 3208,
+      "rx": 660,
+      "ry": 430,
+      "fill": "#c5ddd8",
+      "edge": "#668e87"
+    }
+  ],
+  "tiles": {
+    "base": [
+      {
+        "x": 0,
+        "y": 0,
+        "src": "cloud-highlands/tiles/base_0_0.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "src": "cloud-highlands/tiles/base_1_0.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "src": "cloud-highlands/tiles/base_2_0.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "src": "cloud-highlands/tiles/base_3_0.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "src": "cloud-highlands/tiles/base_0_1.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 1,
+        "y": 1,
+        "src": "cloud-highlands/tiles/base_1_1.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "src": "cloud-highlands/tiles/base_2_1.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "src": "cloud-highlands/tiles/base_3_1.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "src": "cloud-highlands/tiles/base_0_2.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 1,
+        "y": 2,
+        "src": "cloud-highlands/tiles/base_1_2.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "src": "cloud-highlands/tiles/base_2_2.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "src": "cloud-highlands/tiles/base_3_2.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "src": "cloud-highlands/tiles/base_0_3.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "src": "cloud-highlands/tiles/base_1_3.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "src": "cloud-highlands/tiles/base_2_3.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "src": "cloud-highlands/tiles/base_3_3.webp",
+        "region": "cloud"
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "src": "codeworks/tiles/base_0_0.webp",
+        "region": "code"
+      },
+      {
+        "x": 1,
+        "y": 3,
+        "src": "codeworks/tiles/base_1_0.webp",
+        "region": "code"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "src": "codeworks/tiles/base_2_0.webp",
+        "region": "code"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "src": "codeworks/tiles/base_3_0.webp",
+        "region": "code"
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "src": "codeworks/tiles/base_0_1.webp",
+        "region": "code"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "src": "codeworks/tiles/base_1_1.webp",
+        "region": "code"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "src": "codeworks/tiles/base_2_1.webp",
+        "region": "code"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "src": "codeworks/tiles/base_3_1.webp",
+        "region": "code"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "src": "codeworks/tiles/base_0_2.webp",
+        "region": "code"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "src": "codeworks/tiles/base_1_2.webp",
+        "region": "code"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "src": "codeworks/tiles/base_2_2.webp",
+        "region": "code"
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "src": "codeworks/tiles/base_3_2.webp",
+        "region": "code"
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "src": "codeworks/tiles/base_0_3.webp",
+        "region": "code"
+      },
+      {
+        "x": 1,
+        "y": 6,
+        "src": "codeworks/tiles/base_1_3.webp",
+        "region": "code"
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "src": "codeworks/tiles/base_2_3.webp",
+        "region": "code"
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "src": "codeworks/tiles/base_3_3.webp",
+        "region": "code"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "src": "salesforce-springs/tiles/base_0_0.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "src": "salesforce-springs/tiles/base_1_0.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "src": "salesforce-springs/tiles/base_2_0.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "src": "salesforce-springs/tiles/base_3_0.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "src": "salesforce-springs/tiles/base_0_1.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "src": "salesforce-springs/tiles/base_1_1.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "src": "salesforce-springs/tiles/base_2_1.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 9,
+        "y": 5,
+        "src": "salesforce-springs/tiles/base_3_1.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 6,
+        "y": 6,
+        "src": "salesforce-springs/tiles/base_0_2.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 7,
+        "y": 6,
+        "src": "salesforce-springs/tiles/base_1_2.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 8,
+        "y": 6,
+        "src": "salesforce-springs/tiles/base_2_2.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 9,
+        "y": 6,
+        "src": "salesforce-springs/tiles/base_3_2.webp",
+        "region": "salesforce"
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "src": "python-meadow/tiles/base_0_0.webp",
+        "region": "python"
+      },
+      {
+        "x": 10,
+        "y": 4,
+        "src": "python-meadow/tiles/base_1_0.webp",
+        "region": "python"
+      },
+      {
+        "x": 11,
+        "y": 4,
+        "src": "python-meadow/tiles/base_2_0.webp",
+        "region": "python"
+      },
+      {
+        "x": 12,
+        "y": 4,
+        "src": "python-meadow/tiles/base_3_0.webp",
+        "region": "python"
+      },
+      {
+        "x": 9,
+        "y": 5,
+        "src": "python-meadow/tiles/base_0_1.webp",
+        "region": "python"
+      },
+      {
+        "x": 10,
+        "y": 5,
+        "src": "python-meadow/tiles/base_1_1.webp",
+        "region": "python"
+      },
+      {
+        "x": 11,
+        "y": 5,
+        "src": "python-meadow/tiles/base_2_1.webp",
+        "region": "python"
+      },
+      {
+        "x": 12,
+        "y": 5,
+        "src": "python-meadow/tiles/base_3_1.webp",
+        "region": "python"
+      },
+      {
+        "x": 9,
+        "y": 6,
+        "src": "python-meadow/tiles/base_0_2.webp",
+        "region": "python"
+      },
+      {
+        "x": 10,
+        "y": 6,
+        "src": "python-meadow/tiles/base_1_2.webp",
+        "region": "python"
+      },
+      {
+        "x": 11,
+        "y": 6,
+        "src": "python-meadow/tiles/base_2_2.webp",
+        "region": "python"
+      },
+      {
+        "x": 12,
+        "y": 6,
+        "src": "python-meadow/tiles/base_3_2.webp",
+        "region": "python"
+      },
+      {
+        "x": 10,
+        "y": 0,
+        "src": "engineering-ridge/tiles/base_0_0.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 11,
+        "y": 0,
+        "src": "engineering-ridge/tiles/base_1_0.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 12,
+        "y": 0,
+        "src": "engineering-ridge/tiles/base_2_0.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 13,
+        "y": 0,
+        "src": "engineering-ridge/tiles/base_3_0.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 10,
+        "y": 1,
+        "src": "engineering-ridge/tiles/base_0_1.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 11,
+        "y": 1,
+        "src": "engineering-ridge/tiles/base_1_1.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 12,
+        "y": 1,
+        "src": "engineering-ridge/tiles/base_2_1.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 13,
+        "y": 1,
+        "src": "engineering-ridge/tiles/base_3_1.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 10,
+        "y": 2,
+        "src": "engineering-ridge/tiles/base_0_2.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 11,
+        "y": 2,
+        "src": "engineering-ridge/tiles/base_1_2.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 12,
+        "y": 2,
+        "src": "engineering-ridge/tiles/base_2_2.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 13,
+        "y": 2,
+        "src": "engineering-ridge/tiles/base_3_2.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 10,
+        "y": 3,
+        "src": "engineering-ridge/tiles/base_0_3.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 11,
+        "y": 3,
+        "src": "engineering-ridge/tiles/base_1_3.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 12,
+        "y": 3,
+        "src": "engineering-ridge/tiles/base_2_3.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 13,
+        "y": 3,
+        "src": "engineering-ridge/tiles/base_3_3.webp",
+        "region": "engineering"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "src": "archive-harbor/tiles/base_0_0.webp",
+        "region": "archive"
+      },
+      {
+        "x": 6,
+        "y": 6,
+        "src": "archive-harbor/tiles/base_1_0.webp",
+        "region": "archive"
+      },
+      {
+        "x": 7,
+        "y": 6,
+        "src": "archive-harbor/tiles/base_2_0.webp",
+        "region": "archive"
+      },
+      {
+        "x": 8,
+        "y": 6,
+        "src": "archive-harbor/tiles/base_3_0.webp",
+        "region": "archive"
+      },
+      {
+        "x": 5,
+        "y": 7,
+        "src": "archive-harbor/tiles/base_0_1.webp",
+        "region": "archive"
+      },
+      {
+        "x": 6,
+        "y": 7,
+        "src": "archive-harbor/tiles/base_1_1.webp",
+        "region": "archive"
+      },
+      {
+        "x": 7,
+        "y": 7,
+        "src": "archive-harbor/tiles/base_2_1.webp",
+        "region": "archive"
+      },
+      {
+        "x": 8,
+        "y": 7,
+        "src": "archive-harbor/tiles/base_3_1.webp",
+        "region": "archive"
+      },
+      {
+        "x": 5,
+        "y": 8,
+        "src": "archive-harbor/tiles/base_0_2.webp",
+        "region": "archive"
+      },
+      {
+        "x": 6,
+        "y": 8,
+        "src": "archive-harbor/tiles/base_1_2.webp",
+        "region": "archive"
+      },
+      {
+        "x": 7,
+        "y": 8,
+        "src": "archive-harbor/tiles/base_2_2.webp",
+        "region": "archive"
+      },
+      {
+        "x": 8,
+        "y": 8,
+        "src": "archive-harbor/tiles/base_3_2.webp",
+        "region": "archive"
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "src": "agent-grove/tiles/base_4_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "src": "agent-grove/tiles/base_3_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "src": "agent-grove/tiles/base_4_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "src": "agent-grove/tiles/base_3_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 6,
+        "y": 1,
+        "src": "agent-grove/tiles/base_3_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 7,
+        "y": 1,
+        "src": "agent-grove/tiles/base_3_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 8,
+        "y": 1,
+        "src": "agent-grove/tiles/base_4_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 9,
+        "y": 1,
+        "src": "agent-grove/tiles/base_4_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 6,
+        "y": 2,
+        "src": "agent-grove/tiles/base_3_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 7,
+        "y": 2,
+        "src": "agent-grove/tiles/base_4_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 8,
+        "y": 2,
+        "src": "agent-grove/tiles/base_3_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 9,
+        "y": 2,
+        "src": "agent-grove/tiles/base_4_2.webp",
+        "region": "agents"
+      },
+      {
+        "x": 6,
+        "y": 3,
+        "src": "agent-grove/tiles/base_4_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "src": "agent-grove/tiles/base_4_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 8,
+        "y": 3,
+        "src": "agent-grove/tiles/base_3_3.webp",
+        "region": "agents"
+      },
+      {
+        "x": 9,
+        "y": 3,
+        "src": "agent-grove/tiles/base_3_3.webp",
+        "region": "agents"
+      }
+    ],
+    "top": [
+      {
+        "x": 3,
+        "y": 1,
+        "src": "cloud-highlands/tiles/top_3_1.webp",
+        "region": "cloud",
+        "motion": "foliage"
+      },
+      {
+        "x": 7,
+        "y": 1,
+        "src": "agent-grove/tiles/top_3_3.webp",
+        "region": "agents",
+        "motion": "foliage"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "src": "codeworks/tiles/top_2_6.webp",
+        "region": "code",
+        "motion": "foliage"
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "src": "salesforce-springs/tiles/top_4_8.webp",
+        "region": "salesforce",
+        "motion": "foliage"
+      },
+      {
+        "x": 11,
+        "y": 5,
+        "src": "python-meadow/tiles/top_2_10.webp",
+        "region": "python",
+        "motion": "foliage"
+      },
+      {
+        "x": 12,
+        "y": 2,
+        "src": "engineering-ridge/tiles/top_4_12.webp",
+        "region": "engineering",
+        "motion": "foliage"
+      },
+      {
+        "x": 7,
+        "y": 7,
+        "src": "archive-harbor/tiles/top_2_13.webp",
+        "region": "archive",
+        "motion": "foliage"
+      }
+    ]
+  },
+  "objects": [
+    {
+      "id": "cloud-observatory",
+      "src": "cloud-highlands/objects/observatory.webp",
+      "x": -2548,
+      "y": 260,
+      "width": 390,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "cloud"
+    },
+    {
+      "id": "cloud-windsock",
+      "src": "cloud-highlands/objects/windsock.webp",
+      "x": -2078,
+      "y": 50,
+      "width": 245,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "cloud"
+    },
+    {
+      "id": "cloud-bridge",
+      "src": "cloud-highlands/objects/bridge.webp",
+      "x": -2948,
+      "y": 560,
+      "width": 300,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "world",
+      "region": "cloud"
+    },
+    {
+      "id": "cloud-rocks",
+      "src": "cloud-highlands/objects/rocks.webp",
+      "x": -1968,
+      "y": 590,
+      "width": 220,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "cloud"
+    },
+    {
+      "id": "cloud-sign",
+      "src": "cloud-highlands/objects/trail-sign.webp",
+      "x": -2928,
+      "y": 80,
+      "width": 155,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "cloud"
+    },
+    {
+      "id": "cloud-canopy",
+      "src": "cloud-highlands/objects/canopy.webp",
+      "x": -1798,
+      "y": 250,
+      "width": 330,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "cloud",
+      "motion": "foliage"
+    },
+    {
+      "id": "code-workshop",
+      "src": "codeworks/objects/workshop.webp",
+      "x": -2568,
+      "y": 1998,
+      "width": 410,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "code"
+    },
+    {
+      "id": "code-crane",
+      "src": "codeworks/objects/crane.webp",
+      "x": -2008,
+      "y": 1728,
+      "width": 280,
+      "anchorX": 0.5,
+      "anchorY": 0.85,
+      "layer": "world",
+      "region": "code"
+    },
+    {
+      "id": "code-bridge",
+      "src": "codeworks/objects/bridge.webp",
+      "x": -2968,
+      "y": 2288,
+      "width": 260,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "world",
+      "region": "code"
+    },
+    {
+      "id": "code-gears",
+      "src": "codeworks/objects/gears.webp",
+      "x": -1968,
+      "y": 2348,
+      "width": 205,
+      "anchorX": 0.5,
+      "anchorY": 0.62,
+      "layer": "world",
+      "region": "code"
+    },
+    {
+      "id": "code-sign",
+      "src": "codeworks/objects/trail-sign.webp",
+      "x": -2988,
+      "y": 1728,
+      "width": 170,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "code"
+    },
+    {
+      "id": "code-canopy",
+      "src": "codeworks/objects/canopy.webp",
+      "x": -1798,
+      "y": 2008,
+      "width": 350,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "code",
+      "motion": "foliage"
+    },
+    {
+      "id": "salesforce-springhouse",
+      "src": "salesforce-springs/objects/springhouse.webp",
+      "x": 520,
+      "y": 2054,
+      "width": 410,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "salesforce"
+    },
+    {
+      "id": "salesforce-bridge",
+      "src": "salesforce-springs/objects/bridge.webp",
+      "x": 60,
+      "y": 2284,
+      "width": 300,
+      "anchorX": 0.5,
+      "anchorY": 0.55,
+      "layer": "world",
+      "region": "salesforce"
+    },
+    {
+      "id": "salesforce-fountain",
+      "src": "salesforce-springs/objects/fountain.webp",
+      "x": 930,
+      "y": 1754,
+      "width": 230,
+      "anchorX": 0.5,
+      "anchorY": 0.7,
+      "layer": "world",
+      "region": "salesforce"
+    },
+    {
+      "id": "salesforce-rocks",
+      "src": "salesforce-springs/objects/rocks.webp",
+      "x": 950,
+      "y": 2364,
+      "width": 190,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "salesforce"
+    },
+    {
+      "id": "salesforce-sign",
+      "src": "salesforce-springs/objects/trail-sign.webp",
+      "x": 30,
+      "y": 1764,
+      "width": 155,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "salesforce"
+    },
+    {
+      "id": "salesforce-canopy",
+      "src": "salesforce-springs/objects/canopy.webp",
+      "x": 1120,
+      "y": 2034,
+      "width": 360,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "salesforce",
+      "motion": "foliage"
+    },
+    {
+      "id": "python-cottage",
+      "src": "python-meadow/objects/cottage.webp",
+      "x": 2060,
+      "y": 1980,
+      "width": 400,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "python"
+    },
+    {
+      "id": "python-bridge",
+      "src": "python-meadow/objects/bridge.webp",
+      "x": 1660,
+      "y": 2230,
+      "width": 280,
+      "anchorX": 0.5,
+      "anchorY": 0.55,
+      "layer": "world",
+      "region": "python"
+    },
+    {
+      "id": "python-worktable",
+      "src": "python-meadow/objects/worktable.webp",
+      "x": 2560,
+      "y": 1690,
+      "width": 210,
+      "anchorX": 0.5,
+      "anchorY": 0.7,
+      "layer": "world",
+      "region": "python"
+    },
+    {
+      "id": "python-rocks",
+      "src": "python-meadow/objects/rocks.webp",
+      "x": 2580,
+      "y": 2290,
+      "width": 190,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "python"
+    },
+    {
+      "id": "python-sign",
+      "src": "python-meadow/objects/trail-sign.webp",
+      "x": 1630,
+      "y": 1710,
+      "width": 150,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "python"
+    },
+    {
+      "id": "python-canopy",
+      "src": "python-meadow/objects/canopy.webp",
+      "x": 2660,
+      "y": 1980,
+      "width": 350,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "python",
+      "motion": "foliage"
+    },
+    {
+      "id": "engineering-lodge",
+      "src": "engineering-ridge/objects/lodge.webp",
+      "x": 2568,
+      "y": 350,
+      "width": 400,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "engineering"
+    },
+    {
+      "id": "engineering-lookout",
+      "src": "engineering-ridge/objects/lookout.webp",
+      "x": 2088,
+      "y": 600,
+      "width": 280,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "engineering"
+    },
+    {
+      "id": "engineering-tripod",
+      "src": "engineering-ridge/objects/tripod.webp",
+      "x": 3028,
+      "y": 80,
+      "width": 165,
+      "anchorX": 0.5,
+      "anchorY": 0.82,
+      "layer": "world",
+      "region": "engineering"
+    },
+    {
+      "id": "engineering-rocks",
+      "src": "engineering-ridge/objects/rocks.webp",
+      "x": 3048,
+      "y": 650,
+      "width": 200,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "engineering"
+    },
+    {
+      "id": "engineering-sign",
+      "src": "engineering-ridge/objects/trail-sign.webp",
+      "x": 2068,
+      "y": 80,
+      "width": 145,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "engineering"
+    },
+    {
+      "id": "engineering-canopy",
+      "src": "engineering-ridge/objects/canopy.webp",
+      "x": 3168,
+      "y": 360,
+      "width": 355,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "engineering",
+      "motion": "foliage"
+    },
+    {
+      "id": "archive-house",
+      "src": "archive-harbor/objects/archive-house.webp",
+      "x": 92,
+      "y": 3208,
+      "width": 380,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": "world",
+      "region": "archive"
+    },
+    {
+      "id": "archive-pier",
+      "src": "archive-harbor/objects/pier.webp",
+      "x": -348,
+      "y": 3428,
+      "width": 270,
+      "anchorX": 0.5,
+      "anchorY": 0.58,
+      "layer": "world",
+      "region": "archive"
+    },
+    {
+      "id": "archive-bell",
+      "src": "archive-harbor/objects/bell.webp",
+      "x": 572,
+      "y": 3028,
+      "width": 170,
+      "anchorX": 0.5,
+      "anchorY": 0.82,
+      "layer": "world",
+      "region": "archive"
+    },
+    {
+      "id": "archive-rocks",
+      "src": "archive-harbor/objects/rocks.webp",
+      "x": 592,
+      "y": 3428,
+      "width": 195,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "world",
+      "region": "archive"
+    },
+    {
+      "id": "archive-sign",
+      "src": "archive-harbor/objects/trail-sign.webp",
+      "x": -368,
+      "y": 3028,
+      "width": 145,
+      "anchorX": 0.5,
+      "anchorY": 0.9,
+      "layer": "world",
+      "region": "archive"
+    },
+    {
+      "id": "archive-canopy",
+      "src": "archive-harbor/objects/canopy.webp",
+      "x": 672,
+      "y": 3218,
+      "width": 340,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "archive",
+      "motion": "foliage"
+    },
+    {
+      "id": "agent-house",
+      "src": "agent-grove/objects/agent-house.webp",
+      "x": 570,
+      "y": 366,
+      "width": 480.59,
+      "anchorX": 0.5,
+      "anchorY": 0.75634,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-bridge",
+      "src": "agent-grove/objects/bridge.webp",
+      "x": 160,
+      "y": 691,
+      "width": 327.75,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-sign",
+      "src": "agent-grove/objects/trail-sign.webp",
+      "x": 155,
+      "y": 166,
+      "width": 166.75,
+      "anchorX": 0.5,
+      "anchorY": 0.7616,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-rocks",
+      "src": "agent-grove/objects/rocks.webp",
+      "x": 875,
+      "y": 636,
+      "width": 209.19,
+      "anchorX": 0.5,
+      "anchorY": 0.59928,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-flowers",
+      "src": "agent-grove/objects/flowers.webp",
+      "x": 760,
+      "y": 86,
+      "width": 163.66,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-stump",
+      "src": "agent-grove/objects/stump.webp",
+      "x": 255,
+      "y": 426,
+      "width": 151.15,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "agent-antenna",
+      "src": "agent-grove/objects/antenna.webp",
+      "x": 830,
+      "y": 276,
+      "width": 161.2,
+      "anchorX": 0.5,
+      "anchorY": 0.63176,
+      "layer": "world",
+      "region": "agents"
+    },
+    {
+      "id": "canopy-nw",
+      "src": "agent-grove/objects/canopy-1.webp",
+      "x": -40,
+      "y": -94,
+      "width": 445.18,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "agents",
+      "motion": "foliage"
+    },
+    {
+      "id": "canopy-ne",
+      "src": "agent-grove/objects/canopy-2.webp",
+      "x": 1000,
+      "y": 6,
+      "width": 467.1,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "agents",
+      "motion": "foliage"
+    },
+    {
+      "id": "canopy-sw",
+      "src": "agent-grove/objects/canopy-3.webp",
+      "x": -10,
+      "y": 946,
+      "width": 479.73,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "agents",
+      "motion": "foliage"
+    },
+    {
+      "id": "canopy-se",
+      "src": "agent-grove/objects/canopy-4.webp",
+      "x": 1010,
+      "y": 996,
+      "width": 478,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "layer": "top",
+      "region": "agents",
+      "motion": "foliage"
+    }
+  ],
+  "animations": {
+    "ocean": {
+      "enabled": false,
+      "src": "agent-grove/animations/ocean.riv",
+      "fallback": "agent-grove/animations/ocean-fallback.webp",
+      "artboard": "AgentGroveWater",
+      "stateMachine": "WaterLoop",
+      "x": -420,
+      "y": 666,
+      "width": 1900,
+      "height": 410,
+      "region": "agents"
+    }
+  },
+  "connections": [
+    [
+      "cloud",
+      "agents"
+    ],
+    [
+      "cloud",
+      "code"
+    ],
+    [
+      "agents",
+      "engineering"
+    ],
+    [
+      "agents",
+      "salesforce"
+    ],
+    [
+      "code",
+      "salesforce"
+    ],
+    [
+      "salesforce",
+      "python"
+    ],
+    [
+      "engineering",
+      "python"
+    ],
+    [
+      "salesforce",
+      "archive"
+    ],
+    [
+      "python",
+      "archive"
+    ]
+  ],
+  "ambient": [
+    {
+      "id": "cloud-wisps",
+      "region": "cloud",
+      "layer": "backdrop",
+      "behavior": "drift",
+      "sprites": [
+        "ambient/sprites/cloud-1.webp",
+        "ambient/sprites/cloud-2.webp"
+      ],
+      "count": 4,
+      "seed": "cloud-wisps-v1",
+      "speed": [
+        8,
+        14
+      ],
+      "opacity": [
+        0.38,
+        0.65
+      ],
+      "size": [
+        150,
+        240
+      ],
+      "direction": [
+        1,
+        0.04
+      ],
+      "bounds": {
+        "x": -3250,
+        "y": -300,
+        "width": 1580,
+        "height": 1050
+      }
+    },
+    {
+      "id": "agent-leaves",
+      "region": "agents",
+      "layer": "top",
+      "behavior": "drift",
+      "sprites": [
+        "ambient/sprites/leaf-gold.webp",
+        "ambient/sprites/leaf-green.webp",
+        "ambient/sprites/leaf-orange.webp"
+      ],
+      "count": 9,
+      "seed": "agent-leaves-v1",
+      "speed": [
+        16,
+        26
+      ],
+      "opacity": [
+        0.65,
+        0.92
+      ],
+      "size": [
+        18,
+        34
+      ],
+      "direction": [
+        1,
+        0.55
+      ],
+      "bounds": {
+        "x": -300,
+        "y": -350,
+        "width": 1550,
+        "height": 1250
+      }
+    },
+    {
+      "id": "code-sand",
+      "region": "code",
+      "layer": "top",
+      "behavior": "drift",
+      "sprites": [
+        "ambient/sprites/sand-wisp.webp"
+      ],
+      "count": 5,
+      "seed": "code-sand-v1",
+      "speed": [
+        18,
+        28
+      ],
+      "opacity": [
+        0.18,
+        0.46
+      ],
+      "size": [
+        120,
+        220
+      ],
+      "direction": [
+        1,
+        0.12
+      ],
+      "edgeFade": true,
+      "bounds": {
+        "x": -3300,
+        "y": 1400,
+        "width": 1620,
+        "height": 1100
+      }
+    },
+    {
+      "id": "salesforce-ripples",
+      "region": "salesforce",
+      "layer": "world",
+      "behavior": "ripple",
+      "sprites": [
+        "ambient/sprites/ripple-1.webp",
+        "ambient/sprites/ripple-2.webp"
+      ],
+      "count": 5,
+      "seed": "salesforce-ripples-v1",
+      "speed": [
+        0.12,
+        0.19
+      ],
+      "opacity": [
+        0.35,
+        0.55
+      ],
+      "size": [
+        40,
+        78
+      ],
+      "anchors": [
+        [
+          930,
+          1754
+        ],
+        [
+          60,
+          2284
+        ],
+        [
+          250,
+          1950
+        ],
+        [
+          650,
+          2250
+        ],
+        [
+          980,
+          2100
+        ]
+      ]
+    },
+    {
+      "id": "python-snakes",
+      "region": "python",
+      "layer": "world",
+      "behavior": "track",
+      "sprites": [
+        "ambient/sprites/snake-gold.webp",
+        "ambient/sprites/snake-green.webp"
+      ],
+      "count": 3,
+      "seed": "python-snakes-v1",
+      "speed": [
+        20,
+        28
+      ],
+      "opacity": [
+        0.75,
+        0.95
+      ],
+      "size": [
+        34,
+        52
+      ],
+      "tracks": [
+        {
+          "from": [
+            1600,
+            1850
+          ],
+          "control1": [
+            1800,
+            1650
+          ],
+          "control2": [
+            2250,
+            1750
+          ],
+          "to": [
+            2450,
+            1880
+          ]
+        },
+        {
+          "from": [
+            1700,
+            2200
+          ],
+          "control1": [
+            1950,
+            2350
+          ],
+          "control2": [
+            2250,
+            2250
+          ],
+          "to": [
+            2500,
+            2100
+          ]
+        },
+        {
+          "from": [
+            1750,
+            2050
+          ],
+          "control1": [
+            1950,
+            1900
+          ],
+          "control2": [
+            2250,
+            2150
+          ],
+          "to": [
+            2500,
+            2300
+          ]
+        }
+      ]
+    },
+    {
+      "id": "engineering-fireflies",
+      "region": "engineering",
+      "layer": "top",
+      "behavior": "pulse",
+      "sprites": [
+        "ambient/sprites/firefly.webp"
+      ],
+      "count": 10,
+      "seed": "engineering-fireflies-v1",
+      "speed": [
+        0.18,
+        0.34
+      ],
+      "opacity": [
+        0.25,
+        0.85
+      ],
+      "size": [
+        8,
+        14
+      ],
+      "bounds": {
+        "x": 1800,
+        "y": -250,
+        "width": 1500,
+        "height": 1100
+      }
+    },
+    {
+      "id": "archive-ghosts",
+      "region": "archive",
+      "layer": "world",
+      "behavior": "haunt",
+      "sprites": [
+        "ambient/sprites/ghost-1.webp",
+        "ambient/sprites/ghost-2.webp"
+      ],
+      "count": 2,
+      "seed": "archive-ghosts-v1",
+      "speed": [
+        8,
+        14
+      ],
+      "opacity": [
+        0.35,
+        0.72
+      ],
+      "size": [
+        70,
+        110
+      ],
+      "tracks": [
+        {
+          "from": [
+            -400,
+            3400
+          ],
+          "control1": [
+            -150,
+            3000
+          ],
+          "control2": [
+            250,
+            3000
+          ],
+          "to": [
+            500,
+            3300
+          ]
+        },
+        {
+          "from": [
+            -250,
+            3150
+          ],
+          "control1": [
+            0,
+            3450
+          ],
+          "control2": [
+            350,
+            3450
+          ],
+          "to": [
+            650,
+            3100
+          ]
+        }
+      ]
+    }
+  ],
+  "chunks": [
+    {
+      "id": "chunk-0-0",
+      "x": -3584,
+      "y": -768,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-1-0",
+      "x": -1536,
+      "y": -768,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-2-0",
+      "x": 512,
+      "y": -768,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-3-0",
+      "x": 2560,
+      "y": -768,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-0-1",
+      "x": -3584,
+      "y": 1280,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-1-1",
+      "x": -1536,
+      "y": 1280,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-2-1",
+      "x": 512,
+      "y": 1280,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-3-1",
+      "x": 2560,
+      "y": 1280,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-0-2",
+      "x": -3584,
+      "y": 3328,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-1-2",
+      "x": -1536,
+      "y": 3328,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-2-2",
+      "x": 512,
+      "y": 3328,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    },
+    {
+      "id": "chunk-3-2",
+      "x": 2560,
+      "y": 3328,
+      "width": 2048,
+      "height": 2048,
+      "biome": "meadow",
+      "active": true,
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "src": "transition/tiles/meadow.webp",
+          "rotation": 0
+        }
+      ],
+      "decorations": []
+    }
+  ],
+  "signposts": [
+    {
+      "id": "cloud-to-agents",
+      "region": "cloud",
+      "destinations": [
+        "agents"
+      ],
+      "x": -1871,
+      "y": 259,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "agents-to-cloud",
+      "region": "agents",
+      "destinations": [
+        "cloud"
+      ],
+      "x": -99,
+      "y": 287,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "cloud-to-code",
+      "region": "cloud",
+      "destinations": [
+        "code"
+      ],
+      "x": -2473,
+      "y": 718,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "code-to-cloud",
+      "region": "code",
+      "destinations": [
+        "cloud"
+      ],
+      "x": -2482,
+      "y": 1440,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "agents-to-engineering",
+      "region": "agents",
+      "destinations": [
+        "engineering"
+      ],
+      "x": 1039,
+      "y": 305,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "engineering-to-agents",
+      "region": "engineering",
+      "destinations": [
+        "agents"
+      ],
+      "x": 1971,
+      "y": 321,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "agents-to-salesforce",
+      "region": "agents",
+      "destinations": [
+        "salesforce"
+      ],
+      "x": 470,
+      "y": 786,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "salesforce-to-agents",
+      "region": "salesforce",
+      "destinations": [
+        "agents"
+      ],
+      "x": 470,
+      "y": 1566,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "code-to-salesforce",
+      "region": "code",
+      "destinations": [
+        "salesforce"
+      ],
+      "x": -1876,
+      "y": 1974,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "salesforce-to-code",
+      "region": "salesforce",
+      "destinations": [
+        "code"
+      ],
+      "x": -77,
+      "y": 2020,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "salesforce-to-python",
+      "region": "salesforce",
+      "destinations": [
+        "python"
+      ],
+      "x": 1016,
+      "y": 2009,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "python-to-salesforce",
+      "region": "python",
+      "destinations": [
+        "salesforce"
+      ],
+      "x": 1617,
+      "y": 1983,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "engineering-to-python",
+      "region": "engineering",
+      "destinations": [
+        "python"
+      ],
+      "x": 2411,
+      "y": 768,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "python-to-engineering",
+      "region": "python",
+      "destinations": [
+        "engineering"
+      ],
+      "x": 2223,
+      "y": 1537,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "salesforce-to-archive",
+      "region": "salesforce",
+      "destinations": [
+        "archive"
+      ],
+      "x": 339,
+      "y": 2488,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "archive-to-salesforce",
+      "region": "archive",
+      "destinations": [
+        "salesforce"
+      ],
+      "x": 220,
+      "y": 2904,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "python-to-archive",
+      "region": "python",
+      "destinations": [
+        "archive"
+      ],
+      "x": 1713,
+      "y": 2215,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "archive-to-python",
+      "region": "archive",
+      "destinations": [
+        "python"
+      ],
+      "x": 474,
+      "y": 2993,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    },
+    {
+      "id": "engineering-to-app-garden",
+      "region": "engineering",
+      "destinations": [
+        "app-garden-portal"
+      ],
+      "x": 3080,
+      "y": 720,
+      "interactionRadius": 100,
+      "arrivalRadius": 180
+    }
+  ],
+  "portals": [
+    {
+      "id": "app-garden-portal",
+      "name": "App Garden",
+      "status": "locked",
+      "message": "A new region is taking shape",
+      "src": "expansion/objects/locked-portal.webp",
+      "x": 3820,
+      "y": 1280,
+      "width": 310,
+      "anchorX": 0.5,
+      "anchorY": 0.82,
+      "interactionRadius": 120,
+      "arrivalRadius": 180
+    }
+  ]
+}
