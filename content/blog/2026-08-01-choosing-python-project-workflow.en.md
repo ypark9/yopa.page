@@ -1,6 +1,10 @@
 ---
 title: Choosing a Python Project and Dependency Workflow
-date: 2026-08-01
+date: 2024-03-11
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-03-11-transitioning-from-venv-to-pipenv-a-comprehensive-guide-with-examples.html"
 author: Yoonsoo Park
 description: Choose venv, pip-tools, Pipenv, Poetry, PDM, Hatch, or uv from project requirements instead of treating one tool migration as a universal upgrade.
 categories:

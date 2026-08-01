@@ -1,8 +1,10 @@
 ---
 title: "Build a Governed Agent Platform on AWS"
-date: 2026-08-01
+date: 2025-12-20
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-20-building-agent-factory-with-agentcore.html"
 author: Yoonsoo Park
 description: "Turn agent creation into a reviewed platform workflow with declarative templates, least privilege, signed artifacts, evaluations, approval, observability, and rollback."
 categories:

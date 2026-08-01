@@ -1,8 +1,10 @@
 ---
 title: "AWS Access in 2026: Federation and Temporary Credentials First"
-date: 2026-08-01
+date: 2023-05-22T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-22-aws-iam-user-vs-role.html"
 author: Yoonsoo Park
 description: "A practical decision guide for giving people and workloads AWS access without making long-lived IAM access keys the default."
 categories:

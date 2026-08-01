@@ -1,8 +1,10 @@
 ---
 title: "Use AWS Temporary Credentials Without Reading Cache Files"
-date: 2026-08-01
+date: 2023-06-15T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-15-leveraging-aws-sso-to-acquire-aws-secretaccesskey-and-sessiontoken.html"
 author: Yoonsoo Park
 description: "Design AWS applications around credential providers instead of handling IAM Identity Center tokens, access keys, and refresh logic yourself."
 categories:

@@ -1,6 +1,10 @@
 ---
 title: Safely Update Python Project Dependencies
-date: 2026-08-01
+date: 2023-09-08T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-09-08-keeping-your-python-packages-up-to-date-a-comprehensive-guide.html"
 author: Yoonsoo Park
 description: Update declared Python dependencies deliberately, preserve reproducibility, and verify behavior instead of bulk-upgrading an environment.
 categories:

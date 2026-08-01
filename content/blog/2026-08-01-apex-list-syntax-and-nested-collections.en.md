@@ -1,6 +1,10 @@
 ---
 title: "Apex List Syntax and Nested Collections"
-date: 2026-08-01
+date: 2023-04-10T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-10-what-is-the-difference-between-string-and-liststring-in-apex.html"
 author: Yoonsoo Park
 description: "A tested guide to Apex List syntax, initialization, and nested collections."
 categories:

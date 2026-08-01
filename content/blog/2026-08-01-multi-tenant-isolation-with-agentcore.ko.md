@@ -1,8 +1,10 @@
 ---
 title: Amazon Bedrock AgentCore 멀티테넌트 격리 설계
-date: 2026-08-01
+date: 2025-12-13
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-13-implementing-multi-tenancy-with-agentcore.html"
 author: Yoonsoo Park
 description: "신원, Runtime 세션, Memory 네임스페이스, 도구, 저장소와 로그 전반에 걸쳐 다층적인 tenant 격리를 설계한다."
 categories:

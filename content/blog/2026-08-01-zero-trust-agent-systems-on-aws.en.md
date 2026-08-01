@@ -1,8 +1,10 @@
 ---
 title: "Zero-Trust Agent Systems on AWS"
-date: 2026-08-01
+date: 2025-12-17
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-17-securing-agentic-ai-for-financial-institutions.html"
 author: Yoonsoo Park
 description: "Design hop-by-hop identity, user delegation, authorization, private connectivity, audit, and recovery for consequential agent workloads on AWS."
 categories:

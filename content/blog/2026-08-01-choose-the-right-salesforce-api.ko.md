@@ -1,6 +1,10 @@
 ---
 title: "Salesforce API를 고르는 기준"
-date: 2026-08-01
+date: 2024-05-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-05-05-understanding-salesforce-apis-metadata-tooling-and-bulk.html"
 author: Yoonsoo Park
 description: "리소스, 생명주기, 데이터량, 지연시간을 기준으로 Salesforce API를 선택한다."
 categories:

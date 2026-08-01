@@ -250,6 +250,10 @@ body:has(.explore-shell) > main {
   text-transform: uppercase;
 }
 
+.explore-card > .maintenance-badge {
+  margin-top: 7px;
+}
+
 .explore-card h2 {
   margin: 8px 0;
   padding: 0;

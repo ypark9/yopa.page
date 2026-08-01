@@ -47,6 +47,7 @@
   <article class="explore-card" id="explore-card" role="dialog" aria-modal="false" aria-labelledby="explore-card-title" aria-describedby="explore-card-description" aria-live="polite" hidden>
     <button class="explore-panel-close" id="explore-card-close" type="button" aria-label="Close article preview">×</button>
     <div class="explore-card-region" id="explore-card-region"></div>
+    <span id="explore-card-maintenance" class="maintenance-badge" hidden>Updated guide</span>
     <h2 id="explore-card-title"></h2>
     <p id="explore-card-description"></p>
     <div class="explore-card-trails" id="explore-card-trails" hidden>
@@ -128,7 +129,7 @@
   {{- range first 3 ($relatedCandidates.Related $post) -}}
     {{- $relatedURLs = $relatedURLs | append .RelPermalink -}}
   {{- end -}}
-  {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" ($post.Params.categories | default slice) "tags" ($post.Params.tags | default slice) "series" ($post.Params.series | default "") "language" $post.Language.Lang "related" $relatedURLs | jsonify | safeJS -}}
+  {{- dict "title" $post.Title "description" ($post.Description | default $post.Summary | plainify) "url" $post.RelPermalink "date" ($post.Date.Format "Jan 2, 2006") "categories" ($post.Params.categories | default slice) "tags" ($post.Params.tags | default slice) "series" ($post.Params.series | default "") "language" $post.Language.Lang "maintenance_status" ($post.Params.maintenance_status | default "") "related" $relatedURLs | jsonify | safeJS -}}
 {{- end -}}
 ]
 </script>

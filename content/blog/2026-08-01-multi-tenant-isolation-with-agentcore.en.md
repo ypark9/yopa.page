@@ -1,8 +1,10 @@
 ---
 title: Multi-Tenant Isolation with Amazon Bedrock AgentCore
-date: 2026-08-01
+date: 2025-12-13
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-13-implementing-multi-tenancy-with-agentcore.html"
 author: Yoonsoo Park
 description: "Build defense-in-depth tenant isolation across identity, Runtime sessions, Memory namespaces, tools, data stores, logs, and evaluation."
 categories:

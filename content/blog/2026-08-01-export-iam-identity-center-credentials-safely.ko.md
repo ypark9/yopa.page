@@ -1,8 +1,10 @@
 ---
 title: "도구가 요구할 때만 IAM Identity Center 자격 증명 내보내기"
-date: 2026-08-01
+date: 2023-06-08T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-08-aws-sso-get-role-credentials.html"
 author: Yoonsoo Park
 description: "SSO 토큰 캐시를 파싱하지 않고 AWS CLI가 지원하는 방식으로 레거시 도구에 임시 환경 자격 증명을 전달하는 제한된 흐름."
 categories:

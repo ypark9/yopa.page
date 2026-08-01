@@ -1,6 +1,10 @@
 ---
 title: "Apex 중첩 enum과 이름 가림"
-date: 2026-08-01
+date: 2023-05-03T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-03-why-apex-test-cannot-find-enum-defined-in-apex-class.html"
 author: Yoonsoo Park
 description: "타입과 변수 이름을 혼동하지 않고 중첩 Apex enum을 참조한다."
 categories:

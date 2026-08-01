@@ -1,6 +1,10 @@
 ---
 title: Pull Request에서 원치 않는 파일을 안전하게 제거하는 방법
-date: 2026-08-01
+date: 2023-06-19T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-19-how-to-delete-unwanted-files-from-a-pull-request.html"
 author: Yoonsoo Park
 description: 파일의 Git 상태를 먼저 확인하고 가장 작은 범위의 되돌릴 수 있는 수정으로 PR을 정리한다.
 categories:

@@ -1,6 +1,10 @@
 ---
 title: "sf CLI로 CSV 데이터를 Salesforce에 upsert하기"
-date: 2026-08-01
+date: 2023-05-16T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-16-sfdx-deploy-record-using-csv.html"
 author: Yoonsoo Park
 description: "현재 Salesforce CLI와 Bulk API 2.0으로 레코드를 안전하게 적재한다."
 categories:

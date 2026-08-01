@@ -22,3 +22,32 @@
   gap: 0.5rem 1rem;
   margin-top: 0.75rem;
 }
+
+.maintenance-badge {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid rgba(66, 102, 86, 0.45);
+  border-radius: 999px;
+  background: rgba(119, 164, 142, 0.12);
+  color: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.maintenance-badge[hidden] {
+  display: none;
+}
+
+.maintenance-replacement-notice {
+  border-color: #426656;
+  background: rgba(119, 164, 142, 0.1);
+}
+
+.maintenance-replacement-notice .maintenance-badge {
+  margin-bottom: 0.55rem;
+}

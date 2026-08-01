@@ -1,8 +1,10 @@
 ---
 title: "Amazon Bedrock AgentCore: A Service Map for Production Boundaries"
-date: 2026-08-01
+date: 2025-12-15
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-15-partner-insights-agentcore-overview.html"
 author: Yoonsoo Park
 description: "A factual map of AgentCore Runtime, Identity, Gateway, Memory, Browser, Code Interpreter, and observability with explicit control, data, security, and cost boundaries."
 categories:

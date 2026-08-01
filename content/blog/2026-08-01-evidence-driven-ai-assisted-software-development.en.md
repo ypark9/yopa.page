@@ -1,8 +1,10 @@
 ---
 title: "Evidence-Driven AI-Assisted Software Development"
-date: 2026-08-01
+date: 2024-08-12
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-08-12-mastering-generative-ai-for-efficient-software-development.html"
 author: Yoonsoo Park
 description: "A bounded engineering workflow for using coding agents with explicit context, small changes, deterministic validation, security review, and rollback."
 categories:

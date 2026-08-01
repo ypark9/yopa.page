@@ -1,6 +1,10 @@
 ---
 title: "비밀을 노출하지 않고 Salesforce org 확인하기"
-date: 2026-08-01
+date: 2023-05-09T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-09-sfdx-forceorgdisplay-to-get-the-scratch-org-information-salesforce.html"
 author: Yoonsoo Park
 description: "Access token을 출력하지 않고 org 식별 정보와 scratch org 상태를 확인한다."
 categories:

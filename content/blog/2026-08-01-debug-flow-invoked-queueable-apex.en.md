@@ -1,6 +1,10 @@
 ---
 title: "Debug Flow-Invoked Queueable Apex with Correlated Logs"
-date: 2026-08-01
+date: 2024-04-28
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-04-28-how-to-debug-salesforce-flows-with-asynchronous-apex-methods.html"
 author: Yoonsoo Park
 description: "Trace a Salesforce Flow through invocable and Queueable Apex without leaking credentials or losing the asynchronous job boundary."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "개인 Docker 호스트의 컨테이너를 안전하게 갱신하기"
-date: 2026-08-01
+date: 2024-01-22
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-01-22-harnessing-the-power-of-watchtower-for-docker-automated-updates-made-simple.html"
 author: Yoonsoo Park
 description: "latest 태그 자동 교체 대신 버전 고정, 알림, 백업, health check와 rollback을 사용하는 Docker·Synology 갱신 절차."
 categories:

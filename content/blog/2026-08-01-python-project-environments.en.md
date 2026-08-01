@@ -1,6 +1,10 @@
 ---
 title: A Practical Python Environment Workflow in 2026
-date: 2026-08-01
+date: 2023-04-17T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-17-setting-up-virtual-environments-for-multiple-python-versions.html"
 author: Yoonsoo Park
 description: Choose a supported Python version, create an isolated environment, and install project dependencies without modifying the system interpreter.
 categories:

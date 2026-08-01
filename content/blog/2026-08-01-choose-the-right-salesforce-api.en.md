@@ -1,6 +1,10 @@
 ---
 title: "Choose the Right Salesforce API"
-date: 2026-08-01
+date: 2024-05-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-05-05-understanding-salesforce-apis-metadata-tooling-and-bulk.html"
 author: Yoonsoo Park
 description: "Choose Salesforce APIs by resource, lifecycle, volume, and latency rather than by a three-API shortlist."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "복구 가능한 운영을 갖춘 AWS ECS n8n Queue Mode"
-date: 2026-08-01
+date: 2025-08-20
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-08-20-scaling-n8n-on-aws-serverless-architecture.html"
 author: Yoonsoo Park
 description: "고정 이미지, Postgres, Redis, 분리된 process role, secret, backup, upgrade와 rollback을 갖춘 ECS n8n queue-mode 설계."
 categories:

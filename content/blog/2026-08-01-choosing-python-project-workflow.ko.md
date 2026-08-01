@@ -1,6 +1,10 @@
 ---
 title: Python 프로젝트와 의존성 관리 도구를 선택하는 기준
-date: 2026-08-01
+date: 2024-03-11
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-03-11-transitioning-from-venv-to-pipenv-a-comprehensive-guide-with-examples.html"
 author: Yoonsoo Park
 description: 하나의 도구 이전을 범용 업그레이드로 보지 않고 프로젝트 요구사항에 따라 venv, pip-tools, Pipenv, Poetry, PDM, Hatch, uv를 선택한다.
 categories:

@@ -74,7 +74,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             self.assertLessEqual(len(post["related"]), 3)
             self.assertNotIn(post["url"], post["related"])
             self.assertTrue(set(post["related"]).issubset(known_urls))
-            for field in ("categories", "tags", "series", "language"):
+            for field in ("categories", "tags", "series", "language", "maintenance_status"):
                 self.assertIn(field, post)
 
     def test_article_header_distinguishes_publication_and_update_dates(self):
@@ -86,7 +86,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         new_article = (
             self.output_dir
             / "blog"
-            / "2026-08-01-python-project-environments.html"
+            / "2026-07-30-agentcore-identity-private-key-jwt.html"
         ).read_text()
 
         self.assertIn("Published", updated)
@@ -95,6 +95,41 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn('datetime=2026-08-01', updated)
         self.assertIn("Published", new_article)
         self.assertNotIn("Updated", new_article)
+
+    def test_replacement_keeps_lineage_date_and_explains_rewrite(self):
+        replacement = (
+            self.output_dir
+            / "blog"
+            / "2026-08-01-python-project-environments.html"
+        ).read_text()
+
+        self.assertIn("Originally published", replacement)
+        self.assertIn("Rewritten", replacement)
+        self.assertIn("Updated guide", replacement)
+        self.assertIn('datetime=2023-04-17', replacement)
+        self.assertIn('datetime=2026-08-01', replacement)
+        self.assertIn(
+            'href=../blog/2023-04-17-setting-up-virtual-environments-for-multiple-python-versions.html',
+            replacement,
+        )
+
+    def test_latest_articles_starts_with_a_real_new_article(self):
+        home = (self.output_dir / "index.html").read_text()
+        latest = home.split("Latest Articles", 1)[1].split("Article Atlas", 1)[0]
+
+        self.assertIn("2026-07-30-agentcore-identity-private-key-jwt.html", latest)
+        self.assertNotIn("2026-08-01-python-project-environments.html", latest)
+
+    def test_atlas_exposes_replacement_status(self):
+        replacement = next(
+            post
+            for post in self.posts
+            if post["url"] == "/blog/2026-08-01-python-project-environments.html"
+        )
+        self.assertEqual(replacement["maintenance_status"], "replacement")
+        self.assertEqual(replacement["date"], "Apr 17, 2023")
+        self.assertIn('id="explore-card-maintenance"', (ROOT / "layouts" / "explore" / "single.html").read_text())
+        self.assertIn("article.maintenance_status", (ROOT / "static" / "js" / "explore.js").read_text())
 
     def test_tag_taxonomy_keeps_the_atlas_graph_connected(self):
         by_url = {post["url"]: post for post in self.posts}

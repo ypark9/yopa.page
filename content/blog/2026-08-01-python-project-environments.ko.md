@@ -1,6 +1,10 @@
 ---
 title: 2026년 Python 프로젝트 환경을 안전하게 관리하는 방법
-date: 2026-08-01
+date: 2023-04-17T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-17-setting-up-virtual-environments-for-multiple-python-versions.html"
 author: Yoonsoo Park
 description: 지원되는 Python 버전을 선택하고 프로젝트별 가상 환경과 의존성을 시스템 Python과 분리해 관리한다.
 categories:

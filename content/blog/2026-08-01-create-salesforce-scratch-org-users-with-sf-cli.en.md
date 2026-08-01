@@ -1,6 +1,10 @@
 ---
 title: "Create Salesforce Scratch Org Users with sf CLI"
-date: 2026-08-01
+date: 2023-06-02T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-02-using-sfdx-cli-command-to-insert-user-to-org.html"
 author: Yoonsoo Park
 description: "Create scratch-org users with supported CLI commands and explicit permission setup."
 categories:

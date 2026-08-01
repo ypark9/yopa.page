@@ -1,6 +1,10 @@
 ---
 title: "Install and Update Salesforce CLI Safely"
-date: 2026-08-01
+date: 2023-06-22T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-22-how-to-update-sfdx-cli-from-one-version-to-another.html"
 author: Yoonsoo Park
 description: "Identify how Salesforce CLI was installed, update the supported sf CLI, and preserve authentication safely."
 categories:

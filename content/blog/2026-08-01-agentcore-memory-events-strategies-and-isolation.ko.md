@@ -1,8 +1,10 @@
 ---
 title: AgentCore Memory의 이벤트, 전략, 격리 설계
-date: 2026-08-01
+date: 2025-12-09
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-09-deep-dive-into-agentcore-memory-architecture.html"
 author: Yoonsoo Park
 description: "AgentCore Memory의 현재 이벤트, 전략, 네임스페이스와 IAM 모델을 이해하고 메모리를 권한 시스템처럼 오용하지 않는 방법을 다룬다."
 categories:

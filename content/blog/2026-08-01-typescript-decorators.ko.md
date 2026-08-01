@@ -1,6 +1,10 @@
 ---
 title: TypeScript 5.0 이후의 Decorator 이해하기
-date: 2026-08-01
+date: 2023-04-19T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-19-decorators-for-class-in-typescript.html"
 author: Yoonsoo Park
 description: 표준 TypeScript decorator와 기존 experimental 모델의 차이, 그리고 안전한 이전 경계를 설명한다.
 categories:

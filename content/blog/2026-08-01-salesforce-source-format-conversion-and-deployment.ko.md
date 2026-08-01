@@ -1,6 +1,10 @@
 ---
 title: "Salesforce 소스 포맷 변환과 배포"
-date: 2026-08-01
+date: 2023-09-06T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-09-09-understanding-the-sfdx-force-source-convert-command-in-salesforce-dx.html"
 author: Yoonsoo Park
 description: "Salesforce 소스를 직접 배포하고 실제 호환성 경계에서만 Metadata API 포맷으로 변환한다."
 categories:

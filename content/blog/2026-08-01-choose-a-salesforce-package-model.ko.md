@@ -1,6 +1,10 @@
 ---
 title: "Salesforce 패키지 모델 선택하기: 1GP, Managed 2GP, Unlocked"
-date: 2026-08-01
+date: 2024-02-05
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-02-05-understanding-salesforce-packaging-a-comprehensive-comparison-of-1gp-vs-2gp.html"
 author: Yoonsoo Park
 description: "Salesforce 패키지 모델을 배포 대상과 생명주기로 선택하는 가이드."
 categories:

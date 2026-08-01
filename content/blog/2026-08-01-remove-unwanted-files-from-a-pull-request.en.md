@@ -1,6 +1,10 @@
 ---
 title: Safely Remove Unwanted Files from a Pull Request
-date: 2026-08-01
+date: 2023-06-19T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-19-how-to-delete-unwanted-files-from-a-pull-request.html"
 author: Yoonsoo Park
 description: Remove an accidental file from a pull request by identifying its Git state and making the smallest reversible correction.
 categories:

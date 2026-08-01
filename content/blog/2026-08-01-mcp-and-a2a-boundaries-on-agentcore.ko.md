@@ -1,8 +1,10 @@
 ---
 title: Amazon Bedrock AgentCore에서 MCP와 A2A 경계 정하기
-date: 2026-08-01
+date: 2025-12-11
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-11-architecture-patterns-for-strands-and-mcp.html"
 author: Yoonsoo Park
 description: "HTTP, MCP, A2A를 계약에 따라 선택하고 AgentCore Runtime에 맞게 배포하며 모델의 판단과 권한 검사를 분리한다."
 categories:

@@ -1,6 +1,10 @@
 ---
 title: "하드코딩한 ID 없이 Salesforce Record Type 사용하기"
-date: 2026-08-01
+date: 2024-06-04
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-06-04-understanding-record-types-and-recordtypeid-in-salesforce-for-beginners.html"
 author: Yoonsoo Park
 description: "Record Type 선택, Person Account 구분, 이식 가능한 RecordTypeId 해석과 데이터 적재를 정리한다."
 categories:

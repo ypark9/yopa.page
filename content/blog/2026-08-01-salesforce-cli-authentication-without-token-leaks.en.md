@@ -1,6 +1,10 @@
 ---
 title: "Salesforce CLI Authentication Without Token Leaks"
-date: 2026-08-01
+date: 2023-05-01T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-01-get-access-token-from-salesforce.html"
 author: Yoonsoo Park
 description: "Authenticate Salesforce CLI safely and avoid leaking bearer tokens into logs or shell pipelines."
 categories:

@@ -1,6 +1,10 @@
 ---
 title: "Salesforce 설정 도구를 고르는 기준"
-date: 2026-08-01
+date: 2023-06-21T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-21-record-based-configuration-in-salesforce.html"
 author: Yoonsoo Park
 description: "Record Type, Dynamic Forms, Custom Metadata, Flow의 역할을 구분해 선택한다."
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "TypeScript에서 IAM Identity Center 프로필을 안전하게 사용하기"
-date: 2026-08-01
+date: 2023-05-23T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-23-aws-sso-with-typescript.html"
 author: Yoonsoo Park
 description: "캐시 파일 파싱, 키 내장, 셸 문자열 조합 없이 AWS SDK for JavaScript v3에서 IAM Identity Center 프로필을 사용하는 방법."
 categories:

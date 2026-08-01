@@ -1,8 +1,10 @@
 ---
 title: "Debug AWS Amplify and Cognito Sign-In Flows"
-date: 2026-08-01
+date: 2024-12-30
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-12-30-troubleshooting-aws-amplify-authentication.html"
 author: Yoonsoo Park
 description: "Diagnose Amplify v6 sign-in by aligning Cognito app-client flows, handling every nextStep, and choosing SRP or password auth deliberately."
 categories:

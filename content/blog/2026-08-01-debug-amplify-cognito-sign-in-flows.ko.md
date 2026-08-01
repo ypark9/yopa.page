@@ -1,8 +1,10 @@
 ---
 title: "AWS Amplify와 Cognito 로그인 흐름 디버깅하기"
-date: 2026-08-01
+date: 2024-12-30
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-12-30-troubleshooting-aws-amplify-authentication.html"
 author: Yoonsoo Park
 description: "Cognito app-client flow를 맞추고 모든 nextStep을 처리하며 SRP와 password auth를 의도적으로 선택하는 Amplify v6 로그인 진단법."
 categories:

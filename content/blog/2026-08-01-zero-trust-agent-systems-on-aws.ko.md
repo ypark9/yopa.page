@@ -1,8 +1,10 @@
 ---
 title: "AWS에서 Zero-Trust Agent 시스템 설계하기"
-date: 2026-08-01
+date: 2025-12-17
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-12-17-securing-agentic-ai-for-financial-institutions.html"
 author: Yoonsoo Park
 description: "중요도가 높은 agent workload를 위한 hop-by-hop identity, 사용자 위임, authorization, private connectivity, audit와 recovery 설계."
 categories:

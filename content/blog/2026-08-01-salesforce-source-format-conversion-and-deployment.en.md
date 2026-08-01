@@ -1,6 +1,10 @@
 ---
 title: "Salesforce Source Format, Conversion, and Deployment"
-date: 2026-08-01
+date: 2023-09-06T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-09-09-understanding-the-sfdx-force-source-convert-command-in-salesforce-dx.html"
 author: Yoonsoo Park
 description: "Deploy Salesforce source directly and reserve Metadata API conversion for real interoperability needs."
 categories:

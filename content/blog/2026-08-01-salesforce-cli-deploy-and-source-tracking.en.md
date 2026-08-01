@@ -1,6 +1,10 @@
 ---
 title: "Salesforce CLI Deployment and Source Tracking"
-date: 2026-08-01
+date: 2023-04-20T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-20-sfdx-forcesourcepush-vs-sfdx-forcesourcedeploy.html"
 author: Yoonsoo Park
 description: "Choose current sf CLI deployment and source-tracking workflows without relying on retired push commands."
 categories:

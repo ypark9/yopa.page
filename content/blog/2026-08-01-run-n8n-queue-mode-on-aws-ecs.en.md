@@ -1,8 +1,10 @@
 ---
 title: "Run n8n Queue Mode on AWS ECS with Recoverable Operations"
-date: 2026-08-01
+date: 2025-08-20
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2025-08-20-scaling-n8n-on-aws-serverless-architecture.html"
 author: Yoonsoo Park
 description: "A production-oriented n8n queue-mode design on ECS with pinned images, Postgres, Redis, separate process roles, secrets, backups, upgrades, and rollback."
 categories:

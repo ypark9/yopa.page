@@ -1,6 +1,6 @@
 ---
 title: Fish Shell for Interactive Development
-date: 2032-06-02T01:25:00-04:00
+date: 2023-06-25T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
 author: Yoonsoo Park

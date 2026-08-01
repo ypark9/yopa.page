@@ -1,6 +1,10 @@
 ---
 title: "sf CLI로 Salesforce 객체 사용 가능 여부 확인하기"
-date: 2026-08-01
+date: 2023-04-25T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-25-checking-if-an-sobject-exists-in-a-salesforce-scratch-org.html"
 author: Yoonsoo Park
 description: "JSON 결과와 종료 코드를 이용해 Salesforce 객체 사용 가능 여부를 확인한다."
 categories:

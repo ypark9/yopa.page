@@ -1,6 +1,10 @@
 ---
 title: Python 프로젝트 의존성을 안전하게 업데이트하는 방법
-date: 2026-08-01
+date: 2023-09-08T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-09-08-keeping-your-python-packages-up-to-date-a-comprehensive-guide.html"
 author: Yoonsoo Park
 description: 설치 환경을 일괄 업그레이드하지 않고 선언된 의존성을 의도적으로 갱신하고 재현성과 동작을 검증한다.
 categories:

@@ -1,8 +1,10 @@
 ---
 title: "Deploy a Serverless API Safely with AWS CDK v2"
-date: 2026-08-01
+date: 2023-06-05T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-05-deploying-services-aws-cdk-and-aws-sso.html"
 author: Yoonsoo Park
 description: "A current CDK v2 workflow for API Gateway, Lambda, and S3 using supported runtimes, temporary credentials, tests, and least privilege."
 categories:

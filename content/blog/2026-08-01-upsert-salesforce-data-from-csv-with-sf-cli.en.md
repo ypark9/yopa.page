@@ -1,6 +1,10 @@
 ---
 title: "Upsert Salesforce Data from CSV with sf CLI"
-date: 2026-08-01
+date: 2023-05-16T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-05-16-sfdx-deploy-record-using-csv.html"
 author: Yoonsoo Park
 description: "Load records safely with Bulk API 2.0 through the current Salesforce CLI."
 categories:

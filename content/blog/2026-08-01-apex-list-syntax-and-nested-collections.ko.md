@@ -1,6 +1,10 @@
 ---
 title: "Apex List 문법과 중첩 컬렉션"
-date: 2026-08-01
+date: 2023-04-10T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-10-what-is-the-difference-between-string-and-liststring-in-apex.html"
 author: Yoonsoo Park
 description: "Apex List의 문법, 초기화, 중첩 컬렉션을 컴파일 가능한 예제로 정리한다."
 categories:

@@ -1,6 +1,10 @@
 ---
 title: TypeScript Decorators After TypeScript 5.0
-date: 2026-08-01
+date: 2023-04-19T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-04-19-decorators-for-class-in-typescript.html"
 author: Yoonsoo Park
 description: Understand standard TypeScript decorators, the legacy experimental model, and the migration boundary between them.
 categories:

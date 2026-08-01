@@ -1,6 +1,10 @@
 ---
 title: "Salesforce CI/CD with AWS CodePipeline and CodeBuild"
-date: 2026-08-01
+date: 2024-06-15
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-06-15-automating-salesforce-package-deployment-with-aws-code-services-a-comprehensive-guide.html"
 author: Yoonsoo Park
 description: "Build a supported Salesforce deployment pipeline on AWS with explicit authentication, validation, approval, and rollback boundaries."
 categories:

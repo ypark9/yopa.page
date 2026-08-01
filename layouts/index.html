@@ -46,6 +46,7 @@
                 <a href="{{ .RelPermalink }}">
                     <div class="post-row">
                         <time>{{ .Date.Format "Jan 02" }}</time>
+                        {{ if eq .Params.maintenance_status "replacement" }}<span class="maintenance-badge">{{ if eq .Language.Lang "ko" }}개정 가이드{{ else }}Updated guide{{ end }}</span>{{ end }}
                         <h3>{{ .Title }}</h3>
                     </div>
                 </a>

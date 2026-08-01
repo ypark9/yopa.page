@@ -1,8 +1,10 @@
 ---
 title: "AWS CDK v2로 서버리스 API를 안전하게 배포하기"
-date: 2026-08-01
+date: 2023-06-05T01:25:00-04:00
 lastmod: 2026-08-01
 reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2023-06-05-deploying-services-aws-cdk-and-aws-sso.html"
 author: Yoonsoo Park
 description: "지원 중인 런타임, 임시 자격 증명, 테스트와 최소 권한을 적용한 API Gateway, Lambda, S3용 CDK v2 배포 흐름."
 categories:

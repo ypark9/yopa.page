@@ -1,6 +1,10 @@
 ---
 title: "AWS CodePipeline과 CodeBuild로 Salesforce CI/CD 구성하기"
-date: 2026-08-01
+date: 2024-06-15
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
+maintenance_status: replacement
+replaces_url: "/blog/2024-06-15-automating-salesforce-package-deployment-with-aws-code-services-a-comprehensive-guide.html"
 author: Yoonsoo Park
 description: "인증, 검증, 승인, 배포와 rollback 경계를 분리한 AWS 기반 Salesforce 파이프라인을 구성한다."
 categories:
