@@ -1,22 +1,26 @@
 ---
 title: Top Techniques for Efficient Array Shuffling
 date: 2023-04-01T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Each element gets a turn to swap places with another random element until everyone has found a new seat."
 categories:
   - Programming
   - Algorithm
 tags:
-  - Shuffle Algorithm
+  - JavaScript
+  - TypeScript
+  - Node.js
 ---
 
 # Best Way to Shuffle an Array: The Fisher-Yates Shuffle Algorithm
 
-Are you tired of boring, predictable arrays that always show up in the same order? Do you wish there was a fun and exciting way to randomize your arrays? Look no further than the Fisher-Yates shuffle algorithm, the best way to shuffle an array!
+Fisher–Yates produces an unbiased shuffle when its random-number source is uniform. It runs in linear time and can be implemented without mutating the input array.
 
 ## What is the Fisher-Yates Shuffle Algorithm?
 
-The Fisher-Yates shuffle algorithm, also known as the Knuth shuffle, is a way to randomly shuffle the elements of an array. It's like playing a game of musical chairs with your array elements – each element gets a turn to swap places with another random element until everyone has found a new seat.
+The algorithm walks backward through the array and swaps each element with a uniformly selected element at or before its current position.
 
 ## How does it work?
 
@@ -33,7 +37,7 @@ And just like that, your array is now jumbled up and ready for action! There's n
 
 Not only is the Fisher-Yates shuffle algorithm a fun and unpredictable way to shuffle your arrays, but it's also mathematically sound. Each element in the array has an equal chance of ending up in any position, so you don't have to worry about any pesky biases or patterns.
 
-Plus, it's super easy to implement and works for arrays of any size. Why settle for boring old sort functions when you can add some excitement to your code with the Fisher-Yates shuffle algorithm?
+Do not use `array.sort(() => Math.random() - 0.5)`, which does not produce a reliable uniform shuffle. The example below uses `Math.random`, so it is suitable for ordinary UI behavior and simulations, not cryptographic selection, gambling, or security tokens. Those cases require a cryptographically secure random source and domain-specific review.
 
 ## Example
 
@@ -69,6 +73,4 @@ Finally, we return the shuffledArray from the function, and log it to the consol
 
 ## Get Shufflin'!
 
-So go ahead and give the Fisher-Yates shuffle algorithm a try – your arrays will never be the same again! Just remember to always have fun, and don't blame us if your code starts throwing curveballs.
-
-Cheer! 🍺
+Fisher–Yates is a sound default for ordinary array shuffling. Select the randomness source according to the risk of the application.

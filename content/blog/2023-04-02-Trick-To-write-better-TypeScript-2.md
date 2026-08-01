@@ -1,13 +1,17 @@
 ---
-title: Master TypeScript with Conditional Types - Tips for Cleaner, More Efficient Code
+title: Using Conditional Types in TypeScript
 date: 2023-04-02T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 2"
 categories:
   - Programming
   - TypeScript
 tags:
-  - conditional types
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 Another cool trick in TypeScript is to use conditional types. Conditional types enable you to create new types by conditionally selecting different types based on the input type. This can help you make your code more flexible and adaptable.
@@ -58,4 +62,3 @@ type ExtractedUser = ExtractDataType<UserResponse>; // This will be 'User'
 ```
 
 The `ExtractDataType` utility type is a good example of a conditional type that simplifies working with complex types, making the code more maintainable and less error-prone.
-Cheer! 🍺

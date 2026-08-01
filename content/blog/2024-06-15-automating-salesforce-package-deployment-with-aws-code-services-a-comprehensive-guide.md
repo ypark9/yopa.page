@@ -1,6 +1,11 @@
 ---
 title: Automating Salesforce Package Deployment with AWS Code Services - A Comprehensive Guide
 date: 2024-06-15
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The pipeline incorrectly uses CodeDeploy for Salesforce and contains invalid templates and deprecated CLI commands."
+replacement_url_en: "/blog/2026-08-01-salesforce-ci-cd-with-aws-codepipeline-and-codebuild.html"
+replacement_url_ko: "/ko/blog/2026-08-01-salesforce-ci-cd-with-aws-codepipeline-and-codebuild.html"
 author: Yoonsoo Park
 description: "An in-depth look at AWS Code services (CodePipeline, CodeBuild, CodeDeploy, etc.) using a Salesforce package deployment example."
 categories:
@@ -8,11 +13,10 @@ categories:
   - DevOps
   - Salesforce
 tags:
-  - AWS CodePipeline
-  - AWS CodeBuild
-  - AWS CodeDeploy
-  - Salesforce
   - CI/CD
+  - Salesforce CLI
+  - AWS CodeBuild
+  - Salesforce Packaging
 ---
 
 AWS provides a comprehensive suite of services known as AWS Code\* for application development and deployment. These services, including AWS CodePipeline, AWS CodeBuild, and AWS CodeDeploy, simplify the CI/CD process. In this blog post, we will explore the functionality of each service and demonstrate their usage through a practical example: deploying a Salesforce package.

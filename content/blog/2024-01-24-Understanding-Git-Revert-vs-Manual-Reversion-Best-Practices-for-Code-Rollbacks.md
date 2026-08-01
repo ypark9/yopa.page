@@ -1,6 +1,8 @@
 ---
 title: Understanding Git Revert vs. Manual Reversion - Best Practices for Code Rollbacks
 date: 2024-01-24
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Dive into the nuances of reverting changes in Git, comparing the automated 'git revert' with the manual checkout and commit approach. Learn the best practices for maintaining a clean, understandable project history."
 categories:
@@ -8,9 +10,8 @@ categories:
   - Git Tips
 tags:
   - Git
-  - Revert
+  - CLI
   - Version Control
-  - Coding Best Practices
 ---
 
 ![oni-github](images/oni-github.webp)
@@ -27,7 +28,6 @@ Imagine you've made a commit that unexpectedly breaks your application. The comm
 
 ```bash
 git revert abc1234
-git commit -m "Revert commit abc1234 that broke the application"
 git push
 ```
 
@@ -38,7 +38,7 @@ This sequence of commands creates a new commit that undoes the changes made in c
 - **Preserves History**: Keeps the original commit in the history, alongside the revert commit, maintaining a complete and traceable record.
 - **Collaboration Friendly**: Clearly communicates the reversion to team members, maintaining clarity in shared repositories.
 
-## Method 2: Manual Reversion with Git Checkout
+## Method 2: Restore selected paths and commit the correction
 
 The manual reversion method involves checking out the state of a specific commit, manually resetting your files to that state, and then creating a new commit with those changes. This method gives you more control but requires careful handling to ensure clarity and traceability.
 
@@ -47,8 +47,8 @@ The manual reversion method involves checking out the state of a specific commit
 Suppose you want to revert to the state of your project at commit `def5678`. You would use the following sequence of commands:
 
 ```bash
-git checkout def5678 .
-git add .
+git restore --source=def5678 --staged --worktree -- path/to/file
+git add path/to/file
 git commit -m "Manually reverting to the state of commit def5678"
 git push
 ```
@@ -74,8 +74,6 @@ While both methods can revert changes, choosing the right one depends on your sp
   - The changes you need to revert are complex or require manual intervention.
   - You're working locally and need a quick rollback, and you're confident about managing your project's history.
 
-## Wrapping it up 👏
+## Conclusion
 
 Whether you choose the automated `git revert` or the manual checkout and commit approach, understanding the implications of each method on your project's history and collaboration dynamics is key. Use `git revert` for its clarity and traceability, especially in collaborative settings. Opt for manual reversion when you need more control over the process. Remember, the goal is not just to undo changes, but to do so in a way that maintains the integrity and understandability of your project history.
-
-Cheers! 🍺

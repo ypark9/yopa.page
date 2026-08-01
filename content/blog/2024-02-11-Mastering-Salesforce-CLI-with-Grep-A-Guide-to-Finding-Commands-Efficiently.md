@@ -1,20 +1,22 @@
 ---
 title: Mastering Salesforce CLI with Grep - A Guide to Finding Commands Efficiently
 date: 2024-02-11
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Learn how to use the grep command to efficiently find specific commands in the Salesforce CLI, complete with examples and detailed explanations."
 categories:
   - Salesforce
   - CLI
 tags:
-  - grep
   - Salesforce CLI
-  - Command Line Tools
+  - Developer Tools
+  - CLI
 ---
 
 ![Salesforce CLI and Oni](images/oni-salesforce-1.webp)
 
-As a Salesforce professional, navigating through the extensive Salesforce Command Line Interface (CLI) can be daunting. The `grep` command, a staple in Unix-like systems for searching text using patterns, can be your ally in swiftly finding specific commands or options in the Salesforce CLI. This blog post delves into using `grep` effectively with Salesforce CLI, offering detailed examples for the most common use-cases.
+Salesforce CLI now has built-in discovery commands. Start with `sf search`, `sf commands`, command help, shell completion, and `sf which`; use `grep` only as a fallback for narrowing text output.
 
 ### 1. Finding Basic Commands
 
@@ -41,7 +43,7 @@ This reveals options and subcommands under `sf data` that are related to queryin
 Deployment is a critical task, and you need to get the commands right. If you're looking for commands related to deploying metadata:
 
 ```sh
-sf deploy metadata --help | grep "deploy"
+sf project deploy start --help | grep -i "test\|target"
 ```
 
 This filters out the specific options and subcommands for metadata deployment, simplifying the task of finding the right command for your deployment needs.
@@ -72,8 +74,6 @@ This is helpful to list all environments or instances, providing you with the ex
 - **Extended Patterns**: Use `egrep` or `grep -E` for more complex pattern searches.
 - **Contextual Search**: If you need more context around your search, use `grep` with `-B`, `-A`, or `-C` to display lines before, after, or around the matching line.
 
-### Wrapping it up 👏
+### A better discovery sequence
 
-Mastering the use of `grep` with the Salesforce CLI can significantly enhance your productivity and efficiency. It allows you to quickly sift through extensive help documents and find exactly what you need. The key to effectively using `grep` is understanding the basic patterns of commands you are searching for and iteratively refining your search based on the output you get. Happy grepping in your Salesforce CLI adventures!
-
-Cheers! 🍺
+Run `sf search`, inspect `sf <topic> --help`, then open the exact command's help. Use `sf which <command>` to identify its plugin and `sf commands` for an inventory. `grep` is Unix-specific and can hide surrounding context, so documentation and built-in help remain the source of truth. Verified against the [Salesforce CLI discovery guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/super-powers.html) on 2026-08-01.

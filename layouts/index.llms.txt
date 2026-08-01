@@ -14,7 +14,8 @@ Each post is also available as raw Markdown by appending `.md` to the URL is NOT
 {{- end }}
 
 ## Blog Posts
-{{- range first 80 (where .Site.RegularPages "Section" "blog") }}
+{{- $currentPosts := where (where .Site.RegularPages "Section" "blog") "Params.maintenance_status" "ne" "archived" }}
+{{- range first 80 $currentPosts }}
 - [{{ .Title }}]({{ .Permalink }}){{ with (.Description | default (.Summary | plainify | truncate 140)) }}: {{ . }}{{ end }}
 {{- end }}
 

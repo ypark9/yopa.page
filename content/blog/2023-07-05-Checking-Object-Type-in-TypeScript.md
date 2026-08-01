@@ -1,12 +1,16 @@
 ---
 title: Checking Object Type in TypeScript
 date: 2023-07-05T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Various methods and best practices for checking object types in TypeScript at runtime."
 categories:
   - TypeScript
 tags:
-  - Object
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 When working with TypeScript, it's often necessary to determine the type of a variable. In particular, you might need to check whether a variable is of object type. Fortunately, TypeScript provides a straightforward way to perform this type check.
@@ -50,6 +54,3 @@ Replace `SomeObjectType` with the actual type you're expecting for your variable
 ## Conclusion
 
 Checking the object type in TypeScript is essential when you want to ensure the correctness of your code. By using the `typeof` operator in combination with the `object` keyword, you can easily determine whether a variable is an object. If you're looking for a specific object type, replace the `any` type with the desired type in the variable declaration.
-
-
-Cheers! 🍺

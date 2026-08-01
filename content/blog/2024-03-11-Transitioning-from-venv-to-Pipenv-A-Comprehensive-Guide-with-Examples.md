@@ -1,16 +1,19 @@
 ---
 title: Managing Multiple Versions with Pyenv, venv, and Pipenv
 date: 2024-03-11
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article presents a move from venv to Pipenv as an inherent upgrade, uses unsupported Python examples, and includes a destructive migration step without an evidence or rollback gate."
+replacement_url_en: "/blog/2026-08-01-choosing-python-project-workflow.html"
+replacement_url_ko: "/ko/blog/2026-08-01-choosing-python-project-workflow.html"
 author: Yoonsoo Park
 description: "Learn to manage multiple Python versions with Pyenv and create isolated project environments using both venv and Pipenv, understanding their distinct roles in Python development."
 categories:
   - Python
 tags:
-  - Multiple Python Versions
-  - pyenv
-  - Homebrew
-  - Virtual Environments
-  - Pipenv
+  - Python
+  - Package Management
+  - CLI
 ---
 
 ![oni working on python](images/oni-python-1.webp)
@@ -159,9 +162,7 @@ pip install --user pipenv
 
 To avoid confusion and clean up the project directory, YOPA can remove the old `venv` directory. This step should only be performed if all necessary dependencies are documented and can be reinstalled with `Pipenv`.
 
-```bash
-rm -rf venv
-```
+> Safety note added in 2026: the deletion command previously shown here was removed. Preserve the current dependency declaration and working verification commands, build the candidate workflow in a separate environment, and delete the old environment only after the replacement passes clean-clone tests.
 
 #### Step 5: Initialize Pipenv with Python Version
 

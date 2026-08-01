@@ -1,12 +1,16 @@
 ---
 title: --save-dev in npm
 date: 2023-05-18T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "--save-dev in npm"
 categories:
   - npm
 tags:
-  - --save-dev
+  - Node.js
+  - JavaScript
+  - Package Management
 ---
 
 When working with npm (Node Package Manager) to manage dependencies in a Node.js project, the `--save-dev` flag is often used to save packages as development dependencies. It is an essential feature that helps distinguish between packages required for development purposes and those needed for the production environment.
@@ -39,6 +43,3 @@ npm install express
 ```
 
 By installing Express as a regular dependency, it will be bundled and deployed along with your application to ensure proper execution in both development and production environment.
-
-
-Cheers! 🍺

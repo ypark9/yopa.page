@@ -1,13 +1,16 @@
 ---
 title: Strategy Pattern in Dependency Injection
 date: 2023-05-19T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Strategy Pattern in Dependency Injection"
 categories:
   - Design Pattern
 tags:
-  - Strategy Pattern
   - Dependency Injection
+  - Design Patterns
+  - Software Design
 ---
 
 ## Understanding the Concepts
@@ -66,6 +69,3 @@ print(formatter.format("hello world"))  # Output: "Hello world"
 ```
 
 This example demonstrates how **Dependency Injection** can inject different **strategies** into a class, resulting in dynamic behavior changes based on the provided strategy.
-
-
-Cheers! 🍺

@@ -1,13 +1,17 @@
 ---
-title: Master TypeScript with Mapped Types - Enhance Your Code Quality
+title: Using Mapped Types in TypeScript
 date: 2023-03-31T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 1"
 categories:
   - Programming
   - TypeScript
 tags:
-  - mapped types
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 A cool trick to write better TypeScript code is to use **mapped types**.
@@ -77,6 +81,4 @@ user3.name = "Catherine";
 
 Mapped types can help you create more versatile and maintainable TypeScript code by reducing duplication and allowing for easy transformation of existing types.
 
-P.S. Can you identify the TypeScript utility type that actually accomplishes this? (Special thanks to my coworker [@thomasnotfound](https://how.wtf)
 for bringing this to my attention.)
-Cheer! 🍺

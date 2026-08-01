@@ -1,12 +1,16 @@
 ---
 title: Git Vs GitHub
 date: 2023-06-23T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explaining the fundamental differences between Git (the version control system) and GitHub (the hosting service)."
 categories:
   - GitHub
 tags:
   - Git
+  - GitHub
+  - CLI
 ---
 
 ## Introduction
@@ -45,6 +49,3 @@ To sum it all up:
 ## Conclusion
 
 In essence, Git and GitHub complement each other: Git as a powerful tool for version control and GitHub as a platform to collaborate and manage Git repositories. While they are often used together, they perform different roles, each significant in its own right.
-
-
-Cheers! 🍺

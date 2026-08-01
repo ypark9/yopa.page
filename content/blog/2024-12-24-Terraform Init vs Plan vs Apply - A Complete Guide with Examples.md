@@ -1,176 +1,93 @@
 ---
-title: Understanding Terraform Commands Through Real-World Examples
+title: A Safe Terraform Init, Plan, and Apply Workflow
 date: 2024-12-24
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: A practical guide to understanding when and why to use different Terraform commands, illustrated through real-world infrastructure management scenarios.
+description: "Use Terraform initialization, validation, saved plans, remote state, review, and exceptional targeting without turning convenience flags into deployment policy."
 categories:
   - Infrastructure as Code
   - DevOps
 tags:
-  - terraform
-  - aws
-  - infrastructure
+  - Terraform
+  - Infrastructure as Code
+  - State Management
+  - DevOps
+  - Security
 ---
 
-> A practical guide to understanding when and why to use different Terraform commands, illustrated through real-world infrastructure management scenarios.
+`terraform init`, `plan`, and `apply` are not three maturity levels. They perform different parts of one workflow: initialize a working directory, calculate a proposed change, and execute an approved change.
 
-Have you ever wondered when exactly you need to run `terraform init` versus `terraform plan`? Let's explore these commands through practical, real-world scenarios that every DevOps engineer encounters.
+## Initialize reproducibly
 
-## Scenario 1: Setting Up a New Web Application Infrastructure
-
-Imagine you're tasked with setting up the infrastructure for a new web application. You'll need an EC2 instance, an RDS database, and an S3 bucket for static assets.
-
-```hcl
-# main.tf
-provider "aws" {
-  region = "us-west-2"
-}
-
-resource "aws_instance" "web_server" {
-  ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "WebServer"
-  }
-}
-
-resource "aws_db_instance" "database" {
-  identifier        = "myapp-database"
-  engine            = "postgres"
-  instance_class    = "db.t3.micro"
-  allocated_storage = 20
-}
-
-resource "aws_s3_bucket" "assets" {
-  bucket = "myapp-static-assets"
-}
-```
-
-First, you'll need to run `terraform init`. Why? Because:
-
-1. This is a new project directory
-2. You're using the AWS provider for the first time
-3. Terraform needs to download provider plugins
-
-## Scenario 2: Adding Application Load Balancer
-
-A month later, your application grows, and you need to add a load balancer. You create a new file:
-
-```hcl
-# loadbalancer.tf
-resource "aws_lb" "web_lb" {
-  name               = "web-lb"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = aws_subnet.public[*].id
-}
-```
-
-In this case, you don't need to run `terraform init` again because you're not adding any new providers or modules. Instead, start with `terraform plan` to see what changes will be made:
+Run `terraform init` in a new checkout and after changing provider requirements, modules, or backend configuration. It installs providers/modules, prepares the backend, and writes dependency selections to `.terraform.lock.hcl`.
 
 ```bash
-$ terraform plan
-Terraform will perform the following actions:
-
-  # aws_lb.web_lb will be created
-  + resource "aws_lb" "web_lb" {
-      + arn                        = (known after apply)
-      + name                       = "web-lb"
-      + internal                   = false
-      + load_balancer_type        = "application"
-      ...
-    }
+terraform init
+terraform fmt -check -recursive
+terraform validate
 ```
 
-## Scenario 3: Introducing Remote State
+Commit `.terraform.lock.hcl` for a root configuration so CI and teammates use reviewed provider selections. Constrain Terraform and provider versions. Do not commit `.terraform/`, state files, plan files, or credentials.
 
-As your team grows, you decide to store the Terraform state in an S3 backend. You add:
+Changing a backend can migrate state. Back up and inspect the current state location, authenticate to both backends, and review the migration prompt. `-reconfigure` and `-migrate-state` solve different problems; do not choose one blindly in automation.
 
-```hcl
-# backend.tf
-terraform {
-  backend "s3" {
-    bucket = "company-terraform-state"
-    key    = "myapp/terraform.tfstate"
-    region = "us-west-2"
-  }
-}
-```
+## Plan against the right state
 
-This requires running `terraform init` again because:
+`terraform plan` refreshes relevant remote objects and compares them with configuration and state. A clean plan means “no difference detected for this configuration, state, credentials, and refresh,” not that the infrastructure is secure or complete.
 
-1. You're changing the backend configuration
-2. Terraform needs to migrate the state file
-
-## When to Use Auto-Approve
-
-While developing locally, you might be tempted to use:
+For an approved deployment pipeline, save the reviewed plan:
 
 ```bash
-terraform apply -auto-approve
+terraform plan -out=release.tfplan
+terraform show release.tfplan
+terraform apply release.tfplan
 ```
 
-However, in production, a safer approach is to use plan files:
+The saved plan can contain sensitive values and is tied to the configuration, state, provider selections, and environment used to create it. Treat it as a protected, short-lived artifact. Do not generate it on one untrusted machine and apply it much later elsewhere.
+
+Always inspect replacements and destroys, IAM broadening, network exposure, data migration, and cost-sensitive changes. A textual plan review is strongest when policy checks and tests enforce known invariants.
+
+## State and environment boundaries
+
+Use a remote backend with locking and encryption for team workflows, restrict state access, and version/backup it according to the backend. State often contains sensitive values even when configuration marks outputs sensitive.
+
+Terraform CLI workspaces are separate state instances in one working directory/backend. They are useful for temporary or closely related copies, but they are not strong isolation for production environments that need different credentials and access controls. Prefer separate root configurations/backends or appropriately isolated HCP Terraform workspaces for those boundaries, sharing reusable modules rather than one state for everything.
+
+## `-target` is exceptional
+
+Resource targeting is for exceptional recovery or troubleshooting, not routine dependency ordering, partial environment deployment, or a faster test cycle. Terraform's dependency graph already determines order. A targeted plan omits unrelated changes and can produce a misleading view of policy or cost.
+
+When an exceptional target is approved:
 
 ```bash
-# Generate and save the plan
-terraform plan -out=production.tfplan
-
-# Review the plan with your team
-
-# Apply the exact changes you reviewed
-terraform apply production.tfplan
+terraform plan -target=aws_instance.example
+# Review and apply the exceptional operation.
+terraform plan
 ```
 
-## Best Practices Checklist
+Finish with a full plan and reconcile configuration/state. If teams repeatedly need targeting, split the configuration along lifecycle and ownership boundaries.
 
-1. Always run `terraform plan` before `apply`
-2. Use `-out` flag to save plans for critical environments
-3. Run `terraform init` when:
-   - Starting a new project
-   - Adding/changing providers
-   - Modifying backend configuration
-   - Adding new modules
-4. Use workspaces to manage multiple environments
-5. Version your Terraform configurations in git
+## Apply and rollback
 
-## When to Use Targeted Apply
+Without a saved plan, `terraform apply` creates a new plan and asks for confirmation. `-auto-approve` belongs only in controlled automation with preceding policy and approval gates. It is not a safe local shortcut for production.
 
-You might face a situation where you need to manage specific resources rather than your entire infrastructure. This is where `terraform apply -target` comes in handy. However, use it cautiously as it can lead to state inconsistencies if not used properly.
+Terraform has no universal rollback command. Revert configuration and apply another reviewed plan when the provider supports reversal. Stateful replacements and schema changes may require backups, restore procedures, or application migration. Test those paths before deployment.
 
-```bash
-terraform apply -target="aws_instance.web_server"
-```
+## Verification checklist
 
-Good use cases for targeted apply:
+- Confirm binary/version, backend, workspace, cloud account, and caller identity.
+- Run format check, validation, tests/policy checks, and a full plan.
+- Review destroys, replacements, permissions, exposure, state moves, and unknown values.
+- Apply exactly the saved plan in the same trusted pipeline.
+- Run service-level smoke tests and observe alarms after apply.
+- Run a final plan to detect unexpected drift.
+- Store evidence and delete the sensitive plan artifact according to policy.
 
-1. **Emergency Fixes**: When you need to quickly update a specific resource
+Official documentation reviewed on **2026-08-01**:
 
-   ```bash
-   # Update only the security group during a security incident
-   terraform apply -target="aws_security_group.web_sg"
-   ```
-
-2. **Resource Dependencies**: When you need to ensure a specific resource is created first
-
-   ```bash
-   # Create the VPC first before other networking resources
-   terraform apply -target="aws_vpc.main"
-   ```
-
-3. **Testing Changes**: When validating changes to specific resources in a large infrastructure
-   ```bash
-   # Test changes to RDS instance configuration
-   terraform apply -target="aws_db_instance.database"
-   ```
-
-⚠️ Important: Always follow up targeted applies with a full `terraform plan` and `apply` to ensure your state is consistent. Using `-target` should be a temporary measure, not a regular practice.
-
-## Common Gotchas
-
-- State drift: Always run `terraform plan` before making changes to catch any manual modifications
-- Provider versions: Specify versions to ensure consistency across team members
-- Resource dependencies: Use `depends_on` when implicit dependencies aren't enough
-
-Cheers! 🍺
+- [Terraform initialization](https://developer.hashicorp.com/terraform/cli/commands/init)
+- [Terraform planning](https://developer.hashicorp.com/terraform/cli/commands/plan)
+- [Terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply)
+- [CLI workspace guidance](https://developer.hashicorp.com/terraform/cli/workspaces)
+- [Resource targeting](https://developer.hashicorp.com/terraform/enterprise/workspaces/run/modes-and-options)

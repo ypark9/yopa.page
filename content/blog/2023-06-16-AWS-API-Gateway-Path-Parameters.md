@@ -1,77 +1,62 @@
 ---
-title: AWS API Gateway - Path Parameters
+title: Path Parameters in Amazon API Gateway
 date: 2023-06-16T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "Defining Path Parameters"
+description: "Design and validate API Gateway route parameters without confusing gateway templates, backend framework syntax, and authorization."
 categories:
   - AWS
 tags:
-  - AWS API Gateway
+  - Amazon API Gateway
+  - REST APIs
+  - Security
 ---
 
-This article aims to clarify the use of AWS API Gateway, specifically focusing on path parameters - defined with `{}` braces - and the best practices for their utilization.
+Path parameters identify a resource inside a route: `GET /users/{userId}`. API Gateway matches the route and passes the captured value to the integration. The braces belong to the API Gateway route definition; a backend framework may use different syntax, such as Express `/users/:userId`.
 
-## AWS API Gateway Overview
+## HTTP API and REST API events
 
-AWS API Gateway allows you to process hundreds of thousands of concurrent API calls and handles traffic management, authorization and access control, monitoring, and API version management. It supports RESTful APIs and WebSocket APIs and is incredibly versatile in serving a variety of different API types.
+For a Lambda proxy integration, read the decoded route values from `pathParameters` rather than parsing the raw path yourself.
 
-## Defining Path Parameters in AWS API Gateway
+```typescript
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
 
-Path parameters are dynamic parts of the request URL, allowing you to pass data directly within the endpoint path. In AWS API Gateway, these parameters are specified using `{}` braces. For instance:
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  const userId = event.pathParameters?.userId;
+  if (!userId || !/^[a-zA-Z0-9_-]{1,64}$/.test(userId)) {
+    return { statusCode: 400, body: JSON.stringify({ error: "invalid userId" }) };
+  }
 
-```
-GET /users/{userId}
-```
-
-In this example, `userId` is a path parameter that can be replaced with an actual user ID, such as:
-
-```
-GET /users/1234
-```
-
-The AWS API Gateway service can extract these parameters from the path and provide them to your application logic, enabling you to build dynamic responses based on the input parameters.
-
-## Real-Life Example: Using Path Parameters
-
-Let's delve into a real-life example to better illustrate the use of path parameters. Consider a social media application where users can have posts. We would want to perform CRUD operations on these posts. Below are some example API endpoints:
-
-- `GET /users/{userId}/posts` - Retrieves all posts for a specific user.
-- `GET /users/{userId}/posts/{postId}` - Retrieves a specific post from a specific user.
-- `POST /users/{userId}/posts` - Creates a new post for a specific user.
-- `PUT /users/{userId}/posts/{postId}` - Updates a specific post from a specific user.
-- `DELETE /users/{userId}/posts/{postId}` - Deletes a specific post from a specific user.
-
-Here `{userId}` and `{postId}` are path parameters. When a client sends a request to the server, it replaces these placeholders with actual values.
-
-For example, to get the post with the ID of `999` for the user with ID `123`, the client would send a `GET` request to `/users/123/posts/999`.
-
-## Using Path Parameters on the Backend
-
-On the server-side, the code would use these path parameters to perform the requested operations. Here's a simple Node.js example using Express:
-
-```javascript
-const express = require('express');
-const app = express();
-
-app.get('/users/:userId/posts/:postId', (req, res) => {
-  const userId = req.params.userId;
-  const postId = req.params.postId;
-  
-  // You would usually fetch the user and post from a database here
-  // For simplicity, we're returning dummy data
-  res.json({
-    userId: userId,
-    postId: postId,
-    title: 'Sample Post',
-    content: 'This is a sample post.'
-  });
-});
-
-app.listen(3000, () => console.log('Server is running on port 3000'));
+  // Authorization must confirm the caller may read this user.
+  return { statusCode: 200, body: JSON.stringify({ userId }) };
+};
 ```
 
-In this code, we define a route `/users/:userId/posts/:postId`. Express uses `:` to denote path parameters. When a `GET` request is made to this route, Express extracts the `userId` and `postId` from the path and makes them available as properties of `req.params`.
+Payload shapes differ between HTTP API payload versions and REST API proxy events. Type and test against the integration actually deployed. A greedy route such as `/{proxy+}` captures multiple path segments; use it when the backend intentionally owns routing, not as a shortcut that hides the API contract.
 
-In this way, path parameters provide a dynamic and flexible way to define routes and handle requests, making them a key aspect of developing user-friendly and efficient APIs.
+## Resource modeling
 
-Cheers! 🍺
+Use a path value for the identity or hierarchy of the addressed resource, for example `/orders/{orderId}`. Use query parameters for filtering, sorting, pagination, and optional views, for example `/orders?status=open&cursor=...`. “Required” does not automatically mean “path”: a required search filter can still be a query parameter, while a resource identifier naturally belongs in the path.
+
+Nested paths such as `/users/{userId}/posts/{postId}` are useful when the relationship is part of the authorization or identity. Avoid deep nesting when the child has a stable independent identifier. Consistency and a documented OpenAPI contract matter more than a universal pluralization or depth rule.
+
+## Validation and security
+
+A syntactically valid path parameter is not authorization. Prevent insecure direct object references by checking the caller's access to the resolved resource. Validate length and character set, handle percent-encoding consistently, and do not concatenate an unchecked value into SQL, filesystem paths, log formats, or downstream URLs.
+
+Return consistent error semantics: usually `400` for malformed input, `401/403` for authentication or authorization failure, and `404` when the resource is absent according to the API's disclosure policy. Configure route-level throttling and observe latency and errors by route without putting sensitive IDs into high-cardinality metric dimensions.
+
+## Verification checklist
+
+- Test missing, empty-equivalent, oversized, Unicode, encoded slash, and invalid-character values.
+- Confirm HTTP API or REST API event shape and payload version.
+- Test a valid ID owned by another user.
+- Verify greedy-route precedence and the deployment stage/base path.
+- Keep the OpenAPI route, infrastructure definition, and handler tests aligned.
+
+Official documentation reviewed on **2026-08-01**:
+
+- [HTTP API routes](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-routes.html)
+- [Lambda proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html)
+- [REST API request parameters](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-settings-method-request.html)

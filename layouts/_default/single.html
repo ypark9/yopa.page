@@ -12,8 +12,18 @@
                             {{ if eq $author nil }}
                               {{ $author = .Site.Params.author }}
                             {{ end }}
-                            By {{ $author  }} | <time>{{ .Date.Format "January 02, 2006" }}</time>
-                            | {{ .ReadingTime }} minutes
+                            {{ if eq .Language.Lang "ko" }}작성자{{ else }}By{{ end }} {{ $author }} |
+                            {{ if eq .Language.Lang "ko" }}최초 발행{{ else }}Published{{ end }}
+                            <time datetime="{{ .Date.Format "2006-01-02" }}">
+                              {{ if eq .Language.Lang "ko" }}{{ .Date.Format "2006년 1월 2일" }}{{ else }}{{ .Date.Format "January 02, 2006" }}{{ end }}
+                            </time>
+                            {{ if .Lastmod.After .Date }}
+                              | {{ if eq .Language.Lang "ko" }}최근 갱신{{ else }}Updated{{ end }}
+                              <time datetime="{{ .Lastmod.Format "2006-01-02" }}">
+                                {{ if eq .Language.Lang "ko" }}{{ .Lastmod.Format "2006년 1월 2일" }}{{ else }}{{ .Lastmod.Format "January 02, 2006" }}{{ end }}
+                              </time>
+                            {{ end }}
+                            | {{ .ReadingTime }} {{ if eq .Language.Lang "ko" }}분{{ else }}minutes{{ end }}
                         </div>
                         <div class="tags">
                             {{ range (.GetTerms "tags") }}
@@ -54,6 +64,18 @@
     <!-- Hidden div containing raw markdown content -->
     <div id="raw-markdown-content" style="display: none;">{{ .RawContent }}</div>
 
+    {{ if eq .Params.maintenance_status "archived" }}
+    <aside class="maintenance-notice" role="note" aria-labelledby="maintenance-notice-title">
+        <strong id="maintenance-notice-title">Archived technical article</strong>
+        <p>This article is kept at its original URL for reference, but its approach is no longer recommended.</p>
+        {{ with .Params.archive_reason }}<p>{{ . }}</p>{{ end }}
+        <div class="maintenance-replacements">
+            {{ with .Params.replacement_url_en }}<a href="{{ . }}">Read the current English guide</a>{{ end }}
+            {{ with .Params.replacement_url_ko }}<a href="{{ . }}">최신 한국어 가이드 읽기</a>{{ end }}
+        </div>
+    </aside>
+    {{ end }}
+
     <div class="article-post">
     {{ .Content }}
     </div>
@@ -61,7 +83,8 @@
 </div>
 
 <div class="container">
-    {{ $related := first 3 (site.RegularPages.Related .) }}
+    {{ $relatedCandidates := where site.RegularPages "Params.maintenance_status" "ne" "archived" }}
+    {{ $related := first 3 ($relatedCandidates.Related .) }}
     <aside class="article-atlas-trails" aria-labelledby="article-atlas-trails-title">
         <div>
             <span class="article-atlas-trails-kicker">Continue exploring</span>

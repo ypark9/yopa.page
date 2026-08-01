@@ -1,14 +1,21 @@
 ---
 title: Streamline Your TypeScript Projects with Advanced Path Mapping Techniques
 date: 2023-04-24T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "NO MORE ../../../../../../../../hate/my/life"
 categories:
   - TypeScript
 tags:
-  - Imports
-  - Path Mapping
+  - TypeScript
+  - JavaScript
+  - Module Systems
 ---
+
+## Runtime resolution matters
+
+TypeScript `paths` changes compiler resolution only; it does not rewrite emitted import specifiers or teach Node.js how to load an alias. Configure the runtime or bundler too, or use package `imports`/`exports` where appropriate. Verify the built output in the same environment that runs it.
 
 If you're a TypeScript developer, you may have encountered the "Cannot find module" error when importing a module from a relative or absolute path. This can be frustrating, especially when dealing with a large codebase.
 
@@ -55,5 +62,3 @@ import { anotherModule } from "@anotherAlias/module";
 ```
 
 And that's it! You've successfully set up Path Mapping in TypeScript and can now "Se3y" your imports.
-
-Cheers! 🍺

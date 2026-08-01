@@ -1,12 +1,16 @@
 ---
 title: When to Use a Sequence Diagram - A Real Life Example
 date: 2023-06-06T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
-description: "When to Use a Sequence Diagra"
+description: "When to use a sequence diagram to explain interactions across a system."
 categories:
   - Software Engineering
 tags:
-  - Sequence Diagram
+  - UML
+  - Software Design
+  - Architecture
 ---
 
 In the world of software design and development, diagrammatic representations of various processes and functionalities can prove extremely useful. One such useful tool is the **Sequence Diagram**. It's a type of interaction diagram found in the Unified Modeling Language (UML). This article sheds light on when to use a sequence diagram, accompanied by a real-life example.
@@ -72,6 +76,3 @@ In this sequence diagram:
 Sequence diagrams are an integral part of UML, representing
 
  how objects interact in a specific scenario of a use case. They help in simplifying complex interactions, realizing use cases, and understanding the sequence of processes in a system. So, whether you're designing a new system or debugging an existing one, consider using a sequence diagram to visualize and understand the interactions better.
-
-
-Cheers! 🍺

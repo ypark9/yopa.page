@@ -1,6 +1,8 @@
 ---
-title: Run Java Applications on macOS without Global JRE Installation
+title: Run Java Applications on macOS without a System-Wide JDK
 date: 2024-01-17
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Explore ways to run Java applications on macOS without the need for global JRE installation, focusing on Docker, portable JRE, and bundled JRE methods."
 categories:
@@ -9,10 +11,8 @@ categories:
   - Software Development
 tags:
   - Java
+  - CLI
   - macOS
-  - Docker
-  - JRE
-  - JDK
 ---
 
 ![oni-docker](images/oni-docker.webp)
@@ -21,7 +21,7 @@ tags:
 
 Java's omnipresence in software development is unquestionable. Yet, installing Java Runtime Environment (JRE) or Java Development Kit (JDK) globally on macOS may invite version clashes or security risks. This guide delves into alternative strategies for executing Java applications (JAR files) on Mac, sidestepping the global JRE setup. We lay particular emphasis on Docker, a celebrated containerization technology.
 
-## The Perils of Global JRE Installation
+## Costs of a system-wide JDK
 
 - **Version Conflicts:** Diverse Java applications may demand specific Java versions, clashing with a globally installed JRE.
 - **Security Risks:** A leaner global software footprint reduces potential vulnerabilities.
@@ -37,7 +37,7 @@ Encapsulate a JRE within your Java application to dodge system-wide Java conflic
 2. **Embed the JRE in your application's folder**.
 3. **Forge a startup script** to designate the encapsulated JRE as `JAVA_HOME` and initiate your application.
 
-## Method 2: Embracing Portable JRE
+## Method 2: A project-local runtime
 
 A portable JRE facilitates Java application execution sans system-wide Java installation.
 
@@ -47,7 +47,7 @@ A portable JRE facilitates Java application execution sans system-wide Java inst
 2. **Unpack it** in a directory of your choice.
 3. **Execute your JAR file** using the absolute path to the `java` command within the portable JRE's folder.
 
-## Method 3: Docker Deployment (Preferred)
+## Method 3: Containerized service execution
 
 Docker offers application execution in insulated settings. Here's how to use Docker for your JAR file:
 
@@ -65,7 +65,7 @@ In your project folder, craft a Dockerfile with these specifics:
 
 ```dockerfile
 # Opt for an official Java runtime as the base image
-FROM openjdk:23-slim
+FROM eclipse-temurin:25-jre
 
 # Designate the working area in the container
 WORKDIR /usr/app
@@ -100,8 +100,6 @@ docker run -p 8080:8080 your-app-name
 
 Your Java application is now operational within a Docker container!
 
-## Wrapping it up 👏
+## Conclusion
 
-Employing macOS to run JAR files sans a global JRE installation is streamlined with the right toolkit. Whether you opt for a bundled JRE, a portable JRE, or Docker's robust containerization, each avenue offers distinct merits. Docker, in particular, is championed for contemporary, portable, and stable deployments. It eliminates the global JRE dependency while assuring an insulated, controlled application environment.
-
-Cheers! 🍺
+Employing macOS to run JAR files sans a global JRE installation is streamlined with the right toolkit. Whether you opt for a bundled JRE, a portable JRE, or Docker's robust containerization, each avenue offers distinct merits. Containers are useful for services that already have a container deployment target, but they are not the default way to launch a local desktop JAR. For distributable macOS applications, prefer `jpackage` with a runtime produced by `jlink`; for development, use a version-managed supported JDK. It eliminates the global JRE dependency while assuring an insulated, controlled application environment.

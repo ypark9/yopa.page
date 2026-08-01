@@ -1,13 +1,19 @@
 ---
 title: Why Apex Test Cannot Find Enum Defined in Apex Class
 date: 2023-05-03T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The example contradicts its explanation and does not demonstrate a valid enum-resolution failure."
+replacement_url_en: "/blog/2026-08-01-apex-nested-enums-and-name-shadowing.html"
+replacement_url_ko: "/ko/blog/2026-08-01-apex-nested-enums-and-name-shadowing.html"
 author: Yoonsoo Park
 description: "The reason why Apex Test Cannot Find Enum Defined in Apex Class"
 categories:
   - Salesforce
 tags:
-  - Test
-  - enum
+  - Apex
+  - Apex Testing
+  - Software Design
 ---
 
  there is a common issue that developers face when working with enums in Apex. Sometimes, when you try to reference an enum defined in an Apex class from your test class, you may get an error that the enum is not found. This can be a frustrating issue to deal with, especially if you are new to Apex development.

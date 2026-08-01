@@ -1,12 +1,19 @@
 ---
 title: SFDX Deploy Record using CSV
 date: 2023-05-16T01:25:00-04:00
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article calls data loading deployment and documents obsolete bulk-upsert flags."
+replacement_url_en: "/blog/2026-08-01-upsert-salesforce-data-from-csv-with-sf-cli.html"
+replacement_url_ko: "/ko/blog/2026-08-01-upsert-salesforce-data-from-csv-with-sf-cli.html"
 author: Yoonsoo Park
 description: "SFDX Deploy Record using CSV"
 categories:
   - Salesforce
 tags:
-  - sfdx
+  - Salesforce CLI
+  - Bulk API 2.0
+  - Data Migration
 ---
 
 ## Steps to Deploy Records using CSV

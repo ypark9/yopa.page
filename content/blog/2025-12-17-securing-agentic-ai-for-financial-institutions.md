@@ -1,6 +1,11 @@
 ---
 title: Securing Agentic AI for Financial Institutions
 date: 2025-12-17
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article overstates automatic user-token propagation, combines SigV4 and OAuth as if both always apply, and describes PrivateLink as placing the entire service mesh inside the customer VPC."
+replacement_url_en: "/blog/2026-08-01-zero-trust-agent-systems-on-aws.html"
+replacement_url_ko: "/ko/blog/2026-08-01-zero-trust-agent-systems-on-aws.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A security architecture guide for banking and finance. Covers Zero Trust, AWS SigV4, and PrivateLink for multi-agent systems."
@@ -9,9 +14,12 @@ categories:
   - Finance
   - Architecture
 tags:
+  - Amazon Bedrock AgentCore
+  - AI Agents
   - Zero Trust
-  - PrivateLink
-  - Identity Propagation
+  - Security
+  - AWS PrivateLink
+  - AWS IAM
 ---
 
 For a bank, an AI agent isn't just a chatbot; it's a potential attack vector. If "Agent A" (Customer Support) calls "Agent B" (Transaction Handler), how do we trust that call?

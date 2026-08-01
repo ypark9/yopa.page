@@ -1,12 +1,16 @@
 ---
 title: Iterator vs Iterable in TypeScript
 date: 2023-04-16T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Iterator vs Iterable in TypeScript"
 categories:
   - TypeScript
 tags:
-  - Iterator vs Iterable
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 ## Iterator vs Iterable in TypeScript
@@ -80,5 +84,3 @@ for (const number of numberIterable) {
   console.log(number);
 }
 ```
-
-Cheers! 🍺

@@ -1,13 +1,17 @@
 ---
-title: Master TypeScript with Advanced Tricks - Partial Application of Generic Types
+title: Partial Application of Generic Types in TypeScript
 date: 2023-04-04T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 4"
 categories:
   - Programming
   - TypeScript
 tags:
-  - Partial Application of Generic Types
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 Another cool trick in TypeScript is to use **Partial Application of Generic Types**. This feature enables you to create a new type by applying some of the type parameters of a generic type. This can help you to create reusable and modular types that can be combined in various ways.
@@ -63,5 +67,3 @@ const users: PaginatedUsers = {
 In this example, we define a User type and then create a `PaginatedUsers` type that represents a paginated response containing an array of users. The `PaginatedResponse` type simplifies creating paginated responses for different data types without having to redefine the metadata properties for each type.
 
 Partial Application of Generic Types can help you create more versatile and maintainable TypeScript code by allowing you to create reusable types that can be combined in various ways. This can reduce duplication and make your code more modular and easier to work with.
-
-Cheer! 🍺

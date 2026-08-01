@@ -1,16 +1,21 @@
 ---
 title: Understanding Salesforce APIs - Metadata, Tooling, and Bulk
 date: 2024-05-05
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The comparison omits major APIs, does not distinguish Bulk API 2.0, and overstates several use cases."
+replacement_url_en: "/blog/2026-08-01-choose-the-right-salesforce-api.html"
+replacement_url_ko: "/ko/blog/2026-08-01-choose-the-right-salesforce-api.html"
 author: Yoonsoo Park
 description: "Explore the differences between Salesforce's Metadata API, Tooling API, and Bulk API, including use cases and real-life scenarios to determine the best API for various development needs."
 categories:
   - Salesforce
   - APIs
 tags:
-  - Salesforce API
+  - Salesforce APIs
   - Metadata API
   - Tooling API
-  - Bulk API
+  - Bulk API 2.0
 ---
 
 Salesforce offers a variety of APIs, each optimized for specific tasks within its ecosystem. It's vital for developers and administrators to understand the differences and use cases of the Metadata API, Tooling API, and Bulk API for efficient management, customization, development, and integration. This article will explore these APIs with detailed explanations and practical examples.

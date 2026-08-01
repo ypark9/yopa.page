@@ -1,6 +1,11 @@
 ---
 title: Implementing Multi-Tenancy with AgentCore
 date: 2025-12-13
+maintenance_status: archived
+reviewed_at: 2026-08-01
+archive_reason: "The article relies on unverified token exchange, IAM action, and condition-key behavior; memory namespaces alone are not an authorization boundary."
+replacement_url_en: "/blog/2026-08-01-multi-tenant-isolation-with-agentcore.html"
+replacement_url_ko: "/ko/blog/2026-08-01-multi-tenant-isolation-with-agentcore.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A security guide for building SaaS applications with AgentCore. Covers Tenant Context, Gateway Interceptors, and IAM Policies."
@@ -9,9 +14,11 @@ categories:
   - Security
   - AI Agents
 tags:
+  - Amazon Bedrock AgentCore
   - Multi-Tenancy
-  - Security Isolation
-  - AgentCore
+  - Security
+  - AWS IAM
+  - AI Agents
 ---
 
 In a multi-tenant Agent SaaS, sharing the "Brain" (Runtime) saves money, but sharing the "Memory" (Database) risks a massive data breach.

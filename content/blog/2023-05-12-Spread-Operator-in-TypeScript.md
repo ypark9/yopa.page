@@ -1,12 +1,16 @@
 ---
 title: Spread Operator in TypeScript
 date: 2023-05-12T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Spread Operator in TypeScript"
 categories:
   - TypeScript
 tags:
-  - Spead Operator
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 `Spead Operator` provides an elegant syntax for copying or combining elements from existing arrays or objects into new ones.
@@ -92,5 +96,3 @@ console.log(result); // Output: 15
 In this example, the spread operator `...` is used in the function parameter declaration `...numbers: number[]`. It allows you to pass any number of arguments to the `sum` function, and TypeScript collects them into an array called `numbers`. The function then performs the sum operation on all the numbers in the array.
 
 Rest parameters provide flexibility when dealing with functions that need to handle a variable number of arguments. The spread operator simplifies the process of passing and manipulating these arguments.
-
-Cheers! 🍺

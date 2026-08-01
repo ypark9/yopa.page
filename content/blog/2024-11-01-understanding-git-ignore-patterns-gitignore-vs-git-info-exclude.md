@@ -1,15 +1,17 @@
 ---
 title: Understanding Git Ignore Patterns - .gitignore vs .git/info/exclude
-date: 2024-11-02
+date: 2024-11-01
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: Learn when to use .git/info/exclude instead of .gitignore for managing ignored files in Git, with practical examples and use cases
 categories:
   - Git
   - Development Tools
 tags:
-  - git
-  - source control
-  - development workflow
+  - Git
+  - CLI
+  - Version Control
 ---
 
 > Learn when to use .git/info/exclude instead of .gitignore for managing ignored files in Git, with practical examples and use cases
@@ -154,12 +156,13 @@ TODO.txt
 
 ## Creating and Editing .git/info/exclude
 
+Git reads `.git/info/exclude` automatically. Do not point `core.excludesFile` at it; that setting is for a separate user-level excludes file. Ignore rules never untrack a path that is already committed.
+
 To start using `.git/info/exclude`:
 
 ```bash
 # Open the file in your default editor
 git config core.editor "code" # If using VSCode
-git config core.excludesfile .git/info/exclude
 
 # Or edit directly
 vim .git/info/exclude
@@ -170,5 +173,3 @@ Remember that the syntax is identical to `.gitignore`, so all your existing know
 ## Conclusion
 
 While `.gitignore` remains the primary tool for specifying ignore patterns in Git, `.git/info/exclude` provides a valuable complement for managing personal ignore patterns. By understanding and using both tools appropriately, you can maintain a cleaner repository while accommodating individual development workflows.
-
-Cheers! 🍺

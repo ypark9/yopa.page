@@ -1,13 +1,17 @@
 ---
 title: Exploring Loose Coupling
 date: 2023-03-27T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "When it comes to coding, there are certain principles that should be followed. One of them is loose coupling."
 categories:
   - Programming
   - Principle
 tags:
-  - Principle
+  - Software Design
+  - Design Principles
+  - Refactoring
 ---
 
 > “The advantage of loose coupling is the same in software design as it is in the physical socket and plug model:
@@ -17,8 +21,7 @@ tags:
 
 [Dependency Injection by Steven van Deursen](https://www.amazon.com/Dependency-Injection-Principles-Practices-Patterns/dp/161729473X)
 
-Loose coupling. Sounds fancy, right? But what exactly is this loose coupling?
-To put it simply, **loose coupling** is a way to design the relationship between different parts of your code so that they can operate independently of each other. Think of it like a `one-night stand` for your code. They can get together and do their thing, but they don't need to rely on each other in the long run.
+**Loose coupling** describes components that collaborate through small, stable contracts without depending on each other's internal implementation. The goal is not to eliminate dependencies, but to make them explicit and replaceable.
 
 ## Why is loose coupling important?
 
@@ -27,8 +30,8 @@ For one thing, it makes your code easier to maintain. Because the different part
 
 ## how do you achieve loose coupling?
 
-One way is through `dependency injection`. This is when you pass an object to a function instead of having the function create the object itself. It's like bringing your own date to a party instead of relying on the party host to set you up.
+One approach is `dependency injection`: provide a collaborator to a function or object instead of constructing it inside the consumer.
 
-Another way is by `using interfaces`. Interfaces allow you to define a contract without worrying about the implementation details. It's like telling someone what you want in a partner without specifying who that person should be.
+Another approach is a small interface that describes the behavior the consumer needs without exposing implementation details.
 
-Now, the next time you hear this buzzword in a design meeting, you can dazzle your associates with your knowledge. cheers. 🍺
+Loose coupling is useful when a dependency is likely to vary or when isolating it materially improves testing. Applying interfaces everywhere can add indirection without value, so start from a concrete change or testability need.

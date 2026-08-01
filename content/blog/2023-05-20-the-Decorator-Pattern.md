@@ -1,26 +1,30 @@
 ---
 title: The Decorator Pattern
 date: 2023-05-20T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "The Decorator Pattern - a structural design pattern"
 categories:
   - Design Pattern
 tags:
-  - The Decorator Pattern
+  - Design Patterns
+  - Software Design
+  - Architecture
 ---
 
-# Unveiling the Decorator Pattern: A Deep Dive with TypeScript
+# The Decorator Pattern with TypeScript
 
-`The Decorator Pattern` is one of the most powerful **structural design pattern**s in the software development arsenal, granting flexibility and dynamism in extending object behavior. 
+`The Decorator Pattern` is one of the most powerful **structural design pattern**s in the software development arsenal, granting flexibility and dynamism in extending object behavior.
 
 ## What is the Decorator Pattern?
 
-The Decorator Pattern is a design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. 
+The Decorator Pattern is a design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class.
 __Decorators provide a flexible alternative to subclassing for extending functionality.__
 
 ## When Should You Use the Decorator Pattern?
 
-The Decorator Pattern provides an alternative to subclassing, which involves creating a new class for every new behavior. 
+The Decorator Pattern provides an alternative to subclassing, which involves creating a new class for every new behavior.
 
 ### Use the Decorator Pattern when:
 
@@ -79,5 +83,3 @@ In this example, we're able to apply multiple formatting options (bold, italic) 
 ## Wrapping up
 
 The Decorator Pattern is a highly effective tool in a developer's toolbox, offering dynamic and flexible object behavior. It aligns well with the open-closed principle, **one of the five principles of SOLID**, leading to more maintainable and less error-prone code. Used appropriately and sparingly, the Decorator Pattern can greatly improve your code design and structure.
-
-Cheers! 🍺

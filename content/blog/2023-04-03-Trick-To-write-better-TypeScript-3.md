@@ -1,13 +1,17 @@
 ---
-title: Master TypeScript with Discriminated Unions - Enhance Your Coding Skills
+title: Modeling States with TypeScript Discriminated Unions
 date: 2023-04-03T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Write Better TypeScript Code 3"
 categories:
   - Programming
   - TypeScript
 tags:
-  - Discriminated unions
+  - TypeScript
+  - JavaScript
+  - Type System
 ---
 
 Another cool trick in TypeScript is to use **Discriminated Unions**.
@@ -89,5 +93,3 @@ handleMessage(videoMsg);
 ```
 
 **Discriminated Unions** help you create more versatile and maintainable TypeScript code by allowing you to work with different types in a type-safe manner. This can help you catch errors early in the development process and make your code easier to understand and modify.
-
-Cheer! 🍺

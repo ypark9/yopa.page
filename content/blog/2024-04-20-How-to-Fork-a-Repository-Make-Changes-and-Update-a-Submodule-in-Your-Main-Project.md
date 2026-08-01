@@ -1,16 +1,17 @@
 ---
 title: How to Fork a Repository, Make Changes, and Update a Submodule in Your Main Project
 date: 2024-04-20
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Learn how to fork a GitHub repository, make custom changes, and update a submodule in your main project to incorporate these modifications."
 categories:
   - GitHub
   - Version Control
 tags:
-  - git
-  - GitHub
-  - submodule
-  - forking
+  - Git
+  - CLI
+  - Version Control
 ---
 
 ### How to Fork a Repository, Make Changes, and Update a Submodule in Your Main Project
@@ -56,7 +57,21 @@ If your fork is used as a submodule in another project, update your main project
 3. **Commit the Submodule Changes in the Main Project**: Navigate back to the root of your main project, then run `git add submodule-directory` and `git commit -m "Update submodule to latest commit"`
 4. **Push the Updates**: `git push origin main`
 
-### Removing and Re-Adding a Submodule to Use a Fork in Your Main Project
+### Retargeting a submodule to a fork
+
+Removing `.git/modules` is unnecessary when only the remote URL changes. Use the supported URL workflow first:
+
+```bash
+git submodule set-url themes/hugo-tania https://github.com/yourusername/hugo-tania.git
+git submodule sync --recursive
+git submodule update --init --recursive
+git add .gitmodules themes/hugo-tania
+git commit -m "Point theme submodule to maintained fork"
+```
+
+The superproject records a specific submodule commit, not a floating branch. Review and commit that pointer deliberately.
+
+### Full removal as a fallback
 
 Sometimes you might find it necessary to replace a submodule in your project with a fork that you have customized. This section will guide you through removing the existing submodule and adding your fork as the new submodule. In this example, we will assume that you have forked the [hugo-tania](https://github.com/WingLim/hugo-tania) theme and want to use it in your project. (the blog you are reading is using this theme).
 
@@ -120,5 +135,3 @@ git push origin main
 ```
 
 This procedure ensures that your main project now uses the updated fork as a submodule, allowing you to benefit from your custom changes or enhancements. This approach is ideal for developers who need to modify dependencies while keeping track of their changes separately from the original submodule source.
-
-Cheers! 🍺

@@ -1,13 +1,16 @@
 ---
 title: Understanding Class Diagrams and UML arrows
 date: 2023-05-08T01:25:00-04:00
+lastmod: 2026-08-01
+reviewed_at: 2026-08-01
 author: Yoonsoo Park
 description: "Understanding Class Diagrams and Arrows for Showing Relationships"
 categories:
   - UML
 tags:
-  - Object Oriented Programming
   - UML
+  - Software Design
+  - Architecture
 ---
 
 Class diagrams (a type of UML diagram) are a key tool used in object-oriented programming to visualize the relationships between classes. These diagrams help developers to understand the structure of their code and how different classes interact with one another. One important aspect of class diagrams is the use of UML arrows to show relationships between classes.
@@ -86,5 +89,3 @@ In this example, the `Dog` class inherits from the `Animal` class, indicating th
 ```
 
 In this diagram, `Component` depends on the `ServiceInterface`. `ServiceImpl` implements the `ServiceInterface`, and an instance of `ServiceImpl` is provided to `Component`. This is an example of dependency injection, where `Component` does not create an instance of `ServiceImpl` itself, but rather receives it from an external source (e.g., a dependency injection framework or a constructor parameter).
-
-Cheers! 🍺

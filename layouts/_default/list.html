@@ -1,4 +1,4 @@
-{{ define "main" }} {{ $pages := .Pages }}
+{{ define "main" }} {{ $pages := where .Pages "Params.maintenance_status" "ne" "archived" }}
 
 <header>
   <div class="container">
