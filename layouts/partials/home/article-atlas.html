@@ -7,7 +7,9 @@
     <span class="home-atlas-presence" id="home-atlas-presence"><i></i><span>Solo exploration · live presence off</span></span>
   </div>
 
-  <a class="home-atlas" href="{{ "explore/" | relURL }}" aria-describedby="home-atlas-description">
+  <a class="home-atlas" href="{{ "explore/" | relURL }}" aria-describedby="home-atlas-description"
+    data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v4"
+    data-atlas-assets="{{ "images/article-atlas/v1/" | relURL }}">
     <canvas id="home-atlas-canvas" aria-hidden="true"></canvas>
     <span class="home-atlas-enter">Enter the atlas <span aria-hidden="true">→</span></span>
   </a>
@@ -18,4 +20,4 @@
 
 <link rel="stylesheet" href="{{ "css/home-atlas.css" | relURL }}">
 <script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
-<script defer src="{{ "js/home-atlas.js" | relURL }}"></script>
+<script defer src="{{ "js/home-atlas.js" | relURL }}?v=atlas-manifest-v1"></script>

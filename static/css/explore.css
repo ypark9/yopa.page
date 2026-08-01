@@ -23,13 +23,33 @@ body:has(.explore-shell) > main {
   font-family: ui-rounded, "Avenir Next", Avenir, system-ui, sans-serif;
 }
 
-#explore-world {
-  display: block;
+.atlas-stage,
+.atlas-layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.atlas-stage {
+  overflow: hidden;
+  background: #c9dfc4;
+}
+
+.atlas-layer {
+  display: block;
+  pointer-events: none;
+}
+
+.atlas-cursor {
   cursor: none;
   touch-action: none;
+  pointer-events: none;
+  z-index: 20;
 }
+
+.explore-shell.is-exploring,
+.explore-shell.is-exploring * { cursor: none !important; }
 
 #explore-world:focus-visible {
   outline: 3px solid #fff9e9;
@@ -177,9 +197,30 @@ body:has(.explore-shell) > main {
   max-height: calc(100dvh - 176px);
   overflow-y: auto;
   box-sizing: border-box;
-  padding: 22px;
+  padding: 22px 58px 22px 22px;
   border-radius: 22px 18px 24px 18px;
 }
+
+.explore-panel-close {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--explore-ink);
+  font: inherit;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.explore-panel-close:hover,
+.explore-panel-close:focus-visible { background: rgba(255, 227, 123, .7); }
 
 .explore-card-region {
   color: #63776b;
@@ -274,6 +315,81 @@ body:has(.explore-shell) > main {
 .explore-waypoint strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .explore-waypoint small { display: block; color: #63776b; font-size: 10px; }
 .explore-waypoint button { border: 0; background: transparent; color: var(--explore-ink); font-size: 20px; cursor: pointer; }
+
+.explore-signpost-hint,
+.explore-signpost-menu {
+  position: fixed;
+  z-index: 9;
+  box-sizing: border-box;
+  border: 2px solid var(--explore-ink);
+  background: rgba(245, 240, 223, .96);
+  box-shadow: 4px 4px 0 var(--explore-ink);
+}
+
+.explore-signpost-hint {
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 8px 11px;
+  border-radius: 12px;
+  color: var(--explore-ink);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  pointer-events: none;
+}
+.explore-signpost-hint::after {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--explore-ink);
+  border-bottom: 2px solid var(--explore-ink);
+  background: var(--explore-paper);
+  content: "";
+  transform: translateX(-50%) rotate(45deg);
+}
+.explore-signpost-hint[hidden] { display: none; }
+
+.explore-signpost-menu {
+  width: min(320px, calc(100vw - 28px));
+  padding: 14px;
+  border-radius: 18px;
+}
+.explore-signpost-menu::before {
+  position: absolute;
+  top: 32px;
+  left: -10px;
+  width: 16px;
+  height: 16px;
+  border-left: 2px solid var(--explore-ink);
+  border-bottom: 2px solid var(--explore-ink);
+  background: var(--explore-paper);
+  content: "";
+  transform: rotate(45deg);
+}
+.explore-signpost-menu[data-side="left"]::before {
+  right: -10px;
+  left: auto;
+  border: 0;
+  border-top: 2px solid var(--explore-ink);
+  border-right: 2px solid var(--explore-ink);
+}
+.explore-signpost-menu .explore-panel-close { top: 5px; right: 5px; }
+.explore-signpost-menu[hidden] { display: none; }
+.explore-signpost-menu strong { display: block; margin: 3px 0 9px; }
+#explore-signpost-destinations { display: grid; gap: 7px; }
+#explore-signpost-destinations button {
+  padding: 9px 12px;
+  border: 1px solid var(--explore-ink);
+  border-radius: 999px;
+  background: #ffe37b;
+  color: var(--explore-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
 
 .explore-status {
   right: clamp(18px, 4vw, 54px);
@@ -404,6 +520,9 @@ body:has(.explore-shell) > main {
 #explore-resume { width: 100%; padding: 13px 18px; border: 2px solid var(--explore-ink); border-radius: 12px; background: var(--explore-accent); color: #fff9e9; font: inherit; font-weight: 800; box-shadow: 3px 4px 0 var(--explore-ink); cursor: pointer; }
 
 @media (max-width: 640px) {
+  .explore-signpost-menu { left: 0; bottom: 0; box-sizing: border-box; width: 100%; border-radius: 22px 22px 0 0; }
+  .explore-signpost-menu::before { display: none; }
+  #explore-signpost-destinations button { min-height: 48px; }
   .explore-header { padding: 12px; }
   .explore-brand { font-size: 13px; }
   .explore-brand-mark { width: 32px; height: 32px; }
@@ -422,7 +541,7 @@ body:has(.explore-shell) > main {
     width: calc(100vw - 20px);
     max-height: min(52dvh, 430px);
     overflow-y: auto;
-    padding: 17px;
+    padding: 17px 58px 17px 17px;
   }
   .explore-card h2 { font-size: 22px; }
   .explore-card-footer { position: sticky; bottom: -17px; margin: 0 -17px -17px; padding: 12px 17px 17px; background: rgba(245, 240, 223, .97); }

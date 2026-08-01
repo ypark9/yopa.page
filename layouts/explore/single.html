@@ -6,7 +6,18 @@
 {{ end }}
 {{ $posts = sort $posts "Date" "desc" }}
 <div class="explore-shell" id="explore-shell">
-  <canvas id="explore-world" tabindex="0" aria-label="An interactive map of yopa.page articles" aria-describedby="explore-instructions"></canvas>
+  <div class="atlas-stage" id="atlas-stage"
+  data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v4"
+    data-atlas-assets="{{ "images/article-atlas/v1/" | relURL }}"
+    data-rive-wasm="{{ "vendor/rive-2.31.5/rive.wasm" | relURL }}">
+    <canvas id="atlas-backdrop" class="atlas-layer" aria-hidden="true"></canvas>
+    <canvas id="atlas-base" class="atlas-layer" aria-hidden="true"></canvas>
+    <canvas id="atlas-world" class="atlas-layer" aria-hidden="true"></canvas>
+    <canvas id="atlas-top" class="atlas-layer" aria-hidden="true"></canvas>
+    <canvas id="explore-world" class="atlas-layer atlas-cursor" tabindex="0"
+      aria-label="An interactive map of yopa.page articles"
+      aria-describedby="explore-instructions"></canvas>
+  </div>
 
   <header class="explore-header">
     <a class="explore-brand" href="{{ .Site.Home.RelPermalink }}" aria-label="Back to yopa.page">
@@ -31,7 +42,8 @@
     <p>Move your cursor toward any edge to travel. Hover near a glowing article beacon, then click to read.</p>
   </aside>
 
-  <article class="explore-card" id="explore-card" aria-live="polite" hidden>
+  <article class="explore-card" id="explore-card" role="dialog" aria-modal="false" aria-labelledby="explore-card-title" aria-describedby="explore-card-description" aria-live="polite" hidden>
+    <button class="explore-panel-close" id="explore-card-close" type="button" aria-label="Close article preview">×</button>
     <div class="explore-card-region" id="explore-card-region"></div>
     <h2 id="explore-card-title"></h2>
     <p id="explore-card-description"></p>
@@ -52,6 +64,15 @@
       <small id="explore-waypoint-distance"></small>
     </span>
     <button id="explore-waypoint-cancel" type="button" aria-label="Cancel destination">×</button>
+  </aside>
+
+  <div class="explore-signpost-hint" id="explore-signpost-hint" role="status" aria-live="polite" hidden></div>
+
+  <aside class="explore-signpost-menu" id="explore-signpost-menu" role="dialog" aria-modal="false" aria-labelledby="explore-signpost-title" aria-live="polite" hidden>
+    <button class="explore-panel-close" id="explore-signpost-close" type="button" aria-label="Close trail sign">×</button>
+    <span class="explore-kicker">Trail sign</span>
+    <strong id="explore-signpost-title">Choose a destination</strong>
+    <div id="explore-signpost-destinations"></div>
   </aside>
 
   <nav class="explore-wheel" id="explore-wheel" aria-label="Explore compass" hidden>
@@ -81,7 +102,7 @@
       <p>정말 미안하지만 서버비에 동전 하나 놓고 가도 돼요. 물론 그냥 탈출해도 됩니다.</p>
       <button id="explore-pit-dismiss" type="button">Climb out — it’s free</button>
       {{ with .Site.Params.articleAtlasSupportUrl }}
-      <a id="explore-pit-support" href="{{ . }}" target="_blank" rel="noopener noreferrer">Leave $1 for the server</a>
+      <a id="explore-pit-support" href="{{ . }}" target="_blank" rel="noopener noreferrer">Help keep the atlas online</a>
       {{ end }}
     </div>
   </section>
@@ -108,7 +129,8 @@
 {{- end -}}
 ]
 </script>
-<link rel="stylesheet" href="{{ "css/explore.css" | relURL }}">
+<link rel="stylesheet" href="{{ "css/explore.css" | relURL }}?v=atlas-signpost-v3">
 <script defer src="{{ "js/atlas-presence-client.js" | relURL }}" data-enabled="{{ .Site.Params.articleAtlasPresenceEnabled }}"></script>
-<script defer src="{{ "js/explore.js" | relURL }}"></script>
+<script defer src="{{ "vendor/rive-2.31.5/rive.js" | relURL }}"></script>
+<script defer src="{{ "js/explore.js" | relURL }}?v=atlas-signpost-v4"></script>
 {{ end }}
