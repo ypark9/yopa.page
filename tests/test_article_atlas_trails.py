@@ -246,6 +246,11 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("elapsed / .3", explore)
         self.assertIn("elapsed / .3", home)
         self.assertIn('.atlas-night-mode .explore-shell', styles)
+        self.assertIn(".atlas-night-filter {", styles)
+        self.assertIn("z-index: 4;", styles)
+        self.assertIn(".atlas-night-mode .explore-button", styles)
+        self.assertIn(".atlas-night-mode .explore-brand-mark", styles)
+        self.assertIn(".atlas-night-mode .explore-pit-sign", styles)
         self.assertIn('matchMedia("(prefers-color-scheme: dark)")', explore)
         self.assertIn('matchMedia("(prefers-color-scheme: dark)")', home)
 
