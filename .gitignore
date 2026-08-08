@@ -30,3 +30,8 @@ terraform/modules/article_atlas_presence/article-atlas-presence.zip
 
 .cursor
 refs
+
+# cxdoc / Codex harness (projected from codex-hub; do not commit)
+.agents/
+.codex/
+AGENTS.md
