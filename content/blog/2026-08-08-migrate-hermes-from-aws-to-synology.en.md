@@ -43,6 +43,41 @@ Hermes opens the outbound WebSocket to Slack. Slack does not initiate a connecti
 
 [Slack's Socket Mode documentation](https://docs.slack.dev/apis/events-api/using-socket-mode/) describes the same boundary: Events API delivery without a public HTTP Request URL. Docker's bridge network provides outbound masquerading, while inbound access depends on explicitly published ports. This Compose file publishes none.
 
+## The monthly cost I did not expect
+
+I initially expected most of the bill to come from the Fargate task and the LLM. After roughly a month, the `Usage` line items in Cost Explorer told a different story. There was no single dominant compute charge. NAT Gateway, Fargate, and EFS throughput were three similarly expensive components.
+
+The measurement period runs from July 4 through August 8, 2026. Hermes accumulated about 833 runtime hours. The amounts below are on-demand usage costs before credits, rounded to the nearest cent.
+
+| Component | Usage | Cost |
+|---|---:|---:|
+| NAT Gateway hours and processing | 833 hours, about 12.3 GB | about $38.04 |
+| ECS Fargate ARM | 833 vCPU-hours, 1,664 GB-hours | about $32.92 |
+| EFS Elastic Throughput data access | about 730.5 GB | about $31.97 |
+| EFS storage | less than 1 GB on average | about $0.14 |
+| Public IPv4 for the NAT Gateway | about 833 hours | about $4.17 |
+| Secrets Manager | three secrets | about $1.32 |
+| ECR storage | accumulated usage during the period | about $0.34 |
+| EFS backup | less than 1 GB | about $0.02 |
+| **Total** |  | **about $108.9** |
+
+S3 and CloudWatch Logs were effectively rounding errors at this workload size. The table also excludes the LLM. Hermes used the OpenAI Codex provider, while AWS Bedrock usage was $0. Mixing an OpenAI subscription or another external provider bill into AWS infrastructure cost would make the comparison less useful.
+
+My AWS account had promotional credits during this period. Account-wide Usage was about $113.22 and almost the same amount was covered by credits, so the cash charge was close to $0. That did not make the architecture free. A more useful interpretation is that **one personal agent consumed about $109 of credits in a little over a month**. The same resources would become a normal bill after the credits expired.
+
+EFS was the biggest surprise. The file system held only about 924 MB at the final measurement, but Elastic Throughput data access reached about 730 GB. Looking only at stored capacity misses this difference. I did not trace every Hermes file operation, so I cannot honestly attribute the total to one SQLite or startup behavior. The bill does show that repeated I/O on a small file system can cost far more than storing the files themselves.
+
+NAT Gateway had a similar trap. Hermes had no public inbound endpoint, but the private subnet still needed outbound access to Slack and provider APIs. The gateway existed for every hour even when traffic was low. In this period, the fixed hourly NAT charge was much larger than its data-processing charge.
+
+If I estimated this architecture again, I would calculate four things first:
+
+1. vCPU and memory hours for the always-on task
+2. fixed NAT Gateway and public IPv4 cost for private-subnet egress
+3. file-system throughput mode and data access, not just stored capacity
+4. the pre-credit price after promotional credits disappear
+
+Current rates are available from [AWS VPC pricing](https://aws.amazon.com/vpc/pricing/), [AWS Fargate pricing](https://aws.amazon.com/fargate/pricing/), [Amazon EFS pricing](https://aws.amazon.com/efs/pricing/), and [AWS Secrets Manager pricing](https://aws.amazon.com/secrets-manager/pricing/). These numbers are one deployment's measured usage in one region, not a fixed price for every Hermes installation.
+
 ## Pin the runtime before moving data
 
 This migration also upgraded Hermes from `0.19.0` to `0.20.0`. Combining a host move with an application upgrade makes failures harder to classify, so I treated them as separate gates even though they happened in one maintenance window.
