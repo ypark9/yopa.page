@@ -9,6 +9,7 @@
     base: document.getElementById("atlas-base"),
     world: document.getElementById("atlas-world"),
     top: document.getElementById("atlas-top"),
+    night: document.getElementById("atlas-night-art"),
     cursor: canvas
   };
   if (!canvas || !stage || !shell || !nightFilter || !payload || Object.values(layerCanvases).some((item) => !item)) return;
@@ -757,6 +758,37 @@
     ctx.stroke();
   }
 
+  function drawSelectedArticleIndicator() {
+    const article = state.nearest;
+    if (!article) return;
+    const p = screen(article.x, article.y);
+    if (p.x < -60 || p.y < -60 || p.x > state.width + 60 || p.y > state.height + 60) return;
+    const radius = article.size + 14;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = "#fff9e9";
+    ctx.lineWidth = 7;
+    ctx.stroke();
+    ctx.strokeStyle = "#20362c";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y - radius - 5);
+    ctx.lineTo(p.x - 8, p.y - radius - 17);
+    ctx.lineTo(p.x + 8, p.y - radius - 17);
+    ctx.closePath();
+    ctx.fillStyle = "#fff9e9";
+    ctx.fill();
+    ctx.strokeStyle = "#20362c";
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function drawVisitor(visitor, index) {
     const phase = visitor.phase || 0;
     const drift = visitor.live || reducedMotion ? 0 : Math.sin(state.time * .00045 + phase) * 32;
@@ -1125,6 +1157,7 @@
     drawAmbientLayer("world");
     drawNavigationLandmarks();
     drawDepthSortedWorld();
+    drawSelectedArticleIndicator();
 
     ctx = layerContexts.top;
     ctx.clearRect(0, 0, state.width, state.height);
@@ -1133,11 +1166,18 @@
     drawAmbientLayer("top");
     updateNightFilter();
 
-    ctx = layerContexts.cursor;
+    ctx = layerContexts.night;
     ctx.clearRect(0, 0, state.width, state.height);
     drawNightLights();
-    drawOwnCursor();
+
+    renderCursorLayer();
     positionLandmarkOverlays();
+  }
+
+  function renderCursorLayer() {
+    ctx = layerContexts.cursor;
+    ctx.clearRect(0, 0, state.width, state.height);
+    drawOwnCursor();
   }
 
   function scheduleFrame() {
@@ -1210,10 +1250,12 @@
     state.pointer.type = event.pointerType || "mouse";
     state.pointer.active = true;
     state.pointer.mapActive = stage.contains(event.target);
+    if (state.pitOpen) renderCursorLayer();
   });
   shell.addEventListener("pointerleave", () => {
     state.pointer.active = false;
     state.pointer.mapActive = false;
+    if (state.pitOpen) renderCursorLayer();
   });
   stage.addEventListener("pointermove", (event) => {
     if (state.paused || state.lockedTarget) return;
@@ -1384,7 +1426,6 @@
     try { sessionStorage.setItem(PIT_SESSION_KEY, "seen"); } catch (_) { return; }
     pitPreviousFocus = document.activeElement;
     state.pitOpen = true;
-    state.pointer.active = false;
     window.ArticleAtlasPresence?.pause();
     pitPanel.hidden = false;
     stopAnimation();

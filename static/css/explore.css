@@ -42,11 +42,15 @@ body:has(.explore-shell) > main {
 
 .atlas-night-filter {
   position: absolute;
-  z-index: 4;
+  z-index: 3;
   inset: 0;
   opacity: 0;
   pointer-events: none;
   will-change: opacity;
+}
+
+.atlas-night-art {
+  z-index: 4;
 }
 
 .atlas-stage {
@@ -63,7 +67,7 @@ body:has(.explore-shell) > main {
   cursor: none;
   touch-action: none;
   pointer-events: none;
-  z-index: 20;
+  z-index: 40;
 }
 
 .explore-shell.is-exploring,
