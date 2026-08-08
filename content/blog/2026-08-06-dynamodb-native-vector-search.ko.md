@@ -1,8 +1,8 @@
 ---
-title: "DynamoDB에 벡터 검색이 붙었다: 언제 벡터 DB를 대체하고, 언제 안 되는가"
+title: "DynamoDB 네이티브 벡터 검색: 벡터 DB를 대체할 수 있는 경우와 아닌 경우"
 date: 2026-08-06T09:00:00-04:00
 author: Yoonsoo Park
-description: "이제 DynamoDB가 embedding을 저장하고 운영 데이터와 같은 테이블에서 유사도 검색을 돌린다. running 예제 하나로 이게 없애주는 sync 파이프라인을 before/after로 보고, 실제로 dedicated 벡터 스토어를 대체하는 지점이 어디인지 솔직하게 짚는다."
+description: "DynamoDB가 임베딩을 저장하고 운영 데이터와 같은 테이블에서 유사도 검색을 지원하기 시작했다. 제품 카탈로그를 예로 별도 벡터 저장소와 동기화 파이프라인이 사라지는 구조를 살펴보고, 이 기능이 적합한 경우와 한계를 정리한다."
 categories:
   - AWS
   - RAG
@@ -15,46 +15,46 @@ tags:
   - architecture
 ---
 
-> DynamoDB가 native vector search를 지원한다. embedding을 아이템의 attribute로 저장하고 테이블에서 바로 유사도 검색을 돌린다. 테이블 하나가 운영 데이터 저장소이자 벡터 스토어가 되는 거다. 특정 모양의 앱한테는 진짜 단순화고, 다른 앱한테는 함정이다. running 예제, 이게 지워주는 파이프라인, 그리고 경계선이 실제로 어디 있는지 보자.
+> DynamoDB가 네이티브 벡터 검색을 지원한다. 아이템 속성에 임베딩을 저장하고 같은 테이블에서 유사도 검색을 실행할 수 있으므로, 하나의 테이블이 운영 데이터 저장소와 벡터 저장소 역할을 함께 맡는다. 어떤 애플리케이션에는 구조를 크게 단순화하는 변화지만, 모든 검색 문제의 해답은 아니다. 제품 카탈로그를 예로 이 기능이 없애는 파이프라인과 적용 범위를 살펴보자.
 
-전에 쓴 [AWS 벡터 데이터베이스 결정 가이드](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html)를 읽었다면, 이건 그 cost/latency 곡선 위의 새 항목이다. 다만 pitch가 거기 있는 다른 옵션들과 다르다. 더 좋은 벡터 스토어가 아니라, 아예 별도 벡터 스토어가 없는 거다.
+이전에 쓴 [AWS 벡터 데이터베이스 선택 가이드](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html)의 비용과 지연 시간 관점에서 보면, DynamoDB 벡터 검색은 새로운 선택지다. 다만 다른 벡터 저장소와 경쟁하는 기능은 아니다. 별도의 벡터 저장소를 아예 두지 않아도 되는 상황을 만드는 기능이다.
 
-## running 예제
+## 제품 카탈로그로 살펴보기
 
-제품 카탈로그를 운영한다고 하자. 모든 제품이 이미 DynamoDB 테이블에 `product_id` 키로 들어가 있고 `title`, `description`, `price`, `category`를 들고 있다. 읽기 쓰기는 이미 빠르고 싸다. 이제 제품팀이 "비슷한 제품 찾기"랑 자연어 검색("비 오는 날 하이킹용 따뜻한 재킷")을 원한다. 키워드가 아니라 의미로 매칭되는 검색.
+제품 카탈로그를 운영한다고 하자. 제품은 이미 `product_id`를 키로 하는 DynamoDB 테이블에 저장되어 있으며, 각 아이템에는 `title`, `description`, `price`, `category`가 있다. 읽기와 쓰기는 빠르고 비용도 낮다. 이제 제품팀이 "비슷한 제품 찾기"와 "비 오는 날 하이킹에 입을 따뜻한 재킷" 같은 자연어 검색을 요청한다. 키워드가 아니라 문장의 의미를 기준으로 제품을 찾는 기능이다.
 
-그 semantic 레이어에는 embedding이랑 nearest-neighbor 검색이 필요하다. 질문은 그 벡터가 어디 사느냐다.
+이런 검색에는 텍스트의 의미를 숫자 벡터로 표현한 임베딩과, 가까운 벡터를 찾는 최근접 이웃 검색이 필요하다. 중요한 질문은 이 벡터를 어디에 둘 것인가다.
 
-## Before: 두 번째 DB와, 그걸 정직하게 유지하는 파이프라인
+## 기존 구조: 별도 벡터 저장소와 동기화 파이프라인
 
-지금까지 표준 답은 DynamoDB 옆에 dedicated 벡터 스토어를 두는 거였다. 제품마다 embedding을 만들어 벡터 스토어에 `product_id`로 되짚어 저장하고, 쿼리할 때 벡터 스토어를 검색해 ID를 받은 다음, 실제 제품 row를 가져오러 DynamoDB로 다시 round-trip 한다.
+기존의 일반적인 해법은 DynamoDB 옆에 전용 벡터 저장소를 두는 방식이다. 제품마다 임베딩을 생성해 `product_id`와 함께 벡터 저장소에 기록한다. 검색할 때는 벡터 저장소에서 제품 ID를 찾고, 그 ID로 DynamoDB를 다시 조회해 실제 제품 데이터를 가져온다.
 
-비싼 건 벡터 스토어 자체가 아니다. 배관이다.
+비용과 복잡도를 키우는 요소는 벡터 저장소 하나가 아니다. 두 저장소를 계속 같은 상태로 유지해야 한다는 점이다.
 
 ```
-DynamoDB (source of truth)
+DynamoDB (원본 데이터 저장소)
     | DynamoDB Streams
     v
-Lambda (변경 시 embed) --> Bedrock (Titan embeddings)
+Lambda (변경 시 임베딩 생성) --> Bedrock (Titan 임베딩)
     |
     v
-Vector store (OpenSearch / pgvector / etc.)   <-- 계속 sync 맞춰야 함
+벡터 저장소 (OpenSearch / pgvector / 기타)   <-- 지속적인 동기화 필요
 
-쿼리 시점:
-  query --embed--> vector store --> [product_id, ...] --> DynamoDB BatchGetItem --> rows
+검색 시:
+  쿼리 --임베딩 생성--> 벡터 저장소 --> [product_id, ...] --> DynamoDB BatchGetItem --> 제품 데이터
 ```
 
-이 그림에는 오래가는 문제 세 개가 세트로 딸려 온다.
+이 구조에는 세 가지 운영 문제가 따라온다.
 
-- **Sync drift.** 제품 write마다 벡터 스토어로 fan-out 해야 한다. 하나라도 놓치면(Lambda 에러, throttle, 절반만 끝난 backfill) 검색이 조용히 stale 하거나 빠진 결과를 돌려준다. 이제 reconciliation job을 네가 소유한다.
-- **두 번의 round trip.** 벡터 스토어는 ID를 주니까, 사용자가 실제로 볼 row를 가져오려고 결국 DynamoDB를 또 친다. 검색할 때마다 latency가 붙고 실패 지점이 하나 더 생긴다.
-- **청구서 둘, scaling 스토리 둘.** 이미 갖고 있는 데이터를 미러링하는 게 유일한 일인 두 번째 저장소를 프로비저닝하고 패치하고 돈 낸다.
+- **동기화 불일치.** 제품이 바뀔 때마다 변경 내용을 벡터 저장소에도 전달해야 한다. Lambda 오류, 처리량 제한, 중간에 멈춘 백필 작업 때문에 하나라도 누락되면 검색 결과가 오래되거나 일부 제품이 빠질 수 있다. 결국 두 저장소의 정합성을 확인하고 복구하는 작업까지 직접 운영해야 한다.
+- **추가 조회.** 벡터 저장소는 제품 ID만 반환한다. 사용자가 볼 제품 데이터를 가져오려면 DynamoDB를 한 번 더 호출해야 하므로, 검색마다 지연 시간과 장애 지점이 늘어난다.
+- **별도의 비용과 운영 대상.** 이미 가진 데이터를 복제하는 용도의 저장소를 따로 프로비저닝하고, 패치하고, 확장해야 한다.
 
-## After: 벡터는 그냥 attribute 하나
+## 새 구조: 임베딩을 아이템 속성으로 저장하기
 
-native vector search에서는 이미 있는 테이블에 vector index를 추가한다. embedding이 제품 아이템의 attribute가 된다. 두 번째 스토어도 sync 파이프라인도 없다. 벡터가 그게 설명하는 row와 같은 아이템에 살기 때문이다.
+네이티브 벡터 검색에서는 기존 DynamoDB 테이블에 벡터 인덱스를 추가한다. 임베딩은 제품 아이템의 속성이 된다. 벡터가 설명하는 제품 데이터와 같은 아이템에 있으므로, 별도 저장소와 동기화 파이프라인이 필요 없다.
 
-인덱스를 만든다(기존 테이블에 `UpdateTable`로 추가할 수도 있다. 재생성 필요 없음).
+인덱스는 새 테이블을 만들 때 정의할 수 있고, 기존 테이블에도 `UpdateTable`로 추가할 수 있다.
 
 ```python
 dynamodb.create_table(
@@ -65,7 +65,7 @@ dynamodb.create_table(
         {
             "IndexName": "VectorIndex",
             "VectorAttribute": {"AttributeName": "embedding"},
-            "Dimensions": 1024,                 # embedding 모델 출력과 일치해야 함
+            "Dimensions": 1024,                 # 임베딩 모델의 출력 차원과 일치해야 함
             "DistanceFunction": "DOT_PRODUCT",  # COSINE | DOT_PRODUCT | EUCLIDEAN
             "Projection": {"ProjectionType": "ALL"},
         }
@@ -74,66 +74,70 @@ dynamodb.create_table(
 )
 ```
 
-제품을 embedding과 함께, row를 쓰는 그 호출에서 같은 아이템에 저장한다.
+제품을 저장할 때 임베딩도 같은 아이템에 함께 넣는다.
 
 ```python
-emb = bedrock_embed(f"{title}. {description}")   # Titan Text Embeddings V2, normalized
+emb = bedrock_embed(f"{title}. {description}")   # Titan Text Embeddings V2, 정규화된 벡터
 table.put_item(Item={
     "product_id": pid, "title": title, "description": description,
     "price": price, "category": category, "embedding": emb,
 })
 ```
 
-검색은 ID가 아니라 제품 row를 바로 돌려준다.
+검색 결과에는 ID뿐 아니라 제품 데이터도 함께 담긴다.
 
 ```python
-q = bedrock_embed("비 오는 날 하이킹용 따뜻한 재킷")
+q = bedrock_embed("비 오는 날 하이킹에 입을 따뜻한 재킷")
 resp = table.query(
     IndexName="VectorIndex",
     VectorSearchConfiguration={"Vector": q, "TopK": 5},
 )
-# resp["Items"]에 이미 title, price, category가 들어 있음. 두 번째 round trip 없음
+# resp["Items"]에 title, price, category가 포함되어 있어 추가 조회가 필요하지 않음
 ```
 
-`Streams -> Lambda -> vector store` 그림 전체, reconciliation job, `BatchGetItem` round trip이 다 사라진다. `Projection`이 `ALL`이라 검색이 한 번의 호출로 full row를 돌려주기 때문이다.
+이제 `Streams -> Lambda -> 벡터 저장소` 파이프라인과 정합성 확인 작업, `BatchGetItem`을 통한 추가 조회가 사라진다. `Projection`을 `ALL`로 설정했기 때문에 검색 한 번으로 전체 제품 데이터를 받을 수 있다.
 
-중요한 손잡이 몇 개.
+다만 다음 설정은 신중히 골라야 한다.
 
-- **Dimensions**는 모델 출력과 같아야 한다(Titan V2는 1024). 최대 4,096까지 된다.
-- **Distance function**: embedding이 이미 unit-normalized면 `DOT_PRODUCT`를 쓴다(cosine과 같은데 normalization 단계를 건너뛴다). normalized 안 된 벡터면 `COSINE`, magnitude가 중요하면 `EUCLIDEAN`. `COSINE`/`EUCLIDEAN`은 낮을수록 유사, `DOT_PRODUCT`는 높을수록 유사다.
-- **Projection**: `ALL`은 full row를 돌려주고, `INCLUDE`는 고른 일부만(인덱스가 작아지고 싸진다), `KEYS_ONLY`는 다시 round trip으로 돌려보낸다. 아이템이 크면 `INCLUDE`를 골라라.
-- **검색은 ANN**(approximate nearest neighbor)이다. 정확도를 살짝 내주고 예측 가능한 속도와 비용을 얻는다. 규모에서는 맞는 trade지만, recall이 100%가 아니라는 뜻이고 이게 아래 결정에서 중요하다.
+- **Dimensions**는 임베딩 모델의 출력 차원과 같아야 한다. Titan V2는 1024차원을 사용하며, DynamoDB는 최대 4,096차원을 지원한다.
+- **Distance function**은 임베딩이 이미 단위 벡터로 정규화되어 있다면 `DOT_PRODUCT`를 사용한다. 코사인 유사도와 같은 순서를 얻으면서 별도의 정규화 단계를 피할 수 있다. 정규화하지 않은 벡터에는 `COSINE`을, 벡터 크기 자체가 의미를 가질 때는 `EUCLIDEAN`을 사용한다. `COSINE`과 `EUCLIDEAN`은 값이 낮을수록 유사하고, `DOT_PRODUCT`는 값이 높을수록 유사하다.
+- **Projection**에서 `ALL`은 전체 아이템을 반환한다. `INCLUDE`는 필요한 속성만 반환하므로 인덱스 크기와 비용을 줄일 수 있다. `KEYS_ONLY`는 원본 아이템을 다시 읽어야 하므로 추가 조회를 되살린다. 아이템이 크다면 결과 화면에 필요한 속성만 `INCLUDE`로 지정하는 편이 낫다.
+- **검색은 ANN**(approximate nearest neighbor, 근사 최근접 이웃) 방식이다. 예측 가능한 속도와 비용을 얻는 대신 정확도를 일부 포기한다. 대규모 검색에는 합리적인 선택이지만, 재현율(recall)이 100%가 아니라는 점은 아래의 선택 기준에서 중요하다.
 
-## 멀티테넌시 격리: 여기선 partition key가 진짜 일을 한다
+## 멀티 테넌트 격리에서의 파티션 키
 
-카탈로그가 multi-tenant면(고객마다 자기 제품만 봄) vector index의 옵셔널 **partition key**가 흥미로운 지점이다. 인덱스를 `tenant_id` partition key로 정의하면 모든 검색이 tenant 값을 넘겨야 하고, DynamoDB는 그 tenant의 인덱스 조각만 훑는다. 세 개를 한 번에 얻는다. 더 싼 검색(훑는 데이터 감소), tenant별 throughput 쿼터, 그리고 "제대로 걸었길 바라는 필터"가 아니라 스토리지 레이어에서 강제되는 격리.
+고객마다 자신의 제품만 볼 수 있는 멀티 테넌트 카탈로그라면, 벡터 인덱스의 선택적 **파티션 키**가 특히 유용하다. 인덱스의 파티션 키를 `tenant_id`로 정의하면 모든 검색 요청에 테넌트 값을 포함해야 한다. DynamoDB는 해당 테넌트의 인덱스 영역만 조회한다.
 
-이건 대부분의 managed RAG 스택이 쓰는 "metadata 필드 붙여서 쿼리 때 필터링" 패턴보다 깔끔한 격리 스토리다. 필터 하나 빠뜨려서 한 tenant 데이터가 다른 tenant 결과로 새어 나가는 버그를 배포해 본 적 있다면, 스토리지 레벨 partitioning은 진지하게 볼 값어치가 있다.
+그 결과 검색 대상 데이터가 줄어 비용이 낮아지고, 테넌트별 처리량 한도를 둘 수 있으며, 저장소 계층에서 격리를 강제할 수 있다. 검색 시 필터를 적용했는지에만 의존하지 않아도 된다는 뜻이다.
 
-## 그래서 언제 실제로 벡터 DB를 대체하나
+대부분의 관리형 RAG 스택은 메타데이터 필드를 붙이고 검색할 때 필터링하는 방식을 사용한다. 이 방식도 쓸 수 있지만, 필터 하나가 빠져 다른 테넌트의 데이터가 검색 결과에 노출되는 사고가 발생할 수 있다. 테넌트 경계가 분명하다면 저장소 수준의 파티셔닝은 더 강한 선택지다.
 
-DynamoDB native vector를 꺼낼 때.
+## 벡터 DB를 대체할 수 있는 경우
 
-- **DynamoDB가 이미 운영 저장소**고 벡터가 거기 이미 두는 row를 설명할 때. 이게 핵심 전부다. 이득은 파이프라인을 지우는 거지 더 좋은 인덱스를 얻는 게 아니다.
-- **주력 쿼리가 "비슷한 아이템이랑 그 데이터 줘"**를 한 방에 하는 거일 때. 매칭된 row를 같이 돌려주는 게 이게 밥값 하는 지점이다.
-- **tenant별 격리와 throughput이 필요**하고 partition key가 tenant 경계에 깔끔하게 맵될 때.
-- **청구서 하나, 운영할 두 번째 물건 없음**을 원할 때.
+다음 조건이라면 DynamoDB 네이티브 벡터 검색이 적합하다.
 
-꺼내지 말아야 할 때.
+- **DynamoDB가 이미 운영 데이터 저장소일 때.** 벡터가 그 테이블에 있는 아이템을 설명한다면, 별도 저장소와 동기화 파이프라인을 없앨 수 있다. 이 기능의 핵심 이점은 더 좋은 인덱스가 아니라 더 단순한 구조다.
+- **주요 쿼리가 유사한 아이템과 그 데이터를 함께 요구할 때.** 검색 결과와 제품 데이터를 한 번에 반환하는 구조가 가장 큰 효과를 낸다.
+- **테넌트별 격리와 처리량 제어가 필요할 때.** 파티션 키가 테넌트 경계와 자연스럽게 대응해야 한다.
+- **운영 대상과 비용 청구를 줄이고 싶을 때.** 두 번째 저장소를 운영하지 않아도 된다.
 
-- **full managed RAG 파이프라인이 필요할 때.** DynamoDB는 vector *search*를 준다. document chunking, ingestion 파이프라인, retrieve-and-generate orchestration을 주지 않는다. 그게 turnkey로 필요하면 Bedrock Knowledge Bases가 여전히 빠른 길이고, DynamoDB로 가면 그 배관을 손으로 다시 짓는 셈이다.
-- **적당한 corpus에서 recall이 near-exact 해야 할 때.** ANN + 튜닝된 dedicated 인덱스(OpenSearch)가 recall 품질에서 범용 스토어를 이긴다. 커밋 전에 네 golden set으로 측정해라. 이 숫자 하나가 마이그레이션을 조용히 결정한다.
-- **source of truth가 DynamoDB에 없을 때.** 데이터가 S3나 Postgres에 살면, 벡터 담으려고 DynamoDB를 끼워 넣는 건 이 기능이 없애주는 바로 그 sync 문제를 반대 방향으로 다시 들여오는 거다.
+반대로 다음 경우에는 전용 벡터 저장소나 관리형 RAG 서비스를 유지하는 편이 낫다.
 
-## 실제로 밟은 함정들
+- **관리형 RAG 파이프라인 전체가 필요할 때.** DynamoDB는 벡터 검색만 제공한다. 문서 청킹, 수집 파이프라인, 검색 결과를 생성 단계로 연결하는 오케스트레이션은 제공하지 않는다. 이 기능을 바로 사용할 수 있어야 한다면 Bedrock Knowledge Bases가 더 빠른 선택지다. DynamoDB만 사용하면 그 파이프라인을 직접 구축해야 한다.
+- **작은 문서 집합에서도 재현율이 거의 완벽해야 할 때.** ANN과 잘 튜닝된 전용 인덱스(OpenSearch)는 검색 품질에서 범용 저장소보다 나을 수 있다. 도입을 결정하기 전에 자체 정답 집합(golden set)으로 측정해야 한다. 이 수치가 마이그레이션 여부를 결정한다.
+- **원본 데이터가 DynamoDB에 없을 때.** 데이터가 S3나 Postgres에 있다면, 벡터를 저장하려고 DynamoDB를 추가하는 순간 이 기능이 없애려는 동기화 문제를 반대 방향으로 다시 만들게 된다.
 
-- **"vector search"는 "RAG"가 아니다.** 이 기능은 nearest 아이템을 돌려준다. chunking, embedding orchestration, generation은 여전히 네가 짠다. "우린 RAG 스택 대신 DynamoDB 쓸 거야"로 프로젝트 스코프를 잡으면서 이게 안 해주는 부분을 계산에 안 넣으면 안 된다.
-- **Dimensions는 인덱스 생성 시 고정이고 모델과 일치해야 한다.** 나중에 embedding 모델을 바꾸면(dimension 다름) 새 인덱스 + backfill이다. 모델 선택을 의도적으로 pin 해라.
-- **`KEYS_ONLY` projection은 round trip을 조용히 다시 데려온다.** 인덱스 작게 유지하려고 이걸 걸면 hit마다 두 번째 `GetItem`으로 돌아간다. 결과 뷰가 필요한 필드만 담아 `INCLUDE`를 써라.
-- **vibes 말고 recall을 측정해라.** ANN은 정확도를 속도와 바꾼다. 쿼리 열 개에선 멀쩡해 보이는 데모가 long tail에서 놓친다. 쿼리-기대결과 쌍의 golden set을 만들어, 마이그레이션 전에 지금 스토어 대비 recall을 확인해라.
+## 도입 전에 확인할 점
 
-## 그래서 뭘 하면 되나
+- **벡터 검색은 RAG 전체가 아니다.** 이 기능은 가까운 아이템을 반환한다. 문서 청킹, 임베딩 생성 흐름, 답변 생성은 여전히 직접 구성해야 한다. 이 범위를 빼고 "RAG 스택 대신 DynamoDB를 쓰자"고 결정하면 필요한 작업을 과소평가하게 된다.
+- **Dimensions는 인덱스를 생성할 때 고정된다.** 나중에 차원이 다른 임베딩 모델로 바꾸려면 새 인덱스를 만들고 데이터를 백필해야 한다. 모델 선택을 초기에 신중히 확정해야 한다.
+- **`KEYS_ONLY`는 추가 조회를 되살린다.** 인덱스를 작게 유지하려고 이 옵션을 선택하면 검색 결과마다 두 번째 `GetItem` 호출이 필요하다. 필요한 결과 속성만 `INCLUDE`로 지정하는 편이 낫다.
+- **재현율을 직접 측정해야 한다.** ANN은 정확도와 속도를 맞바꾼다. 열 개의 쿼리에서 좋아 보이는 데모도 롱테일 쿼리에서는 기대한 결과를 놓칠 수 있다. 쿼리와 기대 결과의 쌍으로 정답 집합을 만들고, 마이그레이션 전에 현재 저장소와 재현율을 비교해야 한다.
 
-이미 DynamoDB를 운영 DB로 돌리고 있고 bolt-on 벡터 스토어를 눈여겨보고 있었다면, 이걸 먼저 프로토타입 해라. 테이블 복사본에 vector index 하나 붙이고, 데이터 일부를 embed 하고, 진짜 쿼리를 golden set으로 돌려 recall을 확인해라. recall이 버티면 DB 하나, sync 파이프라인, round trip을 통째로 지운다. 안 버티면 싸게 배운 거고, [결정 가이드](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html)의 dedicated 스토어 옵션들은 그대로 거기 있다.
+## 실제로 해볼 일
 
-정신적 전환은 그 글이 끝난 지점과 같다. 질문이 "어떤 벡터 데이터베이스냐"에서 "별도로 하나 필요하긴 하냐"로 바뀐 거다.
+이미 DynamoDB를 운영 데이터베이스로 사용하면서 별도 벡터 저장소를 검토하고 있다면, 먼저 이 방식을 프로토타입으로 확인해 보자. 테이블 복사본에 벡터 인덱스를 추가하고 데이터 일부를 임베딩한 뒤, 정답 집합으로 실제 쿼리를 실행해 재현율을 확인한다.
+
+재현율이 요구 수준을 충족한다면 데이터베이스 하나, 동기화 파이프라인 하나, 추가 조회 하나를 함께 없앨 수 있다. 충족하지 못하더라도 적은 비용으로 결론을 얻은 셈이다. 그때는 [선택 가이드](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html)의 전용 벡터 저장소 선택지를 검토하면 된다.
+
+결국 질문은 "어떤 벡터 데이터베이스를 사용할까?"가 아니다. "별도의 벡터 데이터베이스가 정말 필요한가?"다.
