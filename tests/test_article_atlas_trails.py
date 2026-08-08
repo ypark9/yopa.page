@@ -196,6 +196,30 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn('id="explore-signpost-close"', template)
         self.assertGreaterEqual(template.count('role="dialog" aria-modal="false"'), 2)
 
+    def test_selected_article_indicator_tracks_the_preview_selection(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+
+        self.assertIn("function drawSelectedArticleIndicator()", source)
+        self.assertIn("const article = state.nearest;", source)
+        self.assertIn("if (!article) return;", source)
+        self.assertIn("drawDepthSortedWorld();\n    drawSelectedArticleIndicator();", source)
+        self.assertIn('ctx.strokeStyle = "#fff9e9";', source)
+        self.assertIn('ctx.strokeStyle = "#20362c";', source)
+        self.assertIn("ctx.lineTo(p.x - 8, p.y - radius - 17);", source)
+
+    def test_selected_article_indicator_is_separate_from_waypoint_state(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        indicator = source.split("function drawSelectedArticleIndicator()", 1)[1].split(
+            "function drawVisitor", 1
+        )[0]
+
+        self.assertIn("state.nearest", indicator)
+        self.assertNotIn("state.waypoint", indicator)
+        self.assertIn("if (state.waypoint?.target === article)", source)
+        self.assertIn("selectArticle(null);", source)
+        self.assertIn('lockTarget("article", state.nearest)', source)
+        self.assertIn("unlockTarget(", source)
+
     def test_article_preview_keeps_its_light_palette_and_touch_close(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
         styles = (ROOT / "static" / "css" / "explore.css").read_text()
@@ -266,17 +290,54 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("document.hidden || state.paused || state.pitOpen", source)
         self.assertGreaterEqual(source.count("stopAnimation();"), 3)
 
-    def test_atlas_uses_five_shared_canvas_layers(self):
+    def test_atlas_uses_six_shared_canvas_layers(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
         template = (ROOT / "layouts" / "explore" / "single.html").read_text()
 
-        for canvas_id in ("atlas-backdrop", "atlas-base", "atlas-world", "atlas-top", "explore-world"):
+        for canvas_id in (
+            "atlas-backdrop",
+            "atlas-base",
+            "atlas-world",
+            "atlas-top",
+            "atlas-night-art",
+            "explore-world",
+        ):
             self.assertIn(f'id="{canvas_id}"', template)
         self.assertIn("const layerCanvases = {", source)
         self.assertIn("const pixelBudget = mobile ? 1280 * 720 : 2560 * 1440", source)
         self.assertIn("Object.entries(layerCanvases).forEach", source)
         self.assertIn("ctx = layerContexts.backdrop", source)
+        self.assertIn("ctx = layerContexts.night", source)
         self.assertIn("ctx = layerContexts.cursor", source)
+
+    def test_night_art_and_cursor_use_separate_render_layers(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        styles = (ROOT / "static" / "css" / "explore.css").read_text()
+
+        night_render = source.split("ctx = layerContexts.night", 1)[1].split(
+            "renderCursorLayer();", 1
+        )[0]
+        cursor_render = source.split("function renderCursorLayer()", 1)[1].split(
+            "function scheduleFrame", 1
+        )[0]
+        self.assertIn("drawNightLights();", night_render)
+        self.assertNotIn("drawOwnCursor();", night_render)
+        self.assertIn("drawOwnCursor();", cursor_render)
+        self.assertNotIn("drawNightLights();", cursor_render)
+        self.assertIn(".atlas-night-art {\n  z-index: 4;", styles)
+        self.assertIn(".atlas-cursor {", styles)
+        self.assertIn("z-index: 40;", styles)
+
+    def test_pit_repaints_only_the_cursor_during_pointer_tracking(self):
+        source = (ROOT / "static" / "js" / "explore.js").read_text()
+        pit_open = source.split("function maybeOpenPit()", 1)[1].split(
+            "function closePit", 1
+        )[0]
+
+        self.assertIn("if (state.pitOpen) renderCursorLayer();", source)
+        self.assertNotIn("state.pointer.active = false;", pit_open)
+        self.assertIn("document.hidden || state.paused || state.pitOpen", source)
+        self.assertIn("!state.pitOpen && window.ArticleAtlasPresence", source)
 
     def test_manifest_drives_tiles_objects_and_culling(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
@@ -344,7 +405,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn("elapsed / .3", home)
         self.assertIn('.atlas-night-mode .explore-shell', styles)
         self.assertIn(".atlas-night-filter {", styles)
-        self.assertIn("z-index: 4;", styles)
+        self.assertIn(".atlas-night-filter {\n  position: absolute;\n  z-index: 3;", styles)
         self.assertIn(".atlas-night-mode .explore-button", styles)
         self.assertIn(".atlas-night-mode .explore-brand-mark", styles)
         self.assertIn(".atlas-night-mode .explore-pit-sign", styles)
