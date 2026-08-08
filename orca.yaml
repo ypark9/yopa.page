@@ -1,0 +1,12 @@
+# orca.yaml — Orca worktree bootstrap (policy A). Guarded; clean no-op without the tools.
+# ccdoc project is "yopa-page"; cxdoc project is "yopa.page".
+# Set Orca Command Source = "orca.yaml only" (or Run both) so these run.
+scripts:
+  setup: |
+    export CCDOC_HOME="/Users/yoonsoo.park/code/ncino/claude-code-hub"
+    command -v ccdoc >/dev/null 2>&1 && ccdoc setup yopa-page "$ORCA_WORKTREE_PATH" || true
+    command -v cxdoc >/dev/null 2>&1 && cxdoc checkout add yopa.page "$ORCA_WORKTREE_PATH" || true
+  archive: |
+    export CCDOC_HOME="/Users/yoonsoo.park/code/ncino/claude-code-hub"
+    command -v cxdoc >/dev/null 2>&1 && cxdoc checkout remove yopa.page "$ORCA_WORKTREE_PATH" || true
+    command -v ccdoc >/dev/null 2>&1 && ccdoc sync yopa-page "$ORCA_WORKTREE_PATH" || true
