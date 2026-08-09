@@ -15,6 +15,13 @@ tags:
   - Multi-Agent Systems
   - AI Evaluation
   - Security
+atlas:
+  region: agents
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 “AI agent” and “agentic AI” do not have one universally enforced boundary. Vendors and researchers use the terms differently. A system does not become more capable merely because it is called agentic, and a multi-agent topology is not automatically more autonomous than one agent.

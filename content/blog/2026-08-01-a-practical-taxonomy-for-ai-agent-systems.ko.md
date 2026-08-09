@@ -15,6 +15,13 @@ tags:
   - Multi-Agent Systems
   - AI Evaluation
   - Security
+atlas:
+  region: agents
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 “AI agent”와 “agentic AI” 사이에는 모두가 따르는 하나의 경계가 없다. vendor와 연구자마다 다르게 쓴다. agentic이라는 이름이 붙는다고 시스템이 더 유능해지는 것도 아니고 multi-agent topology가 single agent보다 자동으로 더 자율적인 것도 아니다.

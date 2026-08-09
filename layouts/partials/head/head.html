@@ -19,7 +19,9 @@
     <link rel="alternate" hreflang="x-default" href="{{ (index .AllTranslations 0).Permalink }}" />
   {{ end }}
 
-  {{ template "_internal/google_analytics.html" . }}
+  {{ if hugo.IsProduction }}
+    {{ template "_internal/google_analytics.html" . }}
+  {{ end }}
 
   <meta property="og:site_name" content="{{.Site.Params.siteName}}" />
   <meta

@@ -14,6 +14,13 @@ tags:
   - Docker Compose
   - SQLite
   - Slack Bot
+atlas:
+  region: archive
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: production
+  era: current
 ---
 
 지난 글에서는 Hermes Agent를 ECS Fargate에 올리고 EFS에 상태를 보존하는 구성을 만들었다. 이 구조는 잘 동작했다. Slack bot은 늘 켜져 있었고, 컨테이너가 교체되어도 대화와 기억이 남았다.

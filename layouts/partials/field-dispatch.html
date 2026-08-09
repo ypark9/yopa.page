@@ -1,0 +1,10 @@
+{{- $language := .Language.Lang -}}
+{{- $settings := index .Site.Params.fieldDispatch $language -}}
+{{- if and $settings $settings.enabled $settings.subscribeUrl -}}
+<aside class="field-dispatch" aria-labelledby="field-dispatch-title">
+  <span class="atlas-kicker">Field Dispatch</span>
+  <h2 id="field-dispatch-title">{{ if eq $language "ko" }}매달 한 번, 새로 배운 것과 고친 것을 보냅니다{{ else }}One monthly dispatch of what I learned, built, and corrected{{ end }}</h2>
+  <p>{{ if eq $language "ko" }}새 글 목록이 아니라 검증한 내용, 바뀐 판단, 추천 Expedition을 골라 보냅니다. 언제든 구독을 해지할 수 있습니다.{{ else }}A curated note—not an automated feed—with verified work, changed decisions, and one expedition. Unsubscribe anytime.{{ end }}</p>
+  <a class="atlas-primary-action" data-atlas-event="dispatch_cta" href="{{ $settings.subscribeUrl | safeURL }}" target="_blank" rel="noopener noreferrer">{{ if eq $language "ko" }}한국어 Field Dispatch 구독{{ else }}Subscribe in English{{ end }}</a>
+</aside>
+{{- end -}}

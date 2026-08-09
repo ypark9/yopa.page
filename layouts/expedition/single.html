@@ -1,0 +1,48 @@
+{{ define "main" }}
+{{ $language := .Language.Lang }}
+{{ $catalog := index site.Data.expeditions $language }}
+{{ $journey := index $catalog .Params.expedition_id }}
+<main class="expedition-shell" data-expedition-id="{{ $journey.id }}" data-expedition-language="{{ $language }}">
+  <header class="expedition-intro">
+    <span class="atlas-kicker">Article Atlas Expedition</span>
+    <h1>{{ $journey.title }}</h1>
+    <p><strong>{{ $journey.question }}</strong></p>
+    <p>{{ if eq $language "ko" }}약 {{ $journey.estimated_minutes }}분 · {{ len $journey.stops }}개 stop · 진행 상태는 이 브라우저에만 저장됩니다.{{ else }}About {{ $journey.estimated_minutes }} minutes · {{ len $journey.stops }} stops · progress stays in this browser.{{ end }}</p>
+    <button class="atlas-primary-action" id="expedition-start" type="button">{{ if eq $language "ko" }}Expedition 시작{{ else }}Start expedition{{ end }}</button>
+  </header>
+
+  <section aria-labelledby="expedition-progress-title">
+    <h2 id="expedition-progress-title">{{ if eq $language "ko" }}Field journal{{ else }}Field journal{{ end }}</h2>
+    <progress class="expedition-progress" id="expedition-progress" aria-labelledby="expedition-progress-title expedition-progress-label" max="{{ len $journey.stops }}" value="0"></progress>
+    <p id="expedition-progress-label" aria-live="polite"></p>
+  </section>
+
+  <ol class="expedition-stops">
+    {{ range $index, $stop := $journey.stops }}
+    <li class="expedition-stop" data-stop-id="{{ $stop.id }}" data-complete="false">
+      <div class="expedition-stop-meta"><span>{{ add $index 1 }} / {{ len $journey.stops }}</span><span>{{ $stop.region }}</span><span>{{ $stop.evidence }}</span></div>
+      <h2>{{ $stop.title }}</h2>
+      <p>{{ $stop.purpose }}</p>
+      <div class="expedition-stop-actions">
+        <a data-atlas-event="expedition_stop_open" data-journey-id="{{ $journey.id }}" data-stop-id="{{ $stop.id }}" href="{{ $stop.url | relURL }}">{{ if eq $language "ko" }}Field note 읽기 →{{ else }}Read the field note →{{ end }}</a>
+        <button class="expedition-mark" type="button">{{ if eq $language "ko" }}확인 완료{{ else }}Mark reviewed{{ end }}</button>
+      </div>
+    </li>
+    {{ end }}
+  </ol>
+
+  <section class="expedition-complete" id="expedition-complete" hidden tabindex="-1">
+    <span class="atlas-kicker">{{ if eq $language "ko" }}Expedition complete{{ else }}Expedition complete{{ end }}</span>
+    <h2>{{ if eq $language "ko" }}Prototype보다 운영 경계를 먼저 설계하세요{{ else }}Design the operating boundaries, not just the prototype{{ end }}</h2>
+    <h3>{{ if eq $language "ko" }}핵심 원칙{{ else }}Principles collected{{ end }}</h3>
+    <ul>{{ range $journey.principles }}<li>{{ . }}</li>{{ end }}</ul>
+    <h3>{{ if eq $language "ko" }}실무 체크리스트{{ else }}Practical checklist{{ end }}</h3>
+    <ul>{{ range $journey.checklist }}<li>{{ . }}</li>{{ end }}</ul>
+    {{ partial "field-dispatch.html" . }}
+    <p><a href="{{ "explore/" | relURL }}">{{ if eq $language "ko" }}Article Atlas로 돌아가기 →{{ else }}Return to Article Atlas →{{ end }}</a></p>
+  </section>
+
+  <noscript><p>{{ if eq $language "ko" }}진행 상태 저장에는 JavaScript가 필요하지만 위의 모든 field note는 그대로 읽을 수 있습니다.{{ else }}JavaScript is required only to save progress; every field note above remains available.{{ end }}</p></noscript>
+</main>
+<script defer src="{{ "js/expedition.js" | relURL }}?v=expedition-v1"></script>
+{{ end }}

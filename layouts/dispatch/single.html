@@ -1,0 +1,10 @@
+{{ define "main" }}
+<main class="dispatch-confirmed-shell">
+  <section class="dispatch-confirmed" aria-labelledby="dispatch-confirmed-title">
+    <span class="atlas-kicker">Field Dispatch</span>
+    <h1 id="dispatch-confirmed-title">{{ .Title }}</h1>
+    <div class="dispatch-confirmed-content">{{ .Content }}</div>
+    <p><a class="atlas-primary-action" href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}Expedition 계속하기 →{{ else }}Continue the Expedition →{{ end }}</a></p>
+  </section>
+</main>
+{{ end }}

@@ -98,6 +98,15 @@
     <div class="article-post">
     {{ .Content }}
     </div>
+    {{ with .Params.atlas }}
+      {{ if in (.journeys | default slice) "safe-agent-operations" }}
+      <aside class="article-expedition-cta">
+        <span class="atlas-kicker">Article Atlas Expedition</span>
+        <h2>{{ if eq $.Language.Lang "ko" }}이 글이 더 큰 운영 판단에서 어디에 놓이는지 확인하세요{{ else }}See where this field note fits in the operating decision{{ end }}</h2>
+        <a class="atlas-primary-action" href="{{ if eq $.Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq $.Language.Lang "ko" }}안전한 Agent 운영 Expedition 계속하기{{ else }}Continue the safe agent operations expedition{{ end }}</a>
+      </aside>
+      {{ end }}
+    {{ end }}
     {{ partial "article-ad.html" . }}
 </div>
 

@@ -33,11 +33,41 @@
 {{ $archivesPage := first 1 (where .Site.RegularPages "Layout" "eq" "archives") }}
 
 <div class="container">
+    <section class="atlas-purpose" aria-labelledby="atlas-purpose-title">
+        <span class="atlas-kicker">{{ if eq .Language.Lang "ko" }}뒹그르면서 배운 지식 지도{{ else }}A living map of practical engineering knowledge{{ end }}</span>
+        <h1 id="atlas-purpose-title">
+            {{ if eq .Language.Lang "ko" }}
+            <span>막힌 문제를 풀고, 판단의 맥락을 따라서</span>
+            <span>다음 단계로 진행해보세요.</span>
+            {{ else }}
+            <span>Solve a problem. Follow the evidence.</span>
+            <span>Find what comes next.</span>
+            {{ end }}
+        </h1>
+        <div class="atlas-purpose-grid">
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}AI 에이전트 운영{{ else }}Solve a problem{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}프로토타입을 실제 운영 환경으로 옮길 때 무엇을 확인해야 할까요? 다섯 편의 글을 따라 살펴봅니다.{{ else }}Follow five field notes from an agent prototype to a system that can be operated safely.{{ end }}</p>
+                <a href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}첫 Expedition 시작 →{{ else }}Start the expedition →{{ end }}</a>
+            </article>
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}최근에 배운 것{{ else }}See what I am learning{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}새로 확인한 사실, 고친 부분들, 더는 사용되지 않는 것들을 최근 기록에서 확인하세요.{{ else }}See what I verified, revised, or retired in the latest field notes.{{ end }}</p>
+                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 기록 읽기 →{{ else }}Read recent field notes →{{ end }}</a>
+            </article>
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}Article Atlas 둘러보기{{ else }}Explore the Atlas{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}글과 프로젝트, 그 과정에서 내린 판단이 서로 어떻게 작용하는지 지도에서 살펴보세요.{{ else }}Explore how articles, projects, and the decisions behind them connect.{{ end }}</p>
+                <a href="{{ "explore/" | relURL }}">{{ if eq .Language.Lang "ko" }}Atlas 입장 →{{ else }}Enter the Atlas →{{ end }}</a>
+            </article>
+        </div>
+    </section>
+    {{ partial "field-dispatch.html" . }}
     <section>
-        <h2>
-            Latest Articles
+        <h2 id="latest-articles">
+            {{ if eq .Language.Lang "ko" }}최근 아티클들{{ else }}Latest Articles{{ end }}
             {{ range $archivesPage }}
-            <a class="section-button" href="{{ .RelPermalink }}">View all</a>
+            <a class="section-button" href="{{ .RelPermalink }}">{{ if eq $.Language.Lang "ko" }}전체 보기{{ else }}View all{{ end }}</a>
             {{ end }}
         </h2>
         <div class="posts">
@@ -46,7 +76,7 @@
                 <a href="{{ .RelPermalink }}">
                     <div class="post-row">
                         <time>{{ .Date.Format "Jan 02" }}</time>
-                        {{ if eq .Params.maintenance_status "replacement" }}<span class="maintenance-badge">{{ if eq .Language.Lang "ko" }}개정 가이드{{ else }}Updated guide{{ end }}</span>{{ end }}
+                        {{ if eq .Params.maintenance_status "replacement" }}<span class="maintenance-badge">{{ if eq .Language.Lang "ko" }}업데이트된 가이드{{ else }}Updated guide{{ end }}</span>{{ end }}
                         <h3>{{ .Title }}</h3>
                     </div>
                 </a>

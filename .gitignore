@@ -27,6 +27,9 @@ terraform/modules/article_atlas_presence/article-atlas-presence.zip
 .hugo_build.lock
 .DS_Store
 .env
+.secrets/
+analytics-output/
+.venv-analytics/
 
 .cursor
 refs

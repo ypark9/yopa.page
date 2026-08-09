@@ -1,0 +1,2 @@
+# Optional, local-only dependency for scripts/ga4_baseline.py.
+google-analytics-data==0.19.0
