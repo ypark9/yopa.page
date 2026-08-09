@@ -28,6 +28,11 @@
 .expedition-complete { margin: 2rem 0; padding: 1.5rem; border: 2px solid #568b68; border-radius: 18px; }
 .dispatch-confirmed-shell { max-width: 760px; margin: 0 auto; padding: 2rem 1rem; }
 .dispatch-confirmed { padding: 2rem; border: 2px solid #568b68; border-radius: 18px; background: rgba(117,184,42,.08); }
+.dispatch-confirmed h1 { max-width: 18ch; margin: .65rem 0 1.25rem; font-size: clamp(1.9rem,5vw,2.75rem); line-height: 1.18; letter-spacing: -.025em; }
+.dispatch-confirmed-content { max-width: 58ch; font-size: 1rem; line-height: 1.75; }
+.dispatch-confirmed-content p { margin: 0 0 1.15rem; }
+[lang="ko"] .dispatch-confirmed h1,
+[lang="ko"] .dispatch-confirmed-content { word-break: keep-all; overflow-wrap: break-word; }
 @media (max-width: 720px) {
   .atlas-purpose { margin: 1.75rem 0; }
   .atlas-purpose h1 { font-size: clamp(1.65rem,8vw,2rem); }
@@ -36,4 +41,7 @@
   .atlas-purpose-grid { grid-template-columns: 1fr; gap: .8rem; margin-top: 1.35rem; }
   .atlas-entry { min-height: 0; }
   .atlas-entry p { max-width: none; }
+  .dispatch-confirmed-shell { padding: 1rem .75rem; }
+  .dispatch-confirmed { padding: 1.35rem; }
+  .dispatch-confirmed h1 { font-size: clamp(1.75rem,8vw,2.2rem); }
 }
