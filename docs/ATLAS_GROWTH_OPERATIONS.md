@@ -95,9 +95,12 @@ hugo --gc --minify
 ```
 
 Smoke-test the English and Korean expedition with JavaScript enabled and
-disabled, local storage blocked, keyboard navigation, touch, and reduced
-motion. Confirm that no AdSense unit or Ko-fi trap appears during the
-expedition. Keep Presence disabled.
+disabled, keyboard navigation, responsive browser widths, and reduced motion.
+Storage failures must remain fail-open; a browser-enforced blocked-storage
+check is useful but non-blocking for this MVP. Screen-reader and physical-touch
+checks are follow-up acceptance rather than release gates. Confirm that no
+AdSense unit or Ko-fi trap appears during the expedition. Keep Presence
+disabled.
 
 Collect four weeks of baseline data before judging the funnel. Maker's Road,
 the Engineering Ridge workshop, App Garden activation, and Presence remain

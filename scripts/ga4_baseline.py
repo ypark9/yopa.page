@@ -30,6 +30,12 @@ class ReportSpec:
 
 REPORTS = (
     ReportSpec(
+        "totals",
+        (),
+        ("sessions", "activeUsers", "screenPageViews"),
+        limit=1,
+    ),
+    ReportSpec(
         "acquisition",
         ("sessionDefaultChannelGroup", "landingPagePlusQueryString"),
         ("sessions", "activeUsers", "newUsers", "engagedSessions", "engagementRate", "averageSessionDuration"),
@@ -148,7 +154,16 @@ def write_outputs(payload: dict, output_dir: Path) -> None:
         summary.extend([f"## {name.replace('_', ' ').title()}", ""])
         for period_name, report in periods_data.items():
             rows = report["rows"]
-            summary.append(f"- {period_name}: {len(rows)} aggregate rows; sampled={str(report['sampled']).lower()}")
+            if name == "totals" and rows:
+                totals = rows[0]
+                summary.append(
+                    f"- {period_name}: sessions={totals['sessions']}; "
+                    f"activeUsers={totals['activeUsers']}; "
+                    f"screenPageViews={totals['screenPageViews']}; "
+                    f"sampled={str(report['sampled']).lower()}"
+                )
+            else:
+                summary.append(f"- {period_name}: {len(rows)} aggregate rows; sampled={str(report['sampled']).lower()}")
             csv_path = output_dir / f"{name}-{period_name}.csv"
             if rows:
                 with csv_path.open("w", newline="") as stream:

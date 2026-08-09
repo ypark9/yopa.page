@@ -40,9 +40,15 @@ class AtlasGrowthTests(unittest.TestCase):
         self.assertFalse({"userPseudoId", "userId", "city", "sessionId"} & dimensions)
         self.assertEqual(
             {report.name for report in self.analytics.REPORTS},
-            {"acquisition", "content_language", "atlas_discovery", "growth_funnel"},
+            {"totals", "acquisition", "content_language", "atlas_discovery", "growth_funnel"},
         )
         self.assertTrue(all(report.allowed_hosts == ("www.yopa.page", "yopa.page") for report in self.analytics.REPORTS))
+
+    def test_totals_report_matches_ga_ui_overview_metrics(self):
+        totals = next(report for report in self.analytics.REPORTS if report.name == "totals")
+        self.assertEqual(totals.dimensions, ())
+        self.assertEqual(totals.metrics, ("sessions", "activeUsers", "screenPageViews"))
+        self.assertEqual(totals.limit, 1)
 
     def test_growth_funnel_includes_only_anonymous_confirmation_pages(self):
         funnel = next(report for report in self.analytics.REPORTS if report.name == "growth_funnel")
@@ -74,10 +80,10 @@ class AtlasGrowthTests(unittest.TestCase):
             self.analytics.write_outputs(payload, output_dir)
             self.assertFalse(stale.exists())
 
-    def test_dispatch_urls_remain_fail_closed_until_owner_acceptance(self):
+    def test_dispatch_urls_are_enabled_after_owner_acceptance(self):
         config = (ROOT / "config.yaml").read_text()
         dispatch = config.split("fieldDispatch:", 1)[1].split("socialOptions:", 1)[0]
-        self.assertEqual(dispatch.count("enabled: false"), 2)
+        self.assertEqual(dispatch.count("enabled: true"), 2)
         self.assertIn('subscribeUrl: "https://yopapage.beehiiv.com/"', dispatch)
         self.assertIn(
             'subscribeUrl: "https://yopa-field-dispatch-ko.beehiiv.com/"', dispatch
