@@ -18,6 +18,7 @@ class CopyAiButtonTests(unittest.TestCase):
         self.assertIn('data-error-label="{{ $copyFailedLabel }}"', template)
         self.assertIn('aria-live="polite"', template)
         self.assertIn('AI용으로 복사', template)
+        self.assertGreaterEqual(template.count('if eq .Section "blog"'), 2)
         self.assertNotIn("📋", template)
 
     def test_assets_only_load_for_blog_pages(self):
