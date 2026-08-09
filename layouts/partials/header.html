@@ -1,0 +1,28 @@
+<nav class="navbar" aria-label="{{ if eq .Language.Lang "ko" }}주요 메뉴{{ else }}Primary navigation{{ end }}">
+    <div class="container">
+        <div class="navbar-row flex">
+            <a class="brand" href="{{ relLangURL "/" }}" aria-label="{{ .Site.Title }} — {{ if eq .Language.Lang "ko" }}홈{{ else }}Home{{ end }}">
+                {{ with .Site.Params.titleEmoji }}
+                <span class="emoji" aria-hidden="true">{{ . }}</span>
+                {{ end }}
+                {{ with .Site.Params.titleLogo }}
+                <img src="{{ . | relURL }}" alt="" width="26" height="26" />
+                {{ end }}
+                <span class="brand-label">{{ .Site.Title }}</span>
+            </a>
+            <div class="navbar-actions flex">
+                <div class="navbar-links flex">
+                    {{ range .Site.Menus.header }}
+                    <a href="{{ .URL | relLangURL }}"{{ if eq (.URL | relLangURL) $.RelPermalink }} aria-current="page"{{ end }}>{{ .Pre }}{{ .Name }}{{ .Post }}</a>
+                    {{ end }}
+                </div>
+                {{ if (default true .Site.Params.colorScheme.toggle) }}
+                <button id="dark-mode-button" type="button" aria-label="{{ if eq .Language.Lang "ko" }}색상 모드 전환{{ else }}Toggle color scheme{{ end }}">
+                    {{ (resources.Get "icons/light.svg").Content | safeHTML }}
+                    {{ (resources.Get "icons/dark.svg").Content | safeHTML }}
+                </button>
+                {{ end }}
+            </div>
+        </div>
+    </div>
+</nav>

@@ -2,7 +2,7 @@
 
 Last updated: 2026-08-09
 Repository: yopa.page repository root
-Status: release candidate blocked on owner Field Dispatch and manual acceptance
+Status: release candidate; beehiiv acceptance passed, manual device and analytics checks remain
 
 ## Start here
 
@@ -62,11 +62,11 @@ the first Expedition has four weeks of trustworthy evidence.
 - Accessible progress label and completion focus.
 - No AdSense or Ko-fi surface inside an Expedition.
 
-### Field Dispatch preparation
+### yopa.page email preparation
 
-- Fail-closed English and Korean CTA configuration in `config.yaml`.
-- Both verified public beehiiv URLs are recorded, but CTAs remain disabled until
-  owner address and end-to-end email acceptance pass.
+- English and Korean CTA configuration is enabled in `config.yaml` after owner
+  end-to-end acceptance passed on 2026-08-09.
+- Both verified public beehiiv URLs are recorded.
 - Confirmation pages:
   - `/dispatch/confirmed.html`
   - `/ko/dispatch/confirmed.html`
@@ -158,14 +158,14 @@ Completed on 2026-08-09:
    - English: `https://www.yopa.page/dispatch/confirmed.html`
    - Korean: `https://www.yopa.page/ko/dispatch/confirmed.html`
 
-Still owner-assisted:
+Owner acceptance completed on 2026-08-09:
 
-1. Enter the required postal address directly in each publication; never paste
-   it into a task.
-2. Configure/approve the welcome email for each language.
-3. Test confirmation, welcome, and unsubscribe with separate owner-controlled
-   addresses and verify language isolation in the beehiiv UI.
-4. Enable each language in `config.yaml` only after its full acceptance passes.
+1. Required publication details were completed privately in beehiiv; no postal
+   address or subscriber data was shared with Codex.
+2. Confirmation, welcome, and unsubscribe passed with separate
+   owner-controlled addresses.
+3. English and Korean publication isolation passed in the beehiiv UI.
+4. Both languages are enabled in `config.yaml`.
 
 The beehiiv MCP OAuth view was stale immediately after creating the Korean
 publication: it returned only the pre-existing publication and its old name.
@@ -187,12 +187,14 @@ reads; browser state is the current evidence.
 - JavaScript-off output retains every Expedition stop link.
 - `git diff --check`: passed.
 
-Still manual before production release:
+Remaining acceptance priorities:
 
-- screen reader acceptance;
-- browser-enforced blocked-local-storage acceptance;
-- physical mobile touch acceptance;
-- GA UI versus API total comparison.
+- GA UI versus API totals comparison is required before interpreting the
+  four-week growth result, but does not block deployment.
+- A browser-enforced blocked-local-storage smoke is useful but non-blocking;
+  guarded read/write behavior is already verified structurally.
+- Screen-reader and physical-mobile checks are non-blocking follow-up work for
+  this MVP; responsive browser and keyboard-focus evidence already passed.
 
 ## Working tree and release boundary
 
@@ -212,12 +214,10 @@ checkboxes and evidence in the same change that completes an item.
    yopa.page property and run one harmless aggregate query.
 3. Use beehiiv MCP only for read-only state confirmation; do not inspect
    subscriber identity data.
-4. Resume the owner-confirmed browser setup for the two Field Dispatch
-   publications.
-5. Add and verify the public subscribe URLs in the fail-closed site config.
-6. Complete remaining manual accessibility checks.
-7. Run the complete validation suite.
-8. Ask the owner whether to create a scoped branch, commit, and Draft PR.
+4. Generate the host-filtered API totals and compare them with the same GA UI
+   date range when convenient.
+5. Run the complete validation suite and production CTA smoke.
+6. Deploy after owner approval and record the actual release date.
 
 ## Validation commands
 

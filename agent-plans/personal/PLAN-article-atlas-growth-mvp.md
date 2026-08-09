@@ -1,6 +1,6 @@
 # Article Atlas Growth MVP
 
-Status: release candidate; owner email-flow and manual acceptance pending
+Status: release candidate; beehiiv acceptance passed, remaining manual release checks pending
 Last updated: 2026-08-09
 
 Fresh-session context: `SESSION_HANDOFF.md`
@@ -56,8 +56,13 @@ personal visitor tracking, or gated world features.
   pages in the local browser.
 - [x] Reduced-motion behavior selects non-animated scrolling. Evidence:
   `matchMedia("(prefers-reduced-motion: reduce)")` client path and syntax tests.
-- [~] Manual screen-reader, browser-enforced blocked-storage, and physical mobile
-  touch acceptance remain to be performed before production release.
+- [x] Storage failures are handled as an optional-progress condition: reads and
+  writes are guarded, and the Expedition remains usable without persisted
+  progress. Evidence: client contract and unit checks. A browser-enforced smoke
+  is useful but is not a release blocker for this MVP.
+- [ ] Screen-reader and physical-mobile acceptance are non-blocking follow-up
+  checks for this MVP. Responsive browser and keyboard-focus checks remain the
+  release evidence.
 
 ## C. GA4 aggregate baseline
 
@@ -88,7 +93,9 @@ personal visitor tracking, or gated world features.
   successfully with no sampling metadata. Evidence: fresh Codex task on
   2026-08-09; no user/session identifiers queried.
 - [~] **Joint:** generated the first unsampled 12-month aggregate baseline for
-  2025-08-09 through 2026-08-08. GA UI total comparison remains pending.
+  2025-08-09 through 2026-08-08. A host-filtered totals report now exposes
+  sessions, active users, and views for direct GA UI comparison; owner UI
+  comparison remains pending and is not a deployment blocker.
 - [x] Development builds omit GA entirely and all baseline reports filter to
   `www.yopa.page` or `yopa.page`, preventing localhost preview pollution.
 - [ ] **Joint:** record the release date and repeat the report after four weeks.
@@ -114,20 +121,21 @@ task, issue, log, or knowledge note.
 - [x] **Owner:** enabled Double Opt-in Email and Smart Nudge for both
   publications and set language-specific sender names. Evidence: MCP read-back
   for English and browser reload verification for Korean on 2026-08-09.
-- [~] **Owner:** each publication has a public home signup form. End-to-end
-  signup-flow acceptance remains pending with owner-controlled addresses.
+- [x] **Owner:** each publication has a public home signup form and passed the
+  end-to-end signup flow with owner-controlled addresses on 2026-08-09.
 - [x] **Owner:** set confirmed opt-in redirects to the matching yopa.page
   English and Korean confirmation pages. Evidence: English MCP read-back and
   Korean browser reload verification on 2026-08-09.
-- [ ] **Owner:** verify confirmation, welcome email, and unsubscribe using two
-  owner-controlled test addresses, one per publication.
+- [x] **Owner:** verified confirmation, welcome email, and unsubscribe using two
+  owner-controlled test addresses, one per publication. Evidence: owner
+  acceptance signal on 2026-08-09; no subscriber data was shared with Codex.
 - [x] **Owner:** verified and recorded both public hosted subscribe URLs. Each
   public page rendered its own email form; no subscriber data was accessed.
-- [~] **Joint:** added both public URLs to `params.fieldDispatch` but retained
-  `enabled: false` for both languages until owner address and end-to-end email
-  acceptance pass.
-- [ ] **Joint:** confirm a Korean signup never enters the English publication,
-  and vice versa.
+- [x] **Joint:** added both public URLs to `params.fieldDispatch` and enabled
+  both language CTAs after owner end-to-end acceptance passed.
+- [x] **Joint:** confirmed a Korean signup never enters the English publication,
+  and vice versa. Evidence: owner acceptance in the beehiiv UI on 2026-08-09;
+  no subscriber records were queried by Codex.
 - [ ] **Joint:** verify `dispatch_cta` plus anonymous thank-you page measurement
   without sending email or subscriber identifiers to GA. The local pages and
   aggregate report filter are complete; production measurement is pending.

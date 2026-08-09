@@ -1,0 +1,75 @@
+.navbar-row,
+.navbar-actions,
+.navbar-links {
+  min-width: 0;
+}
+
+.navbar-actions {
+  justify-content: flex-end;
+}
+
+.navbar-links a {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 499px) {
+  .navbar {
+    padding-inline: 0;
+  }
+
+  .navbar .container {
+    padding-inline: .65rem;
+  }
+
+  .navbar .brand {
+    flex: 0 0 auto;
+    margin-left: 0;
+    padding-inline: .2rem;
+  }
+
+  .navbar .brand-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .navbar .brand img {
+    margin: 0;
+  }
+
+  .navbar-actions {
+    flex: 1 1 auto;
+  }
+
+  .navbar-links {
+    justify-content: flex-end;
+  }
+
+  .navbar-links a {
+    margin: 0;
+    padding: .45rem .28rem;
+    font-size: clamp(.7rem, 3.3vw, .85rem);
+  }
+
+  .navbar button {
+    flex: 0 0 auto;
+    margin-right: 0;
+    padding: .35rem .25rem;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .navbar .container {
+    padding-inline: .35rem;
+  }
+
+  .navbar-links a {
+    padding-inline: .2rem;
+  }
+}
