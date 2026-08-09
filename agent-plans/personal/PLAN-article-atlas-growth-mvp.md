@@ -1,6 +1,6 @@
 # Article Atlas Growth MVP
 
-Status: release candidate; beehiiv publication setup pending
+Status: release candidate; owner email-flow and manual acceptance pending
 Last updated: 2026-08-09
 
 Fresh-session context: `SESSION_HANDOFF.md`
@@ -83,8 +83,10 @@ personal visitor tracking, or gated world features.
 - [x] **Joint:** installed `analytics-mcp` 0.7.0 with `pipx` and configured the
   local Codex client through an ignored credential wrapper. A new Codex task
   may be required before the server appears as a tool.
-- [ ] **Joint:** verify the MCP can see only the intended yopa.page property and
-  use only aggregate `run_report`/`run_funnel_report` queries for this MVP.
+- [x] **Joint:** verified the MCP sees only the intended yopa.page property with
+  `can_edit: false`; a host-filtered seven-day aggregate `run_report` returned
+  successfully with no sampling metadata. Evidence: fresh Codex task on
+  2026-08-09; no user/session identifiers queried.
 - [~] **Joint:** generated the first unsampled 12-month aggregate baseline for
   2025-08-09 through 2026-08-08. GA UI total comparison remains pending.
 - [x] Development builds omit GA entirely and all baseline reports filter to
@@ -99,25 +101,31 @@ task, issue, log, or knowledge note.
 - [x] beehiiv remote MCP is registered and OAuth-authorized in the local Codex
   client. Evidence: `codex mcp get beehiiv` reports the streamable HTTP endpoint
   enabled and the login command completed successfully.
-- [ ] **Joint:** verify beehiiv MCP tools in a fresh Codex task. Keep Atlas use
-  aggregate-only; do not retrieve subscriber email addresses, custom fields, or
-  individual subscriber records.
-- [ ] **Owner:** create `Field Dispatch — English` as a separate beehiiv
-  publication.
-- [ ] **Owner:** create `Field Dispatch — 한국어` as a separate beehiiv
-  publication.
-- [ ] **Owner:** for each publication, enable Double Opt-in Email under
-  `Settings → Emails → Preset Emails`; Smart Nudge is optional.
-- [ ] **Owner:** create or publish one signup page per publication and assign a
-  signup flow to its subscribe form.
-- [ ] **Owner:** set the opt-in redirect for each language to that language's
-  Expedition URL, or use a beehiiv confirmation page that links there.
+- [x] **Joint:** verified beehiiv MCP tools in a fresh Codex task by listing the
+  accessible publication and reading publication-level settings. Evidence:
+  successful read-only calls on 2026-08-09; no subscriber email addresses,
+  custom fields, or individual subscriber records retrieved.
+- [x] **Owner:** reused the existing publication as
+  `Field Dispatch — English`, preserving its public URL. Evidence: MCP settings
+  write and read-back on 2026-08-09.
+- [x] **Owner:** created `Field Dispatch — 한국어` at the approved
+  `yopa-field-dispatch-ko` subdomain. Evidence: browser creation and public-page
+  verification on 2026-08-09.
+- [x] **Owner:** enabled Double Opt-in Email and Smart Nudge for both
+  publications and set language-specific sender names. Evidence: MCP read-back
+  for English and browser reload verification for Korean on 2026-08-09.
+- [~] **Owner:** each publication has a public home signup form. End-to-end
+  signup-flow acceptance remains pending with owner-controlled addresses.
+- [x] **Owner:** set confirmed opt-in redirects to the matching yopa.page
+  English and Korean confirmation pages. Evidence: English MCP read-back and
+  Korean browser reload verification on 2026-08-09.
 - [ ] **Owner:** verify confirmation, welcome email, and unsubscribe using two
   owner-controlled test addresses, one per publication.
-- [ ] **Owner:** copy the two public hosted subscribe URLs. These URLs are public
-  configuration and may be shared; subscriber data must not be shared.
-- [ ] **Joint:** add each verified URL to `params.fieldDispatch` and enable only
-  that language.
+- [x] **Owner:** verified and recorded both public hosted subscribe URLs. Each
+  public page rendered its own email form; no subscriber data was accessed.
+- [~] **Joint:** added both public URLs to `params.fieldDispatch` but retained
+  `enabled: false` for both languages until owner address and end-to-end email
+  acceptance pass.
 - [ ] **Joint:** confirm a Korean signup never enters the English publication,
   and vice versa.
 - [ ] **Joint:** verify `dispatch_cta` plus anonymous thank-you page measurement
@@ -135,9 +143,12 @@ subscribe URLs. Do not send subscriber exports or account credentials.
 - [x] JavaScript syntax checks pass.
 - [x] Frontmatter validation passes for 306 articles.
 - [x] Expedition validation passes.
-- [x] Unit suite passes: 63 tests.
-- [x] Hugo production build passes: EN 956 pages, KO 407 pages.
-- [x] `git diff --check` passes.
+- [x] Unit suite passes: 66 tests. Evidence: full discovery run on 2026-08-09.
+- [x] Hugo production build passes: EN 956 pages, KO 408 pages. Evidence:
+  Hugo 0.155.1 production build on 2026-08-09.
+- [x] Development HTML omits GA while production HTML includes it. Evidence:
+  isolated destination builds and exact Google-tag scan on 2026-08-09.
+- [x] `git diff --check` passes. Evidence: 2026-08-09 release-candidate run.
 - [ ] Create a scoped branch, commit, and Draft PR after owner approval.
 - [ ] Deploy the MVP after checks and manual acceptance pass.
 - [ ] Collect four weeks of baseline data.

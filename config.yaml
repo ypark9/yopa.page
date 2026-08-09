@@ -62,14 +62,15 @@ params:
   articleAtlasSupportUrl: "https://ko-fi.com/yoonsoopark"
   adSensePublisherId: "ca-pub-3902057519310243"
   articleAdSlot: "5207040273"
-  # Fail closed until the owner verifies both beehiiv publications.
+  # Public URLs are recorded, but CTAs fail closed until the owner completes
+  # address, confirmation, welcome, unsubscribe, and language-isolation checks.
   fieldDispatch:
     en:
       enabled: false
-      subscribeUrl: ""
+      subscribeUrl: "https://yopapage.beehiiv.com/"
     ko:
       enabled: false
-      subscribeUrl: ""
+      subscribeUrl: "https://yopa-field-dispatch-ko.beehiiv.com/"
   socialOptions:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/yopa.page

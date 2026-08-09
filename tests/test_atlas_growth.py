@@ -74,11 +74,14 @@ class AtlasGrowthTests(unittest.TestCase):
             self.analytics.write_outputs(payload, output_dir)
             self.assertFalse(stale.exists())
 
-    def test_dispatch_is_fail_closed_without_owner_configuration(self):
+    def test_dispatch_urls_remain_fail_closed_until_owner_acceptance(self):
         config = (ROOT / "config.yaml").read_text()
         dispatch = config.split("fieldDispatch:", 1)[1].split("socialOptions:", 1)[0]
         self.assertEqual(dispatch.count("enabled: false"), 2)
-        self.assertEqual(dispatch.count('subscribeUrl: ""'), 2)
+        self.assertIn('subscribeUrl: "https://yopapage.beehiiv.com/"', dispatch)
+        self.assertIn(
+            'subscribeUrl: "https://yopa-field-dispatch-ko.beehiiv.com/"', dispatch
+        )
 
     def test_presence_remains_disabled(self):
         self.assertIn("articleAtlasPresenceEnabled: false", (ROOT / "config.yaml").read_text())

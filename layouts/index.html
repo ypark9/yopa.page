@@ -34,23 +34,31 @@
 
 <div class="container">
     <section class="atlas-purpose" aria-labelledby="atlas-purpose-title">
-        <span class="atlas-kicker">{{ if eq .Language.Lang "ko" }}살아 있는 실무 지식 지도{{ else }}A living map of practical engineering knowledge{{ end }}</span>
-        <h1 id="atlas-purpose-title">{{ if eq .Language.Lang "ko" }}문제를 해결하고, 판단의 근거를 따라가고, 다음 배움을 발견하세요.{{ else }}Solve a problem, follow the evidence, and discover what comes next.{{ end }}</h1>
+        <span class="atlas-kicker">{{ if eq .Language.Lang "ko" }}실무에서 쌓아 올린 지식 지도{{ else }}A living map of practical engineering knowledge{{ end }}</span>
+        <h1 id="atlas-purpose-title">
+            {{ if eq .Language.Lang "ko" }}
+            <span>막힌 문제를 풀고, 판단의 맥락을 따라가며</span>
+            <span>다음 배움을 찾으세요.</span>
+            {{ else }}
+            <span>Solve a problem. Follow the evidence.</span>
+            <span>Find what comes next.</span>
+            {{ end }}
+        </h1>
         <div class="atlas-purpose-grid">
             <article class="atlas-entry">
-                <h3>{{ if eq .Language.Lang "ko" }}문제 해결하기{{ else }}Solve a problem{{ end }}</h3>
-                <p>{{ if eq .Language.Lang "ko" }}AI Agent를 prototype에서 안전한 운영 환경으로 옮기는 첫 Expedition입니다.{{ else }}Take the first expedition from an agent prototype to a safely operated system.{{ end }}</p>
-                <a href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}Expedition 시작 →{{ else }}Start the expedition →{{ end }}</a>
+                <h3>{{ if eq .Language.Lang "ko" }}AI 에이전트 운영{{ else }}Solve a problem{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}프로토타입을 실제 운영 환경으로 옮길 때 무엇을 확인해야 하는지, 다섯 편의 글을 따라 살펴봅니다.{{ else }}Follow five field notes from an agent prototype to a system that can be operated safely.{{ end }}</p>
+                <a href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}첫 Expedition 시작 →{{ else }}Start the expedition →{{ end }}</a>
             </article>
             <article class="atlas-entry">
-                <h3>{{ if eq .Language.Lang "ko" }}지금 배우는 것{{ else }}See what I am learning{{ end }}</h3>
-                <p>{{ if eq .Language.Lang "ko" }}새 글뿐 아니라 검증하고 수정한 판단까지 최근 기록에서 확인하세요.{{ else }}See recent field notes, including what was verified, revised, or retired.{{ end }}</p>
-                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 기록 보기 →{{ else }}Read recent field notes →{{ end }}</a>
+                <h3>{{ if eq .Language.Lang "ko" }}최근에 배운 것{{ else }}See what I am learning{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}새로 확인한 사실, 고쳐 쓴 판단, 더는 유효하지 않은 접근을 최근 기록에서 확인하세요.{{ else }}See what I verified, revised, or retired in the latest field notes.{{ end }}</p>
+                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 기록 읽기 →{{ else }}Read recent field notes →{{ end }}</a>
             </article>
             <article class="atlas-entry">
-                <h3>{{ if eq .Language.Lang "ko" }}Atlas 탐험하기{{ else }}Explore the Atlas{{ end }}</h3>
-                <p>{{ if eq .Language.Lang "ko" }}글과 실무 판단이 어떻게 하나의 세계에서 연결되는지 탐험하세요.{{ else }}Wander through the world connecting articles, decisions, and working systems.{{ end }}</p>
-                <a href="{{ "explore/" | relURL }}">{{ if eq .Language.Lang "ko" }}세계로 들어가기 →{{ else }}Enter the world →{{ end }}</a>
+                <h3>{{ if eq .Language.Lang "ko" }}Article Atlas 둘러보기{{ else }}Explore the Atlas{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}글과 프로젝트, 그 과정에서 내린 판단이 서로 어떻게 이어지는지 지도에서 살펴보세요.{{ else }}Explore how articles, projects, and the decisions behind them connect.{{ end }}</p>
+                <a href="{{ "explore/" | relURL }}">{{ if eq .Language.Lang "ko" }}Atlas 들어가기 →{{ else }}Enter the Atlas →{{ end }}</a>
             </article>
         </div>
     </section>

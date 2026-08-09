@@ -2,7 +2,7 @@
 
 Last updated: 2026-08-09
 Repository: yopa.page repository root
-Status: release candidate in an uncommitted working tree
+Status: release candidate blocked on owner Field Dispatch and manual acceptance
 
 ## Start here
 
@@ -65,7 +65,8 @@ the first Expedition has four weeks of trustworthy evidence.
 ### Field Dispatch preparation
 
 - Fail-closed English and Korean CTA configuration in `config.yaml`.
-- CTA remains hidden until each public beehiiv URL is verified.
+- Both verified public beehiiv URLs are recorded, but CTAs remain disabled until
+  owner address and end-to-end email acceptance pass.
 - Confirmation pages:
   - `/dispatch/confirmed.html`
   - `/ko/dispatch/confirmed.html`
@@ -144,45 +145,39 @@ system browser. The Codex in-app browser may lose the localhost OAuth callback.
 
 ## beehiiv account state and next owner-assisted work
 
-Observed before the MCP detour:
+Completed on 2026-08-09:
 
-- One existing publication named `yopa.page`.
-- Launch plan, 2,500-subscriber limit.
-- Double opt-in off.
-- Smart Nudge off.
-- Welcome email not configured.
-- Email footer address reports `No Address Set`.
-
-No publication or email setting was changed.
-
-Recommended configuration, still awaiting execution:
-
-1. Reuse and rename `yopa.page` to `Field Dispatch — English`.
-2. Create `Field Dispatch — 한국어` with subdomain
-   `yopa-field-dispatch-ko`.
-3. Enable Double opt-in for both publications.
-4. Enable Smart Nudge for both publications.
-5. Set sender names by language.
-6. Configure signup flows and public subscribe pages.
-7. Set confirmed opt-in redirects:
+- Reused and renamed `yopa.page` to `Field Dispatch — English`; preserved
+  `https://yopapage.beehiiv.com/`.
+- Created `Field Dispatch — 한국어` at
+  `https://yopa-field-dispatch-ko.beehiiv.com/`.
+- Enabled Double opt-in and Smart Nudge for both publications.
+- Set the sender name to the matching publication name.
+- Verified that both public home pages render an email signup form.
+- Set confirmed opt-in redirects:
    - English: `https://www.yopa.page/dispatch/confirmed.html`
    - Korean: `https://www.yopa.page/ko/dispatch/confirmed.html`
-8. The owner must enter the required postal address directly; never ask them to
-   paste that address into a task.
-9. Test confirmation, welcome, and unsubscribe with owner-controlled addresses.
-10. Only after verification, add the two public subscribe URLs to `config.yaml`
-    and enable one language at a time.
 
-The exact browser-side changes proposed earlier were not approved or applied
-before work switched to MCP setup. Confirm the plan with the owner immediately
-before saving account changes.
+Still owner-assisted:
+
+1. Enter the required postal address directly in each publication; never paste
+   it into a task.
+2. Configure/approve the welcome email for each language.
+3. Test confirmation, welcome, and unsubscribe with separate owner-controlled
+   addresses and verify language isolation in the beehiiv UI.
+4. Enable each language in `config.yaml` only after its full acceptance passes.
+
+The beehiiv MCP OAuth view was stale immediately after creating the Korean
+publication: it returned only the pre-existing publication and its old name.
+Refresh or reauthorize the MCP before relying on it for Korean publication
+reads; browser state is the current evidence.
 
 ## Verification already completed
 
 - `python3 scripts/validate_frontmatter.py`: 306 articles passed.
 - `python3 scripts/validate_expeditions.py`: passed.
 - `python3 -m unittest discover -s tests`: 66 tests passed.
-- `hugo --gc --minify`: passed.
+- `hugo --gc --minify`: passed (EN 956 pages, KO 408 pages).
 - Development build contains no Google tag.
 - Production build contains the Google tag.
 - English and Korean mobile browser smoke at 390×844 passed with no horizontal
