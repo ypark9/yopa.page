@@ -17,6 +17,13 @@ tags:
   - Security
   - AWS PrivateLink
   - AWS IAM
+atlas:
+  region: engineering
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 An agent calling another agent is a distributed-system request, not an implicit continuation of user trust. Each hop needs an authenticated workload, an explicit representation of user delegation where required, authorization at the resource, and an auditable decision.

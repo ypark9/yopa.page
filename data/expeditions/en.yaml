@@ -1,0 +1,48 @@
+safe-agent-operations:
+  id: safe-agent-operations
+  title: From Agent Prototype to Safe Operations
+  question: How do you move a promising AI agent into a safely operated system?
+  estimated_minutes: 20
+  stops:
+    - id: define-authority
+      region: Agent Grove
+      evidence: documented
+      title: Define what the agent can actually do
+      purpose: Classify tools, autonomy, state, delegation, and environmental risk before selecting infrastructure.
+      url: /blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html
+    - id: map-boundaries
+      region: Agent Grove
+      evidence: documented
+      title: Map the managed-service boundaries
+      purpose: Separate runtime, identity, gateway, memory, observability, and the controls the application still owns.
+      url: /blog/2026-08-01-agentcore-service-map-and-production-boundaries.html
+    - id: govern-delivery
+      region: Cloud Highlands
+      evidence: documented
+      title: Make deployment reviewable
+      purpose: Turn agent delivery into a deterministic platform workflow with policy, evaluation, approval, and rollback.
+      url: /blog/2026-08-01-build-a-governed-agent-platform-on-aws.html
+    - id: enforce-trust
+      region: Engineering Ridge
+      evidence: documented
+      title: Enforce trust at every hop
+      purpose: Design workload identity, user delegation, narrow authority, audit, and recovery around consequential actions.
+      url: /blog/2026-08-01-zero-trust-agent-systems-on-aws.html
+    - id: prove-recovery
+      region: Archive Harbor
+      evidence: production
+      title: Prove state migration and rollback
+      purpose: Use a real Hermes migration to see why writer shutdown, SQLite validation, single-consumer cutover, and rollback matter.
+      url: /blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+  principles:
+    - Describe authority and risk before calling a system an agent.
+    - Treat managed services as boundaries, not as automatic production readiness.
+    - Make infrastructure changes deterministic, reviewable, and reversible.
+    - Authenticate and authorize every workload and delegated user at each hop.
+    - Test state recovery and cutover behavior with the actual runtime.
+  checklist:
+    - Record the agent's tools, autonomy, state, and maximum consequence.
+    - Separate inbound authentication, workload identity, and tool authorization.
+    - Pin artifacts and require evaluation, approval, observability, and rollback evidence.
+    - Minimize network reach and permissions for every component.
+    - Rehearse backup, restore, writer shutdown, and rollback before migration.

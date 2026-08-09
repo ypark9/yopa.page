@@ -36,6 +36,7 @@ validate: validate-content
 
 validate-content:
 	python3 scripts/validate_frontmatter.py
+	python3 scripts/validate_expeditions.py
 
 plan:
 	@if [ "$(ENV)" = "global" ]; then \

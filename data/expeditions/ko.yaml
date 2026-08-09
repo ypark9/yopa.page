@@ -1,0 +1,48 @@
+safe-agent-operations:
+  id: safe-agent-operations
+  title: Agent Prototype에서 안전한 운영까지
+  question: 가능성 있는 AI Agent를 안전하게 운영되는 시스템으로 어떻게 옮길까?
+  estimated_minutes: 20
+  stops:
+    - id: define-authority
+      region: Agent Grove
+      evidence: documented
+      title: Agent가 실제로 할 수 있는 일을 정의한다
+      purpose: infrastructure를 고르기 전에 tool, autonomy, state, delegation과 환경의 위험을 분류합니다.
+      url: /ko/blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html
+    - id: map-boundaries
+      region: Agent Grove
+      evidence: documented
+      title: Managed service의 경계를 그린다
+      purpose: runtime, identity, gateway, memory, observability와 application이 책임질 통제를 분리합니다.
+      url: /ko/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html
+    - id: govern-delivery
+      region: Cloud Highlands
+      evidence: documented
+      title: 배포를 review 가능한 과정으로 만든다
+      purpose: policy, evaluation, approval과 rollback을 가진 결정론적인 platform workflow로 agent를 전달합니다.
+      url: /ko/blog/2026-08-01-build-a-governed-agent-platform-on-aws.html
+    - id: enforce-trust
+      region: Engineering Ridge
+      evidence: documented
+      title: 모든 hop에서 trust를 강제한다
+      purpose: 중요한 action을 중심으로 workload identity, 사용자 delegation, 좁은 권한, audit와 recovery를 설계합니다.
+      url: /ko/blog/2026-08-01-zero-trust-agent-systems-on-aws.html
+    - id: prove-recovery
+      region: Archive Harbor
+      evidence: production
+      title: 상태 이전과 rollback을 증명한다
+      purpose: 실제 Hermes 이전에서 writer shutdown, SQLite 검증, single-consumer cutover와 rollback이 필요한 이유를 확인합니다.
+      url: /ko/blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+  principles:
+    - 시스템을 agent라고 부르기 전에 권한과 위험을 기술한다.
+    - managed service를 자동 production readiness가 아니라 명시적인 경계로 다룬다.
+    - infrastructure 변경은 결정론적이고 review 가능하며 되돌릴 수 있게 만든다.
+    - 매 hop에서 workload와 delegated user를 인증하고 승인한다.
+    - 실제 runtime으로 state recovery와 cutover를 시험한다.
+  checklist:
+    - Agent의 tool, autonomy, state와 최대 피해 범위를 기록한다.
+    - inbound authentication, workload identity와 tool authorization을 분리한다.
+    - artifact를 고정하고 evaluation, approval, observability와 rollback 증거를 요구한다.
+    - 모든 component의 network reach와 permission을 최소화한다.
+    - migration 전에 backup, restore, writer shutdown과 rollback을 연습한다.

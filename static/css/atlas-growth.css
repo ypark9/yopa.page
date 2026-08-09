@@ -1,0 +1,24 @@
+.atlas-purpose { margin: 2.5rem 0; padding: 1.5rem; border: 2px solid var(--border-color, #d8d8d8); border-radius: 18px; background: rgba(117,184,42,.08); }
+.atlas-purpose h1, .atlas-purpose h2, .atlas-entry h3, .field-dispatch h2 { margin-top: .35rem; }
+.atlas-purpose-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; margin-top: 1.25rem; }
+.atlas-entry { display: flex; flex-direction: column; padding: 1.1rem; border: 1px solid var(--border-color, #d8d8d8); border-radius: 14px; background: var(--background-color, #fff); }
+.atlas-entry p { flex: 1; }
+.atlas-entry a, .atlas-primary-action { font-weight: 750; }
+.atlas-kicker { color: #568b68; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.field-dispatch { margin: 2.5rem 0; padding: 1.5rem; border: 2px solid #568b68; border-radius: 18px; }
+.atlas-primary-action { display: inline-block; margin-top: .5rem; padding: .75rem 1rem; border: 0; border-radius: 10px; background: #568b68; color: #fff !important; cursor: pointer; font: inherit; text-decoration: none; }
+.atlas-primary-action:focus-visible, .expedition-mark:focus-visible { outline: 3px solid #f0a44b; outline-offset: 3px; }
+.article-expedition-cta { margin: 1.75rem 0; padding: 1rem 1.2rem; border-left: 5px solid #75b82a; background: rgba(117,184,42,.08); }
+.expedition-shell { max-width: 860px; margin: 0 auto; padding: 1rem; }
+.expedition-intro { margin: 2rem 0; padding: 1.5rem; border-radius: 18px; background: rgba(89,197,197,.12); }
+.expedition-progress { width: 100%; height: .75rem; }
+.expedition-stops { list-style: none; padding: 0; }
+.expedition-stop { margin: 1rem 0; padding: 1.2rem; border: 1px solid var(--border-color, #d8d8d8); border-radius: 14px; }
+.expedition-stop[data-complete="true"] { border-color: #568b68; background: rgba(117,184,42,.08); }
+.expedition-stop-meta { display: flex; flex-wrap: wrap; gap: .45rem; font-size: .8rem; }
+.expedition-stop-meta span { padding: .2rem .5rem; border-radius: 999px; background: rgba(102,56,47,.09); }
+.expedition-stop-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: .75rem; }
+.expedition-complete { margin: 2rem 0; padding: 1.5rem; border: 2px solid #568b68; border-radius: 18px; }
+.dispatch-confirmed-shell { max-width: 760px; margin: 0 auto; padding: 2rem 1rem; }
+.dispatch-confirmed { padding: 2rem; border: 2px solid #568b68; border-radius: 18px; background: rgba(117,184,42,.08); }
+@media (max-width: 720px) { .atlas-purpose-grid { grid-template-columns: 1fr; } }

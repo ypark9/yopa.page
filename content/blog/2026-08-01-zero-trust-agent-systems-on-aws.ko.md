@@ -17,6 +17,13 @@ tags:
   - Security
   - AWS PrivateLink
   - AWS IAM
+atlas:
+  region: engineering
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 agent가 다른 agent를 호출하는 것은 사용자 trust가 자동으로 이어지는 일이 아니라 distributed-system request다. 모든 hop에는 인증된 workload, 필요한 경우 명시적인 사용자 delegation, resource에서의 authorization과 감사 가능한 결정이 필요하다.

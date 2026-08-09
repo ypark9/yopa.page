@@ -14,6 +14,13 @@ tags:
   - Docker Compose
   - SQLite
   - Slack Bot
+atlas:
+  region: archive
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: production
+  era: current
 ---
 
 In an earlier post, I deployed Hermes Agent on ECS Fargate and kept its state on EFS. It worked well: the Slack bot stayed online, and replacing a container did not erase conversations or memory.

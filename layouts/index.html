@@ -33,11 +33,33 @@
 {{ $archivesPage := first 1 (where .Site.RegularPages "Layout" "eq" "archives") }}
 
 <div class="container">
+    <section class="atlas-purpose" aria-labelledby="atlas-purpose-title">
+        <span class="atlas-kicker">{{ if eq .Language.Lang "ko" }}살아 있는 실무 지식 지도{{ else }}A living map of practical engineering knowledge{{ end }}</span>
+        <h1 id="atlas-purpose-title">{{ if eq .Language.Lang "ko" }}문제를 해결하고, 판단의 근거를 따라가고, 다음 배움을 발견하세요.{{ else }}Solve a problem, follow the evidence, and discover what comes next.{{ end }}</h1>
+        <div class="atlas-purpose-grid">
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}문제 해결하기{{ else }}Solve a problem{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}AI Agent를 prototype에서 안전한 운영 환경으로 옮기는 첫 Expedition입니다.{{ else }}Take the first expedition from an agent prototype to a safely operated system.{{ end }}</p>
+                <a href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}Expedition 시작 →{{ else }}Start the expedition →{{ end }}</a>
+            </article>
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}지금 배우는 것{{ else }}See what I am learning{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}새 글뿐 아니라 검증하고 수정한 판단까지 최근 기록에서 확인하세요.{{ else }}See recent field notes, including what was verified, revised, or retired.{{ end }}</p>
+                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 기록 보기 →{{ else }}Read recent field notes →{{ end }}</a>
+            </article>
+            <article class="atlas-entry">
+                <h3>{{ if eq .Language.Lang "ko" }}Atlas 탐험하기{{ else }}Explore the Atlas{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}글과 실무 판단이 어떻게 하나의 세계에서 연결되는지 탐험하세요.{{ else }}Wander through the world connecting articles, decisions, and working systems.{{ end }}</p>
+                <a href="{{ "explore/" | relURL }}">{{ if eq .Language.Lang "ko" }}세계로 들어가기 →{{ else }}Enter the world →{{ end }}</a>
+            </article>
+        </div>
+    </section>
+    {{ partial "field-dispatch.html" . }}
     <section>
-        <h2>
-            Latest Articles
+        <h2 id="latest-articles">
+            {{ if eq .Language.Lang "ko" }}최근 기록{{ else }}Latest Articles{{ end }}
             {{ range $archivesPage }}
-            <a class="section-button" href="{{ .RelPermalink }}">View all</a>
+            <a class="section-button" href="{{ .RelPermalink }}">{{ if eq $.Language.Lang "ko" }}모두 보기{{ else }}View all{{ end }}</a>
             {{ end }}
         </h2>
         <div class="posts">

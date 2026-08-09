@@ -16,6 +16,13 @@ tags:
   - Security
   - Observability
   - AWS Architecture
+atlas:
+  region: agents
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 Amazon Bedrock AgentCore is a collection of managed capabilities, not an “infrastructure-as-code layer” that automatically makes an agent production-ready. Each service solves a different boundary, exposes separate control- and data-plane APIs, and still requires application authorization, evaluation, cost controls, and recovery design.

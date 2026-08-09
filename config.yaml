@@ -62,6 +62,14 @@ params:
   articleAtlasSupportUrl: "https://ko-fi.com/yoonsoopark"
   adSensePublisherId: "ca-pub-3902057519310243"
   articleAdSlot: "5207040273"
+  # Fail closed until the owner verifies both beehiiv publications.
+  fieldDispatch:
+    en:
+      enabled: false
+      subscribeUrl: ""
+    ko:
+      enabled: false
+      subscribeUrl: ""
   socialOptions:
     email: yoonsoo@duck.com
     github: https://github.com/ypark9/yopa.page
@@ -77,11 +85,15 @@ menu:
       url: "/about.html"
     - name: Articles
       url: "/articles.html"
+    - name: Expeditions
+      url: "/expeditions/safe-agent-operations.html"
   footer:
     - name: About
       url: "/about.html"
     - name: Articles
       url: "/articles.html"
+    - name: Expeditions
+      url: "/expeditions/safe-agent-operations.html"
     - name: GitHub
       url: "https://github.com/ypark9/yopa.page"
     - name: RSS

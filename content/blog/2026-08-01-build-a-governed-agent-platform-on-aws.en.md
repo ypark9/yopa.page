@@ -17,6 +17,13 @@ tags:
   - Security
   - Observability
   - AWS IAM
+atlas:
+  region: cloud
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 An “agent factory” should not mean giving a model broad IAM permissions and asking it to create roles, repositories, images, and runtimes directly. Natural language can propose an agent, but production infrastructure needs a deterministic, reviewable control plane.

@@ -16,6 +16,13 @@ tags:
   - Security
   - Observability
   - AWS Architecture
+atlas:
+  region: agents
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 Amazon Bedrock AgentCore는 agent를 자동으로 production-ready로 만드는 “IaC layer”가 아니라 여러 managed capability의 모음이다. 각 서비스는 다른 경계를 해결하고 별도의 control-plane과 data-plane API를 제공한다. application authorization, evaluation, 비용 통제와 복구 설계는 여전히 필요하다.

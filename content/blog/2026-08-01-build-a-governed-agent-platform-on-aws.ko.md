@@ -17,6 +17,13 @@ tags:
   - Security
   - Observability
   - AWS IAM
+atlas:
+  region: cloud
+  object: field-note
+  journeys:
+    - safe-agent-operations
+  evidence: documented
+  era: current
 ---
 
 “agent factory”는 모델에 넓은 IAM 권한을 주고 role, repository, image, runtime을 직접 만들게 한다는 뜻이어서는 안 된다. 자연어는 agent를 제안할 수 있지만 production infrastructure에는 결정론적이고 review 가능한 control plane이 필요하다.
