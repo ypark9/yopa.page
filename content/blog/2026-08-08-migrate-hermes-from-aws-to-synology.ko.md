@@ -43,41 +43,6 @@ Socket Mode에서는 Hermes가 Slack으로 outbound WebSocket을 먼저 연다. 
 
 [Slack 공식 문서](https://docs.slack.dev/apis/events-api/using-socket-mode/)도 Socket Mode가 공개 HTTP Request URL 없이 Events API를 사용할 수 있는 방식이라고 설명한다. Docker bridge는 기본적으로 outbound traffic을 host 주소로 masquerade하고, 외부 접근은 publish한 port를 통해서만 허용한다. 이번 Compose에는 `ports:`가 없다.
 
-## 한 달 운영비에서 예상하지 못한 것
-
-처음에는 비용의 대부분이 Fargate task와 LLM에서 나올 것으로 생각했다. 실제로 약 한 달을 운영한 뒤 Cost Explorer의 `Usage` line item을 확인해 보니 그림이 달랐다. 가장 비싼 항목은 하나가 아니라 NAT Gateway, Fargate, EFS throughput 세 개였다.
-
-측정 기간은 2026년 7월 4일부터 8월 8일까지다. Hermes가 실제로 동작한 시간은 약 833시간이었다. 아래 금액은 credit을 적용하기 전의 on-demand usage cost이며 센트 단위로 반올림했다.
-
-| 항목 | 사용량 | 비용 |
-|---|---:|---:|
-| NAT Gateway 시간 및 처리량 | 833시간, 약 12.3 GB | 약 $38.04 |
-| ECS Fargate ARM | 833 vCPU-hours, 1,664 GB-hours | 약 $32.92 |
-| EFS Elastic Throughput 데이터 접근 | 약 730.5 GB | 약 $31.97 |
-| EFS 저장 공간 | 평균 1 GB 미만 | 약 $0.14 |
-| NAT용 public IPv4 | 약 833시간 | 약 $4.17 |
-| Secrets Manager | secret 3개 | 약 $1.32 |
-| ECR 저장 공간 | 기간 중 누적 사용량 | 약 $0.34 |
-| EFS backup | 1 GB 미만 | 약 $0.02 |
-| **합계** |  | **약 $108.9** |
-
-S3와 CloudWatch Logs는 이 workload 규모에서는 사실상 반올림 오차 수준이었다. LLM 비용도 이 표에 포함하지 않았다. 당시 Hermes의 기본 provider는 OpenAI Codex였고 AWS Bedrock usage는 $0이었다. OpenAI 구독이나 외부 provider 비용을 AWS 인프라 비용과 섞으면 비교가 오히려 어려워진다.
-
-내 AWS 계정에는 이 기간 promotional credit이 있었다. 계정 전체 Usage는 약 $113.22였고 거의 같은 금액의 credit이 적용되어 실제 현금 청구는 거의 $0이었다. 그렇다고 이 구성이 무료였던 것은 아니다. **개인 agent 하나가 약 $109의 credit을 한 달 남짓 동안 소비했다**고 보는 편이 정확하다. Credit이 끝난 다음 달부터는 같은 구조가 그대로 청구된다.
-
-가장 놀라운 항목은 EFS였다. 저장된 데이터는 마지막 측정에서도 약 924 MB였지만, Elastic Throughput data access는 약 730 GB였다. EFS 비용을 계산할 때 저장 용량만 보면 이 차이를 놓친다. Hermes가 SQLite와 여러 상태 파일을 얼마나 자주 읽고 썼는지 별도 tracing을 하지 않았기 때문에 특정 동작 하나를 원인으로 단정할 수는 없다. 다만 작은 파일 시스템도 반복적인 I/O 패턴에서는 throughput 비용이 저장 비용보다 훨씬 커질 수 있다는 사실은 실제 청구 내역으로 확인했다.
-
-NAT Gateway도 비슷했다. Hermes에는 public inbound endpoint가 없었지만 private subnet에서 Slack과 provider API로 나가기 위해 NAT를 24시간 유지했다. 트래픽이 적어도 시간당 요금은 계속 발생한다. 이번 기간에는 NAT 처리량 요금보다 고정 시간 요금이 압도적으로 컸다.
-
-이 비용표를 다시 본다면 다음 네 가지를 먼저 계산할 것이다.
-
-1. 항상 켜진 task의 vCPU와 memory 시간
-2. private subnet outbound를 위한 NAT와 public IPv4 고정비
-3. 파일 시스템의 저장량뿐 아니라 throughput mode와 data access
-4. credit이 사라진 뒤의 할인 전 비용
-
-[AWS VPC pricing](https://aws.amazon.com/vpc/pricing/), [AWS Fargate pricing](https://aws.amazon.com/fargate/pricing/), [Amazon EFS pricing](https://aws.amazon.com/efs/pricing/), [AWS Secrets Manager pricing](https://aws.amazon.com/secrets-manager/pricing/)에서 현재 단가를 확인할 수 있다. 이 글의 숫자는 내 리전, 실행 시간과 I/O 패턴에 따른 실제 사례이지 모든 Hermes 배포의 고정 가격은 아니다.
-
 ## 먼저 이미지를 고정했다
 
 마이그레이션과 upgrade를 동시에 하면 실패 원인을 나누기 어렵다. 하지만 이번에는 Hermes `0.19.0`에서 `0.20.0`으로 올라가야 했기 때문에 두 변화를 분리된 gate로 다뤘다.
