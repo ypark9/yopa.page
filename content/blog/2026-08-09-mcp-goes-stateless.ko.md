@@ -1,8 +1,8 @@
 ---
-title: "MCP가 Stateless로 바뀐다 (2026-07-28): Host, Client, Server부터 AWS 배포까지"
+title: "MCP가 stateless해진다 (2026-07-28): 호스트·클라이언트·서버와 AWS 배포"
 date: 2026-08-09T09:05:00-04:00
 author: Yoonsoo Park
-description: "2026-07-28 MCP 릴리스 후보는 프로토콜 계층에서 세션을 없앤다. 다들 헷갈려하는 host/client/server 구분부터, 기존 서버에서 뭘 바꿔야 하는지, 그리고 왜 stateless가 AWS AgentCore와 잘 맞는지 정리했다."
+description: "2026-07-28 MCP 릴리스 후보는 프로토콜 계층의 세션을 제거한다. 호스트·클라이언트·서버의 역할, 기존 서버의 마이그레이션 지점, 그리고 stateless 설계가 AWS AgentCore에 잘 맞는 이유를 살펴본다."
 categories:
   - AWS
 tags:
@@ -13,19 +13,19 @@ tags:
   - architecture
 ---
 
-[2026-07-28 MCP 릴리스 후보](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/)는 프로토콜이 나온 이래 가장 큰 변화다. 핵심 한 줄은 이거다. 이제 MCP는 프로토콜 계층에서 stateless다. 예전에는 sticky session, 공유 session store, 그리고 요청 본문까지 뜯어보는 gateway가 있어야 돌던 원격 서버가, 이제는 그냥 평범한 round-robin load balancer 뒤에 앉아도 된다.
+[2026-07-28 MCP 릴리스 후보](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/)의 핵심은 프로토콜 계층에서 세션을 없앤다는 데 있다. 이제 원격 MCP 서버는 sticky session이나 공유 세션 저장소 없이도 일반적인 round-robin 로드 밸런서 뒤에서 동작할 수 있다. 게이트웨이가 요청 본문을 들여다보며 연결을 유지할 이유도 줄어든다.
 
-transport 변화로 들어가기 전에, 사람들이 제일 먼저 묻는 걸 짚고 가자. host, client, server가 정확히 뭐냐는 질문이다.
+전송 방식의 변화를 보기 전에, 먼저 자주 혼동되는 host, client, server의 역할부터 정리해 보자.
 
-## Host, client, server 3분 정리
+## Host, client, server의 역할
 
-이 셋은 정말 자주 뒤섞인다. 대부분 "그래서 Claude는 뭔데?"에서 막힌다.
+MCP를 설명하다 보면 결국 “그럼 Claude는 무엇인가?”라는 질문으로 돌아온다. 세 구성 요소는 다음처럼 나누면 이해하기 쉽다.
 
-- **Host**는 LLM 앱 그 자체다. Claude Desktop, Cursor, ChatGPT, 아니면 AgentCore Runtime 위에서 도는 에이전트. 사용자와 모델이 사는 곳이고, client를 하나 이상 소유한다.
-- **Client**는 host 안에 들어 있는 커넥터다. server 하나당 client 하나. JSON-RPC 프로토콜을 말하고 `tools/list`, `tools/call` 같은 걸 날린다. host가 GitHub server랑 Slack server에 붙으면 client가 2개 생긴다. 사용자 눈에는 안 보인다.
-- **Server**는 실제 능력을 노출하는 프로세스다. tool, resource, prompt. GitHub MCP server는 `create_issue()`, `search_repos()` 같은 함수를 tool 스펙으로 광고하는 바로 그것이다.
+- **Host**는 LLM 애플리케이션이다. Claude Desktop, Cursor, ChatGPT 또는 AgentCore Runtime에서 실행되는 에이전트가 여기에 해당한다. 사용자와 모델이 만나는 지점이며, 하나 이상의 client를 관리한다.
+- **Client**는 host 내부에서 특정 server와 통신하는 연결 계층이다. JSON-RPC로 `tools/list`, `tools/call` 등을 호출한다. host가 GitHub MCP server와 Slack MCP server에 연결되어 있다면 각각에 대응하는 client가 하나씩 있다. 보통 사용자는 이 계층을 직접 보지 못한다.
+- **Server**는 tool, resource, prompt를 제공하는 프로세스다. 예를 들어 GitHub MCP server는 `create_issue()`, `search_repos()` 같은 기능을 tool 스키마로 노출한다.
 
-그래서 질문에 바로 답하면 이렇다. GitHub MCP server는 tool을 제공하는 곳이 맞다. Claude(Desktop이든 Cursor든)는 **host**다. 그 Claude 안에서 GitHub server랑 1:1로 붙어 대화하는 커넥터가 **client**고. host는 컨테이너, client는 server 하나로 가는 연결선, server는 능력 제공자. 헷갈리는 이유는 client가 host 안에 숨은 구현 디테일이라서다. 밖에서 보면 Claude가 server랑 직접 얘기하는 것처럼 보이지만, 사실은 자기가 소유한 client를 거쳐서 하는 거다.
+따라서 GitHub MCP server는 기능을 제공하는 server이고, Claude Desktop이나 Cursor는 host다. 그 host 안에서 GitHub server와 1:1로 통신하는 구성 요소가 client다. 바깥에서는 Claude가 server와 직접 대화하는 것처럼 보이지만, 실제 요청은 host가 관리하는 client를 거쳐 전달된다. client가 host 안에 숨어 있기 때문에 이 구분이 특히 헷갈리기 쉽다.
 
 ```
 ┌─ Host (Claude Desktop) ───────────────┐
@@ -35,15 +35,15 @@ transport 변화로 들어가기 전에, 사람들이 제일 먼저 묻는 걸 �
 └────────────────────────────────────────┘
 ```
 
-이 그림을 붙들고 있자. 이번 stateless 변화는 결국 client와 server가 서로 어떻게 대화하느냐가 바뀐 거니까.
+이 관계를 염두에 두면, 이번 변경이 client와 server 사이의 통신 방식을 바꾸는 일이라는 점이 분명해진다.
 
-## 뭐가 바뀌었나: 세션이 프로토콜에서 빠졌다
+## 무엇이 달라졌나: 프로토콜에서 세션을 제거했다
 
-2025-11-25 버전에서는 tool 하나를 부르려면 먼저 세션을 맺어야 했다. client가 `initialize` 핸드셰이크를 보내면 server가 `Mcp-Session-Id`를 돌려주고, 그다음부터 모든 요청이 그 ID를 달고 가야 했다. 그 ID가 client를 그걸 발급한 특정 server 인스턴스에 묶어버린다.
+2025-11-25 버전에서는 tool을 호출하기 전에 먼저 세션을 수립해야 했다. client가 `initialize` 핸드셰이크를 보내면 server가 `Mcp-Session-Id`를 반환하고, 이후의 모든 요청은 그 ID를 포함해야 했다. 이 ID 때문에 client는 세션을 발급한 특정 server 인스턴스에 사실상 묶였다.
 
-릴리스 후보의 before/after를 보면 확 와닿는다.
+릴리스 후보의 요청 형식을 비교하면 차이가 더 선명하다.
 
-예전(2025-11-25)은 왕복이 두 번이고, 두 번째 요청은 인스턴스에 묶여 있다.
+이전 버전(2025-11-25)에서는 두 번 왕복하며, 두 번째 요청은 특정 인스턴스의 세션에 종속된다.
 
 ```http
 POST /mcp HTTP/1.1
@@ -63,7 +63,7 @@ Content-Type: application/json
  "params":{"name":"search","arguments":{"q":"otters"}}}
 ```
 
-이제(2026-07-28)는 어느 인스턴스가 받아도 되는, 그 자체로 완결된 요청 하나다.
+2026-07-28에서는 요청 하나가 필요한 정보를 모두 담는다. 따라서 어떤 인스턴스가 요청을 받아도 처리할 수 있다.
 
 ```http
 POST /mcp HTTP/1.1
@@ -77,44 +77,44 @@ Content-Type: application/json
            "_meta":{"io.modelcontextprotocol/clientInfo":{"name":"my-app","version":"1.0"}}}}
 ```
 
-두 가지가 사라졌다. `initialize`/`initialized` 핸드셰이크가 없어졌고(SEP-2575), 예전에 연결할 때 한 번 주고받던 protocol version, client info, capabilities가 이제는 매 요청마다 `_meta`에 실려 간다. 대신 client가 server 능력을 미리 알고 싶으면 새로 생긴 `server/discover`로 가져오면 된다. 그리고 `Mcp-Session-Id` 헤더와 그 뒤의 프로토콜 세션도 없어졌다(SEP-2567). 둘 다 사라졌으니 어떤 요청이든 아무 인스턴스에나 떨어져도 된다.
+두 가지 변화가 함께 일어났다. 먼저 `initialize`/`initialized` 핸드셰이크가 제거됐다(SEP-2575). 연결 시 한 번만 주고받던 protocol version, client 정보, capability는 이제 각 요청의 `_meta`에 담긴다. client가 server의 capability를 미리 확인해야 한다면 새 `server/discover` 메서드를 호출하면 된다. 또한 `Mcp-Session-Id` 헤더와 프로토콜 수준의 세션도 사라졌다(SEP-2567). 그 결과 어떤 요청도 특정 인스턴스에 고정되지 않는다.
 
 ## 기존 서버에서 바꿔야 할 것
 
-프로토콜이 stateless라고 해서 네 애플리케이션까지 상태가 없어야 한다는 뜻은 아니다. 프로토콜이 대신 상태를 들고 있어 주는 걸 그만둔다는 뜻이고, 그럼 네가 직접 명시적으로 들고 있으면 된다.
+프로토콜이 stateless해진다고 해서 애플리케이션의 상태까지 없애야 하는 것은 아니다. 다만 프로토콜이 암묵적으로 보관하던 상태를 애플리케이션이 명시적으로 관리해야 한다.
 
-- **세션 상태는 explicit handle로 바뀐다.** HTTP API가 늘 하던 대로 하면 된다. tool이 `basket_id`나 `browser_id`를 발급해서 돌려주고, 모델이 다음 호출 때 그걸 평범한 인자로 다시 넘긴다. 이제 상태가 transport 메타데이터 속에 숨는 대신 모델에게 보이게 된다. 스펙 저자들은 이게 오히려 더 강력한 패턴이라고 본다. 모델이 handle을 여러 tool에 걸쳐 조합하고 추론할 수 있으니까.
-- **server가 client에게 뭘 물어보는 흐름은 Multi Round-Trip으로 바뀐다(SEP-2322).** "파일 3개 지울까?"를 물으려고 SSE 스트림을 붙잡고 있는 대신, server가 `requestState` 뭉치를 담은 `InputRequiredResult`를 돌려준다. client가 답을 모아서 원래 호출을 `inputResponses`랑 그 `requestState`를 붙여 다시 보낸다. 재시도에 필요한 게 전부 payload 안에 있으니 어느 인스턴스가 받아도 이어서 처리한다. 참고로 server가 먼저 거는 요청은 이제 server가 client 요청을 처리하는 도중에만 허용된다(SEP-2260). 난데없이 뜨는 프롬프트는 없어진다는 얘기다.
-- **list는 캐싱하자.** `tools/list`랑 resource read 결과에 `ttlMs`와 `cacheScope`가 붙었다(SEP-2549). HTTP Cache-Control을 본떴다. list가 바뀐 걸 알려고 SSE 스트림을 계속 열어둘 필요가 없어졌다.
-- **자잘한 breaking 변경들.** Roots, Sampling, Logging이 deprecated 됐다(SEP-2577, 아직은 annotation만). 리소스 없음 에러 코드가 MCP 전용 `-32002`에서 표준 `-32602 Invalid Params`로 바뀌었다(SEP-2164). client가 그 숫자값으로 분기하고 있으면 고쳐야 한다. tool 스키마는 full JSON Schema 2020-12로 올라갔다(SEP-2106).
+- **세션 상태는 명시적인 handle로 바꾼다.** HTTP API에서 하던 방식과 같다. tool이 `basket_id`나 `browser_id`를 발급해 반환하고, 모델은 다음 호출에서 이를 일반 인수로 넘긴다. 상태가 전송 메타데이터에 숨지 않고 모델에도 드러나므로, 여러 tool 호출 사이에서 handle을 조합할 수 있다는 장점이 있다.
+- **server가 client에 입력을 요청하는 흐름은 Multi Round-Trip으로 바뀐다(SEP-2322).** 예전처럼 “파일 3개를 삭제할까요?”라고 묻기 위해 SSE 스트림을 열어 둔 채 기다리지 않는다. server는 `requestState`를 담은 `InputRequiredResult`를 반환하고, client는 사용자의 응답과 해당 `requestState`를 `inputResponses`에 실어 원래 호출을 다시 보낸다. 재시도에 필요한 정보가 payload에 모두 있으므로 다른 인스턴스도 이어서 처리할 수 있다. server 주도 요청도 이제 client 요청을 처리하는 동안에만 허용된다(SEP-2260).
+- **목록과 리소스 읽기 결과는 캐시한다.** `tools/list`와 resource read 결과에 `ttlMs`, `cacheScope`가 추가됐다(SEP-2549). HTTP의 Cache-Control과 비슷한 모델이다. 목록 변경을 알기 위해 장시간 SSE 스트림을 유지할 필요가 줄어든다.
+- **호환성에 영향을 주는 변경도 있다.** Roots, Sampling, Logging은 deprecated 됐다(SEP-2577. 현재는 annotation 수준의 변경이다). 리소스가 없을 때의 오류 코드는 MCP 전용 `-32002`에서 표준 `-32602 Invalid Params`로 바뀐다(SEP-2164). 이 숫자값으로 분기하는 client는 수정해야 한다. tool 스키마도 JSON Schema 2020-12 전체를 사용하도록 바뀐다(SEP-2106).
 
 ## AWS에 배포할 때 달라지는 점
 
-stateless가 진짜 값을 하는 지점이 여기다.
+이 변화의 실질적인 이점은 AWS에서 MCP server를 수평 확장할 때 가장 잘 드러난다.
 
-- **평범한 round-robin load balancer면 충분하다.** 예전에는 수평 확장하려면 묶여 있는 `Mcp-Session-Id`가 항상 제 인스턴스를 찾아가게 sticky session이나 공유 session store가 필요했다. 그 요구가 프로토콜 계층에서 사라졌으니 ALB 기본 라우팅으로 그냥 된다.
-- **Lambda랑 Fargate에 깔끔하게 맞는다.** 아무 요청이나 아무 인스턴스에 떨어져도 되는 건, serverless랑 오토스케일 컨테이너가 딱 원하던 실행 모델이다. 인스턴스 고정이랑 싸울 일이 없다.
-- **gateway가 본문 대신 헤더로 라우팅한다.** transport가 이제 `Mcp-Method`랑 `Mcp-Name` 헤더를 요구한다(SEP-2243). load balancer, gateway, rate-limiter가 본문을 뜯어보지 않고 작업 종류로 라우팅하고 throttle 할 수 있다. 헤더랑 본문이 안 맞으면 server가 요청을 거부한다.
-- **트레이싱이 표준화됐다.** `_meta`에 실리는 W3C Trace Context 전파가 문서화됐다(SEP-414). `traceparent`, `tracestate`, `baggage` 키 이름이 고정됐다. 그래서 host에서 시작한 트레이스가 client SDK, server, 그 아래 다운스트림까지 따라가서 OpenTelemetry 백엔드에 하나의 span tree로 찍힌다.
+- **일반적인 round-robin 로드 밸런서로 충분하다.** 이전에는 `Mcp-Session-Id`가 항상 세션을 만든 인스턴스로 돌아가도록 sticky session이나 공유 세션 저장소가 필요했다. 이 제약이 프로토콜 계층에서 사라졌으므로 ALB의 기본 라우팅을 그대로 사용할 수 있다.
+- **Lambda와 Fargate의 실행 모델에 잘 맞는다.** 어떤 요청이든 어느 인스턴스에서 처리할 수 있다는 성질은 serverless와 자동 확장 컨테이너의 운영 방식과 자연스럽게 맞물린다. 인스턴스 고정성을 별도로 관리할 필요가 없다.
+- **gateway는 본문 대신 헤더를 기준으로 라우팅할 수 있다.** transport는 이제 `Mcp-Method`, `Mcp-Name` 헤더를 요구한다(SEP-2243). 로드 밸런서, gateway, rate limiter는 요청 본문을 해석하지 않고도 작업 종류에 따라 라우팅하거나 제한할 수 있다. 헤더와 본문이 서로 다르면 server는 요청을 거부한다.
+- **트레이싱 방식이 표준화됐다.** `_meta`를 통한 W3C Trace Context 전파가 문서화됐다(SEP-414). `traceparent`, `tracestate`, `baggage`의 키 이름이 정해졌으므로 host에서 시작한 trace를 client SDK, server, 하위 서비스까지 이어 OpenTelemetry 백엔드에서 하나의 span tree로 볼 수 있다.
 
 ## AgentCore와의 상관관계
 
-AWS에서 MCP 서버를 돌린다면, 십중팔구 AgentCore의 두 조각을 통해 이 프로토콜을 만난다.
+AWS에서 MCP server를 운영한다면 AgentCore의 다음 두 구성 요소와 만나게 될 가능성이 높다.
 
-- **AgentCore Runtime**은 server 쪽 워크로드, 즉 에이전트나 MCP 서버를 관리형 컨테이너로 호스팅한다.
-- **AgentCore Gateway**는 tool을 MCP endpoint로 노출하고 그 앞에 SigV4(IAM)를 세운다. 그러면 에이전트가 gateway의 tool을 다른 MCP 서버 붙이듯이 로드할 수 있다.
+- **AgentCore Runtime**은 에이전트나 MCP server 같은 server 측 워크로드를 관리형 컨테이너에서 실행한다.
+- **AgentCore Gateway**는 tool을 MCP endpoint로 노출하고, 그 앞에 SigV4(IAM) 인증을 둔다. 에이전트는 gateway의 tool을 다른 MCP server처럼 로드해 사용할 수 있다.
 
-이번 stateless 개편은 여기에 자연스럽게 맞는다. 이유는 다른 AWS 배포에 도움 되는 이유랑 똑같다. AgentCore는 컨테이너 인스턴스를 늘려서 확장하는데, 호출자를 그중 하나에 묶어두고 싶어 하지 않는다. 프로토콜이 세션을 버리면 "아무 요청이나 아무 인스턴스에"가 Runtime이 이미 확장하는 방식이랑 딱 맞아떨어지고, gateway에서 세션 고정을 붙들 이유가 없어진다.
+stateless 전환은 AgentCore의 확장 방식과 잘 맞는다. AgentCore는 컨테이너 인스턴스를 추가해 확장하며, 호출자를 특정 인스턴스에 묶어둘 이유가 없다. 프로토콜이 세션을 제거하면 “어떤 요청이든 어떤 인스턴스에서나 처리한다”는 전제가 Runtime의 동작 방식과 일치하고, gateway에서 세션 고정성을 유지할 필요도 없어진다.
 
-배포된 gateway에 client를 붙여본 경험에서 하나 짚자면, SigV4는 MCP client transport에 내장돼 있지 않다. 그래서 OAuth provider에 기대는 대신 서명하는 `fetch`를 Streamable HTTP transport에 주입한다. 인증 쪽을 깊게 보고 싶으면 [AgentCore Gateway의 MCP client가 OAuth auth code flow가 필요한 경우](/ko/blog/2026-06-03-agentcore-gateway-mcp-oauth-auth-code.html)를 예전에 써뒀고, 그 전에 [Strands와 MCP의 아키텍처 패턴](/blog/2025-12-11-architecture-patterns-for-strands-and-mcp.html)도 다뤘다. 이 글은 그것들의 transport 계층 짝꿍쯤 된다.
+실제 gateway에 client를 연결할 때는 한 가지를 주의해야 한다. SigV4는 MCP client transport에 기본으로 들어 있지 않으므로 OAuth provider에 맡기는 대신, 요청을 서명하는 `fetch`를 Streamable HTTP transport에 주입해야 한다. 인증 흐름은 [AgentCore Gateway의 MCP client가 OAuth auth code flow가 필요한 경우](/ko/blog/2026-06-03-agentcore-gateway-mcp-oauth-auth-code.html)에서, 더 넓은 구조는 [Strands와 MCP의 아키텍처 패턴](/blog/2025-12-11-architecture-patterns-for-strands-and-mcp.html)에서 다뤘다. 이 글은 그 두 글의 전송 계층 관점에 해당한다.
 
-## 밟을 것 같은 함정
+## 주의할 점
 
-- **stateless라고 상태를 다 지운다고 착각하는 것.** 아니다. 상태를 transport에서 빼내서 모델이 주고받는 explicit handle로 옮기는 거다. server에 세션별 상태가 진짜 있었다면 여전히 필요하다. 다만 어느 인스턴스나 읽을 수 있는 곳에 둬야 한다.
-- **헤더/본문 일치 규칙을 까먹는 것.** gateway가 `Mcp-Method`나 `Mcp-Name`을 고쳐 쓰는데 본문은 딴소리를 하면, 규격 지키는 server는 요청을 거부한다. 헤더로 라우팅하되 헤더를 건드리지는 마라.
-- **`-32002`로 분기하는 것.** 옛날 리소스 없음 에러 코드로 분기하는 client 코드가 있으면, 2026-07-28 server 상대로 조용히 깨진다. grep 한 번 돌려라.
-- **RC를 최종본처럼 다루는 것.** 릴리스 후보는 2026년 5월 21일에 잠겼고, 최종 스펙은 2026년 7월 28일에 나온다. breaking change가 들어 있으니 지금은 검증 기간이지 "오늘 prod에 올려라"가 아니다.
+- **stateless를 모든 상태의 제거로 이해하지 않는다.** 상태는 전송 계층에서 모델이 주고받는 명시적인 handle로 옮겨갈 뿐이다. server에 세션별 상태가 필요하다면 계속 유지해야 하며, 어느 인스턴스에서도 읽을 수 있는 위치에 두어야 한다.
+- **헤더와 본문의 일치 규칙을 놓치지 않는다.** gateway가 `Mcp-Method`나 `Mcp-Name`을 바꿨는데 본문이 다른 작업을 가리키면, 규격을 따르는 server는 요청을 거부한다. 헤더를 기준으로 라우팅하되 헤더 자체를 변형하지 않는 편이 안전하다.
+- **기존 `-32002` 분기를 점검한다.** 이전의 리소스 없음 오류 코드에 의존하는 client는 2026-07-28 server에서 예상과 다르게 동작할 수 있다. 코드베이스에서 해당 값의 사용처를 먼저 확인한다.
+- **RC를 최종 사양으로 간주하지 않는다.** 릴리스 후보는 2026년 5월 21일에 동결됐고, 최종 사양은 2026년 7월 28일에 나왔다. 호환성을 깨는 변경이 포함되어 있으므로, 바로 운영 환경에 반영하기보다 검증 계획을 세우는 편이 낫다.
 
-## 그래서 뭘 해야 하나
+## 지금 할 일
 
-원격 MCP 서버를 갖고 있으면 세션 제거를 지금부터 계획하자. `Mcp-Session-Id`에 의존하는 데를 찾고, 어떤 상태를 explicit handle로 바꿀지 정하고, server가 client에게 묻는 프롬프트를 Multi Round-Trip 형태로 옮겨라. AgentCore에 배포한다면 stateless만 되면 이득은 거의 공짜다. gateway에서 세션 고정을 떼고 Runtime이 평평하게 확장하게 두면 된다. 그리고 host/client/server 질문에 열 번째 답하는 사람이라면, 이 한 줄만 외워두자. host가 client를 소유하고, server 하나당 client 하나, server는 tool을 제공한다.
+원격 MCP server를 운영한다면 지금부터 세션 제거를 준비할 만하다. 먼저 `Mcp-Session-Id`에 의존하는 부분을 찾고, 어떤 상태를 명시적인 handle로 바꿀지 정한다. server가 client에 입력을 요청하는 흐름은 Multi Round-Trip 형태로 옮긴다. AgentCore에 배포한다면 세션 고정성을 제거하고 Runtime이 인스턴스를 수평 확장하도록 두면 된다. 마지막으로 host, client, server의 역할은 다음 한 문장으로 정리할 수 있다. host가 client를 관리하고, client는 각 server와 통신하며, server는 tool을 제공한다.
