@@ -87,7 +87,11 @@ body:has(.explore-shell) > main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px clamp(18px, 4vw, 54px);
+  padding:
+    max(20px, env(safe-area-inset-top))
+    max(clamp(18px, 4vw, 54px), env(safe-area-inset-right))
+    20px
+    max(clamp(18px, 4vw, 54px), env(safe-area-inset-left));
   pointer-events: none;
 }
 
@@ -554,7 +558,13 @@ body:has(.explore-shell) > main {
   .explore-signpost-menu { left: 0; bottom: 0; box-sizing: border-box; width: 100%; border-radius: 22px 22px 0 0; }
   .explore-signpost-menu::before { display: none; }
   #explore-signpost-destinations button { min-height: 48px; }
-  .explore-header { padding: 12px; }
+  .explore-header {
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(12px, env(safe-area-inset-right))
+      12px
+      max(12px, env(safe-area-inset-left));
+  }
   .explore-brand { font-size: 13px; }
   .explore-brand-mark { width: 32px; height: 32px; }
   .explore-actions .explore-button:first-child { display: none; }
