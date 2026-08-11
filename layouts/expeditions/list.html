@@ -1,0 +1,24 @@
+{{ define "main" }}
+{{ $language := .Language.Lang }}
+{{ $catalog := index site.Data.expeditions $language }}
+<div class="container expedition-catalog">
+  <header class="expedition-intro">
+    <span class="atlas-kicker">Article Atlas Expeditions</span>
+    <h1>{{ .Title }}</h1>
+    <div>{{ .Content }}</div>
+  </header>
+  <ol class="expedition-stops">
+    {{ range sort $catalog "order" }}
+      {{ if eq .status "published" }}
+      <li class="expedition-stop">
+        <div class="expedition-stop-meta"><span>{{ len .stops }} stops</span><span>{{ .estimated_minutes }} min</span></div>
+        <h2><a href="{{ if eq $language "ko" }}{{ printf "/ko/expeditions/%s.html" .id | relURL }}{{ else }}{{ printf "/expeditions/%s.html" .id | relURL }}{{ end }}">{{ .title }}</a></h2>
+        <p><strong>{{ .question }}</strong></p>
+        <p>{{ .description }}</p>
+        <a data-atlas-event="expedition_catalog_open" data-journey-id="{{ .id }}" href="{{ if eq $language "ko" }}{{ printf "/ko/expeditions/%s.html" .id | relURL }}{{ else }}{{ printf "/expeditions/%s.html" .id | relURL }}{{ end }}">{{ if eq $language "ko" }}Expedition 시작 →{{ else }}Start expedition →{{ end }}</a>
+      </li>
+      {{ end }}
+    {{ end }}
+  </ol>
+</div>
+{{ end }}

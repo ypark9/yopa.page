@@ -33,7 +33,7 @@
 
   <section class="expedition-complete" id="expedition-complete" hidden tabindex="-1">
     <span class="atlas-kicker">{{ if eq $language "ko" }}Expedition complete{{ else }}Expedition complete{{ end }}</span>
-    <h2>{{ if eq $language "ko" }}Prototype보다 운영 경계를 먼저 설계하세요{{ else }}Design the operating boundaries, not just the prototype{{ end }}</h2>
+    <h2>{{ $journey.completion_title }}</h2>
     <h3>{{ if eq $language "ko" }}핵심 원칙{{ else }}Principles collected{{ end }}</h3>
     <ul>{{ range $journey.principles }}<li>{{ . }}</li>{{ end }}</ul>
     <h3>{{ if eq $language "ko" }}실무 체크리스트{{ else }}Practical checklist{{ end }}</h3>

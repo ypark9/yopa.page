@@ -13,6 +13,13 @@ tags:
   - Amazon EFS
   - FinOps
   - Self-Hosting
+atlas:
+  region: cloud
+  object: field-note
+  journeys:
+    - hermes-operator
+  evidence: production
+  era: current
 ---
 
 When I deployed Hermes Agent on AWS, I initially budgeted for the ECS task and the LLM. After running it for a little over a month, that estimate looked too simple. The always-on NAT Gateway and EFS throughput cost about as much as Fargate for one personal agent.

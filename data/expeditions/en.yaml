@@ -1,7 +1,11 @@
 safe-agent-operations:
   id: safe-agent-operations
+  status: published
+  order: 1
   title: From Agent Prototype to Safe Operations
+  description: Follow five field notes from agent authority and managed boundaries to a production recovery.
   question: How do you move a promising AI agent into a safely operated system?
+  completion_title: Design the operating boundaries, not just the prototype
   estimated_minutes: 20
   stops:
     - id: define-authority
@@ -46,3 +50,55 @@ safe-agent-operations:
     - Pin artifacts and require evaluation, approval, observability, and rollback evidence.
     - Minimize network reach and permissions for every component.
     - Rehearse backup, restore, writer shutdown, and rollback before migration.
+hermes-operator:
+  id: hermes-operator
+  status: draft
+  order: 2
+  title: Operating Hermes in Practice
+  description: Decide whether Hermes fits, understand how it learns, and operate it with measured cost and recoverable state.
+  question: How do you turn Hermes from an interesting agent into a personal system you can operate and recover?
+  completion_title: Operate the agent only as far as you can observe and recover it
+  estimated_minutes: 24
+  stops:
+    - id: choose-hermes
+      region: Agent Grove
+      evidence: documented
+      title: Decide whether Hermes fits the job
+      purpose: Compare a persistent tool-using agent with chatbots, coding agents, and fixed workflows before choosing where it should run.
+      url: /blog/2026-08-10-when-to-operate-hermes-agent.html
+    - id: shape-learning
+      region: Agent Grove
+      evidence: documented
+      title: Separate sessions, memory, identity, and skills
+      purpose: Understand what Hermes recalls, what it curates, what a skill preserves, and where external memory providers fit.
+      url: /blog/2026-08-10-how-hermes-memory-and-skills-work.html
+    - id: keep-running
+      region: Cloud Highlands
+      evidence: production
+      title: Keep one Slack agent running on AWS
+      purpose: Pin the runtime, persist its home, restrict Slack access and IAM, and make replacement and rollback explicit.
+      url: /blog/2026-05-23-deploy-hermes-ai-agent-aws-ecs-fargate-slack.html
+    - id: measure-cost
+      region: Cloud Highlands
+      evidence: production
+      title: Measure the architecture you actually pay for
+      purpose: Use Cost Explorer evidence to separate compute, network, storage, secrets, logs, and model inference.
+      url: /blog/2026-08-08-hermes-aws-cost-breakdown.html
+    - id: prove-recovery
+      region: Archive Harbor
+      evidence: production
+      title: Move the state without splitting the agent
+      purpose: Shut down writers, validate SQLite, preserve rollback, and keep only one Slack Socket Mode consumer active.
+      url: /blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+  principles:
+    - Choose a persistent agent only when the work benefits from durable context, tools, and an operating loop.
+    - Treat session history, curated memory, identity, skills, and external memory as different contracts.
+    - Persist the entire Hermes home and pin the runtime that interprets it.
+    - Measure the surrounding architecture instead of estimating only compute and model tokens.
+    - Do not automate beyond the authority, observability, and recovery you have proved.
+  checklist:
+    - Write down the recurring job, required context, tools, and maximum consequence before installing Hermes.
+    - Set gateway authorization, approvals, tool boundaries, and skill-write policy explicitly.
+    - Pin the image digest or release tag and back up the mounted Hermes home before upgrades.
+    - Review infrastructure and inference costs from billing evidence after a representative operating period.
+    - Rehearse restore and rollback with the real state database and only one active gateway consumer.

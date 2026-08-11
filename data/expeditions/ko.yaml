@@ -1,7 +1,11 @@
 safe-agent-operations:
   id: safe-agent-operations
+  status: published
+  order: 1
   title: Agent Prototype에서 안전한 운영까지
+  description: Agent 권한과 managed boundary에서 출발해 실제 production recovery까지 다섯 편의 기록을 따라갑니다.
   question: 가능성 있는 AI Agent를 안전하게 운영되는 시스템으로 어떻게 옮길까?
+  completion_title: Prototype보다 운영 경계를 먼저 설계하세요
   estimated_minutes: 20
   stops:
     - id: define-authority
@@ -46,3 +50,55 @@ safe-agent-operations:
     - artifact를 고정하고 evaluation, approval, observability와 rollback 증거를 요구한다.
     - 모든 component의 network reach와 permission을 최소화한다.
     - migration 전에 backup, restore, writer shutdown과 rollback을 연습한다.
+hermes-operator:
+  id: hermes-operator
+  status: draft
+  order: 2
+  title: Hermes 실전 운영
+  description: Hermes가 맞는지 판단하고, 학습 구조를 이해한 뒤, 실제 비용과 복구 가능한 상태를 갖춘 개인 Agent로 운영합니다.
+  question: 흥미로운 Agent인 Hermes를 직접 운영하고 복구할 수 있는 개인 시스템으로 어떻게 바꿀까?
+  completion_title: 관측하고 복구할 수 있는 범위까지만 Agent에게 맡기세요
+  estimated_minutes: 24
+  stops:
+    - id: choose-hermes
+      region: Agent Grove
+      evidence: documented
+      title: Hermes가 이 일에 맞는지 판단한다
+      purpose: 실행 위치를 고르기 전에 지속적인 tool-using agent를 chatbot, coding agent, 고정 workflow와 비교합니다.
+      url: /ko/blog/2026-08-10-when-to-operate-hermes-agent.html
+    - id: shape-learning
+      region: Agent Grove
+      evidence: documented
+      title: Session, memory, identity와 skill을 분리한다
+      purpose: Hermes가 무엇을 회상하고 선별하며, skill이 무엇을 보존하고 외부 memory provider가 어디에 놓이는지 이해합니다.
+      url: /ko/blog/2026-08-10-how-hermes-memory-and-skills-work.html
+    - id: keep-running
+      region: Cloud Highlands
+      evidence: production
+      title: AWS에서 Slack Agent 하나를 계속 운영한다
+      purpose: Runtime을 고정하고 home을 보존하며 Slack 접근과 IAM을 제한하고 교체와 rollback을 명시합니다.
+      url: /ko/blog/2026-05-23-deploy-hermes-ai-agent-aws-ecs-fargate-slack.html
+    - id: measure-cost
+      region: Cloud Highlands
+      evidence: production
+      title: 실제로 지불한 architecture 비용을 측정한다
+      purpose: Cost Explorer 증거로 compute, network, storage, secret, log와 model inference를 분리합니다.
+      url: /ko/blog/2026-08-08-hermes-aws-cost-breakdown.html
+    - id: prove-recovery
+      region: Archive Harbor
+      evidence: production
+      title: Agent를 둘로 나누지 않고 상태를 옮긴다
+      purpose: Writer를 종료하고 SQLite와 rollback을 검증하며 Slack Socket Mode consumer를 하나만 유지합니다.
+      url: /ko/blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+  principles:
+    - 지속적인 context, tool과 운영 loop가 필요한 일에만 persistent agent를 선택한다.
+    - Session history, curated memory, identity, skill과 외부 memory를 서로 다른 계약으로 다룬다.
+    - Hermes home 전체를 보존하고 그 상태를 해석하는 runtime을 고정한다.
+    - Compute와 model token만 추정하지 말고 주변 architecture를 실제로 측정한다.
+    - 권한, 관측과 복구를 증명한 범위보다 더 멀리 자동화하지 않는다.
+  checklist:
+    - Hermes를 설치하기 전에 반복할 일, 필요한 context와 tool, 최대 피해 범위를 적는다.
+    - Gateway authorization, approval, tool boundary와 skill write policy를 명시한다.
+    - Image digest 또는 release tag를 고정하고 upgrade 전에 mounted Hermes home을 backup한다.
+    - 대표적인 운영 기간 뒤 billing 증거로 infrastructure와 inference 비용을 검토한다.
+    - 실제 state database와 단 하나의 gateway consumer로 restore와 rollback을 연습한다.

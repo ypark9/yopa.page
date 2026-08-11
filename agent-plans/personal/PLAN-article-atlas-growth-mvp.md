@@ -1,7 +1,7 @@
 # Article Atlas Growth MVP
 
-Status: release candidate; beehiiv acceptance passed, remaining manual release checks pending
-Last updated: 2026-08-09
+Status: release candidate; second Expedition prepared as draft behind the first-Expedition measurement gate
+Last updated: 2026-08-10
 
 Fresh-session context: `SESSION_HANDOFF.md`
 
@@ -165,6 +165,27 @@ subscribe URLs. Do not send subscriber exports or account credentials.
 - [ ] Gate: confirmed subscription among completers is at least 5%.
 - [ ] Gate: Atlas visitors' additional article discovery improves over baseline.
 - [ ] Gate: no Dispatch is missed for two consecutive months.
+
+## F. Second Expedition preparation
+
+- [x] The catalog supports multiple bilingual journeys with explicit
+  `draft`/`published` status, ordering, descriptions, and journey-specific
+  completion copy. Evidence: generalized validator and unit tests.
+- [x] `/expeditions/` lists published journeys only, and the homepage plus
+  navigation route readers to that catalog. Evidence: production Hugo build.
+- [x] Article CTAs resolve every published journey in `atlas.journeys` while
+  suppressing draft journeys. Evidence: template regression tests and rendered
+  draft-state inspection.
+- [x] `hermes-operator` is prepared as a five-stop bilingual draft: selection,
+  memory and skills, AWS Slack operation, measured cost, and lossless migration.
+- [x] The 2026-05-23 Hermes deployment URL and original date are preserved in a
+  fully revised EN/KO guide verified against Hermes v0.20.0 documentation. The
+  entire Hermes route uses the official `nousresearch/hermes-agent:v2026.8.3`
+  Docker image; host installers and PyPI/source installs are out of scope.
+- [ ] Publish `hermes-operator` only after four weeks of first-Expedition data
+  satisfies the existing start, completion, subscription, and discovery gates.
+- [ ] After publication, segment the same aggregate events by expedition page
+  path and `journey_id`; do not add visitor or subscriber identifiers.
 
 If a gate fails, revise entry-page choice, CTA, route length, or stop value. Do
 not add new world systems to compensate for an unproven visitor loop.

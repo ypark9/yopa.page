@@ -86,14 +86,14 @@ menu:
     - name: Articles
       url: "/articles.html"
     - name: Expeditions
-      url: "/expeditions/safe-agent-operations.html"
+      url: "/expeditions/"
   footer:
     - name: About
       url: "/about.html"
     - name: Articles
       url: "/articles.html"
     - name: Expeditions
-      url: "/expeditions/safe-agent-operations.html"
+      url: "/expeditions/"
     - name: GitHub
       url: "https://github.com/ypark9/yopa.page"
     - name: RSS

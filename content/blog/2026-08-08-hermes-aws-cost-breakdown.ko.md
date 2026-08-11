@@ -13,6 +13,13 @@ tags:
   - Amazon EFS
   - FinOps
   - Self-Hosting
+atlas:
+  region: cloud
+  object: field-note
+  journeys:
+    - hermes-operator
+  evidence: production
+  era: current
 ---
 
 Hermes Agent를 AWS에 처음 올릴 때는 ECS Fargate 비용과 LLM 사용료만 대충 계산했다. 그런데 한 달 넘게 돌려 보니 생각보다 큰 금액이 다른 곳에서 나왔다. 24시간 켜 둔 NAT Gateway와 EFS 처리량이 Fargate 비용만큼이나 컸다.
