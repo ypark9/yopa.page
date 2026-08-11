@@ -7,6 +7,7 @@ scripts:
     command -v ccdoc >/dev/null 2>&1 && ccdoc setup yopa-page "$ORCA_WORKTREE_PATH" || true
     command -v cxdoc >/dev/null 2>&1 && cxdoc checkout add yopa.page "$ORCA_WORKTREE_PATH" || true
   archive: |
+    # No ccdoc sync here: a worktree holds the repo's tracked CLAUDE.md, not the hub
+    # symlink, so syncing back overwrote the hub copy (2026-08-11).
     export CCDOC_HOME="/Users/yoonsoo.park/code/ncino/claude-code-hub"
     command -v cxdoc >/dev/null 2>&1 && cxdoc checkout remove yopa.page "$ORCA_WORKTREE_PATH" || true
-    command -v ccdoc >/dev/null 2>&1 && ccdoc sync yopa-page "$ORCA_WORKTREE_PATH" || true
