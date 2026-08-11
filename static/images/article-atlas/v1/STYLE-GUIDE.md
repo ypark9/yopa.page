@@ -62,6 +62,22 @@ a proximity destination menu; they never draw a route on the ground. The
 portal source uses the same built-in ImageGen plus local chroma-key removal
 workflow as other transparent objects.
 
+## Maker's Road visual spike
+
+The first connected-world spike is an Explore-only Y-shaped road joining the
+Agent Grove western trailhead, Codeworks gate, and Engineering Ridge pass. It
+uses the existing manifest object grammar: the road is a `base` object and the
+three border landmarks use the `makers-road` layer. The home minimap continues
+to draw only `world` and `top` objects, so its graph and geography remain
+unchanged.
+
+The four source PNGs were generated with the built-in ImageGen workflow on a
+flat magenta key, converted to alpha with `remove_chroma_key.py`, and exported
+as lossless WebP. The road network is compressed vertically to a 3:1 runtime
+overlay so its endpoints align with the existing region coordinates without
+moving regions, signposts, article nodes, or world bounds. This spike remains
+in a Draft PR until the 2026-09-06 growth measurement gate is reviewed.
+
 ## Region prompt deltas
 
 Every region was generated with the invariant brief above. Only the terrain

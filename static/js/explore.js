@@ -1138,6 +1138,7 @@
     ctx.clearRect(0, 0, state.width, state.height);
     drawAtlasChunks();
     drawAtlasTiles("base");
+    drawAtlasObjects("base");
     if (atlasManifest?.animations?.ocean) {
       const water = atlasManifest.animations.ocean;
       const p = screen(water.x, water.y);
@@ -1155,6 +1156,7 @@
     ctx.clearRect(0, 0, state.width, state.height);
     legacyRegions.forEach(drawRegionFrame);
     drawAmbientLayer("world");
+    drawAtlasObjects("makers-road");
     drawNavigationLandmarks();
     drawDepthSortedWorld();
     drawSelectedArticleIndicator();
