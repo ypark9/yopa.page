@@ -3,11 +3,16 @@
     {{ partial "head/head" . }}
     {{ partialCached "head/colorScheme" . }}
 
-    <body class="dark">
+    {{ $isExplore := eq .Type "explore" }}
+    <body class="dark{{ if $isExplore }} atlas-page{{ end }}">
+        {{ if not $isExplore }}
         {{ partial "header.html" . }}
+        {{ end }}
         <main>
             {{ block "main" . }}{{ end }}
         </main>
+        {{ if not $isExplore }}
         {{ partial "footer/footer" . }}
+        {{ end }}
     </body>
 </html>
