@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "2026-08-01-deep-night-1",
+  "revision": "2026-08-11-makers-road-spike-1",
   "tileSize": 512,
   "world": {
     "width": 7168,
@@ -1341,6 +1341,46 @@
       "layer": "top",
       "region": "agents",
       "motion": "foliage"
+    },
+    {
+      "id": "makers-road-network",
+      "src": "makers-road/objects/makers-road-network.webp",
+      "x": 0,
+      "y": 200,
+      "width": 5600,
+      "anchorX": 0.5,
+      "anchorY": 0,
+      "layer": "base"
+    },
+    {
+      "id": "makers-road-agent-trailhead",
+      "src": "makers-road/objects/agent-trailhead-bridge.webp",
+      "x": -310,
+      "y": 350,
+      "width": 430,
+      "anchorX": 0.5,
+      "anchorY": 0.58,
+      "layer": "makers-road"
+    },
+    {
+      "id": "makers-road-codeworks-gate",
+      "src": "makers-road/objects/codeworks-gate.webp",
+      "x": -2500,
+      "y": 1960,
+      "width": 390,
+      "anchorX": 0.5,
+      "anchorY": 0.72,
+      "layer": "makers-road"
+    },
+    {
+      "id": "makers-road-engineering-pass",
+      "src": "makers-road/objects/engineering-pass.webp",
+      "x": 2500,
+      "y": 350,
+      "width": 470,
+      "anchorX": 0.5,
+      "anchorY": 0.65,
+      "layer": "makers-road"
     }
   ],
   "animations": {

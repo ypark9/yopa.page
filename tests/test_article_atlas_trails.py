@@ -357,10 +357,10 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
 
         self.assertEqual(manifest["version"], 1)
         self.assertEqual(manifest["tileSize"], 512)
-        self.assertEqual(manifest["revision"], "2026-08-01-deep-night-1")
+        self.assertEqual(manifest["revision"], "2026-08-11-makers-road-spike-1")
         self.assertEqual(manifest["world"], {"width": 7168, "height": 5120, "originX": -3584, "originY": -768})
         self.assertEqual(len(manifest["connections"]), 9)
-        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v5"', template)
+        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v6"', template)
         self.assertIn("function rectIsVisible", source)
         self.assertIn("function drawAtlasTiles(layer)", source)
         self.assertIn("function drawAtlasObjects(layer)", source)
@@ -485,7 +485,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         source = (ROOT / "static" / "js" / "home-atlas.js").read_text()
 
         self.assertEqual(len(manifest["regions"]), 7)
-        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v5"', partial)
+        self.assertIn('data-atlas-manifest="{{ "images/article-atlas/v1/atlas-manifest.json" | relURL }}?v=atlas-v6"', partial)
         self.assertIn("async function loadManifest()", source)
         self.assertIn("manifest?.regions || fallbackRegions", source)
         self.assertIn("manifest.tiles.base", source)
@@ -496,6 +496,25 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertIn('drawObjects("top")', source)
         self.assertIn("manifest?.connections || []", source)
         self.assertNotIn("drawRegionLabel", source)
+
+    def test_makers_road_is_visual_only_and_uses_bounded_assets(self):
+        root = ROOT / "static" / "images" / "article-atlas" / "v1"
+        manifest = json.loads((root / "atlas-manifest.json").read_text())
+        explore = (ROOT / "static" / "js" / "explore.js").read_text()
+        home = (ROOT / "static" / "js" / "home-atlas.js").read_text()
+        road = [item for item in manifest["objects"] if item["id"].startswith("makers-road-")]
+
+        self.assertEqual(len(road), 4)
+        self.assertEqual({item["layer"] for item in road}, {"base", "makers-road"})
+        self.assertEqual(len(manifest["connections"]), 9)
+        self.assertEqual(len(manifest["signposts"]), len(manifest["connections"]) * 2 + 1)
+        self.assertIn('drawAtlasObjects("base")', explore)
+        self.assertIn('drawAtlasObjects("makers-road")', explore)
+        self.assertNotIn('drawObjects("makers-road")', home)
+        for item in road:
+            asset = root / item["src"]
+            self.assertTrue(asset.exists(), asset)
+            self.assertLess(asset.stat().st_size, 600_000, asset)
 
     def test_manifest_regions_with_assets_use_unique_complete_tiles(self):
         root = ROOT / "static" / "images" / "article-atlas" / "v1"
