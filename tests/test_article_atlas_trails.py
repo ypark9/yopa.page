@@ -281,6 +281,16 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertNotIn("simulatedVisitors", home)
         self.assertIn("Solo exploration · live presence off", self.explore_html)
 
+    def test_explore_uses_only_its_atlas_navigation_shell(self):
+        template = (ROOT / "layouts" / "_default" / "baseof.html").read_text()
+
+        self.assertIn('{{ $isExplore := eq .Type "explore" }}', template)
+        self.assertNotIn("class=navbar", self.explore_html)
+        self.assertNotIn("<footer", self.explore_html)
+        self.assertIn("class=explore-header", self.explore_html)
+        self.assertIn("Back to yopa.page", self.explore_html)
+        self.assertIn("All articles", self.explore_html)
+
     def test_rendering_is_viewport_culled_and_stops_behind_modals(self):
         source = (ROOT / "static" / "js" / "explore.js").read_text()
         self.assertIn("function regionIsVisible", source)
