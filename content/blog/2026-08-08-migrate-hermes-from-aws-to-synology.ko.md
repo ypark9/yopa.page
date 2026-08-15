@@ -19,6 +19,7 @@ atlas:
   object: field-note
   journeys:
     - safe-agent-operations
+    - hermes-operator
   evidence: production
   era: current
 ---

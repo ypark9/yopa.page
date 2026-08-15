@@ -8,6 +8,13 @@ The growth MVP is static and fail-closed. Expedition content works without an
 account, Field Dispatch is hidden until both publications are owner-verified,
 and Article Atlas Presence remains disabled.
 
+The bilingual expedition catalog also has a fail-closed publication boundary.
+Only journeys whose EN and KO data both use `status: published` appear in the
+catalog or article CTAs. A draft journey keeps its ordinary field notes public
+but its expedition page uses Hugo `draft: true` and is absent from production.
+Change the two language data files and two expedition pages together when a
+measurement gate authorizes publication.
+
 ## GA4 aggregate baseline
 
 Use Google's experimental `google-analytics-mcp` as the conversational,
@@ -111,3 +118,9 @@ blocked until the first expedition has useful evidence. The initial gates are:
 - at least 3% expedition starts from eligible article visits;
 - no two consecutive missed monthly dispatches; and
 - increased article discovery after an Atlas visit relative to baseline.
+
+`hermes-operator` remains draft until these gates are evaluated for the first
+expedition. If they pass, publish the EN/KO journey data and pages in one
+release, then use the existing aggregate event names with expedition page path
+and `journey_id` to compare journeys. Do not register user-, session-, or
+subscriber-level dimensions.

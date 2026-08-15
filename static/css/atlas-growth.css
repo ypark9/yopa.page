@@ -16,7 +16,10 @@
 .atlas-primary-action { display: inline-block; margin-top: .5rem; padding: .75rem 1rem; border: 0; border-radius: 10px; background: #568b68; color: #fff !important; cursor: pointer; font: inherit; text-decoration: none; }
 .atlas-primary-action:focus-visible, .expedition-mark:focus-visible { outline: 3px solid #f0a44b; outline-offset: 3px; }
 .article-expedition-cta { margin: 1.75rem 0; padding: 1rem 1.2rem; border-left: 5px solid #75b82a; background: rgba(117,184,42,.08); }
+.article-expedition-cta ul { display: flex; flex-wrap: wrap; gap: .75rem; margin: .75rem 0 0; padding: 0; list-style: none; }
+.article-expedition-cta li { margin: 0; }
 .expedition-shell { max-width: 860px; margin: 0 auto; padding: 1rem; }
+.expedition-catalog { max-width: 860px; }
 .expedition-intro { margin: 2rem 0; padding: 1.5rem; border-radius: 18px; background: rgba(89,197,197,.12); }
 .expedition-progress { width: 100%; height: .75rem; }
 .expedition-stops { list-style: none; padding: 0; }

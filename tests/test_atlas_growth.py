@@ -26,6 +26,31 @@ class AtlasGrowthTests(unittest.TestCase):
     def test_bilingual_expedition_schema_and_urls(self):
         self.assertEqual(self.expeditions.validate(), [])
 
+    def test_expedition_catalog_keeps_hermes_draft_and_bilingual(self):
+        catalogs = {
+            language: self.expeditions.parse_catalog(ROOT / "data" / "expeditions" / f"{language}.yaml")
+            for language in ("en", "ko")
+        }
+        self.assertEqual(list(catalogs["en"]), ["safe-agent-operations", "hermes-operator"])
+        self.assertEqual(list(catalogs["ko"]), ["safe-agent-operations", "hermes-operator"])
+        self.assertEqual(catalogs["en"]["safe-agent-operations"]["status"], "published")
+        self.assertEqual(catalogs["en"]["hermes-operator"]["status"], "draft")
+        self.assertEqual(len(catalogs["en"]["hermes-operator"]["stops"]), 5)
+
+    def test_expedition_surfaces_filter_drafts_and_resolve_article_journeys(self):
+        catalog_layout = (ROOT / "layouts" / "expeditions" / "list.html").read_text()
+        article_layout = (ROOT / "layouts" / "_default" / "single.html").read_text()
+        home_layout = (ROOT / "layouts" / "index.html").read_text()
+        self.assertIn('eq .status "published"', catalog_layout)
+        self.assertIn('eq $journey.status "published"', article_layout)
+        self.assertIn(".Params.atlas", article_layout)
+        self.assertIn('"expeditions/" | relURL', home_layout)
+
+    def test_completion_heading_comes_from_journey_data(self):
+        template = (ROOT / "layouts" / "expedition" / "single.html").read_text()
+        self.assertIn("{{ $journey.completion_title }}", template)
+        self.assertNotIn("Design the operating boundaries, not just the prototype", template)
+
     def test_analytics_periods_are_fixed_non_overlapping_years(self):
         self.assertEqual(
             self.analytics.periods(date(2026, 8, 9)),

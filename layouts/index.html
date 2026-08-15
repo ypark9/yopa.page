@@ -46,9 +46,9 @@
         </h1>
         <div class="atlas-purpose-grid">
             <article class="atlas-entry">
-                <h3>{{ if eq .Language.Lang "ko" }}AI 에이전트 운영{{ else }}Solve a problem{{ end }}</h3>
-                <p>{{ if eq .Language.Lang "ko" }}프로토타입을 실제 운영 환경으로 옮길 때 무엇을 확인해야 할까요? 다섯 편의 글을 따라 살펴봅니다.{{ else }}Follow five field notes from an agent prototype to a system that can be operated safely.{{ end }}</p>
-                <a href="{{ if eq .Language.Lang "ko" }}{{ "/ko/expeditions/safe-agent-operations.html" | relURL }}{{ else }}{{ "/expeditions/safe-agent-operations.html" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}첫 Expedition 시작 →{{ else }}Start the expedition →{{ end }}</a>
+                <h3>{{ if eq .Language.Lang "ko" }}문제에 맞는 Expedition 선택{{ else }}Choose an expedition{{ end }}</h3>
+                <p>{{ if eq .Language.Lang "ko" }}여러 field note를 하나의 실무 판단으로 연결한 경로를 따라가세요.{{ else }}Follow a reviewed route that connects several field notes into one practical decision.{{ end }}</p>
+                <a href="{{ "expeditions/" | relURL }}">{{ if eq .Language.Lang "ko" }}Expedition 둘러보기 →{{ else }}Browse expeditions →{{ end }}</a>
             </article>
             <article class="atlas-entry">
                 <h3>{{ if eq .Language.Lang "ko" }}최근에 배운 것{{ else }}See what I am learning{{ end }}</h3>
