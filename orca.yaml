@@ -4,7 +4,8 @@
 scripts:
   setup: |
     export CCDOC_HOME="/Users/yoonsoo.park/code/ncino/claude-code-hub"
-    command -v ccdoc >/dev/null 2>&1 && ccdoc setup yopa-page "$ORCA_WORKTREE_PATH" || true
+    # --only-path keeps this hook inside the worktree: no hub git pull, no member relink.
+    command -v ccdoc >/dev/null 2>&1 && ccdoc setup yopa-page "$ORCA_WORKTREE_PATH" --only-path || true
     command -v cxdoc >/dev/null 2>&1 && cxdoc checkout add yopa.page "$ORCA_WORKTREE_PATH" || true
   archive: |
     # No ccdoc sync here: a worktree holds the repo's tracked CLAUDE.md, not the hub
