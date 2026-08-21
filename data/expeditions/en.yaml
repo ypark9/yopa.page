@@ -2,7 +2,7 @@ safe-agent-operations:
   id: safe-agent-operations
   title: From Agent Prototype to Safe Operations
   question: How do you move a promising AI agent into a safely operated system?
-  estimated_minutes: 20
+  estimated_minutes: 25
   stops:
     - id: define-authority
       region: Agent Grove
@@ -34,15 +34,23 @@ safe-agent-operations:
       title: Prove state migration and rollback
       purpose: Use a real Hermes migration to see why writer shutdown, SQLite validation, single-consumer cutover, and rollback matter.
       url: /blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+    - id: measure-before-trust
+      region: Archive Harbor
+      evidence: production
+      title: Measure the swarm before you trust its policy
+      purpose: Use a 33-run surf-school swarm to see the completion rate, tail latency, cost, and failure modes a clean architecture diagram hides, and why hard constraints belong in code.
+      url: /blog/2026-08-20-surf-school-swarm-evidence.html
   principles:
     - Describe authority and risk before calling a system an agent.
     - Treat managed services as boundaries, not as automatic production readiness.
     - Make infrastructure changes deterministic, reviewable, and reversible.
     - Authenticate and authorize every workload and delegated user at each hop.
     - Test state recovery and cutover behavior with the actual runtime.
+    - Enforce hard constraints in deterministic code, not in prompt sentences.
   checklist:
     - Record the agent's tools, autonomy, state, and maximum consequence.
     - Separate inbound authentication, workload identity, and tool authorization.
     - Pin artifacts and require evaluation, approval, observability, and rollback evidence.
     - Minimize network reach and permissions for every component.
     - Rehearse backup, restore, writer shutdown, and rollback before migration.
+    - Log every hop (node path, tokens, tool calls, failures) and budget the tail, not the average.
