@@ -37,8 +37,8 @@ safe-agent-operations:
     - id: measure-before-trust
       region: Archive Harbor
       evidence: production
-      title: 정책을 믿기 전에 swarm을 측정한다
-      purpose: 33번 돌린 서핑 스쿨 swarm으로 깔끔한 아키텍처 다이어그램이 숨기는 완주율, 꼬리 latency, 비용, 실패 모드를 확인하고, 하드한 제약이 왜 코드에 있어야 하는지 봅니다.
+      title: 정책을 믿기 전에 스웜을 측정한다
+      purpose: 서핑 스쿨 스웜을 33번 실행해 완주율, 최악의 지연 시간, 비용과 실패 유형을 확인합니다. 반드시 지켜야 할 제약을 프롬프트가 아닌 코드로 강제해야 하는 이유도 살펴봅니다.
       url: /ko/blog/2026-08-20-surf-school-swarm-evidence.html
   principles:
     - 시스템을 agent라고 부르기 전에 권한과 위험을 기술한다.
@@ -53,4 +53,4 @@ safe-agent-operations:
     - artifact를 고정하고 evaluation, approval, observability와 rollback 증거를 요구한다.
     - 모든 component의 network reach와 permission을 최소화한다.
     - migration 전에 backup, restore, writer shutdown과 rollback을 연습한다.
-    - 모든 hop(노드 경로, 토큰, tool call, 실패)을 로그하고 평균이 아니라 꼬리를 예산잡는다.
+    - 모든 전달 과정에서 노드 경로, 토큰, 도구 호출과 실패를 기록하고 평균뿐 아니라 최악의 경우까지 예산에 반영한다.
