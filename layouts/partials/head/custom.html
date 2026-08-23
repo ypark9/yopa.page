@@ -1,3 +1,7 @@
+{{ if .Params.noindex }}
+<meta name="robots" content="noindex, nofollow">
+{{ end }}
+
 {{ if and .IsPage (eq .Section "blog") }}
 <!-- Custom CSS and JS for Copy AI Button -->
 <link rel="stylesheet" href="{{ "css/copy-ai-button.css" | relURL }}?v=article-atlas">

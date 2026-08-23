@@ -1,5 +1,7 @@
 {{- $.Scratch.Add "index" slice -}}
-{{- range where .Site.RegularPages "Params.maintenance_status" "ne" "archived" -}}
+{{- $pages := where .Site.RegularPages "Params.maintenance_status" "ne" "archived" -}}
+{{- $pages = where $pages "Params.excludeFromArticleSurfaces" "ne" true -}}
+{{- range $pages -}}
     {{- $date := .Date.Format "Jan 02"}}
     {{- $.Scratch.Add "index" (dict "title" .Title "tags" .Params.tags "categories" .Params.categories "contents" .Plain "permalink" .Permalink "date" $date "language" .Language.Lang "maintenance_status" (.Params.maintenance_status | default "")) -}}
 {{- end -}}

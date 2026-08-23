@@ -1,0 +1,47 @@
+.trivia-policy-container {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.trivia-policy-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.trivia-policy-kicker {
+  color: #a8d8c0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+}
+
+.trivia-policy-header h1 {
+  margin: 0;
+}
+
+.trivia-policy-updated {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.9rem;
+  margin: 0.9rem 0 0;
+}
+
+.trivia-policy-content {
+  line-height: 1.75;
+}
+
+.trivia-policy-content h2 {
+  margin-top: 2.75rem;
+}
+
+.trivia-policy-content li + li {
+  margin-top: 0.5rem;
+}
+
+.trivia-policy-content a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}

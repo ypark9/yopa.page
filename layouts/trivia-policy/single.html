@@ -1,0 +1,14 @@
+{{ define "main" }}
+<link rel="stylesheet" href="{{ "css/trivia-policy.css" | relURL }}">
+<div class="trivia-policy-container container">
+  <header class="trivia-policy-header">
+    <p class="trivia-policy-kicker">Alexa skill information</p>
+    <h1>{{ .Title }}</h1>
+    <p class="trivia-policy-updated">Last updated August 23, 2026</p>
+  </header>
+
+  <div class="trivia-policy-content">
+    {{ .Content }}
+  </div>
+</div>
+{{ end }}
