@@ -1,12 +1,14 @@
 import csv
 import json
+import re
 import shutil
 import subprocess
 import tempfile
 import unittest
 from io import StringIO
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).parents[1]
@@ -59,6 +61,29 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
                 continue
             rows.append(row)
         return rows
+
+    def home_page_size(self):
+        config = (ROOT / "config.yaml").read_text()
+        match = re.search(r"(?m)^  pagerSize:\s*(\d+)\s*$", config)
+        self.assertIsNotNone(match, "config.yaml must define pagination.pagerSize")
+        return int(match.group(1))
+
+    def latest_home_urls(self, home_path, site_url):
+        home = (self.output_dir / home_path).read_text()
+        latest = home.split("id=latest-articles", 1)[1].split("class=home-atlas-section", 1)[0]
+        hrefs = re.findall(r"href=([^\s>]+)", latest)
+        return [
+            urlsplit(urljoin(site_url, href.strip('"'))).path
+            for href in hrefs
+            if "/blog/" in urlsplit(urljoin(site_url, href.strip('"'))).path
+        ]
+
+    def latest_rss_urls(self, feed_path):
+        feed = ElementTree.parse(self.output_dir / feed_path).getroot()
+        return [
+            urlsplit(item.findtext("link")).path
+            for item in feed.findall("./channel/item")
+        ]
 
     def test_payload_contains_every_published_article(self):
         expected_urls = {urlsplit(row["permalink"]).path for row in self.visible_blog_rows()}
@@ -113,12 +138,19 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             replacement,
         )
 
-    def test_latest_articles_starts_with_a_real_new_article(self):
-        home = (self.output_dir / "index.html").read_text()
-        latest = home.split("Latest Articles", 1)[1].split("Article Atlas", 1)[0]
+    def test_latest_articles_match_current_rss_order_in_each_language(self):
+        page_size = self.home_page_size()
+        for language, home_path, feed_path, site_url in (
+            ("en", "index.html", "index.xml", "https://www.yopa.page/index.html"),
+            ("ko", "ko/index.html", "ko/index.xml", "https://www.yopa.page/ko/index.html"),
+        ):
+            with self.subTest(language=language):
+                expected = self.latest_rss_urls(feed_path)[:page_size]
+                actual = self.latest_home_urls(home_path, site_url)
 
-        self.assertIn("2026-07-30-agentcore-identity-private-key-jwt.html", latest)
-        self.assertNotIn("2026-08-01-python-project-environments.html", latest)
+                self.assertTrue(expected)
+                self.assertEqual(actual, expected)
+                self.assertEqual(len(actual), min(page_size, len(self.latest_rss_urls(feed_path))))
 
     def test_atlas_exposes_replacement_status(self):
         replacement = next(
