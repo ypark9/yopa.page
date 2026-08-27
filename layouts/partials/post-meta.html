@@ -5,6 +5,7 @@
     {{- $aboutPath = "/ko/about.html" -}}
   {{- end -}}
   {{- $aboutURL := $aboutPath | absURL -}}
+  {{- $personID := printf "%s#person" $aboutURL -}}
   <meta property="og:type" content="article" />
   <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}" />
   <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}" />
@@ -24,14 +25,13 @@
         "@id": {{ .Permalink | jsonify | safeJS }}
       },
       "author": {
+        "@id": {{ $personID | jsonify | safeJS }},
         "@type": "Person",
         "name": {{ $author | jsonify | safeJS }},
         "url": {{ $aboutURL | jsonify | safeJS }}
       },
       "publisher": {
-        "@type": "Person",
-        "name": {{ $author | jsonify | safeJS }},
-        "url": {{ $aboutURL | jsonify | safeJS }}
+        "@id": {{ $personID | jsonify | safeJS }}
       }
     }
   </script>

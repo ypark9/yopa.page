@@ -79,10 +79,12 @@ class BlogSeoRenderingTests(unittest.TestCase):
         self.assertEqual(len(postings), 1)
         posting = postings[0]
         self.assertEqual(posting["@context"], "https://schema.org")
-        self.assertEqual(posting["author"], posting["publisher"])
         self.assertEqual(posting["author"]["@type"], "Person")
         self.assertEqual(posting["author"]["name"], "Yoonsoo Park")
         self.assertTrue(posting["author"]["url"].endswith(about_path))
+        self.assertEqual(posting["publisher"]["@id"], posting["author"]["@id"])
+        self.assertNotIn("name", posting["publisher"])
+        self.assertNotIn("url", posting["publisher"])
         self.assertEqual(posting["mainEntityOfPage"]["@type"], "WebPage")
         self.assertTrue(posting["mainEntityOfPage"]["@id"].endswith("/" + str(relative_path)))
         self.assertTrue(posting["headline"])
