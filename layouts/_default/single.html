@@ -13,7 +13,11 @@
                               {{ $author = .Site.Params.author }}
                             {{ end }}
                             {{ $isReplacement := eq .Params.maintenance_status "replacement" }}
-                            {{ if eq .Language.Lang "ko" }}작성자{{ else }}By{{ end }} {{ $author }} |
+                            {{ $aboutPath := "/about.html" }}
+                            {{ if eq .Language.Lang "ko" }}
+                              {{ $aboutPath = "/ko/about.html" }}
+                            {{ end }}
+                            {{ if eq .Language.Lang "ko" }}작성자{{ else }}By{{ end }} <a href="{{ $aboutPath | relURL }}" rel="author">{{ $author }}</a> |
                             {{ if $isReplacement }}
                               {{ if eq .Language.Lang "ko" }}원문 최초 발행{{ else }}Originally published{{ end }}
                             {{ else }}
@@ -131,6 +135,10 @@
         {{ end }}
         <a class="article-atlas-return" href="{{ "explore/" | relURL }}?article={{ .RelPermalink | urlquery }}">Return to Article Atlas <span aria-hidden="true">↗</span></a>
     </aside>
+
+    {{ if and (eq .Section "blog") (ne .Params.maintenance_status "archived") }}
+      {{ partial "field-dispatch.html" . }}
+    {{ end }}
 
     {{ if .Section }}
     <nav class="flex container suggested">
