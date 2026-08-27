@@ -14,6 +14,7 @@ class SeoHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
         self.author_meta = []
+        self.article_authors = []
         self.author_links = []
         self.json_ld = []
         self._in_json_ld = False
@@ -23,6 +24,8 @@ class SeoHTMLParser(HTMLParser):
         attributes = dict(attrs)
         if tag == "meta" and attributes.get("name") == "author":
             self.author_meta.append(attributes.get("content"))
+        if tag == "meta" and attributes.get("property") == "article:author":
+            self.article_authors.append(attributes.get("content"))
         if tag == "a" and "author" in attributes.get("rel", "").split():
             self.author_links.append(attributes.get("href"))
         if tag == "script" and attributes.get("type") == "application/ld+json":
@@ -82,6 +85,7 @@ class BlogSeoRenderingTests(unittest.TestCase):
         self.assertEqual(posting["author"]["@type"], "Person")
         self.assertEqual(posting["author"]["name"], "Yoonsoo Park")
         self.assertTrue(posting["author"]["url"].endswith(about_path))
+        self.assertEqual(parser.article_authors, [posting["author"]["url"]])
         self.assertEqual(posting["publisher"]["@id"], posting["author"]["@id"])
         self.assertNotIn("name", posting["publisher"])
         self.assertNotIn("url", posting["publisher"])
