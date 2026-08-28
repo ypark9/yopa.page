@@ -1,6 +1,8 @@
 ---
 title: "Bedrock AgentCore Runtime의 Interactive Shell — 디버깅 사각지대가 닫혔다"
 date: 2026-06-08T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Amazon Bedrock AgentCore Runtime이 이제 실행 중인 agent 세션에 WebSocket으로 진짜 PTY 터미널을 붙일 수 있게 됐다. agent를 VPC 컨테이너로 돌리는 순간 디버깅이 왜 블랙박스가 됐는지, 새 InvokeAgentRuntimeCommandShell API가 실제로 뭘 바꾸는지, 그리고 언제 켜고 언제 잠가야 하는지 정리한다."
 categories:
@@ -14,9 +16,9 @@ tags:
   - security
 ---
 
-AgentCore Runtime 위에 agent는 로컬에서 다시 부를 수 있는 Lambda가 아니다. private VPC subnet에 만들어지는 Docker 컨테이너고, 접근 불가능한 세션 상태를 지니고, 로그로만 관찰 가능한 MCP gateway와 memory store을 사용함. 지금까지 세션이 맛가면 쓸 수 있는 도구는 *CloudWatch tail*로 추측하는게 다였음.
+AgentCore Runtime 위에 agent는 로컬에서 다시 부를 수 있는 Lambda가 아니다. 관리형 컨테이너고, VPC networking을 설정했다면 private subnet에서 돌며, 접근하기 어려운 세션 상태를 지니고, 로그로만 관찰 가능한 MCP gateway와 memory store를 사용한다. 지금까지 세션이 맛가면 쓸 수 있는 도구는 *CloudWatch tail*로 추측하는 게 다였음.
 
-2026년 6월, AWS가 [그 갭을 메웠다](https://aws-news.com/article/2026-06-05-amazon-bedrock-agentcore-runtime-introduces-interactive-shells-for-terminal-access-into-agent-sessions). AgentCore Runtime이 이제 실행 중인 agent 세션에 **interactive shell**을 지원한다. 새 `InvokeAgentRuntimeCommandShell` API로, 라이브 세션에 터미널로 둘러볼 수 있다.
+2026년 6월, AWS가 [그 갭을 메웠다](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-command-shell.html). AgentCore Runtime이 이제 실행 중인 agent 세션에 **interactive shell**을 지원한다. 새 `InvokeAgentRuntimeCommandShell` API로 라이브 세션에 터미널을 붙여 둘러볼 수 있다.
 
 agent를 컨테이너로 돌리는 입장에선, 로그파일 사용해서 상상력으로 디버깅하던 시절이 끝났고, 이제 직접 쳐들어가는 것과 같음.
 
@@ -73,7 +75,7 @@ health check나 deterministic probe를 스크립트로 짠다면 `Command`가 �
 - **IAM으로 막아라.** 셸을 여는 action은 agent를 invoke하는 action과 별개다. `InvokeAgentRuntimeCommandShell`(과 단발 `Command`)을 명시적으로, 소수의 principal에게만 grant, *프로덕션에선 deny* — break-glass 절차가 없다면. 기존 invoke 권한에 묻어두지말기.
 - **dev/QA를 default로.** 값의 대부분은 재현하는 non-prod에 있다. 거기선 셸을 자유롭게 켜고, prod에선 audit되고 예외로 만들어라.
 - **CLI 버전 확인.** `agentcore exec --it`는 새 API를 아는 AgentCore CLI 빌드가 필요하다. 디버깅 세션 전에 확인해라.
-- **idle timeout 주의.** runtime은 보통 idle session timeout(예: 15분)이 있음. 셸은 세션을 열어둔다 — 내 attach가 그 시계를 리셋하는지 알아두기.
+- **운영 한도를 확인해라.** 셸 연결은 최대 1시간, 프레임은 64KB, 재접속 때 재생되는 출력 버퍼는 256KB까지다. runtime에는 idle session timeout(예: 15분)도 있으니 attach가 그 시계를 리셋하는지 확인해라. CloudTrail에는 API 메타데이터만 남고 셸 stdin/stdout은 기록되지 않는다.
 
 ## 소왓?
 

@@ -1,6 +1,8 @@
 ---
 title: "Agent가 만든 코드, 어디서 돌릴 건데? Lambda MicroVMs와 격리의 트레이드오프"
 date: 2026-07-02T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS Lambda MicroVMs는 Firecracker 기반 VM 수준 격리에 최대 8시간 suspend/resume까지 준다. 그럼 언제 이게 필요하고 언제 Code Interpreter 샌드박스나 그냥 컨테이너면 충분한가. 그리고 agent가 짠 코드를 돌릴 때의 가능한 문제점."
 categories:
@@ -15,7 +17,7 @@ tags:
 
 Agent를 만들다 보면 모델이 방금 생성한 코드를 실행하고 싶을때가 있다. 근데 LLM이 방금 생성한 코드는 틀렸을 수도 있고, prompt injection이 뚫렸으면 위험할 수도 있다. 그걸 어디서 돌릴건지 생각해야된다.
 
-2026년 6월, AWS가 [Lambda MicroVMs](https://aws-news.com/article/2026-06-22-aws-introduces-lambda-microvms-for-isolated-execution-of-user-and-ai-generated-code)를 발표했다. 딱 이 문제를 위한 compute primitive 솔류션이다. 그동안 대충 괜찮겠지 뭐... 했던 리스크를 표면으로 끌어올리는 것이라 알아둘만하다.
+2026년 6월, AWS가 [Lambda MicroVMs](https://aws.amazon.com/about-aws/whats-new/2026/06/aws-lambda-microvms/)를 발표했다. 딱 이 문제를 위한 compute primitive다. 한도와 리전 가용성은 계속 바뀌고 있으니 [Lambda MicroVM 공식 문서](https://docs.aws.amazon.com/lambda/latest/dg/microvms-how-it-works.html)를 기준으로 확인해야 한다.
 
 ## 원하는 세 가지, 다 가질 순 없다
 
@@ -59,8 +61,8 @@ VM 격리가 진짜 필요하다는 시그널은 간단히 "내가 안 쓴 코�
 ## 체크할 만한 문제점들
 
 - **격리가 입력 처리를 건너뛰어도 된다는건 아니다.** VM 수준 격리는 탈출을 막는다. 근데 agent가 내가 마운트해준 데이터 볼륨에 신나게 `rm -rf`를 날리거나, env var로 넘긴 secret을 유출하는 건 못 막는다. 격리는 blast radius를 가둘 뿐, 그 안에서 뭐가 터질지는 보장하지 못함.
-- **8시간 resume 창은 까먹으면 비용 함정이다.** suspend된 microVM도 baseline compute는 계속 과금된다. 작업을 suspend해놓고 agent를 정리 안했다면 각오해야될듯. idle connection 관리하듯 suspend된 VM을 추적하고 회수해라.
-- **런칭 시점 리전이 좁다.** N. Virginia, Ohio, Oregon, Tokyo, Ireland. agent가 다른 데서 돌면 아직 옵션 사항이 되지 못함.
+- **suspend가 실행과 같은 과금 상태는 아니다.** suspend된 microVM은 메모리와 디스크를 보존하고 snapshot storage 비용이 붙는다. baseline compute는 실행 중일 때 과금된다. 더 이상 필요 없는 작업은 terminate하고, 실행 중인 VM과 suspend snapshot을 모두 추적해라.
+- **리전 가용성은 이미 바뀌었다.** 처음 다섯 리전에서 2026년 8월 19일 열 곳으로 늘었다: 버지니아 북부, 오하이오, 오리건, 도쿄, 아일랜드, 뭄바이, 싱가포르, 시드니, 프랑크푸르트, 스톡홀름. 설계 전에 [현재 리전별 지원 현황](https://docs.aws.amazon.com/lambda/latest/dg/microvms-launching.html)을 확인해라.
 - **microVM마다 HTTPS URL은 네트워크 모델을 바꾼다.** VM마다 자기 endpoint를 갖는다. 편하긴 한데 ephemeral surface가 확 늘어난다는 뜻이기도 하다.
 
 ## 그래서요?

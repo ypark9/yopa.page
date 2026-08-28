@@ -1,6 +1,8 @@
 ---
 title: "When Google Standardizes the Thing You Built Anyway"
 date: 2026-06-22T18:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "I built knowledge-base agents that generate an LLM wiki instead of running a vector RAG pipeline. It always nagged at me that this wasn't an industry standard, that it was toy logic. Then Google published the Open Knowledge Format, which specifies almost exactly the pattern I'd been using. Here's what OKF is, why a directory of markdown files beats a vector store for some jobs, and what it cost me to become conformant."
 categories:
@@ -18,21 +20,23 @@ For the last several months I've been building knowledge-base agents that do som
 
 It worked well. Better than the RAG pipeline it replaced, for the kind of slow-changing structured knowledge I was dealing with. But it always nagged at me. Vector RAG is what everyone writes blog posts about. It's what the frameworks assume. My markdown-wiki thing felt like a toy I'd built in a corner, a clever hack that no serious team would adopt. I kept waiting for someone to tell me I was doing it wrong.
 
-Then Google published the Open Knowledge Format.
+Then Google published the Open Knowledge Format. The initial v0.1 article is not the end of the story: Google published [OKF v0.2](https://cloud.google.com/blog/products/data-analytics/okf-v0-2-adds-trust-signals/) on July 24, 2026 with additive trust and provenance signals.
+
+> **Review note (2026-08-28):** The examples below describe the v0.1 shape. In v0.2, `type` remains the only required field, while optional `generated`, `verified`, `sources`, `status`, `stale_after`, and attestation vocabulary lets consumers judge provenance, freshness, lifecycle, and computation. `timestamp` is superseded by `generated.at`, and the body citation list is superseded by `sources`; v0.1 bundles remain valid.
 
 ## What OKF actually is
 
-OKF is a draft spec from the Google Cloud knowledge-catalog project. The one-line version: a knowledge corpus is a directory of markdown files with YAML frontmatter, and that's it. No schema registry. No central authority. No required SDK. The spec's own line is "if you can `cat` a file, you can read OKF; if you can `git clone` a repo, you can ship it."
+OKF is an open, versioned specification from the Google Cloud knowledge-catalog project. The v0.1 baseline is a knowledge corpus represented as a directory of markdown files with YAML frontmatter, and that's it. No schema registry. No central authority. No required SDK. The v0.2 additions are optional vocabulary, not a mandatory runtime or service. The spec's own line is "if you can `cat` a file, you can read OKF; if you can `git clone` a repo, you can ship it."
 
 The structure is almost embarrassingly small:
 
 - Every concept is one markdown file. The file path minus `.md` is its ID.
-- Each file has a frontmatter block. Exactly one field is required: `type`. Everything else (`title`, `description`, `resource`, `tags`, `timestamp`) is recommended but optional.
+- Each file has a frontmatter block. Exactly one field is required: `type`. Everything else (`title`, `description`, `resource`, `tags`, and the v0.1 `timestamp` field) is recommended but optional; v0.2 uses `generated.at` for that timestamp.
 - `index.md` is a reserved filename for a directory listing. `log.md` is reserved for a change history. Both are optional.
 - Links between concepts are plain markdown links. A link from A to B just asserts "these are related." The kind of relationship is left to the surrounding prose. Consumers treat every link as an untyped directed edge.
 - Broken links are allowed. The target might be knowledge that hasn't been written yet.
 
-That's the whole format. The conformance rules in the spec are equally permissive: a bundle is conformant if its non-reserved markdown files have parseable frontmatter and every frontmatter has a non-empty `type`. Consumers are explicitly forbidden from rejecting a bundle over missing optional fields, unknown types, unknown keys, broken links, or a missing index. The format is built to stay useful while it's half-written and partially machine-generated, which is exactly the state most real knowledge ends up in.
+That's the v0.1 baseline. The conformance rules remain permissive in v0.2: a bundle is conformant if its non-reserved markdown files have parseable frontmatter and every frontmatter has a non-empty `type`; the new trust fields are opt-in. Consumers are explicitly forbidden from rejecting a bundle over missing optional fields, unknown types, unknown keys, broken links, or a missing index. The format is built to stay useful while it's half-written and partially machine-generated, which is exactly the state most real knowledge ends up in.
 
 And the spec names its inspirations directly. Section 10 lists "LLM wiki repos" and "metadata as code" as the patterns OKF is intentionally close to. That was the sentence that made me sit up. The thing I'd been quietly building was, word for word, one of the named reference patterns for an emerging open standard.
 
@@ -75,6 +79,6 @@ Running this pattern for real surfaced a few things the spec doesn't warn you ab
 
 The practical win is small and concrete: a couple of lines in a generator and I can describe my knowledge bases as OKF-conformant instead of as a bespoke hack. When I explain the design to someone now, I have a reference to point at.
 
-The bigger thing is the feeling going away. I'd been carrying this low-grade doubt that the markdown-wiki approach was a toy, that I'd taken a wrong turn while everyone else went vector. It turns out the intuition was pointing the same direction Google is now trying to standardize. The pattern wasn't a hack. It was an early implementation of something that was going to get a spec eventually.
+The bigger thing is the feeling going away. I'd been carrying this low-grade doubt that the markdown-wiki approach was a toy, that I'd taken a wrong turn while everyone else went vector. It turns out the intuition was pointing the same direction Google is now standardizing, including the trust signals an agent-written corpus needs. The pattern wasn't a hack. It was an early implementation of something that was going to get a spec eventually.
 
-That's worth writing down, if only as a note to self: when a simple design keeps working and you can't find the standard it conforms to, sometimes the standard just hasn't been written yet. Build the simple thing. Wait for the spec to catch up.
+That's worth writing down, if only as a note to self: when a simple design keeps working and you can't find the standard it conforms to, sometimes the standard just hasn't been written yet. Build the simple thing, but track the spec version and add trust signals before agents write at scale.

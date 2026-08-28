@@ -1,6 +1,8 @@
 ---
 title: "OpenSearch Serverless NextGen: Scale-to-Zero가 RAG 비용을 바꾸는 범위와 바꾸지 않는 것"
 date: 2026-06-09T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS가 OpenSearch Serverless를 에이전틱 AI 워크로드에 맞춰 새롭게 설계했다. Scale-to-zero, 최대 20배 버스트 확장, 최대 60% 비용 절감이 RAG 벡터 스토어에 실제로 어떤 변화를 주는지, CloudFormation 마이그레이션의 함정과 RAG 엔진 선택에 미치는 영향을 정리한다."
 categories:
@@ -13,7 +15,7 @@ tags:
   - serverless
 ---
 
-AWS가 에이전틱 AI 워크로드를 위해 [Amazon OpenSearch Serverless를 새롭게 설계했다](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/). 발표에서 가장 눈에 띄는 수치는 분명하다. 유휴 컬렉션의 컴퓨팅 용량을 **0**까지 낮출 수 있고, 필요할 때는 수 초 안에 **20배**까지 확장할 수 있으며, 이전 용량 모델과 비교해 최대 **60%의 비용 절감**을 기대할 수 있다.
+AWS가 에이전틱 AI 워크로드를 위해 [Amazon OpenSearch Serverless를 새롭게 설계했다](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/). 발표에서 가장 눈에 띄는 수치는 분명하다. 유휴 컬렉션의 컴퓨팅 용량을 **0**까지 낮출 수 있고, 필요할 때는 수 초 안에 **20배**까지 확장할 수 있으며, 이전 용량 모델과 비교해 최대 **60%의 비용 절감**을 기대할 수 있다. 실제 마이그레이션 전에는 [현재 세대별 컬렉션 문서](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-create.html)를 기준으로 다시 확인해야 한다.
 
 특히 OpenSearch Serverless를 관리형 지식 기반의 벡터 스토어로 사용하는 RAG 환경이라면 이는 직접적인 비용 이슈다. 하지만 실제 마이그레이션을 검토해 보니 핵심은 절감액 자체가 아니었다. 발표가 약속하는 변화와 마이그레이션에 실제로 드는 비용 사이에는 간극이 있다. 이 발표가 하나로 묶어 보이기 쉬운 두 가지 결정을 분리해서 살펴보자.
 
@@ -43,7 +45,7 @@ CloudFormation 문서의 이 한 줄이 마이그레이션의 성격을 바꾼�
 ## 실제로 확인한 주의점
 
 - **`aws-cdk-lib`에는 이미 L1 리소스가 있을 수 있다.** `CfnCollectionGroup`과 `collectionGroupName` 속성을 사용하려면 CDK를 올려야 한다고 생각하기 쉽다. 하지만 최신 버전이 아니더라도 비교적 최근의 `aws-cdk-lib`에는 이미 두 항목이 포함돼 있을 수 있다. 업그레이드하기 전에 현재 설치된 버전을 먼저 확인하는 편이 낫다.
-- **`generation` 필드는 없다.** `generation: NEXTGEN`처럼 세대를 지정하는 토글을 찾게 되지만, 그런 필드는 존재하지 않는다. 컬렉션 그룹 연결 자체가 NextGen을 표현하는 방식이다.
+- **세대는 명시적으로 지정한다.** collection group에 `Generation: NEXTGEN`(CLI에서는 `--generation NEXTGEN`)을 지정하면 컬렉션이 그룹의 세대를 상속한다. 기존 Classic 컬렉션에 플래그 하나를 추가해 in-place로 바꾸는 방식은 아니다.
 - **`cdk synth` 성공은 검증이 아니다.** 최소 OCU 0, 최대 OCU N으로 설정한 `CollectionGroup`과 연결된 컬렉션을 포함해 CloudFormation 템플릿을 생성할 수 있다. 이는 템플릿이 컴파일된다는 뜻일 뿐, 하위 시스템이 새 컬렉션을 런타임에 받아들이는지를 증명하지는 않는다.
 - **리소스 타입의 존재와 실제 배포 성공은 다르다.** 주요 리전에서 `CollectionGroup` 리소스 타입을 사용할 수 있는지 확인하면 리전 지원 여부라는 장애물은 제거된다. 그러나 API가 그 타입을 인식하는 것과 실제 배포 후 지식 기반이 해당 컬렉션에 인덱싱하는 것은 별개의 검증 단계다. 전자가 통과했다고 후자를 건너뛰면 안 된다.
 - **Scale-to-zero는 콜드 스타트와 맞바꾼다.** 유휴 컴퓨팅 비용이 0이 되는 것은 개발·QA 환경에서는 분명한 이점이다. 다만 사용자 요청을 처리하는 경로에서는 유휴 상태 뒤 첫 쿼리가 워밍업 시간을 부담한다. 이는 비용이 아니라 지연 시간의 문제다. 그래서 먼저 비프로덕션 환경에 적용해 콜드 스타트 동작을 확인한 뒤 운영 환경을 검토하는 편이 안전하다.

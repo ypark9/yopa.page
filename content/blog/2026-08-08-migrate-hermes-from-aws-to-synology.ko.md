@@ -1,6 +1,8 @@
 ---
 title: "Hermes를 AWS ECS에서 Synology로 옮기며 배운 데이터 무손실 마이그레이션"
 date: 2026-08-08
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "ECS Fargate와 EFS에서 운영하던 Hermes Agent를 Synology Dockge로 옮긴 실제 과정. SQLite WAL, 일회성 maintenance task, Slack Socket Mode, Compose 재생성과 복구 기준을 다룬다."
 categories:
@@ -30,6 +32,8 @@ atlas:
 > 이 workload는 정말 Fargate가 필요한가, 아니면 복구 가능한 Docker Compose면 충분한가?
 
 이번 글은 그 판단의 결과다. 결론부터 말하면 컨테이너를 띄우는 일은 쉬웠다. 어려운 부분은 SQLite 상태를 한 건도 잃지 않고 옮기고, Slack consumer가 두 곳에서 동시에 실행되지 않도록 순서를 설계하는 일이었다.
+
+> **검토 메모(2026-08-28):** 이 글은 `v2026.8.3` 이미지를 고정했던 완료된 마이그레이션 기록이다. 다시 실행할 때는 [최신 Hermes Docker/configuration 문서](https://hermes-agent.nousresearch.com/docs/user-guide/docker/)에서 release와 digest를 확인하고, 중지·백업·rollback gate는 유지해야 한다. 과거 tag를 그대로 복사하지 않는다.
 
 ## 옮기기 전 구조와 목표
 

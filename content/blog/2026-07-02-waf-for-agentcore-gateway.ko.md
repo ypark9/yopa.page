@@ -1,6 +1,8 @@
 ---
 title: "AgentCore Gateway에 WAF가 붙었다: MCP 정문에 방벽 세우기"
 date: 2026-07-02T09:05:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS WAF가 이제 Amazon Bedrock AgentCore Gateway를 보호한다. Gateway 레벨 설정 하나로 downstream tool, agent, integration 전부 커버된다. 왜 MCP gateway가 방벽을 세울 정확한 자리인지, 그리고 어떤 rule을 실제로 켜야 하는지 정리한다."
 categories:
@@ -15,7 +17,7 @@ tags:
 
 Agent를 바깥에 노출할 때 무서운 건 모델이 아니다. 정문이다. 요청 하나를 수십 개의 MCP tool과 memory store, downstream integration으로 펼쳐주는 gateway야말로 공격자 입장에서 레버리지가 가장 큰 지점이다. 여기서 잘못된 요청이나 악의적인 요청 하나가 뒤에 있는 모든 곳에 침투 가능하다.
 
-2026년 6월, AWS가 [Amazon Bedrock AgentCore Gateway용 AWS WAF를 GA](https://aws-news.com/article/2026-06-29-aws-waf-adds-support-for-amazon-bedrock-agentcore-gateway)로 출시했다. 작은 발표지만 아키텍처적 존재감은 크다. agentic 워크로드의 방벽이 이제 원래 있어야 할 자리(gateway)에 놓이게 됐다.
+2026년 6월, AWS가 [Amazon Bedrock AgentCore Gateway용 AWS WAF를 GA](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-waf.html)로 출시했다. 작은 발표지만 아키텍처적 존재감은 크다. agentic 워크로드의 방벽이 이제 원래 있어야 할 자리(gateway)에 놓이게 됐다.
 
 ## 왜 gateway가 맞는 통제 지점인가
 
@@ -43,6 +45,8 @@ WAF protection packs              큐레이션된 번들을 일관되게 적용
 ```
 
 WAF와 AgentCore Gateway가 둘 다 지원되는 모든 리전에서 쓸 수 있다. 일부 런칭과 달리 몇몇 리전에만 묶여 있지 않다.
+
+이 연결은 리전 단위다. 하나의 regional web ACL이 gateway를 보호하고, web ACL과 gateway는 같은 리전에 있어야 한다. AWS 문서상 기본 동작은 `FAIL_CLOSE`이고, 가용성을 우선해 `FAIL_OPEN`으로 바꾸는 것은 명시적인 선택이다. 배포할 때 `WafBlocks`, `WafFailOpens`, `WafFailCloses` 지표를 같이 봐라.
 
 ## 결정 트리: 어떤 rule을, 언제
 

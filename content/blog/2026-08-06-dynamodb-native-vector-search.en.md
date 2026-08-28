@@ -1,6 +1,8 @@
 ---
 title: "DynamoDB Now Does Vector Search: When It Replaces Your Vector DB (and When It Doesn't)"
 date: 2026-08-06T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "DynamoDB can now store embeddings and run similarity search on the same table as your operational data. Here is a running example, a before/after of the sync pipeline it removes, and an honest read on when it actually replaces a dedicated vector store."
 categories:
@@ -16,6 +18,8 @@ tags:
 ---
 
 > DynamoDB now supports native vector search. You store embeddings as an attribute on your items and run similarity search directly on the table, so one table is both your operational datastore and your vector store. This is a real simplification for a specific shape of app, and a trap for others. Here is the running example, the pipeline it deletes, and where the line actually sits.
+
+> **Review note (2026-08-28):** The current API contract is `SearchVectors`, not `Query`. The example and the tenant-isolation warning below follow the current [DynamoDB vector-index documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/VectorSearchWorkingWith.html).
 
 If you read my [AWS vector database decision guide](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html), this is a new entry on that same cost/latency curve. The pitch is different from every other option there: it is not a better vector store, it is *no separate vector store at all*.
 
@@ -88,27 +92,32 @@ Search returns the product rows directly, not just IDs:
 
 ```python
 q = bedrock_embed("a warm jacket for hiking in the rain")
-resp = table.query(
+resp = dynamodb.search_vectors(
+    TableName="Products",
     IndexName="VectorIndex",
-    VectorSearchConfiguration={"Vector": q, "TopK": 5},
+    SearchVector=[{"N": str(value)} for value in q],
+    TopK=5,
+    ProjectionExpression="product_id, title, price, category",
 )
-# resp["Items"] already contains title, price, category, no second round trip
+# Each result has an Item and a Score; no second round trip is needed.
+items = [result["Item"] for result in resp["SearchResults"]]
 ```
 
-The whole `Streams -> Lambda -> vector store` diagram, plus the reconciliation job, plus the `BatchGetItem` round trip, is gone. Because `Projection` is `ALL`, the search returns the full row in one call.
+The whole `Streams -> Lambda -> vector store` diagram, plus the reconciliation job, plus the `BatchGetItem` round trip, is gone. Because `Projection` is `ALL`, the search returns every projected non-vector attribute in one call; the large vector attribute itself is omitted from results by default.
 
 A few knobs that matter:
 
 - **Dimensions** must equal your model's output (Titan V2 is 1024). Up to 4,096 is supported.
+- **Capacity and result limits**: vector indexes require on-demand capacity (`PAY_PER_REQUEST`), and `TopK` is capped at 100 per request.
 - **Distance function**: use `DOT_PRODUCT` when your embeddings are already unit-normalized (it equals cosine but skips the normalization step). Use `COSINE` for un-normalized vectors, `EUCLIDEAN` when magnitude matters. For `COSINE`/`EUCLIDEAN` lower is more similar, for `DOT_PRODUCT` higher is more similar.
 - **Projection**: `ALL` returns the whole row, `INCLUDE` returns a chosen subset (smaller, cheaper index), `KEYS_ONLY` sends you back to a round trip. Pick `INCLUDE` when items are large.
 - **Search is ANN** (approximate nearest neighbor), so you trade a sliver of exactness for predictable speed and cost. That is the right trade at scale, but it means recall is not 100 percent, which matters for the decision below.
 
 ## Multi-tenant isolation: the partition key does real work here
 
-If your catalog is multi-tenant (each customer sees only their own products), the vector index's optional **partition key** is the interesting part. Define the index with a partition key of `tenant_id` and every search must supply a tenant value, so DynamoDB only scans that tenant's slice of the index. You get three things at once: cheaper searches (less data scanned), throughput quota *per tenant*, and isolation enforced at the storage layer instead of by a filter you hope you applied correctly.
+If your catalog is multi-tenant (each customer sees only their own products), the vector index's optional **partition key** is the interesting part. Define the index with a partition key of `tenant_id` and every search must supply a tenant value in `SearchConditionExpression`, so DynamoDB searches only that tenant's slice of the index. You get cheaper searches (less data scanned) and throughput that scales across partition-key values.
 
-That is a cleaner isolation story than the "attach a metadata field and filter on it at query time" pattern most managed RAG stacks use. If you have ever shipped a bug where a missing filter leaked one tenant's data into another's results, storage-level partitioning is worth a hard look.
+This is useful data scoping, but it is **not an access-control boundary**. Any principal with `dynamodb:SearchVectors` on the index can submit another tenant's partition-key value, and fine-grained `LeadingKeys` conditions do not apply to this API. For strict tenant isolation, use separate tables or indexes with separate IAM grants; still enforce the tenant value in your application authorization path.
 
 ## So when does this actually replace your vector DB?
 
@@ -130,6 +139,7 @@ Do NOT reach for it when:
 - **"Vector search" is not "RAG."** The feature returns nearest items. Chunking, embedding orchestration, and generation are still yours to build. Do not scope a project as "we'll use DynamoDB instead of a RAG stack" without accounting for the parts it does not do.
 - **Dimensions are fixed at index creation and must match the model.** Switching embedding models later (different dimension) means a new index and a backfill. Pin your model choice deliberately.
 - **`KEYS_ONLY` projection quietly brings back the round trip.** If you set it to keep the index small, you are back to a second `GetItem` per hit. Use `INCLUDE` with just the fields the result view needs.
+- **The read API is not `Query` or `Scan`.** Vector indexes are readable through `SearchVectors` only. Results are capped at 16 MB with no pagination, so a wide `ALL` projection plus a high `TopK` can exceed the response limit; narrow the projection or reduce `TopK` for large items.
 - **Measure recall, not vibes.** ANN trades exactness for speed. A demo that looks great on ten queries can miss on the long tail. Build a golden set of query-to-expected-result pairs and check recall against your current store before migrating.
 
 ## What to actually do

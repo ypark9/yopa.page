@@ -16,7 +16,7 @@ tags:
 
 고객지원 에이전트가 내부 주문 API에서 고객의 주문 내역을 조회한다고 가정해 보자. 이 API는 ID 공급자(IdP)로 보호되어 있으므로 에이전트가 요청을 보내려면 액세스 토큰이 필요하다. 토큰을 받으려면 먼저 IdP에 자신의 신원을 증명해야 한다.
 
-이 글에서 다룰 내용이 바로 이 인증 단계다. 2026년 7월 AWS는 [Amazon Bedrock AgentCore Identity에 Private Key JWT 클라이언트 인증을 추가](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/)했다. 기존의 공유 클라이언트 시크릿을 대신할 수 있는 방식이다.
+이 글에서 다룰 내용이 바로 이 인증 단계다. 2026년 7월 AWS는 [Amazon Bedrock AgentCore Identity에 Private Key JWT 클라이언트 인증을 추가](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/)했다. 기존의 공유 클라이언트 시크릿을 대신할 수 있는 방식이다. 지원 알고리즘, 키 정책, 리전 배치는 [현재 AgentCore 설정 문서](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/private-key-jwt.html)를 기준으로 다시 확인해야 한다.
 
 ## AgentCore에서 Identity의 역할
 
@@ -72,7 +72,7 @@ client_id:     support-agent
 client_secret: SUPER_SECRET_VALUE     ← 우리가 지켜야 하는 그것
 ```
 
-Private Key JWT 방식에서는 설정이 KMS 키를 가리키고, IAM으로 키 사용 권한을 제어한다.
+Private Key JWT 방식에서는 설정이 KMS 키를 가리키고, IAM으로 키 사용 권한을 제어한다. KMS 키는 credential provider와 같은 리전에 있어야 하며, cross-account 사용은 키 정책이 허용하면 가능하다.
 
 ```
 client_id:      support-agent
@@ -103,7 +103,7 @@ Private Key JWT는 *클라이언트*를 인증한다. 발급된 토큰이 *누�
 
 **서명 알고리즘은 세 시스템에서 일치해야 한다.** IdP가 요구하는 알고리즘을 AWS KMS와 AgentCore Identity가 모두 지원해야 하며, 자격 증명 공급자 설정도 같은 값을 사용해야 한다. 선택지는 RS256, PS256, ES256이며 KMS 키 사양도 이에 맞아야 한다. AWS 예제에서는 `ECC_NIST_P256`과 `ES256`을 사용한다. 알고리즘을 먼저 정한 뒤 이를 지원하는 KMS 키를 만드는 편이 좋다. 값이 일치하지 않으면 키를 만들 때가 아니라 토큰 엔드포인트에서 서명 검증 오류가 발생할 수 있다.
 
-**`kms:ViaService`로 키 사용 경로를 제한한다.** KMS 키 정책에 `kms:Sign`을 허용하되, `bedrock-agentcore-identity.<region>.amazonaws.com`을 지정한 `kms:ViaService` 조건을 추가한다. 그러면 다른 주체가 `kms:Sign` 권한을 갖고 있더라도 AgentCore Identity를 거치지 않고는 이 키를 사용할 수 없다.
+**`kms:ViaService`로 키 사용 경로를 제한한다.** KMS 키 정책에 provider가 요구하는 `kms:Sign`과 `kms:DescribeKey`를 허용하되, `bedrock-agentcore-identity.<region>.amazonaws.com`을 지정한 `kms:ViaService` 조건을 추가한다. 그러면 다른 주체가 광범위한 KMS 권한을 갖고 있더라도 AgentCore Identity를 거치지 않고는 이 키를 사용하기 어렵다.
 
 **키 쌍을 어디에서 생성할지 정한다.** KMS에서 키 쌍을 만든 뒤 공개 키를 IdP에 전달하거나(`kms:GetPublicKey`), IdP에서 키 쌍을 만들고 개인 키를 KMS로 가져올 수 있다(`kms:GetParametersForImport`, `kms:ImportKeyMaterial`). KMS에서 생성하면 개인 키가 처음부터 내보낼 수 없는 상태로 유지된다. IdP가 다른 방식을 요구하지 않는다면 이쪽이 더 안전하다.
 

@@ -1,8 +1,8 @@
 ---
 title: "Claude Code 세션끼리 메시지를 주고받는 법"
 date: 2026-08-10T09:00:00-04:00
-lastmod: 2026-08-14
-reviewed_at: 2026-08-14
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Claude Code의 ListAgents와 cross-session SendMessage를 이용해 독립적으로 실행 중인 세션 사이에 작업 계약, 발견 사항, 검토 요청을 전달하는 실전 방법."
 categories:
@@ -14,21 +14,21 @@ tags:
   - cross-session-messaging
 ---
 
-Claude Code 2.1.224부터 독립적으로 실행 중인 세션끼리 메시지를 주고받을 수 있다. 한 세션이 `ListAgents`로 다른 세션을 찾고, `SendMessage`로 필요한 내용을 전달한다. 같은 팀으로 생성한 teammate만 대화할 수 있었던 기존 방식과 달리, 이미 따로 실행하고 있는 세션을 연결할 수 있다는 점이 핵심이다.
+Claude Code 2.1.224부터 독립적으로 실행 중인 세션끼리 메시지를 주고받을 수 있다. 한 세션이 `ListAgents`(직접 확인할 때는 `/list-agents`나 `/peers`)로 다른 세션을 찾고, `SendMessage`로 필요한 내용을 전달한다. 같은 팀으로 생성한 teammate만 대화할 수 있었던 기존 방식과 달리, 이미 따로 실행하고 있는 세션을 연결할 수 있다는 점이 핵심이다.
 
 이 기능은 세션을 하나로 합치지 않는다. 각 세션은 자기 컨텍스트와 작업 디렉터리를 그대로 유지하고, 필요한 정보만 메시지로 받는다. 그래서 여러 저장소나 worktree에서 병렬로 작업할 때 사람이 터미널 사이를 오가며 내용을 복사하는 일을 줄일 수 있다.
 
 ## 먼저 버전을 확인한다
 
-cross-session `SendMessage`는 Claude Code 2.1.224에서 macOS와 Linux에 추가됐다.
+cross-session `SendMessage`는 Claude Code 2.1.224에서 macOS·Linux·WSL2에 추가됐다. native Windows 지원은 2.1.234 이상이 필요하다.
 
 ```bash
 claude --version
 ```
 
-2.1.225부터는 `ListAgents`에 `name [ref]` 형식으로 보이는 다른 머신의 Remote Control 세션에도 먼저 메시지를 시작할 수 있다. 여러 머신을 연결해 쓸 계획이라면 2.1.225 이상을 기준으로 잡는 편이 낫다.
+2.1.225부터는 `ListAgents`에 `name [ref]` 형식으로 보이는 다른 머신의 Remote Control 세션에도 먼저 메시지를 시작할 수 있다. 여러 머신을 연결해 쓸 계획이라면 2.1.225 이상을 기준으로 잡는 편이 낫다. Amazon Bedrock, Claude Platform on AWS, Google Cloud Agent Platform, Microsoft Foundry에서 실행하는 Claude Code에서는 이 기능을 사용할 수 없다.
 
-별도 명령 문법을 외울 필요는 없다. Claude에게 자연어로 요청하면 Claude가 `ListAgents`와 `SendMessage`를 사용한다.
+별도 메시지 문법을 외울 필요는 없다. Claude에게 자연어로 요청하면 Claude가 `ListAgents`와 `SendMessage`를 사용한다. 직접 목록을 보고 싶으면 `/list-agents`나 `/peers`를 쓰면 된다. `@` 멘션 축약 문법은 2.1.232 이상에서 사용할 수 있다.
 
 ```text
 현재 접근 가능한 세션을 확인하고 backend-auth 세션에 다음 내용을 보내줘.
@@ -140,7 +140,7 @@ cross-session messaging은 이미 따로 실행 중인 세션에 메시지를 �
 
 ## 권한과 전달 실패를 정상 흐름으로 다룬다
 
-2.1.224에는 `crossSessionInbound`와 `dialogExpiry` 설정도 추가됐다. 권한을 우회한 상태로 실행 중인 수신 세션에는 cross-session 메시지가 바로 들어가지 않고 사용자 승인을 기다릴 수 있다. 일반 세션으로 보내는 메시지는 자동 전달되도록 설계됐다.
+2.1.224에는 `crossSessionInbound`와 `dialogExpiry` 설정도 추가됐다. 수신 메시지는 **accept**, **hold**, **refuse**로 처리할 수 있고, 권한을 우회한 상태의 세션에서는 사용자 승인을 기다릴 수 있다. `isolatePeerMachines`를 켜면 다른 머신에서 오는 메시지도 전달 전에 승인이 필요하다. 따라서 “보냈다”와 “도착했다”는 별도 상태다.
 
 따라서 메시지를 보냈다는 응답만으로 작업 완료를 가정하지 않는다.
 
@@ -166,7 +166,7 @@ cross-session messaging은 이미 따로 실행 중인 세션에 메시지를 �
 
 ## 바로 적용할 체크리스트
 
-- Claude Code가 macOS 또는 Linux의 2.1.224 이상인가?
+- Claude Code가 macOS·Linux·WSL2의 2.1.224 이상인가? native Windows라면 2.1.234 이상인가?
 - 다른 머신의 세션에 먼저 보내려면 2.1.225 이상인가?
 - `/rename`으로 세션 이름과 소유 범위를 구분했는가?
 - `ListAgents`로 정확한 대상을 확인했는가?
@@ -176,4 +176,4 @@ cross-session messaging은 이미 따로 실행 중인 세션에 메시지를 �
 
 cross-session messaging의 가장 좋은 쓰임은 세션을 자율 조직으로 만드는 것이 아니다. 서로 독립적으로 잘 나눈 작업 사이에서 계약, 발견, 검토 요청을 정확하게 전달하는 것이다. 세션은 독립적으로 유지하고 메시지는 작게 만들수록 이 기능이 효과적이다.
 
-기능 추가와 현재 동작은 Claude Code 공식 [v2.1.224 릴리스 노트](https://github.com/anthropics/claude-code/releases/tag/v2.1.224)와 [v2.1.225 릴리스 노트](https://github.com/anthropics/claude-code/releases/tag/v2.1.225)를 기준으로 확인했다. 세션 이름과 수명주기는 [세션 관리 문서](https://code.claude.com/docs/en/sessions)에서 볼 수 있다.
+기능 추가와 현재 동작은 Claude Code 공식 [cross-session messaging 문서](https://code.claude.com/docs/en/cross-session-messaging), [v2.1.224 릴리스 노트](https://github.com/anthropics/claude-code/releases/tag/v2.1.224), [v2.1.225 릴리스 노트](https://github.com/anthropics/claude-code/releases/tag/v2.1.225)를 기준으로 확인했다. 세션 이름과 수명주기는 [세션 관리 문서](https://code.claude.com/docs/en/sessions)에서 볼 수 있다.

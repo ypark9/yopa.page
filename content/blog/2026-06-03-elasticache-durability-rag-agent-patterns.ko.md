@@ -1,6 +1,8 @@
 ---
 title: "ElastiCache의 내구성 지원이 RAG와 에이전트 오케스트레이션에 주는 변화"
 date: 2026-06-03T12:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS가 ElastiCache for Valkey에 내구성 옵션을 추가했다. 마이크로초 단위 읽기 성능을 유지하면서 데이터를 보존할 수 있게 된 변화가 RAG 시맨틱 캐시, Step Functions 에이전트 상태, DLQ 재시도 버퍼의 설계를 어떻게 바꾸는지 살펴본다."
 categories:
@@ -16,7 +18,7 @@ tags:
   - caching
 ---
 
-2026년 6월 2일, AWS가 [Amazon ElastiCache의 내구성 지원을 발표했다](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/). 적용 대상은 Valkey 9.0부터다. 작은 릴리스 항목처럼 보이지만, ElastiCache의 용도를 조용히 바꾸는 변화다. 그동안 캐시는 빠르지만 사라져도 괜찮은 데이터를 두는 곳이었다. 이제는 클러스터별로 여러 가용 영역에 걸친 쓰기 내구성을 선택할 수 있어, 안정성이 걱정돼 DynamoDB에 보관하던 일부 데이터를 ElastiCache에 둘 수 있게 됐다.
+2026년 6월 2일, AWS가 [Amazon ElastiCache의 내구성 지원을 발표했다](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/). 적용 대상은 node-based Valkey 9.0부터다. 작은 릴리스 항목처럼 보이지만, ElastiCache의 용도를 조용히 바꾸는 변화다. 이제는 클러스터별로 여러 가용 영역에 걸친 쓰기 내구성을 선택할 수 있어, 안정성이 걱정돼 DynamoDB에 보관하던 일부 data-store workload를 옮길 여지가 생겼다. 다만 source of record로 볼 때는 [현재 내구성 문서](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/durability.html)의 엔진·eviction·장애 동작을 먼저 확인해야 한다.
 
 이 변화는 RAG 파이프라인, Step Functions 기반 에이전트 오케스트레이션, 데드 레터 큐 재시도 처리의 경계에서 특히 의미가 있다. 각 영역에서 캐시를 더 적극적으로 활용할 수 있지만, 모든 데이터를 ElastiCache로 옮겨도 된다는 뜻은 아니다. 어떤 데이터에 동기식 내구성을 적용하고, 어떤 데이터는 비동기식으로 충분하며, 언제 DynamoDB를 유지해야 하는지를 구분해야 한다.
 
@@ -30,7 +32,7 @@ tags:
 | 비동기식 | 마이크로초 수준 | 가용 영역 장애 시 최대 10초 | 원본 시스템에서 재구성할 수 있는 고빈도 경로 |
 | 기존 비내구성 모드 | 마이크로초 수준 | 마지막 스냅샷 이후의 모든 데이터 | 완전히 일시적인 캐시 |
 
-읽기 성능은 세 모드 모두 마이크로초 수준으로 유지된다. 트랜잭션 로그가 여러 가용 영역에 분산돼 있어 장애 조치, 재시작, 복구 과정에서도 커밋된 데이터는 사라지지 않는다.
+읽기 성능은 세 모드 모두 마이크로초 수준으로 유지된다. 동기식 모드에서는 트랜잭션 로그가 여러 가용 영역에 분산돼 확인 응답이 끝난 쓰기를 보존할 수 있다. 비동기식 모드에서는 장애 때 최대 10초 분량의 성공한 쓰기가 사라질 수 있고, 메모리가 부족하면 TTL 키가 eviction될 수도 있다.
 
 AWS가 공식 사용 사례로 “AI 에이전트 장기 메모리, AI 에이전트 워크플로 상태, RAG 애플리케이션의 지식 기반”을 직접 언급한 점도 눈여겨볼 만하다. 이번 기능이 어떤 유형의 워크로드를 염두에 둔 것인지 분명하게 보여 준다.
 

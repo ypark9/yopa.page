@@ -1,6 +1,8 @@
 ---
 title: "AgentCore Runtime Instances: 에이전트가 MicroVM을 넘어설 때"
 date: 2026-08-06T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AgentCore가 이제 관리형 EC2 인스턴스에서 에이전트를 돌린다. 세션은 최대 14일, GPU와 메모리/컴퓨트 최적화 인스턴스까지. 서버리스 microVM 대신 언제 이걸 골라야 하는지 정리했다."
 categories:
@@ -18,6 +20,8 @@ tags:
 2026년 8월 6일에 AWS가 [AgentCore runtime instances](https://aws.amazon.com/about-aws/whats-new/2026/08/aws-bedrock-agentcore-runtime-instances-generally-available/)를 GA로 풀었다. 그동안 AgentCore Runtime이 주는 컴퓨트는 한 종류였다. 서버리스 microVM. 시작이 빠르고 세션은 최대 8시간까지다. 대부분의 request-response 에이전트는 이걸로 충분하다. 그런데 GPU가 필요한 에이전트나, 이틀 동안 살아 있어야 하는 에이전트는 여기에 안 들어간다.
 
 runtime instances가 두 번째 컴퓨트를 추가한다. 배포하고 invoke하는 방식은 그대로인데, 이제 에이전트가 내가 고른 관리형 EC2 인스턴스 위에서 최대 14일짜리 세션으로 돌 수 있다.
+
+이 인스턴스는 capacity provider를 통해 내 계정의 AWS 관리형 EC2 인프라에서 동작한다. 그래서 서버리스 microVM 경로와 보안·암호화 모델이 같다고 보면 안 된다. 설계 전에 [Runtime Instances 공식 문서](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances.html)를 확인해라.
 
 예전에 쓴 [Durable Long-Running Jobs with AgentCore](/blog/2026-08-01-durable-long-running-jobs-with-agentcore.html)에서 나는 8시간 상한을 설계로 우회해야 하는 딱딱한 경계라고 봤다. 그 경계가 방금 올라갔고, 일부 워크로드는 이 때문에 설계가 달라진다.
 
