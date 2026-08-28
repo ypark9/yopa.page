@@ -11,6 +11,8 @@
 
   <link rel="canonical" href="{{ .Permalink }}" />
 
+  {{ partial "post-meta.html" . }}
+
   {{/* hreflang alternates for translated pages (multilingual SEO) */}}
   {{ if .IsTranslated }}
     {{ range .AllTranslations }}
