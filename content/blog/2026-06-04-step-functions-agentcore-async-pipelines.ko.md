@@ -1,8 +1,10 @@
 ---
-title: "Step Functions × AgentCore: 이미 async 파이프라인에서 에이전트를 돌리고 있다면"
+title: "Step Functions × AgentCore: 관리형 Harness 통합이 실제로 지원하는 것"
 date: 2026-06-04T11:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
-description: "AWS가 Step Functions에서 Bedrock AgentCore Runtime을 네이티브 태스크로 호출할 수 있게 했다. 이미 state machine 뒤에서 Lambda로 에이전트를 감싸 돌리고 있다면, 에이전트가 실제로 어디서 실행되는지부터 달라지고, 긴 실행 시간·재시도·폴링 같은 골칫거리도 꽤 정리된다."
+description: "AWS의 2026년 6월 Bedrock AgentCore용 Step Functions 통합은 유용하지만 일반적인 async AgentCore 태스크보다 범위가 좁다. 관리형 harness를 Request Response로 호출하는 기능의 실제 계약과, 여전히 필요한 장시간 실행 패턴을 정리한다."
 categories:
   - AWS
   - AgentCore
@@ -14,9 +16,9 @@ tags:
   - lambda
 ---
 
-[AWS는 2026년 6월](https://aws.amazon.com/about-aws/whats-new/2026/06/aws-step-functions-agentcore/) Step Functions에서 Bedrock AgentCore Runtime을 네이티브 태스크로 호출할 수 있는 통합을 발표했다. 이제 state machine에서 AgentCore 에이전트를 1급 태스크처럼 직접 호출할 수 있다. Lambda 래퍼도 필요 없고, 직접 폴링 루프를 짤 필요도 없고, 인자만 받아 `boto3.client("bedrock-agentcore").invoke_agent_runtime`으로 넘겨주는 얇은 Python 함수도 굳이 둘 이유가 없다.
+[AWS는 2026년 6월](https://aws.amazon.com/about-aws/whats-new/2026/06/aws-step-functions-agentcore/) 관리형 Bedrock AgentCore harness를 Step Functions에서 호출하는 최적화 통합을 발표했다. 여기서 놓치기 쉬운 핵심은 리소스가 `arn:aws:states:::bedrockagentcore:invokeHarness`이고, 현재 **Request Response** 방식만 지원한다는 점이다.
 
-겉보기에는 자잘한 개선처럼 보일 수 있다. 하지만 실제 제품에서 에이전트를 async 파이프라인에 올려 운용하는 플랫폼 팀에게는 그렇지 않다.
+이미 관리형 AgentCore turn을 호출해야 하는 state machine에는 유용하다. 하지만 모든 `InvokeAgentRuntime` 호출을 `.sync`로 바꾸는 범용 async 통합도 아니고, 8시간짜리 agent invocation을 하나의 Step Functions 태스크로 만들어 주는 기능도 아니다.
 
 ## 결국 다들 비슷한 구조로 간다
 
@@ -34,17 +36,17 @@ POST /something/runs   →  202 + requestId
 GET /something/runs/{id}  →  status + output
 ```
 
-State machine이 필요한 이유는 agent 호출이 길어서 HTTP 연결을 계속 붙잡고 있을 수 없기 때문이다. Lambda가 끼어 있는 이유는, 지난주까지만 해도 state machine에서 에이전트를 호출하는 가장 현실적인 방법이 그것뿐이었기 때문이다. 많은 팀이 결국 도달하는 `Runnable.long_run()` / `RunnablePoll` 패턴도 본질적으로는 같다. **Bedrock을 한 번 호출하고 제어권을 state machine으로 돌려주는 얇은 Python 래퍼**일 뿐이다.
+State machine이 필요한 이유는 agent 호출이 길어서 HTTP 연결을 계속 붙잡고 있을 수 없기 때문이다. Lambda가 얇은 래퍼여도 session ID, payload 저장, retry, callback token, durable result를 맡는 경우가 많다. 최적화 통합은 제한된 harness turn에서 이 래퍼를 없앨 수 있지만, workflow의 내구성 책임까지 자동으로 가져가지는 않는다.
 
 이 구조는 분명 동작한다. 다만 코드 스타일을 아무리 정리해도 사라지지 않는 문제가 네 가지 있다.
 
 ## 이 패턴이 실제로 안고 있는 네 가지 문제
 
-### 1. Lambda의 15분 제한이 에이전트의 사고 시간을 정한다
+### 1. 최적화 turn에도 태스크 한도가 있다
 
 이건 순서가 거꾸로다. 에이전트가 얼마나 오래 추론할 수 있는지는 제품 요구가 결정해야 한다. 예를 들어 "이 작업은 tool call이 다섯 번 돌고 context도 길어서 8분 정도 걸릴 수 있다" 같은 식이다. 그런데 현실에서는 Lambda가 허용하는 시간이 곧 한계가 된다. 15분을 넘기면 ECS나 Fargate로 옮기거나, 상태를 넘겨 가며 Lambda를 이어 붙여야 한다. 솔직히 누구도 반가워할 작업은 아니다.
 
-AgentCore Runtime은 최대 8시간까지 실행할 수 있다. 새 `.sync` 통합으로 state machine이 AgentCore를 직접 호출하면 Lambda가 빠지고, 15분 제한도 함께 사라진다.
+최적화 리소스에도 **15분 Step Functions 통합 한도**가 있다. `TimeoutSeconds`를 크게 잡아도 8시간짜리 태스크가 되지 않는다. 태스크가 timeout된 뒤에도 harness가 계속 실행될 수 있으므로 cleanup이나 reconciliation 경로가 필요하다.
 
 ### 2. 여러 단계로 이뤄진 agent workflow가 통째로 실패한다
 
@@ -52,7 +54,7 @@ AgentCore Runtime은 최대 8시간까지 실행할 수 있다. 새 `.sync` 통�
 
 위에 얹힌 state machine은 여기서 큰 도움이 되지 않는다. Step Functions 입장에서는 Lambda가 성공했는지 실패했는지만 보이기 때문이다. "plan은 끝났고 validate에서만 실패했으니 validate만 다시 돌리자" 같은 선택지가 없다.
 
-하지만 agent 호출이 Step Functions 태스크가 되면, 비로소 workflow를 workflow답게 나눌 수 있다.
+workflow를 workflow답게 나누려면 최적화 태스크 하나에 맡기지 말고 별도 state로 구성해야 한다.
 
 ```
 Plan(agent)
@@ -67,7 +69,7 @@ Plan(agent)
 
 Textract async, Bedrock batch inference처럼 "작업 제출 → 완료될 때까지 폴링"이 필요한 서비스는 정말 많다. 그런데 이상하게도 이 루프는 팀마다 늘 새로 만든다. polling interval, 최대 시도 횟수, 상태값 매핑, 실패 처리까지. 비슷한데 완전히 같지는 않은 코드가 곳곳에 쌓인다.
 
-`.sync` 통합을 쓰면 이 폴링을 Step Functions가 맡는다. State machine이 작업을 제출하고 완료를 기다리는 흐름을 프레임워크 차원에서 처리해 준다. AgentCore의 async invocation도 같은 모델에 들어온다. 다시 말해, 폴링 코드는 더 이상 애플리케이션 코드가 아니다.
+AgentCore의 최적화 harness 태스크는 Request Response이지 일반적인 `.sync` poller가 아니다. 제출 후 완료를 기다려야 한다면 아래에서 설명하는 callback 또는 direct SDK 패턴을 사용하고 session, timeout, 결과 상태를 직접 설계해야 한다.
 
 ### 4. workflow 레이어에서는 agent 실행이 잘 보이지 않는다
 
@@ -75,31 +77,40 @@ Textract async, Bedrock batch inference처럼 "작업 제출 → 완료될 때�
 
 반대로 agent invocation 자체가 state machine 태스크가 되면, workflow execution view에서 그 호출이 하나의 단계로 드러난다. 단계별 비용을 나눠 볼 수 있고, X-Ray trace도 agent 호출까지 이어진다. 실패 유형도 다시 구체적인 이름을 갖게 된다.
 
-## 네이티브 AgentCore 통합으로 달라지는 점
+## 최적화 AgentCore 태스크가 바꾸는 점
 
 정리하면 이렇다.
 
 | Before | After |
 |---|---|
-| `LambdaInvoke` task → Python handler → `bedrock-agentcore.invoke_agent_runtime` | 네이티브 `BedrockAgentCore: InvokeAgentRuntime.sync` task |
-| 15분 Lambda timeout | 8시간 AgentCore Runtime timeout |
-| Agent loop가 Lambda 안에서 돌고, 실패하면 처음부터 다시 실행 | plan/fan-out/reduce/validate를 SF 단계로 나누고 각각 독립적으로 retry |
-| 직접 작성한 `poll_run()` + `interval_seconds`, `max_poll_attempts` | SF `.sync` 통합이 폴링 처리 |
-| Lambda 중심의 CloudWatch 로그 | 단계별 SF execution view + X-Ray |
-| 직접 조합한 DynamoDB 상태 기반 human-in-the-loop | `waitForTaskToken` + agent task |
+| Lambda wrapper가 `invoke_agent_runtime` 호출 | 최적화 `arn:aws:states:::bedrockagentcore:invokeHarness` 태스크 |
+| Lambda에 15분 timeout | 최적화 태스크에도 15분 한도 |
+| Agent loop가 하나의 opaque call | 독립 retry가 필요하면 별도 state로 나눠야 함 |
+| 직접 작성한 polling/callback 코드 | 장시간·callback workflow에는 여전히 필요 |
+| Lambda 로그만 확인 | 최종 text와 execution/CloudWatch harness trace 링크 |
+| 직접 만든 승인 state | `waitForTaskToken`은 이 태스크 밖에서 명시적으로 사용 |
 
-특히 마지막 줄은 한 번 짚고 넘어갈 만하다. 규제 산업의 agentic feature에는 중간 어딘가에 사람 승인 단계가 들어가는 경우가 많다. 예를 들어 "에이전트가 대출 메모 초안을 만들고, 외부로 나가기 전에 사람이 최종 승인한다" 같은 흐름이다. 예전에는 에이전트가 초안을 DynamoDB에 저장하고, 별도 API가 승인 상태로 바꾸고, 다른 Lambda가 그걸 주워 가고, 또 다른 state machine이 이어서 실행하는 식으로 얽히기 쉬웠다. `waitForTaskToken`을 쓰면 state machine이 특정 단계에서 그대로 멈춰 있다가, 외부 시스템이 토큰으로 콜백을 보내는 순간 다시 이어서 진행할 수 있다. 승인 흐름이 서로 얽힌 세 개의 서비스가 아니라 하나의 state diagram으로 정리된다.
+승인 사례는 여전히 중요하지만 최적화 harness 리소스가 제공하는 기능은 아니다. state machine을 `waitForTaskToken`으로 멈추고 외부 시스템이 토큰으로 callback한 뒤, 다음 state에서 AgentCore를 호출하는 식으로 구성해야 한다. 승인 token과 비즈니스 상태는 harness session이 아니라 durable store에 보관해라.
+
+## 정말 비동기인 작업에 쓰는 패턴
+
+agent가 태스크 한도를 넘어 실행되거나 사람 승인이 필요하다면, 최적화 태스크를 durable하다고 가정하지 말고 다음 패턴 중 하나를 사용해라.
+
+1. **Lambda dispatcher + callback token.** Lambda가 AgentCore runtime을 시작하거나 호출하고 task token을 전달한다. 작업이 끝나면 agent 또는 callback handler가 `SendTaskSuccess`/`SendTaskFailure`를 호출한다.
+2. **직접 AWS SDK 통합.** Lambda 없이 `arn:aws:states:::aws-sdk:bedrockagentcore:invokeAgentRuntime`을 호출할 수 있다. 그래도 session ID, timeout, polling/callback 선택, 결과 저장은 직접 책임져야 한다.
+3. **Durable function callback.** Lambda durable function이 callback을 기다리며 orchestration을 유지하고, AgentCore 호출은 제한된 작업 단위로 둔다.
+
+session ID는 안정적으로 유지하고, 256 KB Step Functions state 제한을 넘는 입력·출력은 S3에 두고 참조만 전달해라. 며칠 동안 살아 있는 session이 durable business process와 같은 것도 아니다. 프로세스 상태는 저장하고 대기는 Step Functions가 소유하게 하는 편이 안전하다.
 
 ## 그래서, 실제로 옮길 만한가?
 
 모든 async agent 호출이 이 통합 덕을 보는 것은 아니다.
 
 ✅ **옮길 가치가 큰 경우**
-- 이미 Step Functions 안에서 Lambda를 통해 agent를 실행하고 있다
-- Agent 호출이 길거나(5분 이상), 15분 제한에 걸려 본 적이 있다
-- 여러 단계로 나뉜 agent workflow가 있고, 부분 재시도가 큰 도움이 된다
-- 외부 작업 폴링 패턴이 있다(Textract async, batch inference 등) — 가장 부담 없이 옮기기 좋은 첫 대상이다. 폴링 코드가 그대로 사라진다
-- Human-in-the-loop가 필요해서 지금까지 직접 구현해 왔다
+- 제한된 harness turn 하나의 최종 text/usage를 state 결과로 받고 싶다
+- 이미 Step Functions 안에서 Lambda로 AgentCore를 호출하고 있고 그 wrapper만 없애고 싶다
+- workflow를 독립 retry가 가능한 명시적인 state로 나눌 수 있다
+- 진짜 장시간·승인 작업은 위 callback 패턴으로 분리할 수 있다
 
 ⚠️ **옮기기 전에 비용부터 따져볼 경우**
 - Lambda 안에서 SDK(Strands, raw Bedrock 등)를 직접 쓰고 있다. AgentCore Runtime으로 옮기는 것 자체가 별도의 배포·운영 변화다. 이 통합은 이미 AgentCore를 도입했다는 전제에서 가장 빛난다
@@ -111,16 +122,18 @@ Textract async, Bedrock batch inference처럼 "작업 제출 → 완료될 때�
 
 ## 미리 예상할 만한 함정
 
-- **Step Functions state size는 256 KB로 제한된다.** 이미 큰 문서를 SF 안에서 넘기는 팀이라면 익숙한 제약일 것이다. Agent input/output까지 흐름에 포함되면 payload는 S3에 두고 참조만 넘기는 방식이 사실상 필수다. 이번 통합이 이 한도를 완화해 주지는 않는다.
+- **Step Functions state size는 256 KB로 제한된다.** 이미 큰 문서를 SF 안에서 넘기는 팀이라면 익숙한 제약일 것이다. Agent input/output까지 흐름에 포함되면 payload는 S3에 두고 참조만 넘겨라. 이번 통합이 이 한도를 완화해 주지는 않는다.
+- **`InvokeAgentRuntime.sync`를 추측해서 쓰지 마라.** 최적화 통합에는 문서화된 `invokeHarness` 리소스를 사용한다. `.sync`와 `waitForTaskToken`은 이 통합에서 지원되지 않는다.
+- **태스크 timeout과 agent timeout은 서로 다른 시계다.** Step Functions가 timeout돼도 harness가 남을 수 있다. 취소, idempotency, reconciliation 계획을 둬라.
 - **AgentCore Runtime의 리전 지원 범위가 더 좁다.** 출시 시점 기준으로 AgentCore는 Step Functions보다 지원 리전이 적다. 제품이 `me-central-1`이나 `ap-northeast-1`에서 돌아간다면 아키텍처를 바꾸기 전에 먼저 확인해야 한다. Step Functions에서 cross-region으로 AgentCore를 호출할 수 있는지는 또 다른 문제다.
-- **Cold start는 사라지는 게 아니라 위치만 바뀐다.** Lambda cold start 비용은 줄지만, 대신 AgentCore Runtime cold start를 보게 된다. 둘은 성격이 같지 않으니 실제 workload로 측정해 보기 전에는 섣불리 결론 내리지 않는 편이 좋다.
-- **IAM trust chain에 새로운 주체가 추가된다.** 이제 state machine execution role에 `bedrock-agentcore:InvokeAgentRuntime` 권한이 필요하다. 플랫폼에서 tag-based access control을 쓴다면(예: `IntelligenceRegistryAccess` 스타일 태그) Lambda role뿐 아니라 state machine role에도 올바른 태그가 붙어 있어야 한다.
-- **관측 지점의 모양이 달라진다.** 지금까지 Lambda 함수 이름 기준으로 대시보드를 짜 두었다면, agent 경로에서는 그 지표가 잠잠해질 수 있다. 트래픽을 전환하기 전에 Step Functions execution과 AgentCore metrics를 기준으로 새 대시보드를 함께 준비해 두는 편이 안전하다.
+- **Cold start는 사라지는 게 아니라 위치만 바뀐다.** Lambda wrapper는 줄지만 AgentCore runtime 동작은 실제 workload로 측정해야 한다.
+- **IAM trust chain에 새로운 주체가 추가된다.** state machine execution role에 호출하는 리소스에 맞는 AgentCore 권한이 필요하다. tag-based access control을 쓴다면 기존 Lambda role뿐 아니라 state machine role에도 올바른 태그가 있어야 한다.
+- **관측 지점의 모양이 달라진다.** 최적화 태스크는 최종 assistant text와 집계 usage, harness trace 링크를 반환할 뿐 모든 tool/reasoning block을 반환하지 않는다. 상세 근거는 CloudWatch나 별도 durable store에 남겨라.
 
 ## 결국 이 발표가 의미하는 것
 
-지금까지는 "에이전트가 어디서 실행되는가?"라는 질문에 답하기가 애매했다. 대개는 "Lambda 안에서"라고 답할 수밖에 없었고, 그 이유도 단순했다. workflow engine이 원래 그렇게밖에 호출할 수 없었기 때문이다. 즉, 실행 위치는 설계 결정이라기보다 orchestration 방식이 만들어 낸 부작용에 가까웠다.
+그동안 많은 팀은 AgentCore 호출마다 얇은 Lambda를 앞에 뒀다. 최적화 태스크는 제한된 harness turn에서 이 wrapper를 없애 주지만, 모든 runtime invocation을 durable Step Functions 태스크로 바꾸지는 않는다.
 
-하지만 AgentCore를 state machine 태스크로 직접 다룰 수 있게 되면서 상황이 달라졌다. 이제 agent 실행을 더 자연스러운 자리에 놓을 수 있다. 오래 실행될 수 있고, 관측 가능하고, 실제 workflow 구조에 맞춰 단계별로 재시도할 수 있는 자리 말이다. Orchestrator도 더 이상 얇은 래퍼에 머무르지 않고, 진짜 orchestrator 역할을 하게 된다.
+AgentCore-as-task의 실제 계약은 좁고 분명하다. 최종 text 전달, 집계 usage, harness trace 링크를 제공한다. 장시간 실행, 사람 승인, 부분 retry는 여전히 명시적인 Step Functions state와 callback 패턴의 책임이다.
 
-그동안 "async 쪽이 너무 지저분해서" agentic feature를 미뤄 왔다면, 이제는 다시 한 번 검토해 볼 만하다. 적어도 예전보다 훨씬 덜 지저분해졌다.
+그동안 "async 쪽이 너무 지저분해서" agentic feature를 미뤄 왔다면 다시 검토해 볼 만하다. 다만 Request Response와 15분이라는 최적화 태스크의 실제 계약이 맞을 때만 선택해라.

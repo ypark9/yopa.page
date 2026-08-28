@@ -1,8 +1,10 @@
 ---
 title: "MCP Goes Stateless (2026-07-28): Host, Client, Server, and What Changes on AWS"
 date: 2026-08-09T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
-description: "The 2026-07-28 MCP release candidate drops the session from the protocol layer. Here is the host/client/server model that trips everyone up, what you have to change in an existing server, and why stateless is a good fit for AgentCore on AWS."
+description: "The final 2026-07-28 MCP specification drops the protocol-layer session. Here is the host/client/server model that trips everyone up, what you have to change in an existing server, and where stateless MCP does — and does not — simplify AgentCore on AWS."
 categories:
   - AWS
 tags:
@@ -13,7 +15,7 @@ tags:
   - architecture
 ---
 
-The [2026-07-28 MCP release candidate](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/) is the biggest change to the protocol since it launched. The headline: MCP is now stateless at the protocol layer. A remote server that used to need sticky sessions, a shared session store, and a gateway that reads the request body can now sit behind a plain round-robin load balancer.
+The [final 2026-07-28 MCP specification](https://blog.modelcontextprotocol.io/posts/2026-07-28/) is the biggest change to the protocol since it launched. The headline: MCP is now stateless at the protocol layer. A remote server that used to need sticky sessions, a shared session store, and a gateway that reads the request body can now sit behind a plain round-robin load balancer when its application state is also externalized or explicitly carried.
 
 Before I get to the transport change, let me clear up the part everyone asks about first: what exactly is a host, a client, and a server?
 
@@ -41,7 +43,7 @@ Hold onto that picture, because the stateless change is really a change in how t
 
 In 2025-11-25, calling one tool meant establishing a session first. The client sent an `initialize` handshake, the server replied with an `Mcp-Session-Id`, and every request after that had to carry the same ID. That ID pinned the client to whichever server instance issued it.
 
-The before/after from the release candidate makes it concrete.
+The before/after from the final specification makes it concrete.
 
 Before (2025-11-25), two round trips, and the second is pinned:
 
@@ -104,7 +106,7 @@ If you run MCP servers on AWS, you most likely meet the protocol through two Age
 - **AgentCore Runtime** hosts the server-side workload, an agent or an MCP server, in a managed container.
 - **AgentCore Gateway** exposes tools as an MCP endpoint and puts SigV4 (IAM) in front of them, so an agent can load a gateway's tools as if it were any other MCP server.
 
-The stateless rework is a natural fit here for the same reason it helps any AWS deployment: AgentCore scales by adding container instances, and it does not want to pin a caller to one of them. When the protocol drops the session, "any request on any instance" lines up with how the Runtime already scales, and you stop needing session affinity at the gateway.
+The stateless rework is a natural fit here for the same reason it helps any AWS deployment: AgentCore can scale by adding container instances, and the protocol no longer requires every request to carry a protocol session. But do not turn that into a blanket claim that AgentCore never has sessions. AgentCore Gateway and Runtime can still manage optional stateful MCP sessions for older clients and for interactive features such as elicitation and sampling. Drop gateway affinity only after checking the client version, target behavior, and the session mode you actually configured.
 
 One practical note from wiring a client against a deployed gateway: SigV4 is not native to the MCP client transport, so you inject a signing `fetch` into the Streamable HTTP transport rather than relying on an OAuth provider. If you want the auth side of this in depth, I wrote about [when MCP clients on AgentCore Gateway need OAuth auth code flow](/blog/2026-06-03-agentcore-gateway-mcp-oauth-auth-code.html), and about [architecture patterns for Strands and MCP](/blog/2025-12-11-architecture-patterns-for-strands-and-mcp.html) earlier. This post is the transport-layer companion to those.
 
@@ -113,8 +115,8 @@ One practical note from wiring a client against a deployed gateway: SigV4 is not
 - **Assuming stateless means you delete all your state.** It does not. It means you move state out of the transport and into explicit handles that the model passes around. If your server genuinely had per-session state, you still need it, just in a place any instance can read.
 - **Forgetting the header/body agreement rule.** If your gateway rewrites `Mcp-Method` or `Mcp-Name` but the body says something else, a conformant server rejects the request. Route on the headers, do not mutate them.
 - **Matching on `-32002`.** If any client code branches on the old missing-resource error code, it breaks silently against a 2026-07-28 server. Grep for it.
-- **Treating the RC as final.** The release candidate is locked as of May 21, 2026, with the final spec on July 28, 2026. It contains breaking changes, so this is validation-window territory, not "ship to prod today."
+- **Treating every implementation as final.** The 2026-07-28 document is now the final specification, but clients and gateways may still negotiate older versions. Verify the versions and stateful-session settings in your deployment before removing affinity or deleting session storage.
 
 ## What to actually do
 
-If you own a remote MCP server, start planning the session removal now: find where you rely on `Mcp-Session-Id`, decide which state becomes an explicit handle, and switch server-to-client prompts to the Multi Round-Trip shape. If you deploy on AgentCore, the win is mostly free once you are stateless, drop the session affinity at the gateway and let the Runtime scale flat. And if you are the person answering the host/client/server question for the tenth time, keep the one-liner handy: host owns clients, one client per server, server provides the tools.
+If you own a remote MCP server, start planning the protocol-session removal now: find where you rely on `Mcp-Session-Id`, decide which state becomes an explicit handle, and switch server-to-client prompts to the Multi Round-Trip shape. If you deploy on AgentCore, first verify whether your clients and targets use the optional stateful session path; only then remove gateway affinity and let stateless requests scale flat. And if you are the person answering the host/client/server question for the tenth time, keep the one-liner handy: host owns clients, one client per server, server provides the tools.

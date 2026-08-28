@@ -1,6 +1,8 @@
 ---
 title: "Where Do You Run Agent-Generated Code? Lambda MicroVMs and the Isolation Tradeoff"
 date: 2026-07-02T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS Lambda MicroVMs give you Firecracker VM-level isolation with suspend/resume for up to 8 hours. Here's the real decision: when you actually need this versus a Code Interpreter sandbox versus a plain container, and the pitfalls of running code your agent wrote."
 categories:
@@ -15,7 +17,7 @@ tags:
 
 If you build agents, you eventually hit the question nobody wants: the model just wrote some code, and now something has to run it. Not your code. Code the LLM generated a second ago, possibly wrong, possibly hostile if a prompt injection got through. Where does that run?
 
-In June 2026 AWS shipped [Lambda MicroVMs](https://aws-news.com/article/2026-06-22-aws-introduces-lambda-microvms-for-isolated-execution-of-user-and-ai-generated-code), a compute primitive built for exactly this. It is worth understanding not because it is new and shiny, but because it forces you to be honest about a tradeoff you were probably ignoring.
+In June 2026 AWS introduced [Lambda MicroVMs](https://aws.amazon.com/about-aws/whats-new/2026/06/aws-lambda-microvms/), a compute primitive built for exactly this. The [Lambda MicroVM documentation](https://docs.aws.amazon.com/lambda/latest/dg/microvms-how-it-works.html) is the source of truth for limits and regional availability; those details are moving quickly.
 
 ## The three things you want and can't all have
 
@@ -56,8 +58,8 @@ The signal that you need real VM isolation is not "I'm running code." It's "I'm 
 ## Pitfalls I'd watch for
 
 - **Isolation is not a license to skip input handling.** VM-level isolation stops an escape. It does not stop the agent from cheerfully running `rm -rf` on the data volume you mounted, or exfiltrating a secret you passed in as an env var. Isolation contains blast radius; it doesn't decide what's inside the blast.
-- **The 8-hour resume window is a cost trap if you forget about it.** A suspended microVM still bills baseline compute. An agent that suspends tasks and never cleans them up is a slow leak. Track and reap suspended VMs like you'd track idle connections.
-- **Regional availability is narrow at launch.** N. Virginia, Ohio, Oregon, Tokyo, Ireland. If your agents run elsewhere, this isn't an option yet, and designing around it now means a migration later.
+- **Suspension is not the same as running.** A suspended microVM preserves memory and disk and incurs snapshot-storage charges; baseline compute is charged while it is running. Terminate work you no longer need, and track suspended snapshots as well as active VMs.
+- **Regional availability has already changed.** The initial five regions expanded to ten on August 19, 2026: N. Virginia, Ohio, Oregon, Tokyo, Ireland, Mumbai, Singapore, Sydney, Frankfurt, and Stockholm. Check the [current regional capability](https://docs.aws.amazon.com/lambda/latest/dg/microvms-launching.html) before designing around a region.
 - **HTTPS-URL-per-microVM changes your network model.** Each VM gets its own endpoint. That's convenient, but it's also a lot of ephemeral surface. Front it, log it, and don't let those URLs leak into agent-visible context where a prompt injection could target them.
 
 ## What to do

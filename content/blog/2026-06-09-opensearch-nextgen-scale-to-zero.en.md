@@ -1,6 +1,8 @@
 ---
 title: "OpenSearch Serverless NextGen: Does Scale-to-Zero Actually Change RAG Costs (And What It Doesn't)"
 date: 2026-06-09T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS rebuilt OpenSearch Serverless for agentic AI with scale-to-zero, 20x burst scaling, and up to 60% cost savings. Here's what that actually changes for a RAG vector store, the CloudFormation migration trap the announcement doesn't mention, and why a vector-store cost story is not a reason to switch your RAG engine."
 categories:
@@ -13,7 +15,7 @@ tags:
   - serverless
 ---
 
-AWS just [rebuilt Amazon OpenSearch Serverless from the ground up](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/) for agentic AI workloads. The headline numbers are real and worth your attention: idle collections can now scale compute down to **zero**, burst up to **20x** in seconds, and the blog claims up to **60% cost savings** versus the previous capacity model.
+AWS [rebuilt Amazon OpenSearch Serverless](https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-opensearch-serverless-for-building-your-agentic-ai-applications/) for agentic AI workloads. The headline numbers are real and worth your attention: idle collections can now scale compute down to **zero**, burst up to **20x** in seconds, and the blog claims up to **60% cost savings** versus the previous capacity model. Check the [current collection-generation documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-create.html) before applying the migration steps.
 
 If you run a RAG stack — especially one where OpenSearch Serverless sits behind a managed knowledge base as the vector store — this lands right in your cost center. But I spiked the migration, and the interesting part isn't the savings. It's the gap between what the announcement promises and what the migration actually costs you. Let me separate the two decisions that this announcement tends to collapse into one.
 
@@ -43,7 +45,7 @@ So this is not "a one-line config change." It's "a new collection plus a full re
 ## Pitfalls I actually hit
 
 - **`aws-cdk-lib` already has the L1.** I assumed I'd need a CDK upgrade to get `CfnCollectionGroup` and the `collectionGroupName` property. I didn't — a recent-but-not-bleeding-edge `aws-cdk-lib` already exposes both. Check your installed version before you bump it; you may already be there.
-- **There is no `generation` field.** I went looking for a `generation: NEXTGEN` toggle. It doesn't exist. The presence of the collection-group link *is* the NextGen expression. Don't waste time hunting for a flag.
+- **Generation is explicit.** A collection group accepts `Generation: NEXTGEN` (or the CLI's `--generation NEXTGEN`); the collection then inherits that generation through its group. It is not a flag you can add to an existing Classic collection in place.
 - **`cdk synth` passing is not validation.** I got a clean synth producing valid CloudFormation — `CollectionGroup` with min 0 / max N, collection wired to it. That proves the template compiles. It proves nothing about whether your downstream consumer accepts the new collection at runtime. (More on this below.)
 - **Type-available is not deploy-validated.** I confirmed the `CollectionGroup` resource type is available across all the major regions I care about. That removes regional availability as a blocker — but "the API knows about the type" and "I deployed it and the knowledge base indexed against it" are two different gates. Don't let the first one let you skip the second.
 - **Scale-to-zero trades against cold start.** Zero idle compute is free money for dev/QA, where nobody's waiting. On a customer-facing path, the first query after idle pays a warm-up. Whether that's acceptable is a latency conversation, not a cost one — and it's the reason I'd gate the change to non-prod first and prove the cold-start behavior before touching production.

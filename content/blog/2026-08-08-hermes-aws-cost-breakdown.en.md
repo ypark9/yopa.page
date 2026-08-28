@@ -1,6 +1,8 @@
 ---
 title: "How Much Does It Cost to Run Hermes Agent on AWS?"
 date: 2026-08-08
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "A measured Cost Explorer breakdown of running a personal Hermes Agent on AWS ECS Fargate for a little over a month, including NAT Gateway, Fargate, EFS throughput, and supporting services."
 categories:
@@ -18,6 +20,8 @@ tags:
 When I deployed Hermes Agent on AWS, I initially budgeted for the ECS task and the LLM. After running it for a little over a month, that estimate looked too simple. The always-on NAT Gateway and EFS throughput cost about as much as Fargate for one personal agent.
 
 This article answers a narrow question: how much did it cost to run Hermes on AWS? It is one measured deployment, not a universal price list. Your region, runtime, traffic, storage mode, and model provider will change the result.
+
+> **Review note (2026-08-28):** These are still a historical, pre-credit usage snapshot. Recalculate with current AWS prices and the [current Hermes Docker/configuration guidance](https://hermes-agent.nousresearch.com/docs/user-guide/docker/) before using the numbers for a new deployment; no current release or model-provider bill is inferred from this measurement.
 
 ## The measured architecture
 

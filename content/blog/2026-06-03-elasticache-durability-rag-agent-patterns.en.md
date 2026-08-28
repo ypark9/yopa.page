@@ -1,6 +1,8 @@
 ---
 title: "ElastiCache Just Got Durable — What That Means for RAG and Agent Orchestration"
 date: 2026-06-03T12:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS added durability to ElastiCache for Valkey. Microsecond reads, no data loss. Here's where this actually changes the design — RAG semantic caches, Step Functions agent state, and DLQ retry buffers — for someone whose last serious cache work was Redis in n8n."
 categories:
@@ -16,7 +18,7 @@ tags:
   - caching
 ---
 
-On June 2, 2026, AWS [announced durability for Amazon ElastiCache](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/) starting with Valkey 9.0. That sounds like a small line item, but it quietly changes what ElastiCache is *for*. Until last week, "cache" meant "fast but expendable." Now you can pick, per cluster, whether writes are durable across AZs, and ElastiCache becomes a legitimate primary store for things you used to dump into DynamoDB out of fear.
+On June 2, 2026, AWS [announced durability for Amazon ElastiCache](https://aws.amazon.com/about-aws/whats-new/2026/06/durability-amazon-elasticache/) starting with node-based Valkey 9.0. That sounds like a small line item, but it changes what ElastiCache is *for*. You can pick, per cluster, whether writes are durable across AZs, so some data-store workloads no longer need to use DynamoDB merely as a safety net. Read the [current durability documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/durability.html) for engine, eviction, and failure semantics before treating Valkey as a source of record.
 
 This post is me thinking out loud about where that matters. I'm a backend/platform engineer whose last real cache project was Redis in n8n. Most of my recent work is AWS AI infra — RAG pipelines, agent orchestration with Step Functions, dead-letter retries. Cache patterns sit at the seam of all of those, and I want to make sure I'm not under-using them on the next project.
 
@@ -30,7 +32,7 @@ Two new write modes, on top of the existing in-memory speed:
 | Asynchronous | microseconds (free) | up to 10s on AZ failure | hot path you can rebuild from a system of record |
 | (legacy) non-durable | microseconds | everything since last snapshot | true ephemeral cache |
 
-Reads stay at microseconds in all three. The transactional log lives across multiple AZs, so failover, restart, and recovery don't lose committed data.
+Reads stay at microseconds in all three. The transactional log lives across multiple AZs, so failover, restart, and recovery can preserve acknowledged writes in synchronous mode. Asynchronous mode still allows up to 10 seconds of successful writes to be lost during a failure, and durable clusters can still evict TTL keys when memory is under pressure.
 
 The headline phrase from the AWS blurb — "AI agent long-term memory, AI agent workflow state, knowledge bases for RAG applications" — is unusually direct. AWS is telling you what they expect people to build with this.
 

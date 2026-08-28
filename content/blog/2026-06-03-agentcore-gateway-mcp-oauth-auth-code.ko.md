@@ -1,6 +1,8 @@
 ---
 title: "AgentCore Gateway의 MCP 클라이언트에 OAuth 인증 코드 흐름이 필요한 경우"
 date: 2026-06-03T11:45:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS가 MCP 클라이언트와 AgentCore Gateway를 OAuth 2.0 인증 코드 흐름으로 연결하는 가이드를 공개했다. 더 중요한 질문은 언제 M2M 인증으로 충분하고, 언제 사용자 위임 OAuth가 필요한지다. 선택을 잘못했을 때의 문제와 판단 기준을 정리한다."
 categories:
@@ -75,11 +77,11 @@ MCP 사양의 해법은 클라이언트가 유효한 토큰이 없을 때 브라
 - MCP 클라이언트마다 토큰 캐시와 갱신 로직을 각자 구현해야 한다. Cursor와 Claude Desktop의 방식이 다르고, 자체 클라이언트도 별도의 구현이 필요하다.
 - 데스크톱 클라이언트의 현실적인 `redirect_uri`는 `http://localhost:<random-port>`다. IdP에서 와일드카드 또는 충분한 포트 범위를 허용하지 않으면 새 포트가 생길 때마다 등록해야 한다.
 
-### 2. 동적 클라이언트 등록은 아직 널리 쓰기 어렵다
+### 2. 클라이언트 등록 방식은 IdP마다 다르다
 
-[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591)은 MCP 클라이언트가 연결 시점에 IdP에 자신을 등록해 사용자가 `client_id`를 복사해 붙여 넣지 않도록 하는 표준이다. MCP 0.6도 이를 참조한다. 그러나 Cognito는 지원하지 않고, Okta는 엔터프라이즈 요금제에서만 제공하며, Auth0는 테넌트별로 기능을 켜야 한다.
+[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591)은 MCP 클라이언트가 연결 시점에 IdP에 자신을 등록하는 방식이다. 최종 [2026-07-28 MCP 사양](https://blog.modelcontextprotocol.io/posts/2026-07-28/)은 Dynamic Client Registration을 Client ID Metadata Documents(CIMD)로 대체하는 방향을 공식화했지만, 그렇다고 모든 provider나 AgentCore 설정이 동적으로 바뀌는 것은 아니다. AWS Cognito walkthrough에서는 여전히 OAuth client를 미리 등록해야 하고, 다른 IdP와 배포 경로는 지원 방식이 다를 수 있다.
 
-당분간은 IdP에 클라이언트를 미리 만들고, 사용자에게 `client_id`를 제공해 MCP 클라이언트 설정에 입력하게 하는 방식이 현실적이다. IdP의 지원이 성숙하기 전까지 동적 등록에 의존해서는 안 된다.
+따라서 정확히 사용하는 IdP와 AgentCore 경로가 어떤 등록 방식을 지원하는지 확인해야 한다. Cognito라면 client와 redirect URI, scope를 미리 만들고 설정해라. MCP 사용자에게 모든 환경에서 동적 등록이 된다고 약속하면 안 된다.
 
 ### 3. 토큰 수명과 에이전트 세션 수명은 다르다
 
@@ -109,6 +111,6 @@ MCP 사양의 해법은 클라이언트가 유효한 토큰이 없을 때 브라
 
 ## 한 문단으로 정리하는 결정 기준
 
-도구가 사용자별 데이터를 읽거나 쓰거나, 호출한 사용자를 식별해야 한다면 PKCE를 포함한 인증 코드 흐름을 사용해야 한다. 기존 IdP가 없다면 Cognito를, 이미 Okta나 Auth0를 사용 중이라면 해당 IdP를 활용하면 된다. 동의 화면에는 도메인별 스코프를 사용하고 Gateway 안에서는 도구별 정책을 적용한다. 동적 등록이 성숙할 때까지는 MCP 클라이언트 유형별 OAuth 클라이언트를 미리 만든다. 갱신 토큰은 OS 키체인에 보관하고, 토큰 수명은 IdP 기본값이 아니라 에이전트 세션의 특성에 맞춰 조정한다. M2M과 사용자 클라이언트는 같은 리소스 서버에 두지 말고, 운영 환경을 테스트하기 전에 로컬 개발 리디렉션 경로부터 확인한다.
+도구가 사용자별 데이터를 읽거나 쓰거나, 호출한 사용자를 식별해야 한다면 PKCE를 포함한 인증 코드 흐름을 사용해야 한다. IdP는 일반적인 provider 평판이 아니라 현재 AgentCore 통합과 client 등록 지원을 기준으로 선택해라. 동의 화면에는 도메인별 스코프를 사용하고 Gateway 안에서는 도구별 정책을 적용한다. provider가 요구하면 MCP client 유형별 OAuth client를 미리 만든다. 갱신 토큰은 OS 키체인에 보관하고, 토큰 수명은 IdP 기본값이 아니라 에이전트 세션의 특성에 맞춰 조정한다. M2M과 사용자 client는 같은 resource server에 두지 말고, 운영 환경을 테스트하기 전에 로컬 개발 redirect 경로부터 확인한다.
 
 AWS 튜토리얼은 인증 방식을 결정한 뒤 구현할 때 좋은 안내서다. 어떤 방식을 선택할지는 각 시스템의 데이터 경계와 책임 모델을 기준으로 직접 판단해야 한다.

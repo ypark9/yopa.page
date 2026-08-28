@@ -16,7 +16,7 @@ tags:
 
 Consider a customer-support agent that needs to read a customer's order history from an internal orders API. The API is protected by an identity provider (IdP), so the agent needs an access token before it can make the request. To obtain that token, it first has to authenticate itself to the IdP.
 
-This authentication step is the focus of this post. In July 2026, AWS [added Private Key JWT client authentication to Amazon Bedrock AgentCore Identity](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/), providing an alternative to shared client secrets.
+This authentication step is the focus of this post. In July 2026, AWS [added Private Key JWT client authentication to Amazon Bedrock AgentCore Identity](https://aws.amazon.com/blogs/machine-learning/authenticate-with-private-key-jwt-using-amazon-bedrock-agentcore-identity/), providing an alternative to shared client secrets. The [current AgentCore configuration docs](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/private-key-jwt.html) are the source of truth for supported algorithms, key policy, and regional placement.
 
 ## Where Identity fits in AgentCore
 
@@ -72,7 +72,7 @@ client_id:     support-agent
 client_secret: SUPER_SECRET_VALUE     ← the thing you must guard
 ```
 
-With Private Key JWT, the configuration points to a KMS key, and IAM controls who can use it:
+With Private Key JWT, the configuration points to a KMS key, and IAM controls who can use it. The KMS key must be in the same Region as the credential provider (cross-account use is supported when the key policy allows it):
 
 ```
 client_id:      support-agent
@@ -103,7 +103,7 @@ If the support agent had to read data using the customer's own identity and perm
 
 **The signing algorithm must match across three systems.** The algorithm required by the IdP must be supported by AWS KMS and AgentCore Identity, and it must match the credential provider configuration. The available options are RS256, PS256, and ES256, with a compatible KMS key specification. The AWS example uses `ECC_NIST_P256` with `ES256`. Choose the algorithm first, then create a KMS key that supports it. A mismatch typically appears as a verification failure at the token endpoint rather than during key creation.
 
-**Restrict the key with `kms:ViaService`.** Grant `kms:Sign` in the KMS key policy, but constrain it with a `kms:ViaService` condition for `bedrock-agentcore-identity.<region>.amazonaws.com`. This limits signing to requests made through AgentCore Identity, even if another principal has `kms:Sign` permission.
+**Restrict the key with `kms:ViaService`.** Grant `kms:Sign` and `kms:DescribeKey` in the KMS key policy as required by the provider, but constrain use with a `kms:ViaService` condition for `bedrock-agentcore-identity.<region>.amazonaws.com`. This limits signing to requests made through AgentCore Identity, even if another principal has a broad KMS permission.
 
 **Choose where the key pair is generated.** You can create the key pair in KMS and send the public key to the IdP (`kms:GetPublicKey`), or generate it at the IdP and import the private material into KMS (`kms:GetParametersForImport` and `kms:ImportKeyMaterial`). Generating the key in KMS keeps the private key non-exportable from the start and is preferable unless the IdP requires the second approach.
 

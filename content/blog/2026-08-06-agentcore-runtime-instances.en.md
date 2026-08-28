@@ -1,6 +1,8 @@
 ---
 title: "AgentCore Runtime Instances: When Your Agent Outgrows the MicroVM"
 date: 2026-08-06T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AgentCore now runs agents on managed EC2 instances with sessions up to 14 days and GPU/memory/compute families. Here is when to reach for it instead of the serverless microVM runtime."
 categories:
@@ -18,6 +20,8 @@ tags:
 On August 6, 2026 AWS made [AgentCore runtime instances](https://aws.amazon.com/about-aws/whats-new/2026/08/aws-bedrock-agentcore-runtime-instances-generally-available/) generally available. Until now AgentCore Runtime gave you one shape of compute: a serverless microVM, fast to start, capped at an eight-hour session. That covers most request-response agents. It does not cover an agent that needs a GPU, or one that has to stay alive for two days.
 
 Runtime instances add a second shape. You still deploy and invoke the agent the same way, but now it can run on a managed EC2 instance you selected, for a session up to 14 days.
+
+The instances run on AWS-managed EC2 infrastructure in your account through a capacity provider. That changes the security and encryption model from the serverless microVM path, so review the [Runtime Instances documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances.html) before treating the two modes as interchangeable.
 
 If you read my [Durable Long-Running Jobs with AgentCore](/blog/2026-08-01-durable-long-running-jobs-with-agentcore.html), that post argued the eight-hour ceiling is a hard boundary you design around. The ceiling just moved, and for a subset of workloads that changes the design.
 

@@ -1,6 +1,8 @@
 ---
 title: "Hermes Agent를 AWS에 배포하면 한 달에 얼마가 들까?"
 date: 2026-08-08
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "개인용 Hermes Agent를 AWS ECS Fargate에서 한 달 남짓 운영한 실제 비용 기록. NAT Gateway, Fargate, EFS 처리량이 각각 얼마나 나왔는지 Cost Explorer로 확인했다."
 categories:
@@ -16,6 +18,8 @@ tags:
 ---
 
 Hermes Agent를 AWS에 처음 올릴 때는 ECS Fargate 비용과 LLM 사용료만 대충 계산했다. 그런데 한 달 넘게 돌려 보니 생각보다 큰 금액이 다른 곳에서 나왔다. 24시간 켜 둔 NAT Gateway와 EFS 처리량이 Fargate 비용만큼이나 컸다.
+
+> **검토 메모(2026-08-28):** 이 글의 수치는 여전히 특정 배포에서 측정한 credit 적용 전 과거 사용량이다. 새로 배포할 때는 현재 AWS 가격과 [최신 Hermes Docker/configuration 문서](https://hermes-agent.nousresearch.com/docs/user-guide/docker/)를 기준으로 다시 계산해야 하며, 이 측정값에서 현재 release나 model provider 비용을 추론하면 안 된다.
 
 결론부터 말하면, 개인용 agent 하나를 약 833시간 운영하는 데 할인 전 기준으로 약 $108.9가 들었다. 이 글은 그때의 Cost Explorer 기록을 풀어 쓴 운영 회고다. 리전, 실행 시간, 파일 접근 패턴에 따라 결과가 달라지므로 누구에게나 적용되는 가격표로 읽으면 안 된다.
 

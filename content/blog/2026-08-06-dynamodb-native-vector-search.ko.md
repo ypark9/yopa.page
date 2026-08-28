@@ -1,6 +1,8 @@
 ---
 title: "DynamoDB 네이티브 벡터 검색: 벡터 DB를 대체할 수 있는 경우와 아닌 경우"
 date: 2026-08-06T09:00:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "DynamoDB가 임베딩을 저장하고 운영 데이터와 같은 테이블에서 유사도 검색을 지원하기 시작했다. 제품 카탈로그를 예로 별도 벡터 저장소와 동기화 파이프라인이 사라지는 구조를 살펴보고, 이 기능이 적합한 경우와 한계를 정리한다."
 categories:
@@ -16,6 +18,8 @@ tags:
 ---
 
 > DynamoDB가 네이티브 벡터 검색을 지원한다. 아이템 속성에 임베딩을 저장하고 같은 테이블에서 유사도 검색을 실행할 수 있으므로, 하나의 테이블이 운영 데이터 저장소와 벡터 저장소 역할을 함께 맡는다. 어떤 애플리케이션에는 구조를 크게 단순화하는 변화지만, 모든 검색 문제의 해답은 아니다. 제품 카탈로그를 예로 이 기능이 없애는 파이프라인과 적용 범위를 살펴보자.
+
+> **검토 메모 (2026-08-28):** 현재 API 계약에서 검색은 `Query`가 아니라 `SearchVectors`로 실행한다. 아래 예제와 테넌트 격리 주의사항은 [DynamoDB 벡터 인덱스 공식 문서](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/VectorSearchWorkingWith.html)에 맞춰 갱신했다.
 
 이전에 쓴 [AWS 벡터 데이터베이스 선택 가이드](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html)의 비용과 지연 시간 관점에서 보면, DynamoDB 벡터 검색은 새로운 선택지다. 다만 다른 벡터 저장소와 경쟁하는 기능은 아니다. 별도의 벡터 저장소를 아예 두지 않아도 되는 상황을 만드는 기능이다.
 
@@ -88,27 +92,32 @@ table.put_item(Item={
 
 ```python
 q = bedrock_embed("비 오는 날 하이킹에 입을 따뜻한 재킷")
-resp = table.query(
+resp = dynamodb.search_vectors(
+    TableName="Products",
     IndexName="VectorIndex",
-    VectorSearchConfiguration={"Vector": q, "TopK": 5},
+    SearchVector=[{"N": str(value)} for value in q],
+    TopK=5,
+    ProjectionExpression="product_id, title, price, category",
 )
-# resp["Items"]에 title, price, category가 포함되어 있어 추가 조회가 필요하지 않음
+# 각 결과에는 Item과 Score가 들어 있으며 추가 조회가 필요하지 않음
+items = [result["Item"] for result in resp["SearchResults"]]
 ```
 
-이제 `Streams -> Lambda -> 벡터 저장소` 파이프라인과 정합성 확인 작업, `BatchGetItem`을 통한 추가 조회가 사라진다. `Projection`을 `ALL`로 설정했기 때문에 검색 한 번으로 전체 제품 데이터를 받을 수 있다.
+이제 `Streams -> Lambda -> 벡터 저장소` 파이프라인과 정합성 확인 작업, `BatchGetItem`을 통한 추가 조회가 사라진다. `Projection`을 `ALL`로 설정했기 때문에 벡터 속성을 제외한 모든 투영 속성을 검색 한 번으로 받을 수 있다. 큰 벡터 속성 자체는 기본적으로 결과에서 제외된다.
 
 다만 다음 설정은 신중히 골라야 한다.
 
 - **Dimensions**는 임베딩 모델의 출력 차원과 같아야 한다. Titan V2는 1024차원을 사용하며, DynamoDB는 최대 4,096차원을 지원한다.
+- **처리량과 결과 한도**: 벡터 인덱스는 on-demand capacity(`PAY_PER_REQUEST`)에서만 사용할 수 있고, 요청 하나의 `TopK`는 최대 100이다.
 - **Distance function**은 임베딩이 이미 단위 벡터로 정규화되어 있다면 `DOT_PRODUCT`를 사용한다. 코사인 유사도와 같은 순서를 얻으면서 별도의 정규화 단계를 피할 수 있다. 정규화하지 않은 벡터에는 `COSINE`을, 벡터 크기 자체가 의미를 가질 때는 `EUCLIDEAN`을 사용한다. `COSINE`과 `EUCLIDEAN`은 값이 낮을수록 유사하고, `DOT_PRODUCT`는 값이 높을수록 유사하다.
 - **Projection**에서 `ALL`은 전체 아이템을 반환한다. `INCLUDE`는 필요한 속성만 반환하므로 인덱스 크기와 비용을 줄일 수 있다. `KEYS_ONLY`는 원본 아이템을 다시 읽어야 하므로 추가 조회를 되살린다. 아이템이 크다면 결과 화면에 필요한 속성만 `INCLUDE`로 지정하는 편이 낫다.
 - **검색은 ANN**(approximate nearest neighbor, 근사 최근접 이웃) 방식이다. 예측 가능한 속도와 비용을 얻는 대신 정확도를 일부 포기한다. 대규모 검색에는 합리적인 선택이지만, 재현율(recall)이 100%가 아니라는 점은 아래의 선택 기준에서 중요하다.
 
 ## 멀티 테넌트 격리에서의 파티션 키
 
-고객마다 자신의 제품만 볼 수 있는 멀티 테넌트 카탈로그라면, 벡터 인덱스의 선택적 **파티션 키**가 특히 유용하다. 인덱스의 파티션 키를 `tenant_id`로 정의하면 모든 검색 요청에 테넌트 값을 포함해야 한다. DynamoDB는 해당 테넌트의 인덱스 영역만 조회한다.
+고객마다 자신의 제품만 볼 수 있는 멀티 테넌트 카탈로그라면, 벡터 인덱스의 선택적 **파티션 키**가 특히 유용하다. 인덱스의 `HASH` 파티션 키를 `tenant_id`로 정의하면 모든 검색 요청의 `SearchConditionExpression`에 테넌트 값을 넣어야 한다. DynamoDB는 해당 테넌트 영역만 검색한다.
 
-그 결과 검색 대상 데이터가 줄어 비용이 낮아지고, 테넌트별 처리량 한도를 둘 수 있으며, 저장소 계층에서 격리를 강제할 수 있다. 검색 시 필터를 적용했는지에만 의존하지 않아도 된다는 뜻이다.
+그 결과 검색 대상 데이터가 줄어 비용과 지연 시간이 낮아지고, 여러 파티션 키 값에 걸쳐 검색 처리량을 확장할 수 있다. 다만 이것은 **접근 제어 경계가 아니다**. 해당 인덱스에 `dynamodb:SearchVectors` 권한이 있는 주체는 다른 테넌트의 파티션 키 값도 제출할 수 있고, 이 API에는 `dynamodb:LeadingKeys` 같은 세분화된 조건이 적용되지 않는다. 강한 테넌트 격리가 필요하다면 테넌트별 테이블이나 별도 IAM 권한을 사용하고, 애플리케이션에서도 테넌트 값을 검증해야 한다.
 
 대부분의 관리형 RAG 스택은 메타데이터 필드를 붙이고 검색할 때 필터링하는 방식을 사용한다. 이 방식도 쓸 수 있지만, 필터 하나가 빠져 다른 테넌트의 데이터가 검색 결과에 노출되는 사고가 발생할 수 있다. 테넌트 경계가 분명하다면 저장소 수준의 파티셔닝은 더 강한 선택지다.
 
@@ -132,6 +141,7 @@ resp = table.query(
 - **벡터 검색은 RAG 전체가 아니다.** 이 기능은 가까운 아이템을 반환한다. 문서 청킹, 임베딩 생성 흐름, 답변 생성은 여전히 직접 구성해야 한다. 이 범위를 빼고 "RAG 스택 대신 DynamoDB를 쓰자"고 결정하면 필요한 작업을 과소평가하게 된다.
 - **Dimensions는 인덱스를 생성할 때 고정된다.** 나중에 차원이 다른 임베딩 모델로 바꾸려면 새 인덱스를 만들고 데이터를 백필해야 한다. 모델 선택을 초기에 신중히 확정해야 한다.
 - **`KEYS_ONLY`는 추가 조회를 되살린다.** 인덱스를 작게 유지하려고 이 옵션을 선택하면 검색 결과마다 두 번째 `GetItem` 호출이 필요하다. 필요한 결과 속성만 `INCLUDE`로 지정하는 편이 낫다.
+- **읽기 API는 `Query`나 `Scan`이 아니다.** 벡터 인덱스는 `SearchVectors`로만 읽는다. 응답은 최대 16MB이고 페이지네이션이 없으므로, 아이템이 크면 `ALL` projection과 큰 `TopK` 조합이 한도에 걸릴 수 있다. 필요한 속성만 투영하거나 `TopK`를 줄여야 한다.
 - **재현율을 직접 측정해야 한다.** ANN은 정확도와 속도를 맞바꾼다. 열 개의 쿼리에서 좋아 보이는 데모도 롱테일 쿼리에서는 기대한 결과를 놓칠 수 있다. 쿼리와 기대 결과의 쌍으로 정답 집합을 만들고, 마이그레이션 전에 현재 저장소와 재현율을 비교해야 한다.
 
 ## 실제로 해볼 일

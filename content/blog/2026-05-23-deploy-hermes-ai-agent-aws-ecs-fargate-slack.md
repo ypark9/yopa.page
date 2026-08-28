@@ -1,8 +1,10 @@
 ---
 title: "Deploy Your Own AI Agent to AWS — Hermes on ECS Fargate with Slack Integration"
 date: 2026-05-23
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
-description: "A complete guide to deploying NousResearch's Hermes Agent on AWS ECS Fargate with Slack integration, persistent memory on EFS, and a knowledge base on S3. Includes CDK infrastructure, Docker image, troubleshooting from real deployment experience, and cost breakdown."
+description: "A May 2026 field guide to deploying NousResearch's Hermes Agent on AWS ECS Fargate with Slack integration, persistent memory on EFS, and a knowledge base on S3. The upstream image, configuration schema, and storage paths change quickly, so verify the current Hermes documentation before applying the snippets."
 categories:
   - AWS
   - AI Architecture
@@ -18,15 +20,18 @@ tags:
   - Deployment Guide
 ---
 
-> A battle-tested guide to running your own AI agent on AWS. Real infrastructure code, real gotchas, real solutions.
+> A May 2026 field guide to running your own AI agent on AWS. The infrastructure and gotchas are real, but the upstream image and configuration must be re-checked before a new deployment.
 
 [Hermes Agent (NousResearch)](https://github.com/NousResearch/hermes-agent) |
+[Hermes Docker deployment](https://hermes-agent.nousresearch.com/docs/user-guide/docker/) |
 [AWS CDK Documentation](https://docs.aws.amazon.com/cdk/v2/guide/home.html) |
 [Slack Socket Mode](https://api.slack.com/apis/socket-mode)
 
+> **Review note (2026-08-28):** This article records a deployment from May 23, 2026. Hermes now documents a supported Docker path using the `nousresearch/hermes-agent` image and persistent data mounted at `/opt/data`; schema migrations can create backups. The ECS/CDK architecture below is illustrative for this snapshot. Inspect the current [release page](https://github.com/NousResearch/hermes-agent/releases) and [configuration reference](https://hermes-agent.nousresearch.com/docs/user-guide/configuration) before copying it, and never overwrite a mounted config or secret store blindly.
+
 Most AI agent tutorials end at "run it locally." That's fine for demos, but useless for teams. You want an always-on assistant that your team can DM on Slack, that remembers past conversations, that can read your documentation and use external tools — and that doesn't die when your laptop goes to sleep.
 
-This post documents how I deployed [Hermes Agent](https://github.com/NousResearch/hermes-agent) — an open-source AI agent framework by NousResearch — to AWS ECS Fargate, connected it to Slack via Socket Mode, backed it with Claude on Bedrock, and gave it persistent memory on EFS with a knowledge base on S3. Every code block is copy-paste-able. Every gotcha is one I actually hit.
+This post documents how I deployed [Hermes Agent](https://github.com/NousResearch/hermes-agent) — an open-source AI agent framework by NousResearch — to AWS ECS Fargate, connected it to Slack via Socket Mode, backed it with Claude on Bedrock, and gave it persistent memory on EFS with a knowledge base on S3. The code blocks are copy-paste-able for that May snapshot only; validate image tags, configuration keys, and mount paths against the current upstream docs. Every gotcha is one I actually hit.
 
 ## What You'll Build
 

@@ -1,6 +1,8 @@
 ---
 title: "Amazon Bedrock 요청 단위 비용 추적 — InvokeModel 메타데이터, Inference Profile, 그리고 언제 뭘 쓸 것인가"
 date: 2026-06-01T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Amazon Bedrock이 이제 모든 InvokeModel 호출에 임의 메타데이터를 태깅할 수 있게 됐다. application inference profile, IAM 기반 추적과 함께 비용을 쪼개는 세 번째 방법이 생긴 셈. 셋이 어떻게 다르고, 언제 뭐가 이기고, 기존 대시보드를 깨뜨리지 않으면서 request-level 메타데이터를 invocation log에 어떻게 흘려보내는지 정리한다."
 categories:
@@ -44,7 +46,7 @@ Platform team이 이미 있다면 십중팔구 이게 현재 default일 거다. 
 
 ### Request metadata
 
-이번에 새로 들어온 거. 작은 태그 맵 — 예를 들어 `{ "team": "growth", "project": "onboarding-assistant", "env": "prod", "user_id": "u_8421" }` — 을 매 `InvokeModel` 호출에 붙인다. 태그는 model invocation log (S3 또는 CloudWatch)에 그대로 떨어지고, 평소 쓰는 Athena, OpenSearch로 쿼리한다.
+이번에 새로 들어온 거. 작은 태그 맵 — 예를 들어 `{ "team": "growth", "project": "onboarding-assistant", "env": "prod", "actor_group": "beta" }` — 을 매 `InvokeModel` 호출에 붙인다. 태그는 model invocation log (S3 또는 CloudWatch)에 그대로 떨어지고, 평소 쓰는 Athena, OpenSearch로 쿼리한다.
 
 진짜 가치는 *post-hoc 유연성*이다. 새 질문 하나 떠오를 때마다 IAM 트리를 다시 짜거나 inference profile을 쪼갤 필요가 없다. 모든 호출에 `team`이랑 `feature`만 박아두면, 이후로 다양한 방향으로 다시 자를 수 있다.
 
@@ -102,13 +104,13 @@ GROUP BY 1, 2
 ORDER BY input_tokens + output_tokens DESC
 ```
 
-토큰을 모델별 단가로 곱하면 팀 단위 주간 청구서가 나오고, 박아둔 어떤 태그로도 다시 나눌 수 있다.
+토큰을 모델별 단가로 곱하면 팀 단위 주간 비용 추정치를 만들고, 박아둔 어떤 태그로도 다시 나눌 수 있다. 단, request metadata는 로그용 context이지 Cost Explorer나 CUR의 비용 할당 태그가 아니다. 실제 청구액 기준의 비용 배분은 application inference profile 등 AWS가 지원하는 cost-management 기능을 사용해야 한다.
 
 ## 실제로 경험한 문제들
 
 디버깅 한번 아낄 만한 것들:
 
-- **리전 미스매치.** Logging은 리전별. 로깅이 꺼진 리전 호출은 사라진다 — Cost Explorer엔 잡히는데 대시보드엔 없고, 피드백이 없음.
+- **리전 미스매치.** Logging은 리전별이다. 로깅이 꺼진 리전 호출은 metadata 대시보드에서 빠지지만 실제 Bedrock 비용 자체가 사라지는 것은 아니다.
 - **Streaming 응답.** `InvokeModelWithResponseStream`은 stream이 끝난 뒤에야 token count를 기록한다. 클라이언트가 중간에 끊기면 row가 부분 데이터로 남을 수 있다. 모든 row가 "준비되었다"고 가정하지 말아야됨.
 - **Schema drift.** Metadata 스키마는 한 번 ship하면 public API처럼 다뤄야 한다. 6개월 뒤에 `team`을 `owning_team`으로 rename하는 순간 대시보드가 fork된다. 새 key 추가는 OK, deprecation은 OK, silent rename은 안 됨.
 - **IAM이 강제해야 할 걸 metadata로 태깅하지 마라.** `env=prod`가 metadata 태그라면 *InvokeModel 권한 가진 누구나* prod라고 주장할 수 있다. 위조되면 안 되는 건 IAM (이상적으로는 env별 별개 role)으로 처리하라.
@@ -127,4 +129,5 @@ ORDER BY input_tokens + output_tokens DESC
 
 - [AWS What's New — Bedrock request-level usage attribution (2026년 5월)](https://aws.amazon.com/about-aws/whats-new/2026/05/amazon-bedrock-request-level-usage-attribution/)
 - [Bedrock model invocation logging](https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html)
+- [Bedrock cost management](https://docs.aws.amazon.com/bedrock/latest/userguide/cost-management.html)
 - [Application inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html)

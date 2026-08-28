@@ -1,6 +1,8 @@
 ---
 title: "AWS Strands vs LangGraph on Bedrock AgentCore: Lessons from Building an Agentic Platform"
 date: 2026-02-28
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Comparing AWS Strands and LangGraph for agentic workflows on Amazon Bedrock AgentCore through hands-on PoC experience. Covers cold start gotchas, a three-tier tool architecture pattern, async tool limitations, and honest trade-offs from building a multi-tool agent on a financial SaaS platform."
 categories:
@@ -15,9 +17,11 @@ tags:
 
 > Comparing AWS Strands and LangGraph through hands-on PoC experience on Amazon Bedrock AgentCore — real cold start numbers, a three-tier tool architecture pattern, and the async tool gap that caught us off guard.
 
-[AWS Strands Agents SDK](https://github.com/strands-agents/sdk-python) |
-[LangGraph Documentation](https://langchain-ai.github.io/langgraph/) |
+[AWS Strands Agents SDK](https://strandsagents.com/docs/user-guide/quickstart/python/) |
+[LangGraph Documentation](https://docs.langchain.com/oss/python/langgraph/overview) |
 [Amazon Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/)
+
+> **Review note (2026-08-28):** The measurements and deployment observations below are a February 2026 PoC snapshot. Strands, LangGraph, and AgentCore release independently; re-check the linked documentation and package versions before copying the code into a new deployment.
 
 Most framework comparisons stop at "hello world." You read them, nod along, then hit a wall that the blog never mentioned. This post is the opposite of that. I want to share what actually happened when we ran both AWS Strands and LangGraph through PoCs on a financial SaaS platform, picked one, and started building a real multi-tool agent with it. Spoiler: we found a gap that made us rethink our confidence level.
 
@@ -36,13 +40,13 @@ We PoC'd both, picked Strands, and started building a real agent with 25+ tools 
 
 I want to be clear: LangGraph is a solid framework. The state machine model gives you explicit control over every step — when the LLM gets called, when tools execute, how results route. For complex multi-step workflows, that's powerful. But in our environment, it never got the chance to show that.
 
-### The 30-Second Wall
+### The 30-Second Observation (Historical)
 
-AgentCore Runtimes have a **strict 30-second initialization limit**. That's not configurable. LangGraph relies on `langchain-core`, which pulls in `numpy` and `pydantic-core` — packages that need native C-extensions (`.so` files compiled for Linux ARM64). When you try to `pip install` these during cold start, you reliably blow past the 30-second limit.
+During this PoC we observed a **30-second initialization problem** when native dependencies were installed during startup. That observation should not be copied as a universal AgentCore contract: current AgentCore documentation exposes configurable runtime lifecycle settings and does not document a blanket 30-second initialization limit. LangGraph still relies on packages such as `numpy` and `pydantic-core`, so build and measure the image for your selected architecture rather than installing native wheels during a cold start.
 
 The workaround exists: use Docker-based Lambda build containers (`public.ecr.aws/sam/build-python3.11`), pre-compile ARM64 wheels, bundle them into your CDK code assets before deployment. It works. But it also means every code change goes through a Docker build step that kills your iteration speed. For a PoC where you're experimenting rapidly, that friction adds up fast. Trust me, we tried to make it work for a while before moving on.
 
-We confirmed this wasn't a one-time issue — across our entire PoC period with AgentCore, the 30-second init limit remained the fundamental constraint. **LangGraph remains blocked for our use case** unless AgentCore lifts this limit or LangGraph dramatically reduces its dependency footprint.
+We confirmed this wasn't a one-time issue in our PoC — native dependency installation remained the fundamental constraint for that build. **LangGraph remained blocked for our use case at that snapshot**, unless we moved compilation into the image build or changed the dependency footprint. Re-test this conclusion against the current runtime and package versions.
 
 ### The Ecosystem Advantage is Real Though
 
@@ -54,10 +58,11 @@ Here's our agent entry point. The whole thing:
 
 ```python
 # agent.py — 26 lines total
-from strands_agents import Agent, BedrockModel
+from strands import Agent
+from strands.models import BedrockModel
 
 model = BedrockModel(
-    model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
+    model_id="global.anthropic.claude-sonnet-4-6",
     temperature=0.1,
     streaming=True,
 )
@@ -70,7 +75,7 @@ That's it. No state machine definition, no node compilation, no conditional edge
 
 For comparison, the LangGraph equivalent would need roughly 80-100 lines: state class definition, chatbot node, tools node, conditional edge routing function, graph compilation, and invocation boilerplate.
 
-**Cold starts?** Under 500ms. We use UV bytecode compilation (`UV_COMPILE_BYTECODE=1` in our Dockerfile) which pre-compiles Python files during the Docker build. No numpy, no pydantic-core compilation overhead. CDK deploys directly without Docker pre-compilation tricks.
+**Cold starts in this PoC?** Under 500ms. We used UV bytecode compilation (`UV_COMPILE_BYTECODE=1` in our Dockerfile) and measured a prebuilt image with no native dependency compilation. Treat that number as a dated workload measurement, not an AgentCore guarantee.
 
 ### The Three-Tier Tool Architecture
 
@@ -175,9 +180,9 @@ result.message  # {"role": "assistant", "content": [{"text": "Here's the extract
 
 Every caller has to extract `content[*].text` blocks. It's a small thing, but when you're debugging at midnight wondering why your response is empty... you remember this one. Wish the SDK just handled it.
 
-### boto3 Version Lock-in
+### boto3 and SDK compatibility
 
-Strands with AgentCore requires `boto3 >= 1.42.54` for the Data Plane client. If your other services pin an older version, you'll hit dependency conflicts. We manage this with isolated virtual environments per service, but it's friction.
+The Strands and AgentCore SDK surfaces move independently. Keep `boto3`/`botocore` and the Strands packages on versions supported by the current AgentCore deployment guide; do not preserve the old `boto3 >= 1.42.54` pin from this PoC as a universal requirement. If another service pins an older SDK, isolate the environments and run the current compatibility checks before deployment.
 
 ## The Hard Part: The Async Tool Gap
 
@@ -296,11 +301,11 @@ def check_extraction_result(job_id: str) -> str:
     return json.dumps({"status": check_job_status(job_id)})
 ```
 
-**Before production**: If async tool usage looks like it'll exceed 60-70% of traffic, we'll re-evaluate LangGraph. By then, maybe AgentCore lifts the 30-second init limit, or maybe we invest in Docker pre-compilation to make LangGraph deployable. We'll see.
+**Before production**: If async tool usage looks like it'll exceed 60-70% of traffic, we'll re-evaluate LangGraph. By then, the runtime and framework versions may have changed, so repeat the image-build and lifecycle measurements instead of relying on the historical 30-second observation.
 
 ## The Numbers
 
-Here's where the metrics stand so far:
+Here's where the metrics stood in the February 2026 PoC:
 
 | Metric | Value |
 |--------|-------|
@@ -311,6 +316,8 @@ Here's where the metrics stand so far:
 | Full CDK deploy | ~8-12 min |
 | Container tool refresh | ~60-90 sec after Gateway update |
 | Code reduction vs LangGraph | ~3× for tool definitions |
+
+These are workload-specific measurements, not current service-level objectives. Re-run them after changing the runtime image, region, model, or framework version.
 
 ## So, Which One Should You Pick?
 

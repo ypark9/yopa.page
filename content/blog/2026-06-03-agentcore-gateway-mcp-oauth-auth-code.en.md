@@ -1,6 +1,8 @@
 ---
 title: "Why MCP Clients on AgentCore Gateway Need OAuth Auth Code Flow (Not M2M)"
 date: 2026-06-03T11:45:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS just published a guide for wiring auth code flow between MCP clients and AgentCore Gateway. The tutorial is fine; the harder question is when you actually need three-legged OAuth instead of machine-to-machine — and what breaks if you pick wrong."
 categories:
@@ -75,11 +77,11 @@ The MCP spec's answer is: the **client** opens a browser to the authorization en
 - Every MCP client implements its own token cache and refresh logic. Cursor does it differently from Claude Desktop. Your custom client will too.
 - A `redirect_uri` of `http://localhost:<random-port>` is the only realistic option for desktop clients. Register a wildcard or a generous range with your IdP, or expect to whitelist new ports forever.
 
-### 2. Dynamic Client Registration is mostly a promise, not a reality
+### 2. Registration is provider-specific, not automatic
 
-[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591) lets an MCP client self-register with the IdP at connection time, so users don't have to copy/paste a `client_id`. MCP 0.6 references it. **Cognito does not support it.** Okta supports it gated behind enterprise plans. Auth0 supports it but with a knob you have to turn on per-tenant.
+[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591) lets an MCP client self-register with the IdP at connection time. The final [2026-07-28 MCP specification](https://blog.modelcontextprotocol.io/posts/2026-07-28/) formally deprecates Dynamic Client Registration in favor of Client ID Metadata Documents (CIMD), but that does not make every provider or AgentCore configuration dynamic. In the AWS Cognito walkthrough, you still pre-register the OAuth client; other identity providers and deployment paths may support different registration options.
 
-Practical consequence: for now, you pre-create a client in the IdP, hand the `client_id` to the user, and have them paste it into the MCP client's config. Pretend dynamic registration doesn't exist until your IdP catches up.
+Practical consequence: verify the registration method supported by the exact IdP and AgentCore path. For Cognito, pre-create the client and configure its redirect URIs and scopes; do not promise universal dynamic registration to MCP users.
 
 ### 3. Token lifetime ≠ agent session lifetime
 
@@ -109,6 +111,6 @@ The right answer is usually **domain scopes for the consent UX, plus tool-level 
 
 ## A decision tree, in one paragraph
 
-If your tool reads or writes user-scoped data, or you'll ever need to know which human invoked a call, use auth code flow with PKCE. Use Cognito if you don't already have an IdP, Okta/Auth0 if you do. Design domain-level scopes for the consent screen, enforce tool-level policy inside Gateway. Pre-create OAuth clients per MCP client type until dynamic registration matures. Store refresh tokens in OS keychain. Set token lifetimes to match agent session expectations, not IdP defaults. Don't put both M2M and user clients in the same resource server. Test the local dev redirect path before you test the prod one.
+If your tool reads or writes user-scoped data, or you'll ever need to know which human invoked a call, use auth code flow with PKCE. Choose the IdP based on its current AgentCore integration and registration support, not a generic provider checklist. Design domain-level scopes for the consent screen, enforce tool-level policy inside Gateway, and pre-register clients where the provider requires it. Store refresh tokens in OS keychain. Set token lifetimes to match agent session expectations, not IdP defaults. Don't put both M2M and user clients in the same resource server. Test the local dev redirect path before you test the prod one.
 
 The AWS tutorial is the right thing to follow once you've decided. The deciding is the part you have to do yourself.

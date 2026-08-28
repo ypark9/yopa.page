@@ -1,6 +1,8 @@
 ---
 title: "Per-Request Cost Attribution on Amazon Bedrock — InvokeModel Metadata, Inference Profiles, and What to Use When"
 date: 2026-06-01T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Amazon Bedrock now lets you tag every InvokeModel call with arbitrary metadata, joining application inference profiles and IAM-based attribution as a third way to slice cost. Here's how the three compare, when each one wins, and how to wire request-level metadata into your invocation logs without breaking existing dashboards."
 categories:
@@ -44,7 +46,7 @@ Free, automatic, and the lowest-effort tier. Cost Explorer can group spend by IA
 
 ### Request metadata
 
-This is the new one. You attach a small map of tags — say `{ "team": "growth", "project": "onboarding-assistant", "env": "prod", "user_id": "u_8421" }` — to each `InvokeModel` call. The tags land in your model invocation log on S3 (or CloudWatch), and you query them with Athena, OpenSearch, or whatever you already use.
+This is the new one. You attach a small map of tags — say `{ "team": "growth", "project": "onboarding-assistant", "env": "prod", "actor_group": "beta" }` — to each `InvokeModel` call. The tags land in your model invocation log on S3 (or CloudWatch), and you query them with Athena, OpenSearch, or whatever you already use.
 
 The win is *post-hoc flexibility*. You don't have to redesign your IAM tree or split inference profiles to ask a new question. Tag every call with `team` and `feature`, and you can re-slice spend by either dimension forever after.
 
@@ -102,13 +104,13 @@ GROUP BY 1, 2
 ORDER BY input_tokens + output_tokens DESC
 ```
 
-Translate tokens to dollars with the published per-model rates and you've got a per-team weekly bill, sliceable by any tag you set.
+Translate tokens to an estimate with the published per-model rates and you have a per-team dashboard, sliceable by any tag you set. Request metadata is log context, not a Cost Explorer/CUR cost-allocation tag; use application inference profiles or the supported AWS cost-management features when you need invoice-grade billed dollars.
 
 ## Pitfalls I've actually hit
 
 A few things to save you a debug session:
 
-- **Region mismatches.** Logging is per-region. Calls to a model in a region where logging is off vanish — they'll show up in Cost Explorer but not in your dashboard, and the discrepancy is silent.
+- **Region mismatches.** Logging is per-region. Calls to a model in a region where logging is off are absent from your metadata dashboard even though the underlying Bedrock spend still exists in AWS billing.
 - **Streaming responses.** `InvokeModelWithResponseStream` records token counts only after the stream completes. If your client disconnects early, the row may still be written but with partial data. Don't assume every row is "clean."
 - **Schema drift.** Once you ship a metadata schema, treat it like a public API. Renaming `team` to `owning_team` six months in will fork your dashboards. Add new keys, deprecate old ones, never silently rename.
 - **Don't tag what IAM should enforce.** If `env=prod` is a metadata tag, *anyone with InvokeModel permission* can claim to be prod. Use IAM (and ideally separate roles per env) for anything that must not be forgeable.
@@ -127,4 +129,5 @@ The new InvokeModel metadata feature isn't going to change your architecture. Bu
 
 - [AWS What's New — Bedrock request-level usage attribution (May 2026)](https://aws.amazon.com/about-aws/whats-new/2026/05/amazon-bedrock-request-level-usage-attribution/)
 - [Bedrock model invocation logging](https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html)
+- [Bedrock cost management](https://docs.aws.amazon.com/bedrock/latest/userguide/cost-management.html)
 - [Application inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html)

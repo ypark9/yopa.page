@@ -1,6 +1,8 @@
 ---
 title: "Interactive Shells in Bedrock AgentCore Runtime — The Debugging Blind Spot Just Closed"
 date: 2026-06-08T02:30:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "Amazon Bedrock AgentCore Runtime now lets you attach a real PTY-backed terminal to a live agent session over WebSocket. Here's why running agents as VPC containers made debugging a black box, what the new InvokeAgentRuntimeCommandShell API actually changes, and how to decide when to enable it — and when to lock it down."
 categories:
@@ -14,9 +16,9 @@ tags:
   - security
 ---
 
-If you run agents on Bedrock AgentCore Runtime, you already know the shape of the problem. Your agent isn't a Lambda you can re-invoke locally — it's a Docker container living in a private VPC subnet, holding session state you can't see, talking to an MCP gateway and a memory store you can only observe through logs. When a session misbehaves, your entire toolbox has been: *tail CloudWatch and guess.*
+If you run agents on Bedrock AgentCore Runtime, you already know the shape of the problem. Your agent isn't a Lambda you can re-invoke locally — it's a managed container (possibly in a private VPC subnet, if you configure VPC networking), holding session state you can't see, talking to an MCP gateway and a memory store you can only observe through logs. When a session misbehaves, your entire toolbox has been: *tail CloudWatch and guess.*
 
-In June 2026, AWS [closed that gap](https://aws-news.com/article/2026-06-05-amazon-bedrock-agentcore-runtime-introduces-interactive-shells-for-terminal-access-into-agent-sessions): AgentCore Runtime now supports **interactive shells** into running agent sessions, via a new `InvokeAgentRuntimeCommandShell` API. You can attach a real terminal to a live session and look around.
+In June 2026, AWS [closed that gap](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-command-shell.html): AgentCore Runtime now supports **interactive shells** into running agent sessions, via a new `InvokeAgentRuntimeCommandShell` API. You can attach a real terminal to a live session and look around.
 
 This sounds like a developer-experience footnote. For anyone running agents as containers, it's the difference between forensics-by-logfile and walking into the room.
 
@@ -73,7 +75,7 @@ A live shell into a running agent is powerful, which is exactly why it's dangero
 - **Gate it with IAM, not goodwill.** The action that opens a shell is distinct from the action that invokes the agent. Grant `InvokeAgentRuntimeCommandShell` (and the one-shot `Command` variant) explicitly, to a small set of principals, and *deny it in production* unless you have a break-glass process. Don't let it ride along on your existing invoke permissions.
 - **Default to dev/QA.** The overwhelming majority of the value is in non-prod, where you're chasing reproductions. Enable the shell there freely; in prod, make it an audited, time-boxed exception.
 - **Check your CLI version.** `agentcore exec --it` needs an AgentCore CLI build that speaks the new API. Confirm before you plan a debugging session around it.
-- **Mind the idle timeout.** Runtimes often carry an idle session timeout (e.g. 15 minutes). A shell holds a session open — know whether your attach resets that clock or races it.
+- **Mind the operational limits.** A shell connection can last up to one hour, a frame is limited to 64 KB, and reconnecting can replay up to 256 KB of buffered output. Runtimes also have an idle session timeout (for example, 15 minutes), so know whether an attach resets that clock. CloudTrail records API metadata, not shell stdin/stdout.
 
 ## What you should do
 

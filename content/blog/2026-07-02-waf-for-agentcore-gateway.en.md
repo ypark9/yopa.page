@@ -1,6 +1,8 @@
 ---
 title: "WAF Comes to AgentCore Gateway: Perimeter Security for the MCP Front Door"
 date: 2026-07-02T09:05:00-04:00
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "AWS WAF now protects Amazon Bedrock AgentCore Gateway. One Gateway-level config covers every downstream tool, agent, and integration. Here's why the MCP gateway is the right place to put the perimeter, and how to decide which rules to actually turn on."
 categories:
@@ -15,7 +17,7 @@ tags:
 
 If you expose an agent to the outside world, the scary part isn't the model. It's the front door. The gateway that fans a single request out to a dozen MCP tools, a memory store, and downstream integrations is the highest-leverage thing an attacker can hit. One malformed or abusive request there touches everything behind it.
 
-In June 2026 AWS made [AWS WAF generally available for Amazon Bedrock AgentCore Gateway](https://aws-news.com/article/2026-06-29-aws-waf-adds-support-for-amazon-bedrock-agentcore-gateway). This is a small announcement with an outsized architectural implication: the perimeter for agentic workloads now sits at the gateway, where it belongs.
+In June 2026 AWS made [AWS WAF generally available for Amazon Bedrock AgentCore Gateway](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-waf.html). This is a small announcement with an outsized architectural implication: the perimeter for agentic workloads now sits at the gateway, where it belongs.
 
 ## Why the gateway is the right control point
 
@@ -40,6 +42,8 @@ The announcement lists concrete capabilities. Mapped to what they defend against
 | WAF protection packs | A curated bundle applied consistently |
 
 Available in every region where both WAF and AgentCore Gateway are supported, so unlike some launches this isn't gated to a handful of regions.
+
+The association is regional: one regional web ACL protects a gateway, and the web ACL and gateway must be in the same Region. AWS documents `FAIL_CLOSE` as the default WAF integration behavior; `FAIL_OPEN` is an explicit availability tradeoff. Watch the `WafBlocks`, `WafFailOpens`, and `WafFailCloses` metrics when you roll this out.
 
 ## The decision tree: which rules, when
 

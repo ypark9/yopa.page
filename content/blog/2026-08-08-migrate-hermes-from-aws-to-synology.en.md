@@ -1,6 +1,8 @@
 ---
 title: "Migrating Hermes from AWS ECS to Synology Without Losing Its Memory"
 date: 2026-08-08
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "A real migration of Hermes Agent from ECS Fargate and EFS to Synology Dockge, covering SQLite WAL safety, a writer-free maintenance task, Slack Socket Mode, Compose recreation, and rollback."
 categories:
@@ -30,6 +32,8 @@ The architecture was also larger than I needed for one personal agent. I was ope
 > Does this workload need Fargate, or does it need a recoverable Docker Compose deployment?
 
 Moving the container was easy. The real work was moving SQLite state without losing a transaction and ensuring that AWS and Synology never acted as competing Slack consumers.
+
+> **Review note (2026-08-28):** This is a completed migration snapshot, including the pinned `v2026.8.3` image. Before repeating it, resolve the current release and digest from the [Hermes Docker/configuration docs](https://hermes-agent.nousresearch.com/docs/user-guide/docker/), then preserve the same stop, backup, and rollback gates; do not copy the historical tag blindly.
 
 ## The target architecture
 

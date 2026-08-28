@@ -1,8 +1,8 @@
 ---
 title: "How to Use Cross-Session Messaging in Claude Code"
 date: 2026-08-10T09:00:00-04:00
-lastmod: 2026-08-14
-reviewed_at: 2026-08-14
+lastmod: 2026-08-28
+reviewed_at: 2026-08-28
 author: Yoonsoo Park
 description: "A practical guide to using ListAgents and cross-session SendMessage to pass contracts, findings, and review requests between independently running Claude Code sessions."
 categories:
@@ -14,21 +14,21 @@ tags:
   - cross-session-messaging
 ---
 
-Claude Code 2.1.224 added messaging between independently running sessions. One session can discover another with `ListAgents` and deliver information with `SendMessage`. Unlike teammate messaging inside Agent Teams, this feature connects sessions that are already running separately.
+Claude Code 2.1.224 added messaging between independently running sessions. One session can discover another with `ListAgents` (also exposed through `/list-agents` and `/peers`) and deliver information with `SendMessage`. Unlike teammate messaging inside Agent Teams, this feature connects sessions that are already running separately.
 
 It does not merge their contexts. Each session keeps its own conversation and working directory, receiving only the message that was sent. That makes the feature useful when parallel work spans repositories or worktrees and a person would otherwise copy context between terminals.
 
 ## Check the version first
 
-Cross-session `SendMessage` arrived on macOS and Linux in Claude Code 2.1.224.
+Cross-session `SendMessage` arrived in Claude Code 2.1.224 for macOS, Linux, and WSL2. Native Windows support requires 2.1.234 or later.
 
 ```bash
 claude --version
 ```
 
-Version 2.1.225 extended it so a session can initiate a conversation by name with Remote Control sessions on another machine. `ListAgents` displays those targets as `name [ref]`. Use 2.1.225 or later when cross-machine messaging matters.
+Version 2.1.225 extended it so a session can initiate a conversation by name with Remote Control sessions on another machine. `ListAgents` displays those targets as `name [ref]`. Use 2.1.225 or later when cross-machine messaging matters. The feature is not available when Claude Code is running through Amazon Bedrock, Claude Platform on AWS, Google Cloud Agent Platform, or Microsoft Foundry.
 
-There is no special command syntax to memorize. Ask Claude in natural language and it uses `ListAgents` and `SendMessage`.
+There is no special message syntax to memorize. Ask Claude in natural language and it uses `ListAgents` and `SendMessage`; use `/list-agents` or `/peers` when you want to inspect reachable sessions yourself. (The `@` mention shorthand requires a newer 2.1.232 build.)
 
 ```text
 Find the sessions I can reach, then send this to backend-auth:
@@ -140,7 +140,7 @@ The tools may share the `SendMessage` name, but their targets and operating mode
 
 ## Treat permissions and delivery failures as normal states
 
-Version 2.1.224 also introduced `crossSessionInbound` and `dialogExpiry`. Cross-session messages sent to a recipient running with bypassed permissions can be held for user approval, while messages to other sessions auto-deliver.
+Version 2.1.224 also introduced `crossSessionInbound` and `dialogExpiry`. Inbound messages can be configured to **accept**, **hold**, or **refuse**; messages to a session running with bypassed permissions may be held for user approval. If you enable `isolatePeerMachines`, cross-machine messages require approval before delivery. These controls mean that “sent” and “delivered” are separate states.
 
 Do not treat “message sent” as “work complete.”
 
@@ -166,7 +166,7 @@ The message should point to the durable artifact and state the action needed now
 
 ## A practical checklist
 
-- Is Claude Code 2.1.224 or later on macOS or Linux?
+- Is Claude Code 2.1.224 or later on macOS, Linux, or WSL2 (or 2.1.234+ on native Windows)?
 - For initiating cross-machine messages, is it 2.1.225 or later?
 - Do `/rename` names distinguish session ownership?
 - Did `ListAgents` confirm the exact target?
@@ -176,4 +176,4 @@ The message should point to the durable artifact and state the action needed now
 
 The best use of cross-session messaging is not to create a self-organizing swarm. It is to pass contracts, findings, and review requests accurately between work that is already separated well. Keep sessions independent and messages small.
 
-The behavior described here is based on the official Claude Code [v2.1.224 release notes](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) and [v2.1.225 release notes](https://github.com/anthropics/claude-code/releases/tag/v2.1.225). See [session management](https://code.claude.com/docs/en/sessions) for session naming and lifecycle details.
+The behavior described here is based on the current official [cross-session messaging documentation](https://code.claude.com/docs/en/cross-session-messaging), plus the [v2.1.224 release notes](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) and [v2.1.225 release notes](https://github.com/anthropics/claude-code/releases/tag/v2.1.225). See [session management](https://code.claude.com/docs/en/sessions) for session naming and lifecycle details.
