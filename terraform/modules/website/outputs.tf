@@ -6,6 +6,10 @@ output "bucket_name" {
   value = aws_s3_bucket.bucket.bucket
 }
 
+output "cloudfront_log_bucket_name" {
+  value = aws_s3_bucket.cloudfront_logs.bucket
+}
+
 output "live_path" {
   value = var.live_path
 }

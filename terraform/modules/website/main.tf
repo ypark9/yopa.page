@@ -1,6 +1,9 @@
+data "aws_caller_identity" "current" {}
+
 locals {
-  cloudfront_origin_id = "s3"
-  presence_origin_id   = "article-atlas-presence"
+  cloudfront_origin_id       = "s3"
+  presence_origin_id         = "article-atlas-presence"
+  cloudfront_log_bucket_name = "${var.bucket_name}-cloudfront-logs-${data.aws_caller_identity.current.account_id}"
   mime_types = {
     css   = "text/css"
     html  = "text/html"
@@ -97,6 +100,60 @@ resource "aws_s3_bucket_policy" "policy" {
   policy = data.aws_iam_policy_document.document.json
 }
 
+resource "aws_s3_bucket" "cloudfront_logs" {
+  bucket = local.cloudfront_log_bucket_name
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
+  bucket                  = aws_s3_bucket.cloudfront_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "cloudfront_logs" {
+  depends_on = [aws_s3_bucket_ownership_controls.cloudfront_logs]
+
+  bucket = aws_s3_bucket.cloudfront_logs.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "cloudfront_logs" {
+  bucket = aws_s3_bucket.cloudfront_logs.id
+
+  rule {
+    id     = "expire-cloudfront-access-logs"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    expiration {
+      days = 30
+    }
+  }
+}
+
 data "aws_acm_certificate" "certificate" {
   domain = element(var.domain_names, 0)
   types  = ["AMAZON_ISSUED"]
@@ -119,6 +176,8 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host" {
 }
 
 resource "aws_cloudfront_distribution" "distribution" {
+  depends_on = [aws_s3_bucket_acl.cloudfront_logs]
+
   aliases             = var.domain_names
   enabled             = true
   default_root_object = local.index_page
@@ -161,6 +220,12 @@ resource "aws_cloudfront_distribution" "distribution" {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.draw_rewrite.arn
     }
+  }
+
+  logging_config {
+    bucket          = aws_s3_bucket.cloudfront_logs.bucket_domain_name
+    include_cookies = false
+    prefix          = "cloudfront/"
   }
 
   dynamic "ordered_cache_behavior" {
