@@ -1,13 +1,13 @@
-.atlas-purpose { margin: 2.5rem 0; padding: clamp(1.25rem,3vw,2rem); border: 2px solid var(--border-color, #d8d8d8); border-radius: 18px; background: rgba(117,184,42,.08); }
+.atlas-purpose { margin: 2.5rem 0; padding: clamp(1.25rem,3vw,2rem); border: 2px solid var(--border); border-radius: 18px; background: rgba(117,184,42,.08); }
 .atlas-purpose h1 { max-width: 28ch; margin: .65rem 0 0; font-size: clamp(1.75rem,4vw,2.5rem); line-height: 1.18; letter-spacing: -.025em; }
 .atlas-purpose h1 span { display: block; }
 .atlas-purpose h2, .field-dispatch h2 { margin-top: .35rem; }
 .atlas-purpose-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; margin-top: 1.75rem; }
-.atlas-entry { display: flex; min-height: 14rem; flex-direction: column; padding: 1.25rem; border: 1px solid #d8d8d8; border-radius: 14px; background: #fff; color: #273229; }
-.atlas-entry h3 { margin: 0; color: #273229; font-size: 1.2rem; line-height: 1.3; }
+.atlas-entry { display: flex; min-height: 14rem; flex-direction: column; padding: 1.25rem; border: 1px solid var(--border); border-radius: 14px; background: var(--light-background); color: var(--font-color); }
+.atlas-entry h3 { margin: 0; color: var(--heading-color); font-size: 1.2rem; line-height: 1.3; }
 .atlas-entry p { max-width: 34ch; flex: 1; margin: .7rem 0 1.25rem; font-size: .95rem; line-height: 1.6; }
 .atlas-entry a, .atlas-primary-action { font-weight: 750; }
-.atlas-entry a { align-self: flex-start; color: #365f48; font-size: .92rem; line-height: 1.35; }
+.atlas-entry a { align-self: flex-start; color: var(--link-color); font-size: .92rem; line-height: 1.35; }
 .atlas-kicker { color: #568b68; font-size: .76rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 [lang="ko"] .atlas-kicker { letter-spacing: .02em; text-transform: none; }
 [lang="ko"] .atlas-purpose h1,
@@ -20,7 +20,7 @@
 .expedition-intro { margin: 2rem 0; padding: 1.5rem; border-radius: 18px; background: rgba(89,197,197,.12); }
 .expedition-progress { width: 100%; height: .75rem; }
 .expedition-stops { list-style: none; padding: 0; }
-.expedition-stop { margin: 1rem 0; padding: 1.2rem; border: 1px solid var(--border-color, #d8d8d8); border-radius: 14px; }
+.expedition-stop { margin: 1rem 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: 14px; }
 .expedition-stop[data-complete="true"] { border-color: #568b68; background: rgba(117,184,42,.08); }
 .expedition-stop-meta { display: flex; flex-wrap: wrap; gap: .45rem; font-size: .8rem; }
 .expedition-stop-meta span { padding: .2rem .5rem; border-radius: 999px; background: rgba(102,56,47,.09); }
