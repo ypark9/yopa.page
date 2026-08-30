@@ -104,6 +104,17 @@ class AtlasGrowthTests(unittest.TestCase):
         self.assertIn("completedOnce", script)
         self.assertIn("if (firstCompletion)", script)
 
+    def test_atlas_cards_use_theme_tokens_for_color_modes(self):
+        css = (ROOT / "static/css/atlas-growth.css").read_text()
+        self.assertIn("border: 1px solid var(--border)", css)
+        self.assertIn("background: var(--light-background)", css)
+        self.assertIn("color: var(--font-color)", css)
+        self.assertIn("color: var(--heading-color)", css)
+        self.assertIn("color: var(--link-color)", css)
+        self.assertNotIn("background: #fff", css)
+        self.assertNotIn("color: #273229", css)
+        self.assertNotIn("color: #365f48", css)
+
     def test_google_analytics_loads_only_in_production(self):
         head = (ROOT / "layouts/partials/head/head.html").read_text()
         analytics = '{{ template "_internal/google_analytics.html" . }}'
