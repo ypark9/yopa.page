@@ -44,3 +44,5 @@ AGENTS.md
 /.claude/
 /.codex/
 /.agents/
+# Exception: this repo commits a curated root AGENTS.md (router to docs/agent-playbooks/)
+!/AGENTS.md
