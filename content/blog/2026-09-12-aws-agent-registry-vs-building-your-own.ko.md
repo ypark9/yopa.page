@@ -76,4 +76,4 @@ AWS Agent Registry 전에는 누군가 카탈로그를 옆에서 손으로 관�
 
 ## 적용 방법
 
-자체 “registry”를 검토할 때는 아키텍처 논쟁보다 계층을 구분하는 일부터 시작해야 한다. 코드가 agent config를 저작·저장하는지, agent를 invoke하는지, 등록 시 backing resource를 만드는지 확인한다. 셋 모두 아니라 검색 가능한 메타데이터만 저장한다면 AWS Agent Registry가 강력한 대체 후보가 된다. 하나라도 해당한다면 AWS Agent Registry가 대체하는 것이 아니라 보완하는 studio 또는 control plane이다. 이 경우 레코드를 AWS Agent Registry에 제공하고 discovery는 AWS에 맡기는 방식이 적합하다.
+자체 “registry”를 검토할 때는 아키텍처 논쟁보다 계층을 구분하는 일부터 시작해야 한다. 코드가 agent config를 작성·저장하는지, agent를 invoke하는지, 등록 시 backing resource를 만드는지 확인한다. 셋 모두 아니라 검색 가능한 메타데이터만 저장한다면 AWS Agent Registry가 강력한 대체 후보가 된다. 하나라도 해당한다면 에이전트 구성·실행 계층이나 control plane에 해당하므로 AWS Agent Registry가 이를 대체할 수 없다. 이 경우 카탈로그 정보를 AWS Agent Registry에 등록하고 검색 기능은 AWS Agent Registry에 맡기는 방식이 적합하다.
