@@ -34,21 +34,21 @@ AWS Agent Registry는 2026년 8월 31일 정식 출시됐다. 조직 내 agent, 
 
 ## registry라는 단어가 가리고 있는 세 층위
 
-여기에 흔한 혼동이 있다. 조직 안에서는 서로 다른 세 시스템을 모두 “레지스트리”라고 부르곤 하지만, 이들은 같은 계층이 아니다. AWS Agent Registry를 agent studio와 동일시하기 쉽지만, 두 시스템의 역할은 다르다.
+여기에는 흔한 혼동이 있다. 조직에서는 서로 다른 세 시스템을 모두 “레지스트리”라고 부르곤 하지만, 이들은 같은 계층이 아니다. AWS Agent Registry를 에이전트 구성·실행 계층과 같은 것으로 보기 쉽지만, 두 시스템의 책임은 다르다.
 
 **1층: catalog / discovery 계층.** 어떤 agent와 tool이 어디에 있고 누가 승인했는지 찾는 표면이다. AWS Agent Registry가 맡는 역할이다.
 
-**2층: config store와 runtime.** agent의 system prompt, 모델, tool 목록, ownership, 실행을 관리하는 agent studio다. 설정을 저작해 source of truth로 저장하고 실행한다. 카탈로그는 studio의 결과를 나열할 수는 있어도 설정을 저작하거나 실행하지는 못한다.
+**2층: 에이전트 구성·실행 계층.** agent의 system prompt, 모델, tool 목록, ownership, 실행을 관리한다. 설정을 작성해 기준 정보로 저장하고 agent를 실행한다. 카탈로그는 이 계층에서 만들어진 대상을 나열할 수는 있어도 설정을 작성하거나 실행하지는 못한다.
 
-**3층: provisioning / governance control plane.** capability 등록에 따라 backing resource를 만들고, 계정별·region별 모델 profile을 연결하며, 실패 시 rollback하고, 승인 내역을 compliance 레코드로 남긴다. 이 계층은 실제 인프라를 생성하고 모델을 연결한다. 카탈로그나 studio가 맡지 않는 역할이다.
+**3층: 프로비저닝·거버넌스 control plane.** capability 등록에 따라 backing resource를 만들고, 계정별·region별 모델 profile을 연결하며, 실패 시 rollback하고, 승인 내역을 compliance 레코드로 남긴다. 이 계층은 실제 인프라를 생성하고 모델을 연결한다. 카탈로그나 에이전트 구성·실행 계층이 맡지 않는 역할이다.
 
-studio는 agent 목록을, control plane은 capability 등록을 다루기 때문에 둘 다 registry처럼 보인다. 그러나 AWS Agent Registry는 1층에 해당한다. agent를 저작·실행하거나 모델 resource를 만들지 않고, 다른 두 계층이 만든 대상을 색인하고 거버넌스를 적용한다.
+에이전트 구성·실행 계층은 agent 목록을, control plane은 capability 등록을 다루기 때문에 둘 다 registry처럼 보인다. 그러나 AWS Agent Registry는 1층에 해당한다. agent를 작성·실행하거나 모델 resource를 만들지 않고, 다른 두 계층이 만든 대상을 색인하고 거버넌스를 적용한다.
 
 ## 구체적인 예시
 
 system prompt 하나, 모델 하나, tool 두 개, MCP server 하나를 사용하는 support agent를 운영한다고 하자. 다음 네 질문은 각각 다른 계층에 속한다.
 
-1. **prompt랑 모델, tool 목록은 어디 살고, 뭐가 이걸 invoke하나?** 2층, studio다. AWS Agent Registry는 이걸 저장하지도 실행하지도 않는다.
+1. **prompt, 모델, tool 목록은 어디에 있고 무엇이 agent를 실행하는가?** 2층인 에이전트 구성·실행 계층의 역할이다. AWS Agent Registry는 이를 저장하거나 실행하지 않는다.
 2. **LLM이 필요할 때, 맞는 계정에서 region에 묶인 모델 resource를 만들고 실패 시 rollback하는 건 누가 하나?** 3층, control plane이다. AWS Agent Registry는 이것도 안 한다.
 3. **다른 팀이 중복으로 만들기 전에 이 agent를 찾을 수 있나?** 1층, discovery다. AWS Agent Registry가 답하고, agent가 AgentCore에서 돌면 auto-detect가 그 답을 공짜로 최신 유지한다.
 4. **risk 리뷰랑 배포 승인은 누가 기록했나?** 갈린다. AWS Agent Registry에 approval workflow랑 CloudTrail이 있어서 discovery 층 governance는 커버된다. 도메인 특화 compliance form은 보통 3층에 산다.
@@ -60,9 +60,9 @@ AWS Agent Registry 전에는 누군가 카탈로그를 옆에서 손으로 관�
 먼저 자체 “registry”가 실제로 어느 계층에 속하는지 판단해야 한다.
 
 - **메타데이터만 저장한다. agent를 찾고, 승인하고, audit한다.** 1층이다. AWS Agent Registry를 도입하고 수동 카탈로그를 없앨 수 있는 가장 단순한 경우다.
-- **agent config를 저작하고 agent를 실행한다(prompt, 모델, tool 목록, invocation).** studio, 2층이다. 유지해라. AWS Agent Registry는 뭘 저작하거나 실행 못 한다. 대신 agent가 AgentCore에서 돌면 auto-detect가 이걸 AWS Agent Registry로 투영하게 두면, 두 번째 목록을 관리 안 하고도 조직 전체 discovery를 얻는다.
-- **등록 시점에 backing resource를 provisioning한다(모델 profile, region별 바인딩, rollback).** control plane, 3층이다. 유지해라. AWS Agent Registry가 이걸 대체 못 한다. discovery용으로 레코드를 밀어넣어라.
-- **이 중 둘이나 셋이 "registry"라 불리는 한 서비스에 엉켜 있다.** 제일 흔하고 제일 아프다. 층 이름부터 붙이고, 층별로 결정해라. 카탈로그 view는 얇은 projection이라 AWS Agent Registry에 넘길 수 있고, studio랑 control plane은 네 것으로 남는다.
+- **agent config를 작성하고 agent를 실행한다(prompt, 모델, tool 목록, invocation).** 2층인 에이전트 구성·실행 계층이다. AWS Agent Registry는 이를 대체하지 못한다. agent가 AgentCore에서 실행된다면 자동 탐지로 AWS Agent Registry에 등록해 조직 전체 검색에 활용한다.
+- **등록 시점에 backing resource를 provisioning한다(모델 profile, region별 바인딩, rollback).** 3층인 control plane이다. AWS Agent Registry는 이를 대체하지 못한다. control plane이 관리하는 정보를 AWS Agent Registry에 등록해 검색에 활용한다.
+- **둘 이상의 계층이 하나의 “registry” 서비스에 얽혀 있다.** 가장 흔하고 어려운 경우다. 먼저 계층별 책임을 분리한다. 카탈로그 정보는 AWS Agent Registry에 동기화하고, 에이전트 구성·실행 계층과 control plane은 각자의 책임을 유지한다.
 
 일반적으로는 studio가 config와 runtime을, control plane이 provisioning과 권위 있는 governance 레코드를, AWS Agent Registry가 조직 전체의 discovery/search 표면을 맡는 구성이 적합하다. 세 시스템은 각각 다른 일을 하고, 그중 카탈로그 계층을 이제 AWS가 관리한다.
 
