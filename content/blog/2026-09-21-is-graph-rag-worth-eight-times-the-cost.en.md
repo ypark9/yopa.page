@@ -80,11 +80,47 @@ Community detection is also optional by design: `global` and `drift` need it, th
 - **Single-fact lookups**: evaluate plain vector search before adopting a graph at all. A graph earns its cost on the questions that need hops.
 - **A corpus-wide narrative is the deliverable**: `global`, knowing it is the most expensive strategy and that its cost grows with the corpus.
 
-## What I have not run
+## What I have not run, and what running it would cost
 
 I have not deployed this framework. It provisions real Neptune, OpenSearch, and Bedrock capacity, and the post states plainly that it is a reference implementation rather than production-ready as-is. So this is a reading of published benchmarks and stated caveats, with an evidence class of documentation-derived, and the numbers in the table are the authors' measurements on their benchmarks, not mine on my corpus.
 
-What I would want before adopting it: the same table regenerated on a sample of my own corpus, with my own model, because the two benchmarks in the post were enough to reverse the top two strategies and yours can plausibly do it again. That is a paid experiment rather than a local one, so it is a decision with a cost attached.
+What I said I wanted was the same table regenerated on a sample of my own corpus, with my own model, because the two benchmarks in the post were enough to reverse the top two strategies and mine can plausibly do it again. I still think that is the right instinct. So I costed it, and then I decided not to run it. Both halves of that are worth writing down.
+
+### The estimate
+
+A two-week window, 250 documents, 150 questions, three runs, four retrieval arms, single-AZ dev profile.
+
+| Line item | 14 days | Share |
+| --- | --- | --- |
+| Neptune cluster, OpenSearch domain, NAT, support services | $211 | 52% |
+| Bedrock ingestion: entity and relationship extraction, three builds | $165 | 41% |
+| Bedrock queries: 450 per arm at the source post's per-1,000 rates | $26 | 6% |
+
+Roughly $400 before contingency, and $400 to $650 with it.
+
+The dominant line item is not the model. It is the standing hourly floor. A Neptune cluster and a managed OpenSearch domain both bill by the hour and neither scales to zero, so that 52% accrues whether or not anyone is querying.
+
+Which inverts the obvious economy. Strategy count drives 6% of the bill, so dropping half the table saves about $20. Cutting the window from fourteen days to seven saves $105. The cost plan for an experiment like this is a schedule plan, not a strategy plan, and that is not what I expected to find when I started adding it up.
+
+### Which arms, and which I would drop
+
+Four. `naive` as the vector-only control, because without it no other number means anything. `local` as the only graph strategy whose per-query cost survives real volume. `mix` as the accuracy ceiling. And a managed Bedrock Knowledge Base as an external control, which is not in the source table and is the most important arm, because it is the thing I would otherwise build.
+
+Dropped: `hybrid`, because it sits inside the noise band of `mix` and the two already swapped ranks between the post's own datasets, so running both buys a second flip of the same coin at double the cost. `global`, because at $66.22 per 1,000 and a 64% win rate against plain vector search, there is no score it could post that changes a build decision. `drift` and `simple`, both dominated by `local` on score and on price. `auto`, because a router measures the router.
+
+### The number that would have changed my mind
+
+One gate decides all of this, and it costs nothing: what share of real questions actually need hops between documents.
+
+That is this article's own rule turned back on me. Single-fact lookups should evaluate plain vector search before adopting a graph at all. If the real query mix is mostly factual and procedural lookups, the graph has nothing to retrieve that vector search is missing, and no result from a $500 run changes what gets built.
+
+There is a harder bar underneath it. The decision this experiment would inform already has a managed baseline scoring around 0.9 hit@5 on our own golden set, at a usage-based cost with no floor. For a graph stack to displace that, it does not need to beat plain vector search. It needs to beat the managed option by enough to justify a standing monthly floor plus a database engine nobody on the team currently operates. That margin is not 0.05. It is closer to 0.15.
+
+A gap that size does not appear anywhere in the source table between a graph strategy and vector search, on benchmarks that were built to require hops. Expecting it on a corpus that was not built that way is not a reasonable bet.
+
+So the honest end of this article is not a measurement. It is a costed decision not to measure, with the threshold written down: if the multi-hop share of real traffic comes back above a quarter, the $400 to $650 is worth spending and this section gets replaced by a table. Until then, "regenerate it on your own corpus" stays exactly what it was at the top of this section, which is the right instinct with a price tag attached.
+
+One process note I want to keep. I wrote the teardown plan before the standup plan. Neptune and OpenSearch bill hourly, `cdk destroy` does not remove CloudWatch log groups, KMS keys sitting in their pending-deletion window, Elastic IPs orphaned by a NAT gateway, or a cache bucket that failed to empty, and you cannot verify a teardown for resources you forgot to tag at deploy time. Deciding not to deploy made all of that moot. Writing it first is how I found out it was the expensive part.
 
 ## Sources
 
@@ -95,4 +131,4 @@ What I would want before adopting it: the same table regenerated on a sample of 
 
 Related: [choosing a vector store on AWS](/blog/2025-05-25-aws-vector-databases-rag-applications-complete-architectural-decision-guide.html), where graph-aware retrieval gets one row in the decision table and this article is the depth behind it.
 
-Verified on 2026-09-21. All figures come from the published benchmark table in the source post and were not re-measured.
+Verified on 2026-09-21. All figures come from the published benchmark table in the source post and were not re-measured. The cost estimate was added on 2026-09-23; AWS rates there are directional and the ingestion token volume is extrapolated rather than measured.
