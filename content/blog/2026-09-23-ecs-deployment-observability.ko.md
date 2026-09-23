@@ -85,6 +85,55 @@ healthCheck: {
 
 일반 규칙 하나가 잘 드러난다. 헬스 신호가 표준에서 멀어질수록 배포 기계 자체에 더 의존하게 된다. Deployments 탭은 그 기계를 보여 준다.
 
+## 롤아웃이 성공이라 말하면서 아무것도 안 떠 있는 세 가지 경우
+
+위의 단일 태스크 구성에는 눈에 보이는 크래시 루프보다 나쁜 실패 모드가 있다. 배포가 완료되고, steady state에 도달하고, 태스크는 0개인 상태. ECS는 이 중 어느 것에서도 거짓말을 하지 않는다. 내가 묻는 것보다 좁은 질문에 답할 뿐이다.
+
+**1. IaC가 배포마다 `desiredCount`를 되돌린다.**
+
+`desiredCount: 0`을 소스에 두면 — 일단 어둡게 띄우고 나중에 손으로 올리는 서비스에서 흔한 선택이다 — CloudFormation이 그 값을 *매* 배포마다 다시 쓴다. 손으로 올린 개수는 릴리스를 넘기지 못한다.
+
+```
+18:45:00  task definition registered
+18:45:06  has stopped 1 running tasks
+18:46:25  deployment completed
+18:46:25  has reached a steady state      ← desiredCount 0, runningCount 0
+```
+
+steady state도 사실이고 deployment completed도 사실이다. 서비스는 죽어 있고, 누가 알아챌 때까지 죽어 있는다. 타임라인은 이것을 깨끗한 완료로 보여준다. 자기 정의로는 실제로 그렇기 때문이다.
+
+고칠 자리는 콘솔이 아니라 소스다. 실제 개수를 IaC에 적고, 서비스를 내릴 때도 거기서 내린다. 손으로 조정한 개수는 스스로를 조용히 되돌리는 변경이다.
+
+**2. 이벤트 로그의 reason은 진단이 아니라 가설이다.**
+
+그 배포 직후 서비스는 대체 태스크를 배치하지 못했다.
+
+```
+18:59:51  was unable to place a task. The reason for failure is
+          Capacity is unavailable at this time. Please try again later
+          or in a different availability zone.
+```
+
+"Capacity is unavailable"는 엉뚱한 것을 가리켰다. 일회성 태스크 — `busybox` 스톡 이미지, 0.5 vCPU, 같은 서브넷과 보안 그룹, **이 배포와 아무 상관 없는 다른 클러스터** — 도 양쪽 AZ에서 `RunTask -> ServerException: Internal Error`를 받았다. 그동안 `CreateNetworkInterface`는 양쪽 AZ에서 성공했고, Fargate vCPU 쿼터는 4000 중 1.5 사용이었고, 서비스 연결 역할도 멀쩡했다.
+
+이 중 무엇도 배포 화면에는 보이지 않는다. 그리고 거기 보이는 문자열은 내 태스크 사이징과 서브넷을 뒤지게 만들었을 것이다. 배포 화면이 이유를 줄 때는, 그 이유대로 움직이기 전에 내 변경을 그림에서 빼는 대조군을 먼저 만들어야 한다. 우리 것은 2분 걸렸고 "우리가 망가뜨렸다"를 "계정 전체에서 API가 500을 낸다"로 바꿔 놓았다.
+
+**3. 침묵은 복구도 아니고 실패도 아니다.**
+
+18:59부터 19:45까지 서비스는 새 이벤트를 하나도 올리지 않았다. 성공도 아니고 추가 실패도 아니다. 배치 실패가 반복되면 ECS는 백오프하고, 중복 제거된 이벤트 로그는 조용하고 건강한 서비스와 구분되지 않는다.
+
+```
+18:59:51  unable to place a task
+          ... 46분간 아무것도 없음 ...
+19:45:52  deployment failed: tasks failed to start
+19:48:50  has started 1 tasks
+19:52:00  deployment completed / steady state
+```
+
+19:45 줄은 서킷 브레이커가 제 일을 한 것이고, 45분 만에 나온 첫 정직한 신호다. 이벤트를 보고 있는데 아무것도 없다면, 아무것도 알아낸 게 없는 것이다.
+
+하나 더 놀랐던 것. 서비스 스케줄러와 `RunTask` API는 같은 경로가 아니다. 다른 서비스가 23:33에 태스크를 배치하는 동안에도 직접 호출한 `run-task`는 계속 `ServerException`을 냈다. `run-task`로 만든 신스 헬스체크는 서비스가 멀쩡한데 빨간불일 수 있고, 더 불편하게는 서비스가 죽었는데 초록일 수도 있다.
+
 ## 닫히지 않는 공백
 
 노트북이나 일회성 CLI 호출에서 `--force-new-deployment`를 쓰는 흐름은 이 콘솔 뷰가 정확히 개선하는 대상이다. CI/CD 파이프라인은 아니다.
@@ -106,7 +155,8 @@ aws ecs wait services-stable \
 ## 함정
 
 - **파이프라인이 의존하는 이벤트 로그 조회를 없애지 말 것.** 콘솔 뷰와 `describe-events`는 같은 롤아웃의 다른 소비자이고, 빌드를 실패시킬 수 있는 건 하나뿐이다.
-- **타임라인이 초록색이라고 서비스가 건강한 건 아니다.** 타임라인은 "배포 완료"에서 끝난다. 새 버전이 *동작하는지*는 여전히 CloudWatch의 질문이고, 에이전트 게이트웨이라면 롤아웃 상태가 아니라 실제 태스크 동작을 봐야 한다.
+- **타임라인이 초록색이라고 서비스가 건강한 건 아니고, steady state는 "서빙 중"이 아니다.** 타임라인은 "배포 완료"에서 끝난다. 배포가 완료되고 steady state에 도달했는데 `runningCount`가 0일 수 있다. 대개 IaC가 `desiredCount`를 되돌렸기 때문이다. `rolloutState`가 아니라 내가 의도한 개수 대비 `runningCount`를 단언해야 한다.
+- **`minHealthyPercent: 0`은 길이를 내가 통제하지 못하는 공백을 만든다.** 평소 우리 것은 약 60초다 — 구 태스크가 :43에 멈추고 새 태스크가 다음 분 :25에 시작한다. 플랫폼이 태스크를 배치하지 못한 날에는 50분이었고, 배포는 2분째에 이미 성공이라고 보고한 뒤였다.
 - **`minHealthyPercent: 0`은 기본값이 아니라 의도적 위험이다.** 자기 자신을 두 개 띄울 수 없는 단일 태스크 서비스에는 맞고, 두 태스크를 띄울 수 있으면서 요청 하나도 떨어뜨리고 싶지 않은 서비스에는 틀리다.
 
 ## 그래서 무엇을 할까
