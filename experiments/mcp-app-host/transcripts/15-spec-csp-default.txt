@@ -1,0 +1,20 @@
+Excerpt from SEP-1865, specification/2026-01-26/apps.mdx, section "UI Resource Format > Host Behavior".
+Fetched 2026-09-23 from https://raw.githubusercontent.com/modelcontextprotocol/ext-apps/main/specification/2026-01-26/apps.mdx
+Lines 276-291 of that file:
+
+#### Host Behavior:
+
+- **CSP Enforcement:** Host MUST construct CSP headers based on declared domains
+- **Restrictive Default:** If `ui.csp` is omitted, Host MUST use:
+
+  ```
+  default-src 'none';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  media-src 'self' data:;
+  connect-src 'none';
+  ```
+
+- **No Loosening:** Host MAY further restrict but MUST NOT allow undeclared domains
+- **Audit Trail:** Host SHOULD log CSP configurations for security review

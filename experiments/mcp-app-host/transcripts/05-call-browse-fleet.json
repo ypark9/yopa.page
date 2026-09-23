@@ -1,0 +1,30 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Aurora (u-001) — large, $120/h, available\nBramble (u-002) — small, $60/h, available"
+    }
+  ],
+  "structuredContent": {
+    "generatedAt": "2026-09-23T19:21:55.762Z",
+    "query": {
+      "available_only": true
+    },
+    "unicorns": [
+      {
+        "id": "u-001",
+        "name": "Aurora",
+        "size": "large",
+        "hourlyRate": 120,
+        "available": true
+      },
+      {
+        "id": "u-002",
+        "name": "Bramble",
+        "size": "small",
+        "hourlyRate": 60,
+        "available": true
+      }
+    ]
+  }
+}

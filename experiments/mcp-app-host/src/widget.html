@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fleet card</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 12px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      h2 {
+        font-size: 14px;
+        margin: 0 0 8px;
+      }
+      h3 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.6;
+        margin: 16px 0 6px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 4px 8px 4px 0;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+        font-variant-numeric: tabular-nums;
+      }
+      code,
+      pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+        background: rgba(128, 128, 128, 0.12);
+        padding: 8px;
+        border-radius: 4px;
+        margin: 0;
+      }
+      .probe {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        padding: 2px 0;
+      }
+      .tag {
+        display: inline-block;
+        min-width: 58px;
+        font-weight: 700;
+        font-size: 11px;
+      }
+      .pass {
+        color: #0a7a3d;
+      }
+      .fail {
+        color: #b3261e;
+      }
+      .wait {
+        opacity: 0.55;
+      }
+      #probe-img {
+        height: 14px;
+        vertical-align: middle;
+      }
+    </style>
+    <!--
+      PROBE C (stylesheet/font from an origin that is NOT declared by either
+      resource). Under SEP-1865 this must be blocked in both the default-CSP
+      and declared-CSP cases, because a host MUST NOT allow undeclared domains.
+      It is the control that separates "the host enforces a policy" from
+      "the host enforces nothing".
+    -->
+    <link
+      id="probe-font"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
+    />
+  </head>
+  <body>
+    <h2 id="title">Fleet card <span class="wait">(waiting for tool result…)</span></h2>
+
+    <div id="data">
+      <p class="wait">
+        No <code>ui/notifications/tool-result</code> received yet. If this text persists,
+        the host rendered the resource but never delivered the structured data.
+      </p>
+    </div>
+
+    <h3>Asset probes</h3>
+    <div id="probes">
+      <div class="probe">
+        <span class="tag wait" id="t-inline">…</span>
+        <span>A. inline <code>data:</code> image — allowed by the restrictive default</span>
+        <img id="probe-img" alt="" />
+      </div>
+      <div class="probe">
+        <span class="tag wait" id="t-cdn">…</span>
+        <span>B. external image <code>cdn.jsdelivr.net</code> — declared only by the permissive resource</span>
+      </div>
+      <div class="probe">
+        <span class="tag wait" id="t-font">…</span>
+        <span>C. external stylesheet <code>fonts.googleapis.com</code> — declared by neither (control)</span>
+      </div>
+      <div class="probe">
+        <span class="tag wait" id="t-fetch-declared">…</span>
+        <span>D. <code>fetch()</code> to <code>api.github.com</code> — declared only by the permissive resource</span>
+      </div>
+      <div class="probe">
+        <span class="tag wait" id="t-fetch-undeclared">…</span>
+        <span>E. <code>fetch()</code> to <code>example.com</code> — declared by neither (control)</span>
+      </div>
+      <div class="probe">
+        <span class="tag wait" id="t-frame">…</span>
+        <span>F. nested <code>&lt;iframe&gt;</code> — <code>frame-src 'none'</code> unless declared</span>
+      </div>
+    </div>
+
+    <h3>Sandbox &amp; policy observed</h3>
+    <pre id="env">collecting…</pre>
+
+    <h3>CSP violations reported to the view</h3>
+    <pre id="csp">none observed yet</pre>
+
+    <script>
+      "use strict";
+
+      // ----------------------------------------------------------------- //
+      // Report object. Mirrored to the console with a tag so the harness can
+      // scrape it out of DevTools without needing same-origin access to this
+      // frame (the sandbox proxy gives it a different origin than the host).
+      // ----------------------------------------------------------------- //
+      const report = {
+        startedAt: new Date().toISOString(),
+        env: {},
+        probes: {},
+        cspViolations: [],
+        lifecycle: [],
+        toolResult: null,
+        toolInput: null,
+      };
+
+      function emit() {
+        try {
+          document.getElementById("env").textContent = JSON.stringify(report.env, null, 2);
+          document.getElementById("csp").textContent = report.cspViolations.length
+            ? JSON.stringify(report.cspViolations, null, 2)
+            : "none observed yet";
+        } catch (_) {}
+        try {
+          console.log("__MCPAPP_PROBE__ " + JSON.stringify(report));
+        } catch (_) {}
+      }
+
+      function mark(id, key, ok, detail) {
+        report.probes[key] = { ok, detail, at: new Date().toISOString() };
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = ok ? "LOADED" : "BLOCKED";
+          el.className = "tag " + (ok ? "pass" : "fail");
+        }
+        emit();
+      }
+
+      // ----------------------------------------------------------------- //
+      // CSP violation listener. `originalPolicy` is the single most valuable
+      // field in this whole experiment: it is the exact policy the host
+      // applied, reported by the browser itself rather than inferred.
+      // ----------------------------------------------------------------- //
+      document.addEventListener("securitypolicyviolation", (e) => {
+        report.cspViolations.push({
+          blockedURI: e.blockedURI,
+          violatedDirective: e.violatedDirective,
+          effectiveDirective: e.effectiveDirective,
+          originalPolicy: e.originalPolicy,
+          disposition: e.disposition,
+          sourceFile: e.sourceFile,
+        });
+        emit();
+      });
+
+      // ----------------------------------------------------------------- //
+      // Environment facts
+      // ----------------------------------------------------------------- //
+      function collectEnv() {
+        const env = {
+          href: location.href,
+          origin: location.origin,
+          ancestorOrigins: (() => {
+            try {
+              return Array.from(location.ancestorOrigins || []);
+            } catch (e) {
+              return "unavailable: " + e.name;
+            }
+          })(),
+          isFramed: window.parent !== window,
+          frameDepth: (() => {
+            let d = 0;
+            let w = window;
+            try {
+              while (w.parent !== w && d < 10) {
+                d += 1;
+                w = w.parent;
+              }
+            } catch (_) {}
+            return d;
+          })(),
+          // An opaque origin ("null") is the signature of a sandboxed iframe
+          // WITHOUT allow-same-origin.
+          opaqueOrigin: location.origin === "null",
+          cookieAccess: (() => {
+            try {
+              void document.cookie;
+              return "ok";
+            } catch (e) {
+              return "throws: " + e.name;
+            }
+          })(),
+          localStorageAccess: (() => {
+            try {
+              window.localStorage.getItem("probe");
+              return "ok";
+            } catch (e) {
+              return "throws: " + e.name;
+            }
+          })(),
+          canTopNavigate: (() => {
+            try {
+              return typeof window.top.location.href === "string" ? "same-origin-top" : "unknown";
+            } catch (e) {
+              return "cross-origin-top (" + e.name + ")";
+            }
+          })(),
+          userAgentData: navigator.userAgent,
+        };
+        report.env = env;
+        emit();
+      }
+
+      // ----------------------------------------------------------------- //
+      // Probes
+      // ----------------------------------------------------------------- //
+
+      // A. inline data: image
+      (function probeInline() {
+        const img = document.getElementById("probe-img");
+        const dataUri =
+          "data:image/svg+xml;base64," +
+          btoa(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><circle cx="7" cy="7" r="6" fill="#0a7a3d"/></svg>',
+          );
+        img.onload = () => mark("t-inline", "inlineDataImage", true, dataUri.slice(0, 32) + "…");
+        img.onerror = () => mark("t-inline", "inlineDataImage", false, "error event");
+        img.src = dataUri;
+      })();
+
+      // B. external image from a declared-by-permissive origin
+      (function probeCdnImage() {
+        const url = "https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/nodedotjs.svg";
+        const img = new Image();
+        img.onload = () => mark("t-cdn", "externalImageDeclared", true, url);
+        img.onerror = () => mark("t-cdn", "externalImageDeclared", false, url);
+        img.src = url;
+        setTimeout(() => {
+          if (!report.probes.externalImageDeclared) {
+            mark("t-cdn", "externalImageDeclared", false, "timeout (no load/error within 6s)");
+          }
+        }, 6000);
+      })();
+
+      // C. external stylesheet, declared by neither resource
+      (function probeFont() {
+        const link = document.getElementById("probe-font");
+        const settle = () => {
+          // A blocked stylesheet has no cssRules and sheet is null.
+          const loaded = !!link.sheet;
+          mark(
+            "t-font",
+            "externalStylesheetUndeclared",
+            loaded,
+            loaded ? "sheet object present" : "link.sheet is null",
+          );
+        };
+        if (document.readyState === "complete") setTimeout(settle, 500);
+        else window.addEventListener("load", () => setTimeout(settle, 500));
+      })();
+
+      // D. fetch to a declared-by-permissive origin
+      (function probeFetchDeclared() {
+        const url = "https://api.github.com/zen";
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 6000);
+        fetch(url, { signal: ctl.signal })
+          .then((r) => r.text())
+          .then((t) =>
+            mark("t-fetch-declared", "fetchDeclared", true, "HTTP ok, body: " + t.slice(0, 40)),
+          )
+          .catch((e) => mark("t-fetch-declared", "fetchDeclared", false, e.name + ": " + e.message))
+          .finally(() => clearTimeout(timer));
+      })();
+
+      // E. fetch to an origin declared by neither resource
+      (function probeFetchUndeclared() {
+        const url = "https://example.com/";
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 6000);
+        fetch(url, { mode: "no-cors", signal: ctl.signal })
+          .then(() => mark("t-fetch-undeclared", "fetchUndeclared", true, "request left the frame"))
+          .catch((e) =>
+            mark("t-fetch-undeclared", "fetchUndeclared", false, e.name + ": " + e.message),
+          )
+          .finally(() => clearTimeout(timer));
+      })();
+
+      // F. nested iframe
+      (function probeNestedFrame() {
+        const f = document.createElement("iframe");
+        f.style.display = "none";
+        f.src = "https://example.com/";
+        f.onload = () => mark("t-frame", "nestedIframe", true, "load event fired");
+        f.onerror = () => mark("t-frame", "nestedIframe", false, "error event");
+        document.body.appendChild(f);
+        setTimeout(() => {
+          if (!report.probes.nestedIframe) {
+            mark("t-frame", "nestedIframe", false, "no load event within 6s");
+          }
+        }, 6000);
+      })();
+
+      // ----------------------------------------------------------------- //
+      // MCP Apps lifecycle over postMessage (SEP-1865 §Transport Layer).
+      // Written without the SDK on purpose: the spec documents this raw shape,
+      // and doing it by hand means the experiment tests the protocol rather
+      // than a client library's convenience wrapper.
+      // ----------------------------------------------------------------- //
+      let nextId = 1;
+      const pending = new Map();
+
+      function sendRequest(method, params) {
+        const id = nextId++;
+        report.lifecycle.push({ dir: "view->host", kind: "request", method, id });
+        emit();
+        window.parent.postMessage({ jsonrpc: "2.0", id, method, params }, "*");
+        return new Promise((resolve, reject) => {
+          pending.set(id, { resolve, reject });
+          setTimeout(() => {
+            if (pending.has(id)) {
+              pending.delete(id);
+              reject(new Error("timeout waiting for response to " + method));
+            }
+          }, 5000);
+        });
+      }
+
+      function sendNotification(method, params) {
+        report.lifecycle.push({ dir: "view->host", kind: "notification", method });
+        emit();
+        window.parent.postMessage({ jsonrpc: "2.0", method, params }, "*");
+      }
+
+      window.addEventListener("message", (event) => {
+        const msg = event.data;
+        if (!msg || msg.jsonrpc !== "2.0") return;
+
+        if (msg.id !== undefined && pending.has(msg.id)) {
+          const { resolve, reject } = pending.get(msg.id);
+          pending.delete(msg.id);
+          report.lifecycle.push({ dir: "host->view", kind: "response", id: msg.id });
+          if (msg.error) reject(new Error(JSON.stringify(msg.error)));
+          else resolve(msg.result);
+          emit();
+          return;
+        }
+
+        if (msg.method) {
+          report.lifecycle.push({ dir: "host->view", kind: "notification", method: msg.method });
+          if (msg.method === "ui/notifications/tool-result") {
+            report.toolResult = msg.params;
+            renderData(msg.params);
+          }
+          if (msg.method === "ui/notifications/tool-input") {
+            report.toolInput = msg.params;
+          }
+          emit();
+        }
+      });
+
+      function renderData(params) {
+        const sc = params && params.structuredContent;
+        const title = document.getElementById("title");
+        const host = document.getElementById("data");
+        if (!sc || !Array.isArray(sc.unicorns)) {
+          host.innerHTML =
+            '<p class="fail">tool-result arrived but structuredContent.unicorns was missing.</p>';
+          return;
+        }
+        title.textContent = "Fleet card — " + sc.unicorns.length + " unicorn(s)";
+        const rows = sc.unicorns
+          .map(
+            (u) =>
+              "<tr><td>" +
+              u.name +
+              "</td><td><code>" +
+              u.id +
+              "</code></td><td>" +
+              u.size +
+              "</td><td>$" +
+              u.hourlyRate +
+              "/h</td><td>" +
+              (u.available ? "available" : "booked") +
+              "</td></tr>",
+          )
+          .join("");
+        host.innerHTML =
+          '<table><thead><tr><th>Name</th><th>ID</th><th>Size</th><th>Rate</th><th>Status</th></tr></thead><tbody>' +
+          rows +
+          "</tbody></table><p>generated at <code>" +
+          sc.generatedAt +
+          "</code></p>";
+      }
+
+      // ----------------------------------------------------------------- //
+      // Handshake.
+      //
+      // Done twice on purpose, to document a trap this experiment fell into.
+      //
+      // SEP-1865's narrative "you don't need an SDK" example sends
+      // `clientInfo` — but that example is for the BASE `initialize` method.
+      // The normative type for `ui/initialize` (McpUiInitializeRequest) requires
+      // `appInfo`, `appCapabilities`, `protocolVersion`. Copying the narrative
+      // example into a `ui/initialize` call gets you rejected, and the first
+      // call below records exactly that rejection rather than asserting it.
+      // ----------------------------------------------------------------- //
+      collectEnv();
+
+      // 1. The wrong shape, sent deliberately.
+      sendRequest("ui/initialize", {
+        capabilities: {},
+        clientInfo: { name: "fleet-card-probe", version: "1.0.0" },
+        protocolVersion: "2026-01-26",
+      })
+        .then((result) => {
+          report.lifecycle.push({
+            kind: "ui/initialize with clientInfo UNEXPECTEDLY ACCEPTED",
+            result,
+          });
+          emit();
+        })
+        .catch((e) => {
+          report.lifecycle.push({
+            kind: "ui/initialize with clientInfo REJECTED (expected)",
+            error: String(e),
+          });
+          emit();
+        })
+        .finally(() => {
+          // 2. The shape the normative schema actually specifies.
+          sendRequest("ui/initialize", {
+            appInfo: { name: "fleet-card-probe", version: "1.0.0" },
+            appCapabilities: { availableDisplayModes: ["inline"] },
+            protocolVersion: "2026-01-26",
+          })
+            .then((result) => {
+              report.lifecycle.push({ kind: "ui/initialize with appInfo ACCEPTED", result });
+              sendNotification("ui/notifications/initialized", {});
+              emit();
+            })
+            .catch((e) => {
+              report.lifecycle.push({ kind: "ui/initialize with appInfo FAILED", error: String(e) });
+              sendNotification("ui/notifications/initialized", {});
+              emit();
+            });
+        });
+
+      setTimeout(emit, 8000);
+    </script>
+  </body>
+</html>

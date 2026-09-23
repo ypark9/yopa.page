@@ -1,0 +1,127 @@
+{
+  "startedAt": "2026-09-23T19:23:45.661Z",
+  "env": {
+    "href": "about:srcdoc",
+    "origin": "null",
+    "ancestorOrigins": ["http://127.0.0.1:6275", "http://127.0.0.1:6274"],
+    "isFramed": true,
+    "frameDepth": 2,
+    "opaqueOrigin": true,
+    "cookieAccess": "throws: SecurityError",
+    "localStorageAccess": "throws: SecurityError",
+    "canTopNavigate": "cross-origin-top (SecurityError)",
+    "userAgentData": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+  },
+  "probes": {
+    "fetchUndeclared": { "ok": false, "detail": "TypeError: Failed to fetch", "at": "2026-09-23T19:23:45.666Z" },
+    "fetchDeclared": { "ok": false, "detail": "TypeError: Failed to fetch", "at": "2026-09-23T19:23:45.667Z" },
+    "inlineDataImage": { "ok": false, "detail": "error event", "at": "2026-09-23T19:23:45.671Z" },
+    "externalImageDeclared": {
+      "ok": false,
+      "detail": "https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/nodedotjs.svg",
+      "at": "2026-09-23T19:23:45.672Z"
+    },
+    "nestedIframe": { "ok": true, "detail": "load event fired", "at": "2026-09-23T19:23:45.696Z" },
+    "externalStylesheetUndeclared": { "ok": true, "detail": "sheet object present", "at": "2026-09-23T19:23:46.199Z" }
+  },
+  "cspViolations": [
+    {
+      "blockedURI": "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+      "violatedDirective": "style-src-elem",
+      "effectiveDirective": "style-src-elem",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": "about"
+    },
+    {
+      "blockedURI": "https://api.github.com/zen",
+      "violatedDirective": "connect-src",
+      "effectiveDirective": "connect-src",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": "about"
+    },
+    {
+      "blockedURI": "https://example.com/",
+      "violatedDirective": "connect-src",
+      "effectiveDirective": "connect-src",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": "about"
+    },
+    {
+      "blockedURI": "data",
+      "violatedDirective": "img-src",
+      "effectiveDirective": "img-src",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": ""
+    },
+    {
+      "blockedURI": "https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/nodedotjs.svg",
+      "violatedDirective": "img-src",
+      "effectiveDirective": "img-src",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": ""
+    },
+    {
+      "blockedURI": "https://example.com",
+      "violatedDirective": "frame-src",
+      "effectiveDirective": "frame-src",
+      "originalPolicy": "default-src 'none'; connect-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'; object-src 'none'; worker-src 'none'",
+      "disposition": "enforce",
+      "sourceFile": ""
+    }
+  ],
+  "lifecycle": [
+    { "dir": "view->host", "kind": "request", "method": "ui/initialize", "id": 1 },
+    { "dir": "host->view", "kind": "response", "id": 1 },
+    {
+      "kind": "ui/initialize with clientInfo REJECTED (expected)",
+      "error": "Error: {\"code\":-32602,\"message\":\"Invalid params for ui/initialize: appInfo: Invalid input, appCapabilities: Invalid input\"}"
+    },
+    { "dir": "view->host", "kind": "request", "method": "ui/initialize", "id": 2 },
+    { "dir": "host->view", "kind": "response", "id": 2 },
+    {
+      "kind": "ui/initialize with appInfo ACCEPTED",
+      "result": {
+        "protocolVersion": "2026-01-26",
+        "hostCapabilities": {
+          "openLinks": {},
+          "downloadFile": {},
+          "serverTools": { "listChanged": true },
+          "serverResources": { "listChanged": true },
+          "logging": {},
+          "sandbox": { "csp": {} }
+        },
+        "hostInfo": { "name": "MCP Inspector", "version": "2.0.0" },
+        "hostContext": {
+          "theme": "light",
+          "displayMode": "inline",
+          "availableDisplayModes": ["inline", "fullscreen"],
+          "styles": { "variables": "[ELIDED - 26 CSS custom properties: --color-*, --font-*, --border-radius-*, --shadow-*. See transcripts/README.md]" },
+          "containerDimensions": { "width": 624, "height": 474 }
+        }
+      }
+    },
+    { "dir": "view->host", "kind": "notification", "method": "ui/notifications/initialized" },
+    { "dir": "host->view", "kind": "notification", "method": "ui/notifications/host-context-changed" },
+    { "dir": "host->view", "kind": "notification", "method": "ui/notifications/tool-input" },
+    { "dir": "host->view", "kind": "notification", "method": "ui/notifications/tool-result" }
+  ],
+  "toolResult": {
+    "content": [
+      { "type": "text", "text": "Aurora (u-001) — large, $120/h, available\nBramble (u-002) — small, $60/h, available" }
+    ],
+    "structuredContent": {
+      "generatedAt": "2026-09-23T19:23:45.468Z",
+      "query": { "available_only": true },
+      "unicorns": [
+        { "id": "u-001", "name": "Aurora", "size": "large", "hourlyRate": 120, "available": true },
+        { "id": "u-002", "name": "Bramble", "size": "small", "hourlyRate": 60, "available": true }
+      ]
+    }
+  },
+  "toolInput": { "arguments": { "available_only": true } }
+}
