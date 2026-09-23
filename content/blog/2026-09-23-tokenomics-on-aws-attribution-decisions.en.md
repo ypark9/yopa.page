@@ -18,9 +18,9 @@ The FinOps Foundation put a name on AI cost management this year and gave it a f
 
 That framing is useful, but a four-pillar diagram is not a decision. Once you start filling it in, the pillars stop being four independent workstreams and collapse into three questions you have to answer before any dashboard is worth building:
 
-1. **Unit of account** — do you manage tokens, requests, or runs?
-2. **Attribution key** — what field on the bill tells you who spent it?
-3. **Enforcement point** — where a limit is allowed to say "no"?
+1. **Unit of account**: do you manage tokens, requests, or runs?
+2. **Attribution key**: what field on the bill tells you who spent it?
+3. **Enforcement point**: where a limit is allowed to say "no"?
 
 Everything else in the pillar article is a lever you pull after those three are settled. This post is about the three, using the mechanisms that actually exist on Amazon Bedrock today, and the places they break.
 
@@ -130,7 +130,7 @@ An agent platform is a cost surface with no shutdown switch: it runs continuousl
 
 ## References
 
-- [Getting started with Tokenomics on AWS](https://aws.amazon.com/blogs/aws-cloud-financial-management/getting-started-with-tokenomics-on-aws/) — AWS Cloud Financial Management Blog
+- [Getting started with Tokenomics on AWS](https://aws.amazon.com/blogs/aws-cloud-financial-management/getting-started-with-tokenomics-on-aws/) (AWS Cloud Financial Management Blog)
 - [IAM principal cost allocation](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/iam-principal-cost-allocation.html)
 - [Bedrock cost management: Projects, inference profiles, and workspaces](https://docs.aws.amazon.com/bedrock/latest/userguide/cost-management.html)
 - [Bedrock model invocation logging](https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html)
