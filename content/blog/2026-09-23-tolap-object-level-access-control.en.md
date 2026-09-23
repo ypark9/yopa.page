@@ -107,5 +107,5 @@ This is the same boundary-setting instinct as designing [zero-trust agent system
 
 ## References
 
-- [Introducing TOLAP: object-level access control for AI agent tools](https://aws.amazon.com/blogs/opensource/introducing-tolap-object-level-access-control-for-ai-agent-tools/) — AWS Open Source Blog
-- [github.com/awslabs/tolap](https://github.com/awslabs/tolap) — Apache-2.0
+- [Introducing TOLAP: object-level access control for AI agent tools](https://aws.amazon.com/blogs/opensource/introducing-tolap-object-level-access-control-for-ai-agent-tools/) (AWS Open Source Blog)
+- [github.com/awslabs/tolap](https://github.com/awslabs/tolap) (Apache-2.0)
