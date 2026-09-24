@@ -24,10 +24,12 @@ The instinct is to reuse an access-control model you already trust. AWS's own ex
 
 | Layer | The question it answers | Why it misses this gap |
 |-------|------------------------|------------------------|
-| Role-based access control | Can this user reach this resource? | No vocabulary for which columns of the resource are visible, or which rows to filter |
+| Role-based access control | Can this user reach this resource? | It decides on the resource as a whole. Nothing in the model says which columns inside it are visible or which rows to filter |
 | Attribute-based access control | Does policy permit this request? | Evaluates at a central engine; a tool holding a direct database connection composes a query that never passes through it |
 | Database row-level security | Which rows of this table? | Genuine source enforcement, but confined to databases, while agents also read REST APIs, vector stores, and object storage |
 | Content guardrails | What did the model say? | Operate on output, after the unrestricted data is already in the context window |
+
+RBAC and ABAC answer their question from different places. RBAC binds the permission to a role and lets identity carry the decision: this analyst holds the analyst role, and that role may read the patients table. ABAC evaluates attributes of the request instead, which buys finer rules (a user in the region the record belongs to, on a managed device) and costs a centralized decision point that every request must pass through. Both stop at the resource. Neither one describes what should come back from inside it.
 
 That last row is the one that gets misread as coverage, and it is the sharpest argument in the post. Guardrails constrain what the model *says*. By the time they run, the data is already in the context window, and data in the context window is available to summarization, reasoning, follow-up questions, and extraction through a prompt injection. Redacting a field from one response does not remove it from the conversation the model is holding. If your data-object policy is a guardrail, your enforcement point sits after the leak.
 
@@ -48,6 +50,8 @@ That third principle is the real test of whether a control is a control. If your
 A healthcare analyst policy that allows the patients, encounters, and diagnoses tables while hiding the internal billing and audit tables, hiding SSN and date of birth outright, returning email as a hash and the name with only its first character, restricting rows to two named regions, and capping any result set. What the agent receives is a table with no SSN column in it at all, a name reading `J*********`, a hash where the email was, and rows from only the permitted regions. A query against the billing table is refused before it reaches the database.
 
 When several policies apply to one user they merge **most-restrictive-wins**: allowed sets intersect, denied sets union, booleans AND, numeric limits resolve to the stricter value, and where two policies mask the same field differently the more restrictive mask wins. The practical consequence is worth stating plainly, because it inverts the usual intuition about granting access: **adding a policy to someone can only ever reduce what they can see, never expand it.**
+
+A concrete example. Policy A allows [name, email, phone] and Policy B allows [name, email, address]; merged, the allowed set is [name, email]. If A hides SSN and B hides date of birth, both are hidden. More policies always means less visible data.
 
 ## The mechanism: resolve, sign, enforce
 
@@ -79,7 +83,7 @@ The announcement's known-limitations section is unusually honest, and these are 
 
 - **Enforcement only applies where the wrapper is used.** Direct database access bypasses it entirely. TOLAP cannot protect a path it does not sit on, which means adoption is all-or-nothing per data source, and a single un-wrapped connection is a hole.
 - **Signed contexts are replay-bounded, not replay-proof.** The expiry is inside the signature and cannot be extended, but without the optional replay guard a valid context is replayable until it expires. Keep the lifetime short, and treat that as a requirement rather than a default.
-- **Hash masking prevents rainbow-table attacks only with a configured salt.** Without one, the same input produces the same hash in every installation. Keyed hashing (HMAC) is the stronger option but requires the signing key to verify correctness.
+- **Hash masking prevents rainbow-table attacks only with a configured salt.** A salt is a secret string the policy mixes into the input before hashing. Without one, a value like `alice@example.com` produces the same digest in your installation and in everyone else's, so an attacker holding a masked export can look the digest up in a precomputed table or match it against one computed elsewhere. A salt makes each installation produce different hashes for the same input, which closes both paths. Inside a single installation the same input still hashes to the same value, because masking has to stay deterministic for lookups and verification to work. Keyed hashing (HMAC) is the stronger option but requires the signing key to verify correctness.
 - **The LLM judge is non-deterministic by nature.** The same query can receive different alignment scores across evaluations. AWS says directly that this is appropriate for an advisory layer and inappropriate for a compliance gate. That is the correct framing, and it should survive contact with your security review.
 - **You are adding a component to the data path.** A policy server, a store, and enforcement in each tool. The core SDKs have zero external dependencies in all three languages specifically because that code has to be embeddable in a Lambda, an edge worker, or a plugin without dragging a dependency tree into the security path.
 
