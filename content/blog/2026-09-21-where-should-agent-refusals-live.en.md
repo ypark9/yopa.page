@@ -69,6 +69,8 @@ The asymmetry is worth stating plainly. A prompt layer fails probabilistically. 
 
 Put the decision in backend authorization when the action is irreversible, physical, financial, outbound to a third party, or an egress of data. All five RoboHarm commands fall in that class, which is why the interesting question is not "did the model refuse" but "would anything have stopped the call".
 
+If you want the judgment itself to be cheap, a small judge model that returns a calibrated yes/no probability helps ([the model that only judges](/blog/2026-09-20-system-one-checker-models.html)). But its output is a probability, not a decision. Put a judge model in layer 3 and you have handed the refusal back to a probability, so use it in layers 1 and 2 to pre-filter calls and keep the final refusal in the authorization layer.
+
 Put it in the tool policy when the action is reversible but expensive, when you want shape and rate control, or when a human approval step is genuinely useful at that frequency.
 
 Use the prompt for preferences rather than rules, for low blast radius actions, and where latency rules out a round trip. Never leave the prompt as the only layer for anything in the first class.
@@ -79,19 +81,11 @@ Concretely, on the stack I run: an agent platform puts the tool surface behind a
 
 Two of my own posts already argue the adjacent halves of this: [the boundaries between HTTP, MCP, and A2A](/blog/2026-08-01-mcp-and-a2a-boundaries-on-agentcore.html) for where the contract belongs, and [where agent-generated code runs](/blog/2026-07-02-where-to-run-agent-generated-code.html) for what happens when the agent's output is executed rather than declared. This post is the layer above both: which of those layers is allowed to be the one that says no.
 
-## The comparison I have not run yet
+## This ordering is a claim, not a measurement
 
 I am not going to claim an experiment I did not do. What I have described above is a reading of Robocurve's published evaluation, and the evidence class is documentation-derived. The numbers in the tables are theirs.
 
-What I want to run is a three-condition comparison on a mock tool surface, with no robot involved:
-
-1. Prompt-only: the system prompt states that the unsafe action is prohibited.
-2. Prompt plus tool policy: the same instruction, and the tool schema plus a policy layer rejects the declared bad arguments.
-3. Backend authorization: the prompt and the policy stay in place, and an authorization check bound to the caller identity rejects the operation at execution time.
-
-Same five unsafe commands, same fixed wording, twenty attempts per condition, a single scripted agent loop, and a local mock of the side effect so that no real action can occur. The success criterion is a measurable gap between condition 1 and condition 3 with reproducible logs. The falsifying result is a condition-1 run with zero completions, which would mean the prompt layer is stronger than the RoboHarm reading suggests.
-
-Until that runs, the honest statement is that I believe the ordering above and I have not measured it in my own stack.
+I had planned a three-condition comparison on a mock tool surface, with no robot involved: prompt-only, prompt plus tool policy, and backend authorization, run twenty times each over the same five unsafe commands, measuring the gap between condition 1 and condition 3. Reworking the plan, it would not have told me anything new. Condition 3 rejects by definition, and in a scripted loop the prompt does not change what the loop does, so condition 1 completes by definition. The gap between them is a value the design guarantees, not a result I would have measured. What is actually worth knowing is whether a model keeps complying when the wording changes, which is what it means for layer 1 to be soft. That is the axis published evaluations like RoboHarm already cover, and one robot-free mock cannot generalize it. So I am not running it. Read the ordering above as an architectural argument, not as a measurement.
 
 ## When this framing is wrong
 
@@ -116,5 +110,5 @@ Anything that lands in question 3 is the work. Rewriting the prompt to be more e
 - Released harness and per-trial logs, [robocurve/roboharm](https://github.com/robocurve/roboharm) (MIT).
 - The Decoder, [GPT-6 Astra and Claude Fable turn robot arms into slapstick killer robots in new safety benchmark](https://the-decoder.com/gpt-6-astra-and-claude-fable-turn-robot-arms-into-slapstick-killer-robots-in-new-safety-benchmark/), September 19, 2026.
 
-Verified on 2026-09-21. The RoboHarm figures were checked against the published per-trial logs; the three-condition comparison described above has not been run.
+Verified on 2026-09-21. The RoboHarm figures were checked against the published per-trial logs; the three-condition comparison was not run (see above).
 
