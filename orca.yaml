@@ -4,8 +4,15 @@
 scripts:
   setup: |
     export CCDOC_HOME="/Users/yoonsoo.park/code/ncino/claude-code-hub"
-    # --only-path keeps this hook inside the worktree: no hub git pull, no member relink.
-    command -v ccdoc >/dev/null 2>&1 && ccdoc setup yopa-page "$ORCA_WORKTREE_PATH" --only-path || true
+    # Orca copies the parent checkout's gitignored .claude into a new worktree, so the
+    # worktree starts in the legacy install form and `harness apply` alone refuses it.
+    # Convert first, then apply. On an already converted checkout repair exits 0 with
+    # "nothing to convert", so this is safe to run every time. Neither may fail the
+    # worktree, hence `|| true`.
+    if command -v ccdoc >/dev/null 2>&1; then
+      ccdoc harness repair --cwd "$ORCA_WORKTREE_PATH" --apply --json || true
+      ccdoc harness apply --cwd "$ORCA_WORKTREE_PATH" --json || true
+    fi
     command -v cxdoc >/dev/null 2>&1 && cxdoc checkout add yopa.page "$ORCA_WORKTREE_PATH" || true
   archive: |
     # No ccdoc sync here: a worktree holds the repo's tracked CLAUDE.md, not the hub
