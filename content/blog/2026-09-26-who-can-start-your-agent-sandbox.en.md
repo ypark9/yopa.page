@@ -167,7 +167,7 @@ The honest test is whether you need something the platform will not do: credenti
 - **An organization.** One account, no service control policies (SCPs, the org-level rules that can block actions in every account), no permission boundaries.
 - **A load test.** The race test is 50 threads from one laptop, not production traffic.
 
-The code for all three experiments is in [experiments/sandbox-launcher](https://github.com/ypark9/yopa.page/tree/main/experiments/sandbox-launcher): the local suite, the IAM test, and the race test.
+The code and raw data for all three experiments are in [yopa-experiments](https://github.com/ypark9/yopa-experiments/tree/main/2026-09-26-who-can-start-your-agent-sandbox): the local suite, the IAM test, and the race test.
 
 ## What to do
 
