@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The comparison omits major APIs, does not distinguish Bulk API 2.0, and overstates several use cases."
 replacement_url_en: "/blog/2026-08-01-choose-the-right-salesforce-api.html"
-replacement_url_ko: "/ko/blog/2026-08-01-choose-the-right-salesforce-api.html"
 author: Yoonsoo Park
 description: "Explore the differences between Salesforce's Metadata API, Tooling API, and Bulk API, including use cases and real-life scenarios to determine the best API for various development needs."
 categories:

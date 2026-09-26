@@ -20,6 +20,10 @@ languages:
     label: 한국어
     weight: 2
     title: thats.nono
+    # Korean blog articles are retired, so the Korean site has no tag or
+    # category pages. CloudFront redirects old /ko/tags and /ko/categories
+    # URLs to their English equivalents.
+    taxonomies: {}
 
 # Configure taxonomies explicitly
 taxonomies:
@@ -83,8 +87,11 @@ menu:
   header:
     - name: About
       url: "/about.html"
+    # Articles exist only in English, so every language links to /articles.html.
     - name: Articles
       url: "/articles.html"
+      params:
+        englishOnly: true
     - name: Expeditions
       url: "/expeditions/safe-agent-operations.html"
   footer:

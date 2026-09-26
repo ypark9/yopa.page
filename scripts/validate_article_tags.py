@@ -56,9 +56,10 @@ def scoped_paths():
 
 
 def replacement_path(url):
+    if not url.startswith("/blog/"):
+        return BLOG_DIR / "__invalid_replacement__.en.md"
     name = url.rsplit("/", 1)[-1].removesuffix(".html")
-    language = "ko" if url.startswith("/ko/") else "en"
-    return BLOG_DIR / f"{name}.{language}.md"
+    return BLOG_DIR / f"{name}.en.md"
 
 
 def validate():
@@ -88,8 +89,10 @@ def validate():
     for path, data in records.items():
         if data.get("maintenance_status") != "archived":
             continue
+        if "replacement_url_ko" in data:
+            errors.append(f"{path}: replacement_url_ko is retired")
         original_tags = set(data.get("tags", []))
-        for field in ("replacement_url_en", "replacement_url_ko"):
+        for field in ("replacement_url_en",):
             target = replacement_path(data.get(field, ""))
             target_data = records.get(target)
             if not target_data:
@@ -98,20 +101,6 @@ def validate():
             shared = original_tags & set(target_data.get("tags", []))
             if len(shared) < 2:
                 errors.append(f"{path}: {field} shares fewer than two tags ({sorted(shared)})")
-
-    pairs = {}
-    for path, data in records.items():
-        match = re.match(r"^(2026-08-01-.+)\.(en|ko)\.md$", path.name)
-        if match:
-            pairs.setdefault(match.group(1), {})[match.group(2)] = (path, data)
-    for basename, languages in pairs.items():
-        if set(languages) != {"en", "ko"}:
-            errors.append(f"{basename}: replacement must have both en and ko files")
-            continue
-        en_tags = languages["en"][1].get("tags", [])
-        ko_tags = languages["ko"][1].get("tags", [])
-        if en_tags != ko_tags:
-            errors.append(f"{basename}: en/ko tags differ")
 
     for path, data in records.items():
         if data.get("maintenance_status") == "archived":

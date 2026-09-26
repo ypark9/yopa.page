@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The command is deprecated and source conversion is no longer required for ordinary deployments."
 replacement_url_en: "/blog/2026-08-01-salesforce-source-format-conversion-and-deployment.html"
-replacement_url_ko: "/ko/blog/2026-08-01-salesforce-source-format-conversion-and-deployment.html"
 author: Yoonsoo Park
 description: "A comprehensive guide to the sfdx force:source:convert command in Salesforce DX, explaining its purpose, usage, and key features."
 categories:

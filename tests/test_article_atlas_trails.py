@@ -91,7 +91,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
 
         self.assertEqual(urls, expected_urls)
         self.assertEqual(len(self.posts), len(urls))
-        self.assertEqual({post["language"] for post in self.posts}, {"en", "ko"})
+        self.assertEqual({post["language"] for post in self.posts}, {"en"})
 
     def test_related_urls_are_valid_and_never_self_links(self):
         known_urls = {post["url"] for post in self.posts}
@@ -138,19 +138,18 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             replacement,
         )
 
-    def test_latest_articles_match_current_rss_order_in_each_language(self):
+    def test_english_home_and_korean_home_and_feed_list_english_articles(self):
         page_size = self.home_page_size()
-        for language, home_path, feed_path, site_url in (
-            ("en", "index.html", "index.xml", "https://www.yopa.page/index.html"),
-            ("ko", "ko/index.html", "ko/index.xml", "https://www.yopa.page/ko/index.html"),
-        ):
-            with self.subTest(language=language):
-                expected = self.latest_rss_urls(feed_path)[:page_size]
-                actual = self.latest_home_urls(home_path, site_url)
+        english_feed = self.latest_rss_urls("index.xml")
+        english_home = self.latest_home_urls("index.html", "https://www.yopa.page/index.html")
+        korean_home = self.latest_home_urls("ko/index.html", "https://www.yopa.page/ko/index.html")
 
-                self.assertTrue(expected)
-                self.assertEqual(actual, expected)
-                self.assertEqual(len(actual), min(page_size, len(self.latest_rss_urls(feed_path))))
+        self.assertTrue(english_feed)
+        self.assertEqual(english_home, english_feed[:page_size])
+        self.assertEqual(korean_home, english_feed[:page_size])
+        self.assertTrue(all(url.startswith("/blog/") for url in korean_home))
+        # Korean subscribers keep getting new posts through the English articles.
+        self.assertEqual(self.latest_rss_urls("ko/index.xml"), english_feed)
 
     def test_atlas_exposes_replacement_status(self):
         replacement = next(

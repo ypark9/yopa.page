@@ -1,10 +1,13 @@
+import csv
 import json
+import re
 import shutil
 import subprocess
 import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,19 +104,81 @@ class BlogSeoRenderingTests(unittest.TestCase):
         expected_dispatch = "yopa-field-dispatch-ko.beehiiv.com" if language == "ko" else "yopapage.beehiiv.com"
         self.assertIn(expected_dispatch, html)
 
-    def test_english_and_korean_posts_render_author_and_blog_posting_once(self):
+    def test_english_post_renders_author_and_blog_posting_once(self):
         self.assert_blog_posting(
             Path("blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"),
             "en",
             "/about.html",
             "../about.html",
         )
-        self.assert_blog_posting(
-            Path("ko/blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"),
-            "ko",
-            "/ko/about.html",
-            "../../ko/about.html",
-        )
+        html, _ = self.parse(Path("blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"))
+        self.assertNotIn('hreflang="ko"', html)
+
+    def test_retired_korean_article_routes_are_not_generated(self):
+        fixture = ROOT / "tests/fixtures/retired-korean-article-redirects.csv"
+        with fixture.open(newline="", encoding="utf-8") as handle:
+            routes = list(csv.DictReader(handle))
+        self.assertEqual(len(routes), 76)
+        for route in routes:
+            output_path = self.output_dir / route["old_path"].lstrip("/")
+            with self.subTest(route=route["old_path"]):
+                self.assertFalse(output_path.exists())
+
+    def test_korean_non_blog_pages_and_translated_seo_remain(self):
+        for relative_path in (
+            Path("ko/index.html"),
+            Path("ko/about.html"),
+            Path("ko/expeditions/safe-agent-operations.html"),
+            Path("ko/dispatch/confirmed.html"),
+        ):
+            with self.subTest(path=relative_path):
+                self.assertTrue((self.output_dir / relative_path).is_file())
+
+        for relative_path in (Path("about.html"), Path("ko/about.html")):
+            html, _ = self.parse(relative_path)
+            self.assertIn('hreflang=en', html)
+            self.assertIn('hreflang=ko', html)
+
+    def test_korean_feed_carries_english_articles(self):
+        # People who subscribed to /ko/index.xml must keep getting new posts
+        # after the Korean articles are retired.
+        def feed(relative_path):
+            root = ElementTree.parse(self.output_dir / relative_path).getroot()
+            channel = root.find("channel")
+            links = [item.findtext("link") for item in channel.findall("item")]
+            self_link = channel.find("{http://www.w3.org/2005/Atom}link").get("href")
+            return links, channel.findtext("language"), self_link
+
+        en_links, en_language, en_self = feed("index.xml")
+        ko_links, ko_language, ko_self = feed("ko/index.xml")
+        self.assertGreater(len(en_links), 0)
+        self.assertEqual(ko_links, en_links)
+        self.assertTrue(all("/ko/" not in link for link in ko_links))
+        self.assertEqual((en_language, ko_language), ("en", "en"))
+        self.assertTrue(en_self.endswith("/index.xml"))
+        self.assertTrue(ko_self.endswith("/ko/index.xml"))
+
+    def test_korean_pages_link_only_to_built_pages(self):
+        # Korean pages must not link to a /ko/ URL that Hugo no longer builds
+        # (for example /ko/articles.html or /ko/tags/). Directory links resolve
+        # to their index.html, matching how CloudFront serves them.
+        self.assertFalse((self.output_dir / "ko/tags").exists())
+        self.assertFalse((self.output_dir / "ko/categories").exists())
+        href_pattern = re.compile(r"""href=["']?([^"'\s>]+)""")
+        for page in sorted((self.output_dir / "ko").rglob("*.html")):
+            html = page.read_text(encoding="utf-8")
+            for href in href_pattern.findall(html):
+                if href.startswith(("http:", "https:", "mailto:", "#", "data:")):
+                    if not href.startswith("https://www.yopa.page/"):
+                        continue
+                    target = self.output_dir / href.removeprefix("https://www.yopa.page/")
+                else:
+                    target = page.parent / href
+                target = Path(str(target).split("#", 1)[0].split("?", 1)[0])
+                if str(target).endswith("/") or target.is_dir():
+                    target = target / "index.html"
+                with self.subTest(page=str(page.relative_to(self.output_dir)), href=href):
+                    self.assertTrue(target.resolve().exists())
 
     def test_archived_post_has_structured_data_but_no_dispatch(self):
         html, parser = self.parse(Path("blog/2023-06-19-how-to-delete-unwanted-files-from-a-pull-request.html"))

@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "AWS SSO is now IAM Identity Center, and shelling out with an interpolated profile name is less safe and less reliable than the AWS SDK for JavaScript v3 credential provider chain."
 replacement_url_en: "/blog/2026-08-01-iam-identity-center-with-typescript.html"
-replacement_url_ko: "/ko/blog/2026-08-01-iam-identity-center-with-typescript.html"
 author: Yoonsoo Park
 description: "AWS SSO"
 categories:

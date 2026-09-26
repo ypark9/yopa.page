@@ -40,11 +40,10 @@ def parse_stops(path: Path) -> tuple[str, list[dict[str, str]]]:
 
 
 def expected_source(url: str, language: str) -> Path | None:
-    prefix = "/ko/blog/" if language == "ko" else "/blog/"
-    if not url.startswith(prefix) or not url.endswith(".html"):
+    if language not in {"en", "ko"} or not url.startswith("/blog/") or not url.endswith(".html"):
         return None
-    slug = url.removeprefix(prefix).removesuffix(".html")
-    return ROOT / "content" / "blog" / f"{slug}.{language}.md"
+    slug = url.removeprefix("/blog/").removesuffix(".html")
+    return ROOT / "content" / "blog" / f"{slug}.en.md"
 
 
 def validate() -> list[str]:

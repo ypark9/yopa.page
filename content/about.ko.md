@@ -18,7 +18,7 @@ url: /ko/about.html
 - Salesforce, Python, TypeScript, DevOps와 self-hosting field note
 - 여러 근거를 하나의 실무 판단으로 연결하는 Article Atlas Expedition
 
-[안전한 Agent 운영 Expedition](/ko/expeditions/safe-agent-operations.html)에서 시작하거나, [전체 글](/ko/articles.html)을 보거나, [Article Atlas](/ko/explore/)를 탐험할 수 있습니다.
+[안전한 Agent 운영 Expedition](/ko/expeditions/safe-agent-operations.html)에서 시작하거나, [전체 글](/articles.html)을 보거나, [Article Atlas](/explore/)를 탐험할 수 있습니다.
 
 “thats.nono”라는 이름은 처음에는 그럴듯하지만 실제 조건에서는 실패하는 shortcut과 함정을 기록해 다음 사람이 같은 시행착오를 반복하지 않게 하자는 뜻에서 시작했습니다.
 

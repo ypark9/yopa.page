@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "Manually extracting IAM Identity Center access tokens and role credentials is brittle; current AWS tools can resolve and refresh temporary credentials from a configured profile."
 replacement_url_en: "/blog/2026-08-01-export-iam-identity-center-credentials-safely.html"
-replacement_url_ko: "/ko/blog/2026-08-01-export-iam-identity-center-credentials-safely.html"
 author: Yoonsoo Park
 description: "Using-AWS-SSO-Get-Role-Credentials-in-Real-World-Scenarios"
 categories:
