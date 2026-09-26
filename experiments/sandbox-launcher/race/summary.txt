@@ -1,0 +1,6 @@
+check_then_set  rounds=20 threads=50 launches/round min=9 max=21 total=210 rounds_with_exactly_1=0
+   outcomes: {'duplicate': 790, 'launched': 210}
+conditional     rounds=20 threads=50 launches/round min=1 max=1 total=20 rounds_with_exactly_1=20
+   outcomes: {'duplicate': 980, 'launched': 20}
+powertools      rounds=20 threads=50 launches/round min=1 max=1 total=20 rounds_with_exactly_1=20
+   outcomes: {'EXC:IdempotencyAlreadyInProgressError': 946, 'returned': 54, 'late_retry_returned_stored': 20}
