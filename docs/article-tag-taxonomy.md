@@ -1,8 +1,8 @@
 # Article tag taxonomy
 
-Tags are relationship edges, not a second description field. They should help a reader move between articles that share a product, language, architectural concept, protocol, or operational concern.
+Tags are relationship edges, not a second description field. They should help a reader move between articles that share a product, architectural concept, protocol, or operational concern.
 
-The enforced scope is the 2023–2025 technical maintenance set plus its new `2026-08-01` replacement articles. Previously excluded non-technical articles and pre-existing 2026 articles remain unchanged.
+The enforced scope is the 2023–2025 technical maintenance set plus its 43 retained English `2026-08-01` replacement articles. Previously excluded non-technical articles and other 2026 articles remain unchanged.
 
 ## Rules
 
@@ -10,8 +10,8 @@ The enforced scope is the 2023–2025 technical maintenance set plus its new `20
 - Prefer canonical product names and durable concepts over marketing adjectives or generic labels.
 - Keep spelling and casing exact: `Git`, `CLI`, `Salesforce CLI`, `IAM Identity Center`, and `Amazon Bedrock AgentCore`.
 - Keep categories broad; make tags precise enough to explain why two articles are related.
-- English and Korean versions of the same article must use the same tags in the same order.
-- An archived article and its replacement must share at least two tags so inbound knowledge-graph paths remain connected.
+- Blog articles are English-only; tags should describe each English article on its own terms.
+- An archived article and its English replacement must share at least two tags so inbound knowledge-graph paths remain connected.
 - Do not combine multiple tags in one comma-separated value.
 - A current article must share at least one tag with another reviewed article.
 
@@ -23,7 +23,7 @@ A balanced article usually contains:
 2. A technical concept, such as `Virtual Environments`, `OIDC`, or `Source Tracking`.
 3. A practice or concern, such as `Dependency Management`, `Authentication`, `Observability`, or `Multi-Tenancy`.
 
-Add a fourth to sixth tag only when it creates a meaningful reusable connection. Avoid `Programming`, `Technology`, and `Best Practices`; the article's language, product, or actual practice is a stronger edge.
+Add a fourth to sixth tag only when it creates a meaningful reusable connection. Avoid `Programming`, `Technology`, and `Best Practices`; a specific product, concept, or actual practice is a stronger edge.
 
 ## Canonical migrations
 

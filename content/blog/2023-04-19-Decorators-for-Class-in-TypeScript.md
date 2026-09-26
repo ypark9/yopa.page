@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article presents only the legacy experimental decorator model and does not distinguish it from the standard decorator support available in modern TypeScript."
 replacement_url_en: "/blog/2026-08-01-typescript-decorators.html"
-replacement_url_ko: "/ko/blog/2026-08-01-typescript-decorators.html"
 author: Yoonsoo Park
 description: "Decorators for Class in TypeScript"
 categories:

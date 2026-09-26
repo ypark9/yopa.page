@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article relies on unverified token exchange, IAM action, and condition-key behavior; memory namespaces alone are not an authorization boundary."
 replacement_url_en: "/blog/2026-08-01-multi-tenant-isolation-with-agentcore.html"
-replacement_url_ko: "/ko/blog/2026-08-01-multi-tenant-isolation-with-agentcore.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A security guide for building SaaS applications with AgentCore. Covers Tenant Context, Gateway Interceptors, and IAM Policies."

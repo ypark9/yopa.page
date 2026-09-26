@@ -9,37 +9,37 @@ safe-agent-operations:
       evidence: documented
       title: Agent가 실제로 할 수 있는 일을 정의한다
       purpose: infrastructure를 고르기 전에 tool, autonomy, state, delegation과 환경의 위험을 분류합니다.
-      url: /ko/blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html
+      url: /blog/2026-08-01-a-practical-taxonomy-for-ai-agent-systems.html
     - id: map-boundaries
       region: Agent Grove
       evidence: documented
       title: Managed service의 경계를 그린다
       purpose: runtime, identity, gateway, memory, observability와 application이 책임질 통제를 분리합니다.
-      url: /ko/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html
+      url: /blog/2026-08-01-agentcore-service-map-and-production-boundaries.html
     - id: govern-delivery
       region: Cloud Highlands
       evidence: documented
       title: 배포를 review 가능한 과정으로 만든다
       purpose: policy, evaluation, approval과 rollback을 가진 결정론적인 platform workflow로 agent를 전달합니다.
-      url: /ko/blog/2026-08-01-build-a-governed-agent-platform-on-aws.html
+      url: /blog/2026-08-01-build-a-governed-agent-platform-on-aws.html
     - id: enforce-trust
       region: Engineering Ridge
       evidence: documented
       title: 모든 hop에서 trust를 강제한다
       purpose: 중요한 action을 중심으로 workload identity, 사용자 delegation, 좁은 권한, audit와 recovery를 설계합니다.
-      url: /ko/blog/2026-08-01-zero-trust-agent-systems-on-aws.html
+      url: /blog/2026-08-01-zero-trust-agent-systems-on-aws.html
     - id: prove-recovery
       region: Archive Harbor
       evidence: production
       title: 상태 이전과 rollback을 증명한다
       purpose: 실제 Hermes 이전에서 writer shutdown, SQLite 검증, single-consumer cutover와 rollback이 필요한 이유를 확인합니다.
-      url: /ko/blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
+      url: /blog/2026-08-08-migrate-hermes-from-aws-to-synology.html
     - id: measure-before-trust
       region: Archive Harbor
       evidence: production
       title: 정책을 믿기 전에 스웜을 측정한다
       purpose: 서핑 스쿨 스웜을 33번 실행해 완주율, 최악의 지연 시간, 비용과 실패 유형을 확인합니다. 반드시 지켜야 할 제약을 프롬프트가 아닌 코드로 강제해야 하는 이유도 살펴봅니다.
-      url: /ko/blog/2026-08-20-surf-school-swarm-evidence.html
+      url: /blog/2026-08-20-surf-school-swarm-evidence.html
   principles:
     - 시스템을 agent라고 부르기 전에 권한과 위험을 기술한다.
     - managed service를 자동 production readiness가 아니라 명시적인 경계로 다룬다.

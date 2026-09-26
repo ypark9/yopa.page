@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The shell substitution is unsafe and generic User DML omits license- and org-specific requirements."
 replacement_url_en: "/blog/2026-08-01-create-salesforce-scratch-org-users-with-sf-cli.html"
-replacement_url_ko: "/ko/blog/2026-08-01-create-salesforce-scratch-org-users-with-sf-cli.html"
 author: Yoonsoo Park
 description: "Learn how to use the SFDX CLI to insert user records into a Salesforce Org efficiently using JSON files and jq."
 categories:

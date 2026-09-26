@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "Several illustrative snippets are not current service APIs and the article blurs AgentCore control-plane, runtime, identity, gateway, memory, tools, and observability responsibilities."
 replacement_url_en: "/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html"
-replacement_url_ko: "/ko/blog/2026-08-01-agentcore-service-map-and-production-boundaries.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A comprehensive overview of the AgentCore ecosystem: Runtime, Identity, Gateway, Memory, and Observability."
