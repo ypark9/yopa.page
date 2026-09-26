@@ -1,4 +1,7 @@
-{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- /* Articles are English-only. The Korean feed (/ko/index.xml) carries the
+     English articles so existing Korean subscribers keep getting new posts. */ -}}
+{{- $articleSite := partial "article-site.html" . -}}
+{{- $pages := where $articleSite.RegularPages "Type" "in" $articleSite.Params.mainSections -}}
 {{- $pages = where $pages "Params.maintenance_status" "ne" "archived" -}}
 {{- $limit := .Site.Config.Services.RSS.Limit -}}
 {{- if ge $limit 1 -}}
@@ -9,12 +12,12 @@
     <title>{{ if eq  .Title  .Site.Title }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} on {{ end }}{{ .Site.Title }}{{ end }}</title>
     <link>{{ .Permalink }}</link>
     <description>Recent content {{ if ne  .Title  .Site.Title }}{{ with .Title }}in {{.}} {{ end }}{{ end }}on {{ .Site.Title }}</description>
-    <generator>Hugo -- gohugo.io</generator>{{ with .Site.Language.Lang }}
+    <generator>Hugo -- gohugo.io</generator>{{ with $articleSite.Language.Lang }}
     <language>{{.}}</language>{{end}}{{ with .Site.Params.socialOptions.email }}
     <managingEditor>{{.}}{{ with $.Site.Params.author }} ({{.}}){{end}}</managingEditor>{{end}}{{ with .Site.Params.socialOptions.email }}
     <webMaster>{{.}}{{ with $.Site.Params.author }} ({{.}}){{end}}</webMaster>{{end}}{{ with .Site.Copyright }}
-    <copyright>{{.}}</copyright>{{end}}{{ if not .Date.IsZero }}
-    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end }}
+    <copyright>{{.}}</copyright>{{end}}{{ with $articleSite.Home }}{{ if not .Date.IsZero }}
+    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end }}{{ end }}
     {{- with .OutputFormats.Get "RSS" -}}
       {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
     {{- end -}}

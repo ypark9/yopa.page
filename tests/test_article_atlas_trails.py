@@ -138,7 +138,7 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
             replacement,
         )
 
-    def test_english_home_matches_english_rss_and_korean_home_lists_english_articles(self):
+    def test_english_home_and_korean_home_and_feed_list_english_articles(self):
         page_size = self.home_page_size()
         english_feed = self.latest_rss_urls("index.xml")
         english_home = self.latest_home_urls("index.html", "https://www.yopa.page/index.html")
@@ -148,7 +148,8 @@ class ArticleAtlasTrailsTests(unittest.TestCase):
         self.assertEqual(english_home, english_feed[:page_size])
         self.assertEqual(korean_home, english_feed[:page_size])
         self.assertTrue(all(url.startswith("/blog/") for url in korean_home))
-        self.assertEqual(self.latest_rss_urls("ko/index.xml"), [])
+        # Korean subscribers keep getting new posts through the English articles.
+        self.assertEqual(self.latest_rss_urls("ko/index.xml"), english_feed)
 
     def test_atlas_exposes_replacement_status(self):
         replacement = next(

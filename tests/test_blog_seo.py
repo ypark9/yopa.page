@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -137,6 +138,25 @@ class BlogSeoRenderingTests(unittest.TestCase):
             html, _ = self.parse(relative_path)
             self.assertIn('hreflang=en', html)
             self.assertIn('hreflang=ko', html)
+
+    def test_korean_feed_carries_english_articles(self):
+        # People who subscribed to /ko/index.xml must keep getting new posts
+        # after the Korean articles are retired.
+        def feed(relative_path):
+            root = ElementTree.parse(self.output_dir / relative_path).getroot()
+            channel = root.find("channel")
+            links = [item.findtext("link") for item in channel.findall("item")]
+            self_link = channel.find("{http://www.w3.org/2005/Atom}link").get("href")
+            return links, channel.findtext("language"), self_link
+
+        en_links, en_language, en_self = feed("index.xml")
+        ko_links, ko_language, ko_self = feed("ko/index.xml")
+        self.assertGreater(len(en_links), 0)
+        self.assertEqual(ko_links, en_links)
+        self.assertTrue(all("/ko/" not in link for link in ko_links))
+        self.assertEqual((en_language, ko_language), ("en", "en"))
+        self.assertTrue(en_self.endswith("/index.xml"))
+        self.assertTrue(ko_self.endswith("/ko/index.xml"))
 
     def test_korean_pages_link_only_to_built_pages(self):
         # Korean pages must not link to a /ko/ URL that Hugo no longer builds

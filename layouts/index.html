@@ -26,14 +26,7 @@
     </section>
 </div>
 
-{{ $articleSite := .Site }}
-{{ if eq .Language.Lang "ko" }}
-    {{/* The English home page is a translation of this one; its .Site is the
-         English site. This avoids .Site.Sites, deprecated in Hugo v0.156. */}}
-    {{ range where .Translations "Language.Lang" "en" }}
-        {{ $articleSite = .Site }}
-    {{ end }}
-{{ end }}
+{{ $articleSite := partial "article-site.html" . }}
 {{ $pages := where $articleSite.RegularPages "Type" "in" $articleSite.Params.mainSections }}
 {{ $pages = where $pages "Params.maintenance_status" "ne" "archived" }}
 {{ $projects := where .Site.RegularPages "Section" "projects" }}
