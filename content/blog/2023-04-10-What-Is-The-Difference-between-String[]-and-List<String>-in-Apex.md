@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article contains non-compiling examples and an inaccurate explanation of Apex list storage."
 replacement_url_en: "/blog/2026-08-01-apex-list-syntax-and-nested-collections.html"
-replacement_url_ko: "/ko/blog/2026-08-01-apex-list-syntax-and-nested-collections.html"
 author: Yoonsoo Park
 description: "Let's find out the real difference between String[] and List<String> in Apex"
 categories:

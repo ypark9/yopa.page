@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The example confuses individual Accounts with Person Accounts and relies on hard-coded RecordTypeIds."
 replacement_url_en: "/blog/2026-08-01-salesforce-record-types-without-hard-coded-ids.html"
-replacement_url_ko: "/ko/blog/2026-08-01-salesforce-record-types-without-hard-coded-ids.html"
 author: Yoonsoo Park
 description: "A beginner's guide to using Record Types and RecordTypeId in Salesforce, including detailed real-life examples."
 categories:

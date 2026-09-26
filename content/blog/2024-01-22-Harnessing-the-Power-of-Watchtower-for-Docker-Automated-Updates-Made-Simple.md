@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "This article recommends unattended updates from mutable latest tags and includes an invalid five-field Watchtower schedule, without staging, health, backup, or rollback controls."
 replacement_url_en: "/blog/2026-08-01-safe-container-updates-on-a-personal-docker-host.html"
-replacement_url_ko: "/ko/blog/2026-08-01-safe-container-updates-on-a-personal-docker-host.html"
 author: Yoonsoo Park
 description: "Explore the benefits of using Watchtower for your Docker containers, understand its advantages, and learn how to utilize cron scheduling for automated updates."
 categories:

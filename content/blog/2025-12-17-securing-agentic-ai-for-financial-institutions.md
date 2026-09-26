@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article overstates automatic user-token propagation, combines SigV4 and OAuth as if both always apply, and describes PrivateLink as placing the entire service mesh inside the customer VPC."
 replacement_url_en: "/blog/2026-08-01-zero-trust-agent-systems-on-aws.html"
-replacement_url_ko: "/ko/blog/2026-08-01-zero-trust-agent-systems-on-aws.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A security architecture guide for banking and finance. Covers Zero Trust, AWS SigV4, and PrivateLink for multi-agent systems."
