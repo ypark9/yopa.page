@@ -1,0 +1,60 @@
+{"arm": "check_then_set", "round": 0, "threads": 50, "launches": 21, "outcomes": {"duplicate": 29, "launched": 21}}
+{"arm": "check_then_set", "round": 1, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 2, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 3, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 4, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 5, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "check_then_set", "round": 6, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "check_then_set", "round": 7, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 8, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 9, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 10, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 11, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "check_then_set", "round": 12, "threads": 50, "launches": 9, "outcomes": {"launched": 9, "duplicate": 41}}
+{"arm": "check_then_set", "round": 13, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "check_then_set", "round": 14, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 15, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 16, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "check_then_set", "round": 17, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 18, "threads": 50, "launches": 10, "outcomes": {"launched": 10, "duplicate": 40}}
+{"arm": "check_then_set", "round": 19, "threads": 50, "launches": 10, "outcomes": {"duplicate": 40, "launched": 10}}
+{"arm": "conditional", "round": 0, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 1, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 2, "threads": 50, "launches": 1, "outcomes": {"launched": 1, "duplicate": 49}}
+{"arm": "conditional", "round": 3, "threads": 50, "launches": 1, "outcomes": {"launched": 1, "duplicate": 49}}
+{"arm": "conditional", "round": 4, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 5, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 6, "threads": 50, "launches": 1, "outcomes": {"launched": 1, "duplicate": 49}}
+{"arm": "conditional", "round": 7, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 8, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 9, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 10, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 11, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 12, "threads": 50, "launches": 1, "outcomes": {"launched": 1, "duplicate": 49}}
+{"arm": "conditional", "round": 13, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 14, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 15, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 16, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 17, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 18, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "conditional", "round": 19, "threads": 50, "launches": 1, "outcomes": {"duplicate": 49, "launched": 1}}
+{"arm": "powertools", "round": 0, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 1, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 2, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 38, "returned": 12, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 3, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 4, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 5, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 30, "returned": 20, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 6, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 48, "returned": 2, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 7, "threads": 50, "launches": 1, "outcomes": {"returned": 1, "EXC:IdempotencyAlreadyInProgressError": 49, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 8, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 9, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 10, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 11, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 12, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 13, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 14, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 15, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 46, "returned": 4, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 16, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 17, "threads": 50, "launches": 1, "outcomes": {"returned": 1, "EXC:IdempotencyAlreadyInProgressError": 49, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 18, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
+{"arm": "powertools", "round": 19, "threads": 50, "launches": 1, "outcomes": {"EXC:IdempotencyAlreadyInProgressError": 49, "returned": 1, "late_retry_returned_stored": 1}}
