@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -136,6 +137,28 @@ class BlogSeoRenderingTests(unittest.TestCase):
             html, _ = self.parse(relative_path)
             self.assertIn('hreflang=en', html)
             self.assertIn('hreflang=ko', html)
+
+    def test_korean_pages_link_only_to_built_pages(self):
+        # Korean pages must not link to a /ko/ URL that Hugo no longer builds
+        # (for example /ko/articles.html or /ko/tags/). Directory links resolve
+        # to their index.html, matching how CloudFront serves them.
+        self.assertFalse((self.output_dir / "ko/tags").exists())
+        self.assertFalse((self.output_dir / "ko/categories").exists())
+        href_pattern = re.compile(r"""href=["']?([^"'\s>]+)""")
+        for page in sorted((self.output_dir / "ko").rglob("*.html")):
+            html = page.read_text(encoding="utf-8")
+            for href in href_pattern.findall(html):
+                if href.startswith(("http:", "https:", "mailto:", "#", "data:")):
+                    if not href.startswith("https://www.yopa.page/"):
+                        continue
+                    target = self.output_dir / href.removeprefix("https://www.yopa.page/")
+                else:
+                    target = page.parent / href
+                target = Path(str(target).split("#", 1)[0].split("?", 1)[0])
+                if str(target).endswith("/") or target.is_dir():
+                    target = target / "index.html"
+                with self.subTest(page=str(page.relative_to(self.output_dir)), href=href):
+                    self.assertTrue(target.resolve().exists())
 
     def test_archived_post_has_structured_data_but_no_dispatch(self):
         html, parser = self.parse(Path("blog/2023-06-19-how-to-delete-unwanted-files-from-a-pull-request.html"))

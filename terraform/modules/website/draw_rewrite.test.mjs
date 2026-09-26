@@ -68,12 +68,47 @@ test("blog section paths redirect to the English article index", () => {
   }
 });
 
+test("retired Korean taxonomy, pagination, and archive routes redirect to English", () => {
+  for (const [oldPath, englishPath] of [
+    ["/ko/articles.html", "/articles.html"],
+    ["/ko/explore", "/explore/"],
+    ["/ko/explore/", "/explore/"],
+    ["/ko/tags", "/tags/index.html"],
+    ["/ko/tags/", "/tags/index.html"],
+    ["/ko/tags/index.html", "/tags/index.html"],
+    ["/ko/tags/aws.html", "/tags/aws.html"],
+    ["/ko/tags/security/page/2/", "/tags/security/page/2/"],
+    ["/ko/tags/page/3/index.html", "/tags/page/3/index.html"],
+    ["/ko/categories", "/categories/index.html"],
+    ["/ko/categories/", "/categories/index.html"],
+    ["/ko/categories/aws.html", "/categories/aws.html"],
+    ["/ko/categories/aws/page/2/index.html", "/categories/aws/page/2/index.html"],
+    ["/ko/page", "/articles.html"],
+    ["/ko/page/2/", "/articles.html"],
+    ["/ko/page/10/index.html", "/articles.html"],
+  ]) {
+    const response = handler({ request: request(oldPath, undefined) });
+    assert.equal(response.statusCode, 301, oldPath);
+    assert.equal(
+      response.headers.location.value,
+      `https://www.yopa.page${englishPath}`,
+      oldPath,
+    );
+  }
+});
+
 test("unrelated Korean routes pass through unchanged", () => {
   for (const uri of [
+    "/ko/",
+    "/ko/index.html",
+    "/ko/index.xml",
     "/ko/about.html",
     "/ko/expeditions/safe-agent-operations.html",
     "/ko/dispatch/confirmed.html",
     "/ko/blogger/example.html",
+    "/ko/tagsmith.html",
+    "/ko/pages/example.html",
+    "/tags/aws.html",
   ]) {
     const incoming = request(uri, undefined);
     assert.equal(handler({ request: incoming }), incoming);
