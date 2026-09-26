@@ -1,0 +1,57 @@
+{
+  "tools": [
+    {
+      "name": "fleet_status",
+      "title": "Fleet status (text only)",
+      "description": "Single-value answer. Per the article's rule, a status is a sentence, not a card — so this tool carries no _meta.ui.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    },
+    {
+      "name": "browse_fleet",
+      "title": "Browse fleet (widget, default CSP)",
+      "description": "List unicorns. Comparison shape, so it renders a card. Uses the resource that declares no CSP.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "available_only": {
+            "default": true,
+            "description": "Only return unicorns that are currently available.",
+            "type": "boolean"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "_meta": {
+        "ui": {
+          "resourceUri": "ui://fleet-experiment/card-default"
+        },
+        "ui/resourceUri": "ui://fleet-experiment/card-default"
+      }
+    },
+    {
+      "name": "browse_fleet_permissive",
+      "title": "Browse fleet (widget, declared CSP)",
+      "description": "Identical to browse_fleet, but points at the resource that declares connectDomains and resourceDomains.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "available_only": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "_meta": {
+        "ui": {
+          "resourceUri": "ui://fleet-experiment/card-permissive"
+        },
+        "ui/resourceUri": "ui://fleet-experiment/card-permissive"
+      }
+    }
+  ]
+}

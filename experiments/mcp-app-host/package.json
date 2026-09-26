@@ -1,0 +1,21 @@
+{
+  "name": "mcp-app-host-experiment",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local cheap-experiment harness for MCP Apps (SEP-1865): an MCP server with ui:// resources, driven by the MCP Inspector as a host stand-in.",
+  "scripts": {
+    "server": "node src/server.js",
+    "capture:no-ui": "node scripts/capture-no-ui.mjs",
+    "inspector": "npx --yes @modelcontextprotocol/inspector@2.8.0 node src/server.js",
+    "inspector:wire": "npx --yes @modelcontextprotocol/inspector@2.8.0 node scripts/tee-server.mjs",
+    "inspector:mutating": "npx --yes @modelcontextprotocol/inspector@2.8.0 node scripts/tee-server.mjs src/server-mutating.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "^2.1.0",
+    "@modelcontextprotocol/core": "^2.1.0",
+    "@modelcontextprotocol/ext-apps": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.1.0",
+    "zod": "^4.2.0"
+  }
+}

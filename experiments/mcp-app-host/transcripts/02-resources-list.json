@@ -1,0 +1,28 @@
+{
+  "resources": [
+    {
+      "name": "Fleet card (default CSP)",
+      "uri": "ui://fleet-experiment/card-default",
+      "description": "Fleet comparison card. Declares NO ui.csp, so a spec-compliant host must apply the restrictive default policy.",
+      "mimeType": "text/html;profile=mcp-app"
+    },
+    {
+      "name": "Fleet card (declared CSP)",
+      "uri": "ui://fleet-experiment/card-permissive",
+      "description": "Byte-identical widget, but declares connectDomains and resourceDomains so the host should widen the policy to exactly those origins.",
+      "mimeType": "text/html;profile=mcp-app",
+      "_meta": {
+        "ui": {
+          "csp": {
+            "connectDomains": [
+              "https://api.github.com"
+            ],
+            "resourceDomains": [
+              "https://cdn.jsdelivr.net"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Environment captured 2026-09-23T19:22:13Z
+
+## versions
+node v23.10.0
+npm 10.9.2
+@modelcontextprotocol/server 2.1.0
+@modelcontextprotocol/ext-apps 2.0.0
+@modelcontextprotocol/client 2.1.0
+zod 4.6.5
+
+## the MCP server process owns no sockets
+$ pgrep -f "node src/server.js"  ->  29167
+$ lsof -nP -a -p 29167 -i        # any socket, any state
+(no rows above = no sockets at all)
+
+$ lsof -nP -a -p 29167 -iTCP -sTCP:LISTEN
+(no rows above = no listener)

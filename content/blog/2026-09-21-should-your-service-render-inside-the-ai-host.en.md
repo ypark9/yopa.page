@@ -57,7 +57,7 @@ The double-validation row is not theoretical. The reference states that the busi
 
 - **Reading "no auth inbound" as safe because a firewall exists.** Firewall rules are not an identity. If your service has tenants, the gateway needs to know who is calling.
 - **Adding a widget because you can.** Every widget is HTML you now maintain, version, and support across hosts you do not control.
-- **Assuming a widget update ships instantly.** Hosts may cache tool and resource listings, so a widget change can lag behind your deploy.
+- **Assuming a widget update ships instantly.** Hosts may cache tool and resource listings, so a widget change can lag behind your deploy. Locally I had the server announce a changed tool list mid-connection: the inspector showed a "list updated" badge and then re-fetched nothing until a human clicked Refresh. A host that has no human watching has to decide that for itself, and which way it decides is not something you can check locally.
 - **Putting logic in the widget.** It runs in a sandboxed iframe on someone else's page. It is a presentation layer.
 - **Forgetting that state lives behind the server.** The widget is a view. Bookings, sessions, and their expiry are database concerns.
 - **Skipping the local test path.** A widget you can only exercise by connecting a real host is a widget you will not iterate on.
@@ -70,9 +70,19 @@ If your users already have your app open, a widget inside a chat host is a secon
 
 Before deploying anything to AgentCore, the pattern can be exercised locally: an MCP server with the Apps extension, the SDK's app helpers, and a local inspector as the host stand-in to confirm that the resource URI resolves and the structured data arrives where the widget expects it. That needs no AWS account, which is the point.
 
-What it does not test is the part that actually breaks in production: how a real host caches your resource listings, how the sandboxed iframe behaves with your asset loading, and whether the no-auth inbound choice survives your threat model. Those need a real host, which turns it into a decision with an access requirement rather than a two-hour task.
+I ran that step. The harness and the raw protocol payloads are in `experiments/mcp-app-host/` in this repo. Three results are worth pulling out of it.
 
-I have not run either step. This article is a reading of the published reference implementation and the protocol documentation, and the evidence class is documentation-derived.
+**The chain resolves, and the whole thing is observable.** The tool's `_meta.ui.resourceUri` points at the `ui://` resource, the host reads it back as `text/html;profile=mcp-app`, and `structuredContent` arrives in the view as a `ui/notifications/tool-result` notification. The widget/no-widget split turns out to be enforced by the metadata rather than by discipline: of three registered tools, only the two carrying UI metadata appeared as apps at all. Capability negotiation also works locally, so the "register a text-only variant for hosts without UI support" branch can be tested before you have a host.
+
+**Two of the three things I said this could not test, it cannot.** Listing caches are unreachable because over stdio the server is a subprocess of the host — a deploy is a reconnect, so there is no window in which a stale listing can exist. Inbound auth is further out of reach still: the server process owns no sockets, so there is no boundary to threat-model.
+
+**The third one I had wrong.** Iframe asset loading is largely testable locally, and testing it paid. Two resources with byte-identical HTML, differing only in `_meta.ui.csp`, behaved exactly as the spec describes: declared domains widen the policy to those origins and no further. Two things surfaced that I would not have predicted from reading.
+
+The first is that the spec's restrictive default is a ceiling, not a guarantee. It says a host MUST apply `img-src 'self' data:` when no CSP is declared — and, two lines later, that a host MAY restrict further. The inspector applies `img-src 'none'`, which is permitted and which blocks an inline `data:` icon, the obvious way to keep a widget self-contained. Declaring `resourceDomains` does not bring `data:` back. Whether that works on any given host is that host's choice.
+
+The second is that `resourceDomains` is coarser than its name. Declaring a CDN so it can serve an image also added it to `script-src`. One field that reads as "where my pictures come from" is also "which origins may execute code in my widget". That one I would put in the review checklist.
+
+So the line is not "cheap step, then real host". The cheap step covers the wiring, capability negotiation, and asset policy. What still needs host access is caching behaviour and everything about the inbound boundary — which was the expensive half regardless.
 
 ## What to do
 
@@ -92,4 +102,4 @@ If the answer to the first is "most of them", the interface is probably a produc
 
 Related: [MCP and A2A as different contracts on AgentCore](/blog/2026-08-01-mcp-and-a2a-boundaries-on-agentcore.html) and [what changed when MCP went stateless](/blog/2026-08-09-mcp-goes-stateless.html).
 
-Verified on 2026-09-21. Based on the published reference implementation and protocol documentation; no deployment or host connection was run for this article.
+Verified on 2026-09-23. The reading of the reference implementation is documentation-derived. The local findings are experiment-derived: MCP Inspector 2.8.0 against a local stdio server built on `@modelcontextprotocol/ext-apps` 2.0.0, with payloads and wire logs kept in `experiments/mcp-app-host/`. No deployment and no connection to a third-party AI host was made for this article.
