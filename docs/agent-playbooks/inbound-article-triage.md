@@ -19,7 +19,8 @@ Before triaging any inbound item, read the corpus and build a topic fingerprint:
 
 - List `content/blog/*.md` and read the `categories:` and `tags:` frontmatter across posts.
 - Note the recurring subject areas, the **depth level** (decision analysis / real
-  pitfalls, NOT summaries), and the bilingual `.en.md` / `.ko.md` structure.
+  pitfalls, NOT summaries), and the language structure: the archive is bilingual
+  `.en.md` / `.ko.md`, but since 2026-09-24 new posts are English-only.
 - Build your own model of "what fits here" from this. **Re-derive it every run; do not
   hardcode a topic list.** The corpus IS the ground truth for what belongs.
 
@@ -72,14 +73,15 @@ Report as a ranked list, KEEP items first. End with a one-line count (scanned N,
 
 - Never invent a source or a URL. Only report items you actually read.
 - Never publish or open a PR in this phase. Report only.
-- Preserve the bilingual and "real pitfalls, not summaries" character of the blog in
-  every angle you propose.
+- Preserve the "real pitfalls, not summaries" character of the blog in every angle
+  you propose. New posts are English-only; existing Korean posts stay as archive.
 - No employer-internal framing ever leaks into a proposed angle or a future post.
 
 ## Roadmap (do not act on these yet)
 
-- **Phase 2**: draft the `.en.md` / `.ko.md` pair for an approved candidate; open a PR
-  only after the owner signs off.
+- **Phase 2**: draft the English `.en.md` article for an approved candidate; open a PR
+  only after the owner signs off. Do not draft a `.ko.md` version: bilingual publishing
+  stopped on 2026-09-24 and existing Korean posts remain as archive.
 - **Phase 3**: scheduled auto-scan + digest report.
 
 Each phase stays gated behind the owner's approval until told otherwise.
