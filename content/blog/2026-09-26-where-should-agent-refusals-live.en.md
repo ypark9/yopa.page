@@ -279,4 +279,6 @@ Write the rules you find into the prompt, because that clearly helps. Then write
 - AWS Security Blog, [Why Policy in Amazon Bedrock AgentCore chose Cedar](https://aws.amazon.com/blogs/security/why-policy-in-amazon-bedrock-agentcore-chose-cedar-for-securing-agentic-workflows/).
 - Fireworks AI, [Serverless pricing](https://docs.fireworks.ai/serverless/pricing).
 
+The harness, the scorer, and all 719 raw trials are in [yopa-experiments](https://github.com/ypark9/yopa-experiments/tree/main/2026-09-26-where-should-agent-refusals-live), so you can check every number in the tables above.
+
 RoboHarm figures were checked against the published per-trial logs on 2026-09-21. My experiment ran on 2026-09-26: 719 trials, Bedrock Converse API and the Fireworks chat completions API, fake tools only, total cost about $4.80.
