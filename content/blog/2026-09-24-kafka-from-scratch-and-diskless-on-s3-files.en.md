@@ -71,9 +71,11 @@ The short version: one-and-done is a queue, keep-and-reread is Kafka.
 
 ## Now the newer part: no local disk
 
-Kafka traditionally writes its log to local disk. When that disk fills, you offload old segments to long-term storage like S3 and build custom tooling to move, track, and reclaim them. That is operational work with nothing to do with streaming.
+Everything above is the value Kafka hands you: a log that is not erased, that many readers walk at their own pace, and that you can rewind and replay. The cost of that value is storage. Where the log lives decides how expensive keeping it is.
 
-[Amazon S3 Files](https://aws.amazon.com/s3/features/files/) changes the storage underneath. You mount an S3 file system backed by an S3 bucket and point Kafka's log directories at it. Kafka writes to the file system instead of a local disk, and all the data lives in the bucket. There is no volume to size, no manual offload, no reclaim tooling. Because S3 Files supports the file semantics Kafka expects, append, rename, and locking, you do not have to change Kafka configuration at all.
+Kafka traditionally writes its log to local disk. Keeping a long history means provisioning that much volume up front. When that disk fills, you offload old segments to long-term storage like S3 and build custom tooling to move, track, and reclaim them. That is operational work with nothing to do with streaming.
+
+[Amazon S3 Files](https://aws.amazon.com/s3/features/files/) changes the storage underneath. You mount an S3 file system backed by an S3 bucket and point Kafka's log directories at it. Kafka writes to the file system instead of a local disk, and all the data lives in the bucket. There is no volume to size, no manual offload, no reclaim tooling. Because S3 Files supports the file semantics Kafka expects, append, rename, and locking, you do not have to change Kafka configuration at all. Retention is now priced as S3 objects instead of provisioned volumes, so keeping the log long enough for replay and late subscribers stops being a cost decision.
 
 The mechanics: a producer sends a message, the broker appends it to the active segment file on the file system, and the acknowledgement comes back at low latency. When the segment rolls, it becomes immutable, and after 60 seconds of write inactivity S3 Files exports it to the bucket as a single complete object. On the read side, recent data is served from cache at millisecond latency, and evicted older data is fetched back from S3 transparently. Kafka never sees that caching layer.
 
@@ -84,6 +86,8 @@ One trap. If writes are bursty, a burst followed by more than 60 seconds of quie
 ## Where Kafka shows up
 
 Log aggregation from many servers into one searchable stream. Event-driven microservices, where a service publishes an event and inventory, shipping, and notifications subscribe instead of calling each other directly. Event sourcing, storing state as an ordered list of events you can replay. Real-time analytics and stream processing with Kafka Streams or Flink. Change data capture, streaming database changes into a search index or a data lake. Feature supply for ML models. Location matching, where ride locations and rider requests are joined in real time.
+
+The example closest to this blog's readers: the event backbone for an agent. Everything a session produces (user messages, tool calls, their results) goes onto a topic with the session ID as the message key, so one session's events land in a single partition in order. An audit trail, a judge model, and a memory summarizer each read the same stream as their own consumer group, at their own pace, and one slow consumer never blocks the rest. When the memory or verification logic changes, you rewind the offsets and run the old history through the new logic. [AgentCore Memory](/blog/2026-08-01-agentcore-memory-events-strategies-and-isolation.html) already manages session history itself, so this is not a replacement for it. It is the place where what the agent did is written once and read by many.
 
 ## The takeaway
 
