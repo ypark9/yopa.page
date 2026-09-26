@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article uses the unsupported sfdx CLI and its sample exposes a bearer-token-shaped secret."
 replacement_url_en: "/blog/2026-08-01-inspect-salesforce-orgs-without-exposing-secrets.html"
-replacement_url_ko: "/ko/blog/2026-08-01-inspect-salesforce-orgs-without-exposing-secrets.html"
 author: Yoonsoo Park
 description: "sfdx force:org:display"
 categories:

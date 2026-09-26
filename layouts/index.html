@@ -26,11 +26,23 @@
     </section>
 </div>
 
-{{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
+{{ $articleSite := .Site }}
+{{ if eq .Language.Lang "ko" }}
+    {{ with where .Site.Sites "Language.Lang" "eq" "en" }}
+        {{ $articleSite = index . 0 }}
+    {{ end }}
+{{ end }}
+{{ $pages := where $articleSite.RegularPages "Type" "in" $articleSite.Params.mainSections }}
 {{ $pages = where $pages "Params.maintenance_status" "ne" "archived" }}
 {{ $projects := where .Site.RegularPages "Section" "projects" }}
-{{ $pages = .Paginate ($pages) }}
-{{ $archivesPage := first 1 (where .Site.RegularPages "Layout" "eq" "archives") }}
+{{ $latestPages := slice }}
+{{ if eq .Language.Lang "ko" }}
+    {{ $latestPages = first 8 $pages }}
+{{ else }}
+    {{ $paginator := .Paginate $pages }}
+    {{ $latestPages = $paginator.Pages }}
+{{ end }}
+{{ $archivesPage := first 1 (where $articleSite.RegularPages "Layout" "eq" "archives") }}
 
 <div class="container">
     <section class="atlas-purpose" aria-labelledby="atlas-purpose-title">
@@ -52,26 +64,26 @@
             </article>
             <article class="atlas-entry">
                 <h3>{{ if eq .Language.Lang "ko" }}최근에 배운 것{{ else }}See what I am learning{{ end }}</h3>
-                <p>{{ if eq .Language.Lang "ko" }}새로 확인한 사실, 고친 부분들, 더는 사용되지 않는 것들을 최근 기록에서 확인하세요.{{ else }}See what I verified, revised, or retired in the latest field notes.{{ end }}</p>
-                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 기록 읽기 →{{ else }}Read recent field notes →{{ end }}</a>
+                <p>{{ if eq .Language.Lang "ko" }}새로 확인하고 고친 내용을 영어 아티클로 확인하세요.{{ else }}See what I verified, revised, or retired in the latest field notes.{{ end }}</p>
+                <a href="#latest-articles">{{ if eq .Language.Lang "ko" }}최근 영어 아티클 읽기 →{{ else }}Read recent field notes →{{ end }}</a>
             </article>
             <article class="atlas-entry">
                 <h3>{{ if eq .Language.Lang "ko" }}Article Atlas 둘러보기{{ else }}Explore the Atlas{{ end }}</h3>
                 <p>{{ if eq .Language.Lang "ko" }}글과 프로젝트, 그 과정에서 내린 판단이 서로 어떻게 작용하는지 지도에서 살펴보세요.{{ else }}Explore how articles, projects, and the decisions behind them connect.{{ end }}</p>
-                <a href="{{ "explore/" | relURL }}">{{ if eq .Language.Lang "ko" }}Atlas 입장 →{{ else }}Enter the Atlas →{{ end }}</a>
+                <a href="{{ if eq .Language.Lang "ko" }}{{ "/explore/" | absURL }}{{ else }}{{ "explore/" | relURL }}{{ end }}">{{ if eq .Language.Lang "ko" }}Atlas 입장 →{{ else }}Enter the Atlas →{{ end }}</a>
             </article>
         </div>
     </section>
     {{ partial "field-dispatch.html" . }}
     <section>
         <h2 id="latest-articles">
-            {{ if eq .Language.Lang "ko" }}최근 아티클들{{ else }}Latest Articles{{ end }}
+            {{ if eq .Language.Lang "ko" }}최근 영어 아티클{{ else }}Latest Articles{{ end }}
             {{ range $archivesPage }}
-            <a class="section-button" href="{{ .RelPermalink }}">{{ if eq $.Language.Lang "ko" }}전체 보기{{ else }}View all{{ end }}</a>
+            <a class="section-button" href="{{ .Permalink }}">{{ if eq $.Language.Lang "ko" }}전체 보기{{ else }}View all{{ end }}</a>
             {{ end }}
         </h2>
         <div class="posts">
-            {{ range $pages.Pages }}
+            {{ range $latestPages }}
             <div class="post">
                 <a href="{{ .RelPermalink }}">
                     <div class="post-row">

@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article uses a nonstandard umbrella term and recommends legacy Workflow Rules instead of Flow."
 replacement_url_en: "/blog/2026-08-01-choose-salesforce-configuration-tools.html"
-replacement_url_ko: "/ko/blog/2026-08-01-choose-salesforce-configuration-tools.html"
 author: Yoonsoo Park
 description: "Understanding the pros and cons of record-based configuration in Salesforce development."
 categories:

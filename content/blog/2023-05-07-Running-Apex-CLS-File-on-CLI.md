@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The script treats class files as anonymous Apex and interpolates untrusted paths into a shell command."
 replacement_url_en: "/blog/2026-08-01-run-anonymous-apex-safely-with-sf-cli.html"
-replacement_url_ko: "/ko/blog/2026-08-01-run-anonymous-apex-safely-with-sf-cli.html"
 author: Yoonsoo Park
 description: "Running Apex CLS File on CLI"
 categories:

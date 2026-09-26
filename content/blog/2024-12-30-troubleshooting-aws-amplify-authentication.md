@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article presents USER_PASSWORD_AUTH as a universal fix even though it requires explicit app-client configuration and omits Amplify's multi-step sign-in state machine and safer SRP default."
 replacement_url_en: "/blog/2026-08-01-debug-amplify-cognito-sign-in-flows.html"
-replacement_url_ko: "/ko/blog/2026-08-01-debug-amplify-cognito-sign-in-flows.html"
 author: Yoonsoo Park
 description: A detailed guide to resolving common AWS Amplify authentication issues in React Native applications, with practical solutions and code examples.
 categories:

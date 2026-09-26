@@ -1,3 +1,4 @@
+import csv
 import json
 import shutil
 import subprocess
@@ -101,19 +102,40 @@ class BlogSeoRenderingTests(unittest.TestCase):
         expected_dispatch = "yopa-field-dispatch-ko.beehiiv.com" if language == "ko" else "yopapage.beehiiv.com"
         self.assertIn(expected_dispatch, html)
 
-    def test_english_and_korean_posts_render_author_and_blog_posting_once(self):
+    def test_english_post_renders_author_and_blog_posting_once(self):
         self.assert_blog_posting(
             Path("blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"),
             "en",
             "/about.html",
             "../about.html",
         )
-        self.assert_blog_posting(
-            Path("ko/blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"),
-            "ko",
-            "/ko/about.html",
-            "../../ko/about.html",
-        )
+        html, _ = self.parse(Path("blog/2026-08-01-real-time-voice-agents-with-nova-2-sonic.html"))
+        self.assertNotIn('hreflang="ko"', html)
+
+    def test_retired_korean_article_routes_are_not_generated(self):
+        fixture = ROOT / "tests/fixtures/retired-korean-article-redirects.csv"
+        with fixture.open(newline="", encoding="utf-8") as handle:
+            routes = list(csv.DictReader(handle))
+        self.assertEqual(len(routes), 76)
+        for route in routes:
+            output_path = self.output_dir / route["old_path"].lstrip("/")
+            with self.subTest(route=route["old_path"]):
+                self.assertFalse(output_path.exists())
+
+    def test_korean_non_blog_pages_and_translated_seo_remain(self):
+        for relative_path in (
+            Path("ko/index.html"),
+            Path("ko/about.html"),
+            Path("ko/expeditions/safe-agent-operations.html"),
+            Path("ko/dispatch/confirmed.html"),
+        ):
+            with self.subTest(path=relative_path):
+                self.assertTrue((self.output_dir / relative_path).is_file())
+
+        for relative_path in (Path("about.html"), Path("ko/about.html")):
+            html, _ = self.parse(relative_path)
+            self.assertIn('hreflang=en', html)
+            self.assertIn('hreflang=ko', html)
 
     def test_archived_post_has_structured_data_but_no_dispatch(self):
         html, parser = self.parse(Path("blog/2023-06-19-how-to-delete-unwanted-files-from-a-pull-request.html"))
