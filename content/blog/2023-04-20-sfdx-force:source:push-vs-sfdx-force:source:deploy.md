@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The deprecated sfdx commands and their workflow comparison no longer represent supported Salesforce CLI practice."
 replacement_url_en: "/blog/2026-08-01-salesforce-cli-deploy-and-source-tracking.html"
-replacement_url_ko: "/ko/blog/2026-08-01-salesforce-cli-deploy-and-source-tracking.html"
 author: Yoonsoo Park
 description: "sfdx force:source:push vs sfdx force:source:deploy"
 categories:

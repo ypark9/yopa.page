@@ -1,0 +1,16 @@
+{{- /*
+  Returns the site that holds blog articles. Articles are English-only, so
+  the Korean home page and feed read from the English site. The English home
+  page is a translation of the Korean one, and its .Site is the English site.
+  This avoids .Site.Sites, deprecated in Hugo v0.156.
+
+  Usage: {{ $articleSite := partial "article-site.html" . }}
+  The context must be a home page.
+*/ -}}
+{{- $articleSite := .Site -}}
+{{- if ne .Language.Lang "en" -}}
+  {{- range where .Translations "Language.Lang" "en" -}}
+    {{- $articleSite = .Site -}}
+  {{- end -}}
+{{- end -}}
+{{- return $articleSite -}}

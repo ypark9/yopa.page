@@ -11,7 +11,7 @@ This ledger tracks the technical-article review requested for the 2023–2025 ar
 | Keep | The central guidance still matches current practice. | Correct metadata or small clarity issues and record `lastmod` and `reviewed_at`. |
 | Tone | The technical direction is sound but the prose is exaggerated, formulaic, or distracting. | Rewrite the complete prose surface without changing the technical claim. |
 | Update | The article remains a useful URL and framing, but commands, examples, caveats, or recommendations changed. | Verify against primary sources and revise in place. |
-| Archive + replacement | The central workflow is deprecated, unsafe, materially incorrect, or no longer the best route. | Preserve the URL with an archive notice and publish a maintained English/Korean replacement pair. |
+| Archive + replacement | The central workflow is deprecated, unsafe, materially incorrect, or no longer the best route. | Preserve the English source URL with an archive notice and publish a maintained English replacement. |
 
 An article is archived only when editing it in place would preserve a misleading title, premise, or learning path. Age alone is not an archive reason.
 
@@ -22,7 +22,7 @@ An article is archived only when editing it in place would preserve a misleading
 - Record volatile claims only when useful, with a verification date or a link to the live limit/status page.
 - Treat destructive commands, credential handling, authentication, dependency updates, and deployment guidance as high risk.
 - Preserve existing URLs. Do not merge articles that address separate search intents.
-- Write replacement articles as matching `.en.md` and `.ko.md` files with equivalent technical claims and natural prose in each language.
+- Write replacement articles as English `.en.md` files. Korean blog article variants were retired; Korean interface and non-blog pages remain supported.
 
 ## Ownership and progress
 
@@ -59,13 +59,13 @@ Non-technical book summaries, workplace advice, leadership, psychology, and gene
 ## Tag taxonomy and knowledge-graph quality
 
 - Canonical tag policy: [`docs/article-tag-taxonomy.md`](article-tag-taxonomy.md)
-- Scope: all 158 reviewed 2023-2025 technical articles and all 86 bilingual replacement files.
-- Validation result: 244 scoped articles use 147 canonical tags; 48 tags currently occur once.
+- Scope: all 158 reviewed 2023-2025 technical articles. The August 2026 batch originally contained 86 bilingual replacement files; this repository now retains its 43 English replacements.
+- Validation result at the original bilingual review: 244 scoped articles used 147 canonical tags; 48 tags occurred once. The current validator evaluates the remaining English replacement graph.
 - Article Atlas relationship model gives tags more weight than categories (`tags: 80`, `categories: 35`).
 - 2026-08-01 verification: 234 of 256 visible Atlas articles have at least one related destination, and 649 of 668 generated relationship edges (97.2%) share a canonical tag.
 - Regression gates require at least 90% graph coverage and at least 95% tag-supported relationship edges.
 
-Run `python3 scripts/validate_article_tags.py` after changing article tags. The validator enforces canonical spelling, 3-6 tags per scoped article, bilingual replacement parity, archived-to-replacement overlap, and a non-isolated reviewed graph.
+Run `python3 scripts/validate_article_tags.py` after changing article tags. The validator enforces canonical spelling, 3-6 tags per scoped article, English archived-to-replacement overlap, and a non-isolated reviewed graph.
 
 ## Replacement publication history
 

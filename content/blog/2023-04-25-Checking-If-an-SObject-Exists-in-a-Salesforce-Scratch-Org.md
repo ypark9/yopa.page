@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The legacy commands and flags shown here do not reliably test object availability."
 replacement_url_en: "/blog/2026-08-01-check-salesforce-object-availability-with-sf-cli.html"
-replacement_url_ko: "/ko/blog/2026-08-01-check-salesforce-object-availability-with-sf-cli.html"
 author: Yoonsoo Park
 description: "How to check SObject Exists in a Salesforce Scratch Org"
 categories:

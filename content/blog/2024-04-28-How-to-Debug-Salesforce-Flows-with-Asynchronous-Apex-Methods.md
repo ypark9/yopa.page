@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The guide centers @future instead of the recommended Queueable Apex and omits asynchronous trace context."
 replacement_url_en: "/blog/2026-08-01-debug-flow-invoked-queueable-apex.html"
-replacement_url_ko: "/ko/blog/2026-08-01-debug-flow-invoked-queueable-apex.html"
 author: Yoonsoo Park
 description: "Learn the steps to set up, trigger, and analyze debug logs for Salesforce flows that invoke asynchronous Apex methods, including real-world examples."
 categories:

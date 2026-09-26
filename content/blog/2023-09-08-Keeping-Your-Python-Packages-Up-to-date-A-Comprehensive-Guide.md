@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The bulk-upgrade pipeline updates an entire environment without preserving declared dependency intent or a reproducible lock and is not a safe default workflow."
 replacement_url_en: "/blog/2026-08-01-safe-python-dependency-updates.html"
-replacement_url_ko: "/ko/blog/2026-08-01-safe-python-dependency-updates.html"
 author: Yoonsoo Park
 description: "In this article, we explore various methods to keep your Python packages up-to-date, from manual updates to automated dependency management services."
 categories:

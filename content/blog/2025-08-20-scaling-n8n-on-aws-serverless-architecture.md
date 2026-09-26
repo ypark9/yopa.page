@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The claimed enterprise architecture uses mutable latest images, a single main task, incomplete queue-mode roles, and no safe upgrade, backup, restore, or rollback design."
 replacement_url_en: "/blog/2026-08-01-run-n8n-queue-mode-on-aws-ecs.html"
-replacement_url_ko: "/ko/blog/2026-08-01-run-n8n-queue-mode-on-aws-ecs.html"
 author: Yoonsoo Park
 description: "A technical guide to deploying n8n on AWS using CDK, Fargate, and Aurora Serverless."
 categories:

@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The example uses the end-of-support AWS SDK for JavaScript v2 and encourages credentials in source code instead of the standard temporary-credential provider chain."
 replacement_url_en: "/blog/2026-08-01-sign-api-gateway-requests-with-javascript-v3.html"
-replacement_url_ko: "/ko/blog/2026-08-01-sign-api-gateway-requests-with-javascript-v3.html"
 author: Yoonsoo Park
 description: "A guide on how to invoke AWS API Gateway using Signature Version 4 (SigV4) for secure authentication."
 categories:
