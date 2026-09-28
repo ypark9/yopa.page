@@ -28,20 +28,10 @@ resource "aws_cloudfront_origin_access_identity" "identity" {}
 
 resource "aws_cloudfront_function" "draw_rewrite" {
   name    = var.draw_rewrite_name
-  runtime = "cloudfront-js-1.0"
-  comment = "Rewrite /draw and /draw/ to the draw app index"
+  runtime = "cloudfront-js-2.0"
+  comment = "Redirect retired Korean articles and rewrite static app routes"
   publish = true
-  code    = <<-EOT
-    function handler(event) {
-      var request = event.request;
-      if (request.uri === '/draw' || request.uri === '/draw/') {
-        request.uri = '/draw/index.html';
-      } else if (request.uri === '/explore' || request.uri === '/explore/') {
-        request.uri = '/explore/index.html';
-      }
-      return request;
-    }
-  EOT
+  code    = file("${path.module}/draw_rewrite.js")
 }
 
 resource "aws_cloudfront_function" "presence_rewrite" {

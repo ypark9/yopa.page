@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The guide mixes the two possible trust directions, bypasses its stated Cognito broker, and omits required OAuth/OIDC security and lifecycle controls."
 replacement_url_en: "/blog/2026-08-01-cognito-salesforce-oidc-trust-topologies.html"
-replacement_url_ko: "/ko/blog/2026-08-01-cognito-salesforce-oidc-trust-topologies.html"
 author: Yoonsoo Park
 description: "Learn how to implement Single Sign-On between AWS Cognito and Salesforce for a seamless user experience with complete step-by-step instructions."
 categories:

@@ -34,11 +34,20 @@ jobs:
           tofu_version: ${{ env.TOFU_VERSION }}
           tofu_wrapper: false
 
-      - name: Validate frontmatter
+      - name: Validate frontmatter and English-only blog policy
         run: python3 scripts/validate_frontmatter.py
+
+      - name: Validate article tag graph
+        run: python3 scripts/validate_article_tags.py
+
+      - name: Validate Expedition article links
+        run: python3 scripts/validate_expeditions.py
 
       - name: Test Article Atlas
         run: python3 -m unittest discover -s tests
+
+      - name: Test CloudFront article redirects
+        run: node --test terraform/modules/website/draw_rewrite.test.mjs
 
       - name: Build Hugo site
         run: hugo --gc --minify

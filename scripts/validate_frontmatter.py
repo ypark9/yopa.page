@@ -82,15 +82,16 @@ def validate_frontmatter(file_path):
         except ValueError:
             errors.append(f"Invalid date format: '{date_str}'. Expected ISO 8601 (e.g., YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS+HH:MM)")
 
-    # Archived articles stay accessible but must explain why they are outdated
-    # and point readers to both maintained language versions.
+    # Archived English articles stay accessible and must point to a maintained
+    # English replacement. Korean blog articles and replacement links are retired.
     if data.get('maintenance_status') == 'archived':
-        for field in ['reviewed_at', 'archive_reason', 'replacement_url_en', 'replacement_url_ko']:
+        for field in ['reviewed_at', 'archive_reason', 'replacement_url_en']:
             if not data.get(field):
                 errors.append(f"Archived article is missing required field: '{field}'")
+        if 'replacement_url_ko' in data:
+            errors.append("Archived article uses retired field: 'replacement_url_ko'")
         replacement_patterns = {
             'replacement_url_en': r'^/blog/[^/]+\.html$',
-            'replacement_url_ko': r'^/ko/blog/[^/]+\.html$',
         }
         for field, pattern in replacement_patterns.items():
             if data.get(field) and not re.match(pattern, str(data[field])):
@@ -102,7 +103,7 @@ def validate_frontmatter(file_path):
         for field in ['lastmod', 'reviewed_at', 'replaces_url']:
             if not data.get(field):
                 errors.append(f"Replacement article is missing required field: '{field}'")
-        if data.get('replaces_url') and not re.match(r'^/(?:ko/)?blog/[^/]+\.html$', str(data['replaces_url'])):
+        if data.get('replaces_url') and not re.match(r'^/blog/[^/]+\.html$', str(data['replaces_url'])):
             errors.append("Replacement article field 'replaces_url' must point to a root-relative archived article URL")
         if data.get('date') and data.get('lastmod'):
             try:
@@ -122,6 +123,11 @@ def validate_frontmatter(file_path):
 
     return errors
 
+def find_korean_blog_articles(blog_dir):
+    """Return retired Korean article sources that must not be published."""
+    return sorted(filename for filename in os.listdir(blog_dir) if filename.endswith('.ko.md'))
+
+
 def main():
     blog_dir = 'content/blog'
     if not os.path.exists(blog_dir):
@@ -130,6 +136,13 @@ def main():
 
     all_errors = {}
     total_files = 0
+
+    korean_articles = find_korean_blog_articles(blog_dir)
+    if korean_articles:
+        print("Validation FAILED: Korean blog articles are retired:")
+        for filename in korean_articles:
+            print(f"  - {filename}")
+        sys.exit(1)
 
     for filename in os.listdir(blog_dir):
         if filename.endswith('.md'):

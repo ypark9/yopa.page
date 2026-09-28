@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The pipeline incorrectly uses CodeDeploy for Salesforce and contains invalid templates and deprecated CLI commands."
 replacement_url_en: "/blog/2026-08-01-salesforce-ci-cd-with-aws-codepipeline-and-codebuild.html"
-replacement_url_ko: "/ko/blog/2026-08-01-salesforce-ci-cd-with-aws-codepipeline-and-codebuild.html"
 author: Yoonsoo Park
 description: "An in-depth look at AWS Code services (CodePipeline, CodeBuild, CodeDeploy, etc.) using a Salesforce package deployment example."
 categories:

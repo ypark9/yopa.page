@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article calls data loading deployment and documents obsolete bulk-upsert flags."
 replacement_url_en: "/blog/2026-08-01-upsert-salesforce-data-from-csv-with-sf-cli.html"
-replacement_url_ko: "/ko/blog/2026-08-01-upsert-salesforce-data-from-csv-with-sf-cli.html"
 author: Yoonsoo Park
 description: "SFDX Deploy Record using CSV"
 categories:

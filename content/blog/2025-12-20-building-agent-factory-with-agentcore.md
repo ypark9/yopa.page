@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "A project-specific demonstration is presented as a production pattern while giving an agent broad infrastructure mutation capability without declarative review, policy, artifact, or rollback gates."
 replacement_url_en: "/blog/2026-08-01-build-a-governed-agent-platform-on-aws.html"
-replacement_url_ko: "/ko/blog/2026-08-01-build-a-governed-agent-platform-on-aws.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A deep dive into the architecture and infrastructure of Agent Factory, a system for building and deploying AI agents on AWS."

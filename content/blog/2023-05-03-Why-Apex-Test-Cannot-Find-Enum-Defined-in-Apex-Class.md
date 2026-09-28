@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The example contradicts its explanation and does not demonstrate a valid enum-resolution failure."
 replacement_url_en: "/blog/2026-08-01-apex-nested-enums-and-name-shadowing.html"
-replacement_url_ko: "/ko/blog/2026-08-01-apex-nested-enums-and-name-shadowing.html"
 author: Yoonsoo Park
 description: "The reason why Apex Test Cannot Find Enum Defined in Apex Class"
 categories:

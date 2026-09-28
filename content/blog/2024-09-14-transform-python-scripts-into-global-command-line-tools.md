@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "A manual symlink to a script does not provide portable packaging, dependency isolation, reliable upgrades, or command metadata for a maintained Python CLI."
 replacement_url_en: "/blog/2026-08-01-package-and-install-python-cli.html"
-replacement_url_ko: "/ko/blog/2026-08-01-package-and-install-python-cli.html"
 author: Yoonsoo Park
 description: Learn how to make your Python scripts accessible from anywhere on your system, enhancing convenience and productivity.
 categories:

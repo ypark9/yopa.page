@@ -49,12 +49,12 @@ class ArchivedArticleTemplateTests(unittest.TestCase):
         template = (ROOT / "layouts/_default/single.html").read_text()
         self.assertIn('eq .Params.maintenance_status "archived"', template)
         self.assertIn("replacement_url_en", template)
-        self.assertIn("replacement_url_ko", template)
+        self.assertNotIn("replacement_url_ko", template)
         self.assertIn('"Params.maintenance_status" "ne" "archived"', template)
 
 
 class ArchivedArticleFrontmatterTests(unittest.TestCase):
-    def test_every_archived_article_has_one_bilingual_replacement_lineage(self):
+    def test_every_archived_article_has_one_english_replacement_lineage(self):
         rows = csv.DictReader(
             StringIO(
                 subprocess.run(
@@ -79,23 +79,23 @@ class ArchivedArticleFrontmatterTests(unittest.TestCase):
             if original_data.get("maintenance_status") != "archived":
                 continue
             archived.append(original)
+            self.assertNotIn("replacement_url_ko", original_data)
             target_url = original_data["replacement_url_en"]
             self.assertTrue(target_url.startswith("/blog/2026-08-01-"))
             basename = target_url.rsplit("/", 1)[-1].removesuffix(".html")
             original_url = permalink_by_path[str(original.relative_to(ROOT))]
 
-            for language in ("en", "ko"):
-                replacement = ROOT / "content" / "blog" / f"{basename}.{language}.md"
-                replacement_files.add(replacement)
-                data = frontmatter(replacement)
-                self.assertEqual(data.get("maintenance_status"), "replacement")
-                self.assertEqual(data.get("date"), original_data.get("date"))
-                self.assertEqual(data.get("lastmod"), "2026-08-01")
-                self.assertEqual(data.get("reviewed_at"), "2026-08-01")
-                self.assertEqual(data.get("replaces_url"), original_url)
+            replacement = ROOT / "content" / "blog" / f"{basename}.en.md"
+            replacement_files.add(replacement)
+            data = frontmatter(replacement)
+            self.assertEqual(data.get("maintenance_status"), "replacement")
+            self.assertEqual(data.get("date"), original_data.get("date"))
+            self.assertEqual(data.get("lastmod"), "2026-08-01")
+            self.assertEqual(data.get("reviewed_at"), "2026-08-01")
+            self.assertEqual(data.get("replaces_url"), original_url)
 
         self.assertEqual(len(archived), 43)
-        self.assertEqual(len(replacement_files), 86)
+        self.assertEqual(len(replacement_files), 43)
 
     def test_validator_requires_archive_metadata(self):
         import importlib.util
@@ -125,7 +125,6 @@ Body
             errors = module.validate_frontmatter(handle.name)
 
         self.assertTrue(any("replacement_url_en" in error for error in errors))
-        self.assertTrue(any("replacement_url_ko" in error for error in errors))
         self.assertTrue(any("archive_reason" in error for error in errors))
 
     def test_validator_rejects_directory_style_replacement_urls(self):
@@ -160,7 +159,7 @@ Body
             errors = module.validate_frontmatter(handle.name)
 
         self.assertTrue(any("replacement_url_en" in error and ".html" in error for error in errors))
-        self.assertTrue(any("replacement_url_ko" in error and ".html" in error for error in errors))
+        self.assertTrue(any("replacement_url_ko" in error and "retired" in error for error in errors))
 
     def test_validator_requires_replacement_lineage_metadata(self):
         import importlib.util
