@@ -45,7 +45,7 @@ The three credential fields stay empty strings. When Bruno sees a non-empty `pro
 name: Dev
 variables:
   - name: aws_profile
-    value: gap-dev
+    value: my-dev
   - name: aws_region
     value: us-east-1
   - name: api_base_url
@@ -57,7 +57,7 @@ One file per environment. Switching account is now a click in Bruno's environmen
 ### Daily login
 
 ```bash
-aws sso login --profile gap-dev
+aws sso login --profile my-dev
 ```
 
 That's the only ritual. SSO tokens last 8–12 hours depending on your org's config; once a day in the morning, done.
