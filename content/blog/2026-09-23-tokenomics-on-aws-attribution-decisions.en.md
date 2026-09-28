@@ -90,15 +90,29 @@ The pillar article offers three layers:
 
 It also points at gateways for the runtime case: LiteLLM for open-source per-team budgets, Claude Apps Gateway as the AWS-managed path for Claude on Bedrock, and Dogwood, which supports token budget caps and can block runaway agent loops through a policy language on AgentCore Gateway.
 
-The decision underneath all of these is **where enforcement is allowed to say no**. There are only three real placements:
+The decision underneath all of these is **where enforcement is allowed to say no**. There are only four real placements:
 
 | Placement | Fails how | Right for |
 |-----------|-----------|-----------|
 | SCP / model access | Hard block at request time | Sandboxes, model allow-lists |
+| IAM role / model access | Hard block, per role | Keeping expensive models away from roles that do not need them |
 | Budget + anomaly alert | Soft, after the fact | Production teams with a human owner |
 | Gateway token cap | Hard block per team / per loop | Agents that can loop |
 
 A dashboard is not an enforcement point, and this is the part that people conflate. So is a cost report. Neither sits on the request path, so neither can stop the runaway loop that runs over a weekend; only the third row can. The corollary from last year's hobby-account exercise still holds: I ran [personal AWS cost guardrails](/blog/2026-03-30-personal-aws-cost-guardrails.html) as three layers precisely because the notify layer and the stop layer fail differently.
+
+### What a gate in front of the model costs you
+
+Two of those rows are cheap and you should just do them. An IAM policy that limits which roles can call which models is the cheapest real control you have: it works before the call, you already manage everything else this way, and it fails closed. Its limit is the same one as attribution: it is only as fine as your roles, and most teams end up with a few shared service roles.
+
+The gateway row is the only one that can stop one specific request because of what it would cost. AWS has a reference design for it, a "cost sentry": a Step Functions workflow runs before each Bedrock call, reads current token usage from CloudWatch metrics, compares it with a per-model budget stored in DynamoDB, and lets the call through or denies it. Two things come with that:
+
+- **The gate is only as fresh as its numbers.** If the usage comes from CloudWatch metrics, a fast loop can run past the limit before the metric catches up. The gate slows a runaway down; it does not stop it at an exact token count.
+- **Every call now waits on the gate, and you have to decide what happens when the gate is down.** Fail open: the call goes through and the budget is not enforced for a while. Fail closed: a working feature breaks to protect a budget. Neither is wrong, but it is an availability decision, not a cost one. Write the choice down next to the gate, because teams that skip it find out their answer during an incident.
+
+One more limit: a gate in front of Bedrock only sees Bedrock. If some of your traffic goes to a model provider outside AWS, only a gateway that fronts every provider can hold one limit across all of them.
+
+So the order I would build in: roles that cannot reach the expensive models, then attribution, then a budget and an anomaly alert, and only then a pre-call gate for the one or two workloads where a runaway loop is a real risk.
 
 ## Pillar 4: ROI, and why the denominator is the hard part
 
@@ -125,6 +139,8 @@ An agent platform is a cost surface with no shutdown switch: it runs continuousl
 - **Metadata is not forgeable, so do not put anything that must not be forged in it.** An `env=prod` tag in request metadata can be claimed by anyone who can call the model. Use IAM for boundaries.
 - **Aggregated grain is a one-way door.** If you pick Projects without invocation logs, the per-prompt question is unanswerable until you turn logs on going forward.
 - **A cached-token drop is not a demand drop.** Keep token counts next to dollars.
+- **Count all four token types.** CUR has separate line items for input, output, cache read, and cache write tokens. If you only add up input and output, a cache-heavy workload will not match the bill.
+- **A new cost allocation tag is not a same-day control.** It can take up to a day for the tag key to show up for activation and up to another day to activate, so plan on one to two days before it appears in cost data.
 - **Static thresholds on a growing workload will not hold.** Any fixed dollar rule either drowns the big accounts or ignores the small ones; that is the topic of the companion post on forecast-based detection.
 - **Overage and standard rate are separate concepts.** If your internal charge model has an overage rate, make sure the rate is actually applied somewhere, or you are only collecting the flag.
 
@@ -135,5 +151,7 @@ An agent platform is a cost surface with no shutdown switch: it runs continuousl
 - [Bedrock cost management: Projects, inference profiles, and workspaces](https://docs.aws.amazon.com/bedrock/latest/userguide/cost-management.html)
 - [Bedrock model invocation logging](https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html)
 - [Bedrock prompt caching](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html)
+- [Understanding your Amazon Bedrock CUR data](https://docs.aws.amazon.com/bedrock/latest/userguide/cost-mgmt-understanding-cur-data.html)
+- [Build a proactive AI cost management system for Amazon Bedrock, Part 2](https://aws.amazon.com/blogs/machine-learning/build-a-proactive-ai-cost-management-system-for-amazon-bedrock-part-2/) (the cost sentry)
 
 If you are building the chargeback layer underneath these dashboards, the same question comes back at a lower level: what unit do you bill in, and who is allowed to convert a dollar cost into that unit. That is the design decision the attribution table above is really about.
