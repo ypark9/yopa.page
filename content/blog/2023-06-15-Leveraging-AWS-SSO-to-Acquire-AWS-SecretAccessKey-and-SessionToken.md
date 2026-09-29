@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "Reading an arbitrary IAM Identity Center cache file and passing its token through a shell command is unsupported and can select or expose the wrong session."
 replacement_url_en: "/blog/2026-08-01-use-aws-temporary-credentials-without-reading-cache-files.html"
-replacement_url_ko: "/ko/blog/2026-08-01-use-aws-temporary-credentials-without-reading-cache-files.html"
 author: Yoonsoo Park
 description: "Using AWS SSO to Acquire AWS SecretAccessKey and SessionToken"
 categories:

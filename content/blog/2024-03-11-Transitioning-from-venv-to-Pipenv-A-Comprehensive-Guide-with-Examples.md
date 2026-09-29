@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The article presents a move from venv to Pipenv as an inherent upgrade, uses unsupported Python examples, and includes a destructive migration step without an evidence or rollback gate."
 replacement_url_en: "/blog/2026-08-01-choosing-python-project-workflow.html"
-replacement_url_ko: "/ko/blog/2026-08-01-choosing-python-project-workflow.html"
 author: Yoonsoo Park
 description: "Learn to manage multiple Python versions with Pyenv and create isolated project environments using both venv and Pipenv, understanding their distinct roles in Python development."
 categories:

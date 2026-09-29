@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The strategy JSON, hook classes, save-insight API, and storage model shown do not match the current AgentCore Memory resource and event APIs."
 replacement_url_en: "/blog/2026-08-01-agentcore-memory-events-strategies-and-isolation.html"
-replacement_url_ko: "/ko/blog/2026-08-01-agentcore-memory-events-strategies-and-isolation.html"
 author: Yoonsoo Park
 series: AWS re:Invent 2025
 description: "A comprehensive technical deep dive into AWS Bedrock AgentCore Memory. Explains Context Orchestration, Memory Hooks, and how to solve AI adoption's 'Party Amnesia' problem."

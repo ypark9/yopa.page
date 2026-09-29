@@ -13,7 +13,8 @@
             <div class="navbar-actions flex">
                 <div class="navbar-links flex">
                     {{ range .Site.Menus.header }}
-                    <a href="{{ .URL | relLangURL }}"{{ if eq (.URL | relLangURL) $.RelPermalink }} aria-current="page"{{ end }}>{{ .Pre }}{{ .Name }}{{ .Post }}</a>
+                    {{ $href := cond (.Params.englishOnly | default false) (.URL | relURL) (.URL | relLangURL) }}
+                    <a href="{{ $href }}"{{ if eq $href $.RelPermalink }} aria-current="page"{{ end }}>{{ .Pre }}{{ .Name }}{{ .Post }}</a>
                     {{ end }}
                 </div>
                 {{ if (default true .Site.Params.colorScheme.toggle) }}

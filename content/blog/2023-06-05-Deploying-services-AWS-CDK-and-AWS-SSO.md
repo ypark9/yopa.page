@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The example mixes CDK v1 and v2 packages, uses a retired Lambda runtime, and no longer represents a safe current CDK deployment workflow."
 replacement_url_en: "/blog/2026-08-01-deploy-a-serverless-api-with-cdk-v2.html"
-replacement_url_ko: "/ko/blog/2026-08-01-deploy-a-serverless-api-with-cdk-v2.html"
 author: Yoonsoo Park
 description: "AWS CDK and AWS SSO"
 categories:

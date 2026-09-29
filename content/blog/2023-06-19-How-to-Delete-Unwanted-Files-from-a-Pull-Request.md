@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "The workflow conflates unstaging, restoring, and removing already-committed files, and includes destructive commands that can discard unrelated work."
 replacement_url_en: "/blog/2026-08-01-remove-unwanted-files-from-a-pull-request.html"
-replacement_url_ko: "/ko/blog/2026-08-01-remove-unwanted-files-from-a-pull-request.html"
 author: Yoonsoo Park
 description: "Learn how to clean up your Pull Requests by removing unwanted files using Git commands."
 categories:

@@ -5,7 +5,6 @@ maintenance_status: archived
 reviewed_at: 2026-08-01
 archive_reason: "This article recommends long-lived IAM users for people and applications, which conflicts with current AWS guidance to use federation and temporary role credentials wherever possible."
 replacement_url_en: "/blog/2026-08-01-aws-access-with-temporary-credentials.html"
-replacement_url_ko: "/ko/blog/2026-08-01-aws-access-with-temporary-credentials.html"
 author: Yoonsoo Park
 description: "AWS IAM User vs Role"
 categories:
