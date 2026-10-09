@@ -80,11 +80,44 @@ Gate B's miss is the honest cost of the simple version. It fails closed, so the 
 
 ## Result 2: two things about Dogwood the launch post does not stress
 
-**Re-applying policies resets their history.** T7 is the one that surprised me. I called `install()` again with the exact same policy text, the way a deploy script or a config reload would, and the next push was denied. The source says this is intended. The comment on `install` in `durable.rs` (around lines 1299 to 1303 at `d2cba92`) calls it "reborn-all": every policy starts with an empty window. `batch` with `Update` resets only the policy you changed, which is T8. The launch post explains the reason (the engine prunes events it no longer needs, so a new policy cannot look back), but it only shows the single-policy case.
+**Re-applying policies resets their history.** T7 is the one that surprised me. I called `install()` again with the exact same policy text, the way a deploy script or a config reload would, and the next push was denied. The source says this is intended. This is the comment on `install` in the engine's `durable.rs`:
+
+```rust
+/// Semantics are **reborn-all**, not prospective: this models
+/// `[SetActionSchema; DeleteAll; Add each]` (the declarative path wipes and
+/// rebuilds, so *every* resulting
+/// policy is born fresh with an empty window). To *keep* unchanged policies'
+/// history, use `batch` with targeted verbs, which leaves unmentioned
+/// policies untouched; this method deliberately does not.
+```
+
+In plain words: `install()` deletes every policy and adds them back, so every policy forgets what it has seen, even if you passed in the exact same text. If you want history to survive, you have to send only the change with `batch`. Even then, the policy you changed starts over, which is T8. The launch post explains the reason (the engine prunes events it no longer needs, so a new policy cannot look back), but it only shows the single-policy case.
 
 In practice this means a policy change is also a "run the tests again" event. It fails closed, which is the right direction. But if your harness reloads policies on every deploy, your agent will be blocked after every deploy until it runs the tests again, and unless your harness says why, the agent only sees a deny.
 
-**A store refuses to open if the clock went back more than five minutes.** `DurableConfig` sets `max_future_skew` to 5 minutes (`durable.rs` line 673), and recovery fails closed when the last stored event is further ahead of the host clock than that.
+**A store refuses to open if the clock went back more than five minutes.** This is the default configuration:
+
+```rust
+pub fn new(snapshot_interval: u64) -> Self {
+    DurableConfig {
+        snapshot_interval,
+        clock: Box::new(WallClock),
+        max_future_skew: Duration::from_secs(5 * 60),
+        // ...
+    }
+}
+```
+
+And this is the check that runs when the store opens:
+
+```rust
+let (future_skew, exceeds_allowed) = future_skew_exceeds_allowed(last_ts, now, allowed);
+if exceeds_allowed {
+    return Err(future_skew_error(last_ts, future_skew, now, allowed));
+}
+```
+
+So if the newest event on disk is stamped more than five minutes after what the machine's clock says now, the engine returns an error instead of opening. It fails closed: no store, no decisions, until someone fixes the clock or the config.
 
 | Host clock at restart vs last stored event | Store opens? |
 | --- | --- |
@@ -97,7 +130,18 @@ The error tells you to fix the host clock or the store. A host that comes back w
 
 ## Result 3: what a decision costs, next to a model turn
 
-I simulated a 12-hour session at 360 events per hour, the rate in the AWS post, and timed each push decision. Each `submit` writes the event to disk with an fsync before it evaluates (`log.rs` line 355 sets `Durability::Immediate`). To separate the disk from the evaluation, I ran the same session on `/dev/shm`, which is RAM.
+I simulated a 12-hour session at 360 events per hour, the rate in the AWS post, and timed each push decision. Each `submit` writes the event to disk before it evaluates. This is the append path in the engine's log:
+
+```rust
+/// Durably append one record, returning its assigned offset. Commits with
+/// `Durability::Immediate` (fsync) so the record survives a crash before
+/// this returns — the atomic transaction boundary.
+pub fn append(&self, record: &[u8]) -> Result<u64, LogError> {
+    // ...
+    txn.set_durability(Durability::Immediate)
+```
+
+`Durability::Immediate` means every event waits for an fsync, a forced write to the physical disk, before the call returns. To separate the disk from the evaluation, I ran the same session on `/dev/shm`, which is RAM.
 
 The AWS post does not say how many of its events matched the policy, so I ran two mixes. In "dense", every other event is a passing test run (180 per hour). In "sparse", there are 12 test runs per hour and the rest are file reads.
 
