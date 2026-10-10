@@ -130,7 +130,38 @@ In plain words: for each name in that list, if anything inside it is not owned b
 
 **Decision.** Normally I would SSH into the NAS and run one `chown`. The assistant could not, and I did not want to give it SSH for this. Dockge can do something that turns out to be just as strong: start any container you describe. So the fix was a throwaway stack.
 
-This is the temporary Compose file, rebuilt from my notes with the IDs generalized:
+What I actually ran was a single throwaway stack that listed `installs/`, ran `chown -R`, and listed it again, all in one go. It worked. Looking back, it is the wrong shape to copy: the container does not wait for anyone to read the "before" output, so a wrong path or a wrong UID is already applied by the time a person checks. If I did this again, I would split it into two stacks, a read-only check and a fix that touches only the one file.
+
+**Stack 1, check only.** It mounts `installs/` read-only and stops with an error if the lock file you expect is not there:
+
+```yaml
+# Temporary Dockge stack "hermes-permcheck". Read-only. Delete it after one run.
+services:
+  permcheck:
+    image: busybox
+    user: "0:0"
+    restart: "no"
+    volumes:
+      - type: bind
+        source: /volume1/docker/hermes/data/installs
+        target: /fix
+        read_only: true
+        bind:
+          create_host_path: false
+    command:
+      - sh
+      - -euc
+      - |
+        test -e /fix/<install-id>/.install.lock
+        echo "--- not owned by hermes:"
+        find /fix \( ! -user <hermes-uid> -o ! -group <hermes-gid> \) -exec ls -lnd {} \;
+```
+
+Three details matter here. `read_only: true` means this stack cannot change anything. `create_host_path: false` makes Docker refuse to start if the host path does not exist; with the short `- host:container` form, a typo in the path can quietly create a new empty directory, and an empty listing looks exactly like "nothing is wrong". And `sh -euc` stops at the first failing command, so a missing lock file ends the run with an error instead of a clean exit.
+
+Read the log. Only if it names the one lock file you expected, move on.
+
+**Stack 2, fix one file and prove it.**
 
 ```yaml
 # Temporary Dockge stack "hermes-permfix". Delete it after one run.
@@ -140,27 +171,36 @@ services:
     user: "0:0"
     restart: "no"
     volumes:
-      # Mount only installs/, not the whole Hermes data directory.
-      - /volume1/docker/hermes/data/installs:/fix
+      - type: bind
+        source: /volume1/docker/hermes/data/installs
+        target: /fix
+        bind:
+          create_host_path: false
     command:
       - sh
-      - -c
+      - -euc
       - |
-        echo "--- before"; find /fix \( ! -user <hermes-uid> -o ! -group <hermes-gid> \) -exec ls -lnd {} \;
-        chown -R <hermes-uid>:<hermes-gid> /fix
-        echo "--- after";  find /fix \( ! -user <hermes-uid> -o ! -group <hermes-gid> \) -exec ls -lnd {} \;
+        f=/fix/<install-id>/.install.lock
+        test -e "$$f"
+        chown <hermes-uid>:<hermes-gid> "$$f"
+        test "$$(stat -c '%u:%g' "$$f")" = "<hermes-uid>:<hermes-gid>"
+        echo "fixed: $$(ls -ln "$$f")"
 ```
 
-Two notes on how this differs from what I actually ran. I ran `ls -lan` before and after, which only lists the top level of `installs/`. The bad file was one level down, so `find` for anything not owned by Hermes is the better before and after check: the "after" list should be empty. And I added `restart: "no"` so a one-shot job cannot loop. I have not run this exact file, so check the "before" output names the file you expect before you trust the "after" output.
+The doubled `$$` is not a typo. Compose treats a single `$` as its own variable substitution before the shell ever sees it, so `$$` is how you pass a literal `$` through to `sh`.
+
+It changes only that one file, not the whole tree. With `-e`, a failed `chown` stops the script and the stack exits with an error. Without it, a script like my original would still exit 0 as long as its last command succeeded. The last check reads the owner back and fails if it is not the Hermes user.
+
+I have not run these two files. They are what I would use next time, not a record of what happened.
 
 The steps:
 
-1. Create the `hermes-permfix` stack with the file above and start it.
-2. Read its log. The "before" section should name the lock file. The "after" section should be empty.
+1. Create and start `hermes-permcheck`. Its log should name exactly the lock file you expected, and nothing else.
+2. Create and start `hermes-permfix`. It should exit 0 and print the file with the Hermes UID and GID. Any other exit code means stop and look.
 3. In the `hermes` stack, press **Start** only. Do not edit or redeploy its Compose file. The fix was in the data, not the configuration.
-4. Delete the `hermes-permfix` stack.
+4. Delete both temporary stacks.
 
-Mounting only `installs/` was deliberate. A root container with the whole data directory mounted can read the Slack tokens and the OAuth state. This one could only touch the directory that was broken.
+Mounting only `installs/` was deliberate. A root container with the whole data directory mounted can read the Slack tokens and the OAuth state. These could only touch the directory that was broken, and the fix stack only one file in it.
 
 **Verification.** At 17:52 ET the gateway was up, Slack Socket Mode was connected, and the gateway log had no `not writable` lines.
 
