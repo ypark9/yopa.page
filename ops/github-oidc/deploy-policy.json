@@ -10,7 +10,8 @@
         "s3:GetLifecycleConfiguration",
         "s3:GetReplicationConfiguration",
         "s3:ListBucket",
-        "s3:ListBucketVersions"
+        "s3:ListBucketVersions",
+        "s3:GetAccelerateConfiguration"
       ],
       "Resource": [
         "arn:aws:s3:::yopa.page",
@@ -63,7 +64,8 @@
         "lambda:GetFunctionCodeSigningConfig",
         "lambda:GetPolicy",
         "lambda:ListTags",
-        "lambda:GetFunctionConcurrency"
+        "lambda:GetFunctionConcurrency",
+        "lambda:ListVersionsByFunction"
       ],
       "Resource": "arn:aws:lambda:us-east-1:831597648506:function:article-atlas-presence-handler"
     },
@@ -224,6 +226,25 @@
           "iam:PassedToService": "lambda.amazonaws.com"
         }
       }
+    },
+    {
+      "Sid": "SiteFunctionDescribe",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:DescribeFunction"
+      ],
+      "Resource": [
+        "arn:aws:cloudfront::831597648506:function/yopa-draw-index-rewrite",
+        "arn:aws:cloudfront::831597648506:function/article-atlas-presence-rewrite"
+      ]
+    },
+    {
+      "Sid": "SitePublicCertificateRead",
+      "Effect": "Allow",
+      "Action": [
+        "acm:GetCertificate"
+      ],
+      "Resource": "arn:aws:acm:us-east-1:831597648506:certificate/77504dc7-49c2-42fb-96cb-413e78d3a05f"
     }
   ]
 }

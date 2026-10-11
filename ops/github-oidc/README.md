@@ -12,4 +12,6 @@ Migration verification does not dispatch a production deployment. Verify static 
 
 The required secret-scan uses the open-source Gitleaks CLI 8.30.1 with a pinned official release checksum. The prior action requires a commercial license for organization repositories. Full Git history and the working tree remain scanned, with secrets redacted; the check name/protection stays unchanged.
 
-The old Gitleaks configuration skipped all static/draw/assets vendor files. The replacement narrows that exception to one exact upstream public Firebase identifier in one pinned bundle, under only two matching rules. Local probes confirm the same value elsewhere and a different value in the bundle still fail. Full history and the tracked working tree scans pass. Firebase reference: https://firebase.google.com/docs/projects/api-keys.
+The old Gitleaks configuration skipped all static/draw/assets vendor files. The replacement narrows that exception to one exact upstream public Firebase identifier in the current and historical pinned bundles, under only two matching rules. Local probes confirm the same value elsewhere and a different value in the bundle still fail. Full history and the tracked working tree scans pass. Firebase reference: https://firebase.google.com/docs/projects/api-keys.
+
+Remote OIDC plan authentication succeeded. Provider refresh required scoped read additions: S3 accelerate configuration, Lambda version listing, CloudFront function describe, and the existing ACM public certificate. No additional write permissions or trust subjects were added.
