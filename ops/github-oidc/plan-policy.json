@@ -127,7 +127,8 @@
       "Sid": "SitePublicCertificateRead",
       "Effect": "Allow",
       "Action": [
-        "acm:GetCertificate"
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
       ],
       "Resource": "arn:aws:acm:us-east-1:831597648506:certificate/77504dc7-49c2-42fb-96cb-413e78d3a05f"
     }
