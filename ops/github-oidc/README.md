@@ -9,3 +9,5 @@ The JSON files are canonical role configuration. Provision with IAM create-role/
 Read-only PR plans disable Terraform locking (`-lock=false`); they must never be applied. Auto-deployment separately creates and applies its own saved plans after acquiring normal locks. GitHub plan artifacts can include infrastructure state and remain subject to repository access; do not store credentials in state.
 
 Migration verification does not dispatch a production deployment. Verify static checks, OIDC trust/permission simulation and live URL/CloudFront baseline; first post-migration deployment occurs only after an owner merge. If credentials are unavailable, CI fails closed while the currently deployed site remains available. Existing human local credentials stay intact; unknown historical repository key principals are not revoked blindly.
+
+The required secret-scan uses the open-source Gitleaks CLI 8.30.1 with a pinned official release checksum. The prior action requires a commercial license for organization repositories. Full Git history and the working tree remain scanned, with secrets redacted; the check name/protection stays unchanged.
